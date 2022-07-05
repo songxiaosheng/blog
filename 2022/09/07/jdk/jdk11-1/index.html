@@ -5,9 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="1-过五关斩六将开发属于自己的jdk版本, 中间件源码">
-    <meta name="description" content="1-过五关斩六将开发属于自己的jdk版本1.1 简介这里主要做一下笔记,如果比较感兴趣也可以直接查阅官网open jdk building
-OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
-1.2  克隆代码1git c">
+    <meta name="description" content="OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -34,9 +32,9 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
-
+<meta name="generator" content="Hexo 6.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
 </head>
 
 
@@ -329,116 +327,39 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
 
 
 
-<main class="post-container content">
+<main class="container content">
 
     
-    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
-<style>
-    #articleContent h1::before,
-    #articleContent h2::before,
-    #articleContent h3::before,
-    #articleContent h4::before,
-    #articleContent h5::before,
-    #articleContent h6::before {
-        display: block;
-        content: " ";
-        height: 100px;
-        margin-top: -100px;
-        visibility: hidden;
-    }
-
-    #articleContent :focus {
-        outline: none;
-    }
-
-    .toc-fixed {
-        position: fixed;
-        top: 64px;
-    }
-
-    .toc-widget {
-        width: 345px;
-        padding-left: 20px;
-    }
-
-    .toc-widget .toc-title {
-        padding: 35px 0 15px 17px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        line-height: 1.5rem;
-    }
-
-    .toc-widget ol {
-        padding: 0;
-        list-style: none;
-    }
-
-    #toc-content {
-        padding-bottom: 30px;
-        overflow: auto;
-    }
-
-    #toc-content ol {
-        padding-left: 10px;
-    }
-
-    #toc-content ol li {
-        padding-left: 10px;
-    }
-
-    #toc-content .toc-link:hover {
-        color: #42b983;
-        font-weight: 700;
-        text-decoration: underline;
-    }
-
-    #toc-content .toc-link::before {
-        background-color: transparent;
-        max-height: 25px;
-
-        position: absolute;
-        right: 23.5vw;
-        display: block;
-    }
-
-    #toc-content .is-active-link {
-        color: #42b983;
-    }
-
-    #floating-toc-btn {
-        position: fixed;
-        right: 15px;
-        bottom: 76px;
-        padding-top: 15px;
-        margin-bottom: 0;
-        z-index: 998;
-    }
-
-    #floating-toc-btn .btn-floating {
-        width: 48px;
-        height: 48px;
-    }
-
-    #floating-toc-btn .btn-floating i {
-        line-height: 48px;
-        font-size: 1.4rem;
-    }
-</style>
-<div class="row">
-    <div id="main-content" class="col s12 m12 l9">
-        <!-- 文章内容详情 -->
+    <!-- 文章内容详情 -->
 <div id="artDetail">
     <div class="card">
         <div class="card-content article-info">
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Typora/">
+                                <span class="chip bg-color">Typora</span>
+                            </a>
+                        
+                            <a href="/tags/Markdown/">
+                                <span class="chip bg-color">Markdown</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/JDK%E6%BA%90%E7%A0%81/" class="post-category">
+                                JDK源码
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -447,7 +368,7 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-07-04
+                    2022-09-07
                 </div>
                 
 
@@ -463,6 +384,9 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
         <hr class="clearfix">
 
         
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
 
         
 
@@ -470,47 +394,106 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
             <div id="articleContent">
                 <h1 id="1-过五关斩六将开发属于自己的jdk版本"><a href="#1-过五关斩六将开发属于自己的jdk版本" class="headerlink" title="1-过五关斩六将开发属于自己的jdk版本"></a>1-过五关斩六将开发属于自己的jdk版本</h1><h2 id="1-1-简介"><a href="#1-1-简介" class="headerlink" title="1.1 简介"></a>1.1 简介</h2><p>这里主要做一下笔记,如果比较感兴趣也可以直接查阅官网<a target="_blank" rel="noopener" href="https://openjdk.java.net/groups/build/doc/building.html">open jdk building</a></p>
 <p>OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。</p>
-<h2 id="1-2-克隆代码"><a href="#1-2-克隆代码" class="headerlink" title="1.2  克隆代码"></a>1.2  克隆代码</h2><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://git.openjdk.java.net/jdk/</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="1-2-克隆代码"><a href="#1-2-克隆代码" class="headerlink" title="1.2  克隆代码"></a>1.2  克隆代码</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone https://git.openjdk.java.net/jdk/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>切换分支到jdk-11+28</p>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout jdk-11+28</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> checkout jdk-11+28<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<h2 id="1-3-运行配置："><a href="#1-3-运行配置：" class="headerlink" title="1.3 运行配置："></a>1.3 运行配置：</h2><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash configure</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="1-3-运行配置："><a href="#1-3-运行配置：" class="headerlink" title="1.3 运行配置："></a>1.3 运行配置：</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">bash</span> configure<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>如果configure由于缺少依赖项（工具链、构建工具、外部库或引导JDK）而失败，大多数情况下，它会打印一份关于如何在平台上解决这种情况的建议。按照说明操作，然后再次尝试运行bash configure。</p>
 <p>运行成功后会有如下日志打印<br><img src="https://img-blog.csdnimg.cn/c058f61885d3493cbb0f8ef1e8f6c7ce.png" alt="在这里插入图片描述"></p>
-<h2 id="1-4-运行Make"><a href="#1-4-运行Make" class="headerlink" title="1.4 运行Make"></a>1.4 运行Make</h2><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make images</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="1-4-运行Make"><a href="#1-4-运行Make" class="headerlink" title="1.4 运行Make"></a>1.4 运行Make</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">make</span> images<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 <p>这个版本会有BUG如下错误所示:</p>
 <p><img src="https://img-blog.csdnimg.cn/4c2be8ed26d44b449a0953132d38063e.png" alt="在这里插入图片描述"></p>
 <p><a target="_blank" rel="noopener" href="https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=244803">issue 链接</a></p>
 <p>上面图片有点小我们继续看</p>
-<h2 id="1-4-1-问题1"><a href="#1-4-1-问题1" class="headerlink" title="1.4.1 问题1:"></a>1.4.1 问题1:</h2><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/src/hotspot/share/runtime/arguments.cpp:1461:35: error: result of comparison against a string literal is unspecified (use an explicit string comparison <span class="keyword">function</span> instead) [-Werror,-Wstring-compare]</span><br><span class="line">      <span class="keyword">if</span> (old_java_vendor_url_bug != DEFAULT_VENDOR_URL_BUG) {</span><br><span class="line">                                  ^  ~~~~~~~~~~~~~~~~~~~~~~</span><br><span class="line">1 error generated.</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="1-4-1-问题1"><a href="#1-4-1-问题1" class="headerlink" title="1.4.1 问题1:"></a>1.4.1 问题1:</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/src/hotspot/share/runtime/arguments.cpp:1461:35: error: result of comparison against a string literal is unspecified <span class="token punctuation">(</span>use an explicit string comparison <span class="token keyword">function</span> instead<span class="token punctuation">)</span> <span class="token punctuation">[</span>-Werror,-Wstring-compare<span class="token punctuation">]</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>old_java_vendor_url_bug <span class="token operator">!=</span> DEFAULT_VENDOR_URL_BUG<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                  ^  ~~~~~~~~~~~~~~~~~~~~~~
+<span class="token number">1</span> error generated.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>修复方法:<br>打开文件<strong>arguments.cpp:1461</strong> 修改1461行代码为如下所示:</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (strcmp(old_java_vendor_url_bug , DEFAULT_VENDOR_URL_BUG)!=<span class="number">0</span>) {</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">strcmp</span><span class="token punctuation">(</span>old_java_vendor_url_bug <span class="token punctuation">,</span> DEFAULT_VENDOR_URL_BUG<span class="token punctuation">)</span><span class="token operator">!=</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<h2 id="1-4-2-问题2"><a href="#1-4-2-问题2" class="headerlink" title="1.4.2 问题2"></a>1.4.2 问题2</h2><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">=== Output from failing <span class="built_in">command</span>(s) repeated here ===</span><br><span class="line">* For target hotspot_variant-server_libjvm_objs_sharedRuntime.o:</span><br><span class="line">/Users/song/Desktop/Computer/A/github/jdk/src/hotspot/share/runtime/sharedRuntime.cpp:2798:85: error: expression does not compute the number of elements <span class="keyword">in</span> this array; element <span class="built_in">type</span> is <span class="string">'double'</span>, not <span class="string">'relocInfo'</span> [-Werror,-Wsizeof-array-div]</span><br><span class="line">      buffer.insts()-&gt;initialize_shared_locs((relocInfo*)locs_buf, sizeof(locs_buf) / sizeof(relocInfo));</span><br><span class="line">                                                                          ~~~~~~~~  ^</span><br><span class="line">/Users/song/Desktop/Computer/A/github/jdk/src/hotspot/share/runtime/sharedRuntime.cpp:2797:14: note: array <span class="string">'locs_buf'</span> declared here</span><br><span class="line">      double locs_buf[20];</span><br><span class="line">             ^</span><br><span class="line">/Users/song/Desktop/Computer/A/github/jdk/src/hotspot/share/runtime/sharedRuntime.cpp:2798:85: note: place parentheses around the <span class="string">'sizeof(relocInfo)'</span> expression to silence this warning</span><br><span class="line">      buffer.insts()-&gt;initialize_shared_locs((relocInfo*)locs_buf, sizeof(locs_buf) / sizeof(relocInfo));</span><br><span class="line">                                                                                    ^</span><br><span class="line">1 error generated.</span><br><span class="line"></span><br><span class="line">* All <span class="built_in">command</span> lines available <span class="keyword">in</span> /Users/song/Desktop/Computer/A/github/jdk/build/macosx-x86_64-normal-server-release/make-support/failure-logs.</span><br><span class="line">=== End of repeated output ===</span><br><span class="line"></span><br><span class="line">No indication of failed target found.</span><br><span class="line">Hint: Try searching the build <span class="built_in">log</span> <span class="keyword">for</span> <span class="string">'] Error'</span>.</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="1-4-2-问题2"><a href="#1-4-2-问题2" class="headerlink" title="1.4.2 问题2"></a>1.4.2 问题2</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">==</span><span class="token operator">=</span> Output from failing command<span class="token punctuation">(</span>s<span class="token punctuation">)</span> repeated here <span class="token operator">==</span><span class="token operator">=</span>
+* For target hotspot_variant-server_libjvm_objs_sharedRuntime.o:
+/Users/song/Desktop/Computer/A/github/jdk/src/hotspot/share/runtime/sharedRuntime.cpp:2798:85: error: expression does not compute the number of elements <span class="token keyword">in</span> this array<span class="token punctuation">;</span> element <span class="token builtin class-name">type</span> is <span class="token string">'double'</span>, not <span class="token string">'relocInfo'</span> <span class="token punctuation">[</span>-Werror,-Wsizeof-array-div<span class="token punctuation">]</span>
+      buffer.insts<span class="token punctuation">(</span><span class="token punctuation">)</span>-<span class="token operator">&gt;</span>initialize_shared_locs<span class="token variable"><span class="token punctuation">((</span>relocInfo<span class="token operator">*</span><span class="token punctuation">)</span>locs_buf<span class="token punctuation">,</span> sizeof<span class="token punctuation">(</span>locs_buf<span class="token punctuation">)</span> <span class="token operator">/</span> sizeof<span class="token punctuation">(</span>relocInfo<span class="token punctuation">))</span></span><span class="token punctuation">;</span>
+                                                                          ~~~~~~~~  ^
+/Users/song/Desktop/Computer/A/github/jdk/src/hotspot/share/runtime/sharedRuntime.cpp:2797:14: note: array <span class="token string">'locs_buf'</span> declared here
+      double locs_buf<span class="token punctuation">[</span><span class="token number">20</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+             ^
+/Users/song/Desktop/Computer/A/github/jdk/src/hotspot/share/runtime/sharedRuntime.cpp:2798:85: note: place parentheses around the <span class="token string">'sizeof(relocInfo)'</span> expression to silence this warning
+      buffer.insts<span class="token punctuation">(</span><span class="token punctuation">)</span>-<span class="token operator">&gt;</span>initialize_shared_locs<span class="token variable"><span class="token punctuation">((</span>relocInfo<span class="token operator">*</span><span class="token punctuation">)</span>locs_buf<span class="token punctuation">,</span> sizeof<span class="token punctuation">(</span>locs_buf<span class="token punctuation">)</span> <span class="token operator">/</span> sizeof<span class="token punctuation">(</span>relocInfo<span class="token punctuation">))</span></span><span class="token punctuation">;</span>
+                                                                                    ^
+<span class="token number">1</span> error generated.
+
+* All <span class="token builtin class-name">command</span> lines available <span class="token keyword">in</span> /Users/song/Desktop/Computer/A/github/jdk/build/macosx-x86_64-normal-server-release/make-support/failure-logs.
+<span class="token operator">==</span><span class="token operator">=</span> End of repeated output <span class="token operator">==</span><span class="token operator">=</span>
+
+No indication of failed target found.
+Hint: Try searching the build log <span class="token keyword">for</span> <span class="token string">'] Error'</span><span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>修复方法:<br>打开2798行 修改代码为这个</p>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">buffer.insts()-&gt;initialize_shared_locs((relocInfo*)locs_buf,(sizeof(locs_buf)) /(sizeof(relocInfo)));</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="1-4-3-问题三"><a href="#1-4-3-问题三" class="headerlink" title="1.4.3 问题三:"></a>1.4.3 问题三:</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">src/java.desktop/macosx/native/libawt_lwawt/awt/CSystemColors.m:134:9: error: converting the result of <span class="string">'?:'</span> with <span class="built_in">integer</span> constants to a boolean always evaluates to <span class="string">'true'</span> [-Werror,-Wtautological-constant-compare]</span><br><span class="line">    <span class="keyword">if</span> (colorIndex &lt; (useAppleColor) ? sun_lwawt_macosx_LWCToolkit_NUM_APPLE_COLORS : java_awt_SystemColor_NUM_COLORS) {</span><br><span class="line">        ^</span><br><span class="line">1 error generated.</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">buffer.insts<span class="token punctuation">(</span><span class="token punctuation">)</span>-<span class="token operator">&gt;</span>initialize_shared_locs<span class="token variable"><span class="token punctuation">((</span>relocInfo<span class="token operator">*</span><span class="token punctuation">)</span>locs_buf<span class="token punctuation">,</span><span class="token punctuation">(</span>sizeof<span class="token punctuation">(</span>locs_buf<span class="token punctuation">))</span></span> /<span class="token punctuation">(</span>sizeof<span class="token punctuation">(</span>relocInfo<span class="token punctuation">))</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="1-4-3-问题三"><a href="#1-4-3-问题三" class="headerlink" title="1.4.3 问题三:"></a>1.4.3 问题三:</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">src/java.desktop/macosx/native/libawt_lwawt/awt/CSystemColors.m:134:9: error: converting the result of <span class="token string">'?:'</span> with integer constants to a boolean always evaluates to <span class="token string">'true'</span> <span class="token punctuation">[</span>-Werror,-Wtautological-constant-compare<span class="token punctuation">]</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>colorIndex <span class="token operator">&lt;</span> <span class="token punctuation">(</span>useAppleColor<span class="token punctuation">)</span> ? sun_lwawt_macosx_LWCToolkit_NUM_APPLE_COLORS <span class="token builtin class-name">:</span> java_awt_SystemColor_NUM_COLORS<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ^
+<span class="token number">1</span> error generated.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>同理，参考github【<a target="_blank" rel="noopener" href="https://github.com/openjdk/jdk/commit/4622a18a%E3%80%91%E4%BF%AE%E6%94%B9%E6%BA%90%E7%A0%81%E3%80%82">https://github.com/openjdk/jdk/commit/4622a18a】修改源码。</a></p>
 <p>打开134行 修改代码为</p>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (colorIndex &lt; ((useAppleColor) ? sun_lwawt_macosx_LWCToolkit_NUM_APPLE_COLORS :</span><br><span class="line">    java_awt_SystemColor_NUM_COLORS)) {</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token keyword">if</span> <span class="token punctuation">(</span>colorIndex <span class="token operator">&lt;</span> <span class="token variable"><span class="token punctuation">((</span>useAppleColor<span class="token punctuation">)</span> <span class="token operator">?</span> sun_lwawt_macosx_LWCToolkit_NUM_APPLE_COLORS <span class="token operator">:</span>
+    java_awt_SystemColor_NUM_COLORS<span class="token punctuation">))</span></span> <span class="token punctuation">{</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<h3 id="1-4-5-问题四"><a href="#1-4-5-问题四" class="headerlink" title="1.4.5 问题四:"></a>1.4.5 问题四:</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">ERROR: Build failed <span class="keyword">for</span> target <span class="string">'default (exploded-image)'</span> <span class="keyword">in</span> configuration <span class="string">'macosx-x86_64-normal-server-release'</span> (<span class="built_in">exit</span> code 2)</span><br><span class="line">Stopping sjavac server</span><br><span class="line"></span><br><span class="line">=== Output from failing <span class="built_in">command</span>(s) repeated here ===</span><br><span class="line">* For target support_native_java.desktop_libjsound_PLATFORM_API_MacOSX_MidiUtils.o:</span><br><span class="line">/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:263:31: error: cast to smaller <span class="built_in">integer</span> <span class="built_in">type</span> <span class="string">'MIDIClientRef'</span> (aka <span class="string">'unsigned int'</span>) from <span class="string">'void *'</span> [-Werror,-Wvoid-pointer-to-int-cast]</span><br><span class="line">static MIDIClientRef client = (MIDIClientRef) NULL;</span><br><span class="line">                              ^~~~~~~~~~~~~~~~~~~~</span><br><span class="line">/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:264:29: error: cast to smaller <span class="built_in">integer</span> <span class="built_in">type</span> <span class="string">'MIDIPortRef'</span> (aka <span class="string">'unsigned int'</span>) from <span class="string">'void *'</span> [-Werror,-Wvoid-pointer-to-int-cast]</span><br><span class="line">static MIDIPortRef inPort = (MIDIPortRef) NULL;</span><br><span class="line">                            ^~~~~~~~~~~~~~~~~~</span><br><span class="line">/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:265:30: error: cast to smaller <span class="built_in">integer</span> <span class="built_in">type</span> <span class="string">'MIDIPortRef'</span> (aka <span class="string">'unsigned int'</span>) from <span class="string">'void *'</span> [-Werror,-Wvoid-pointer-to-int-cast]</span><br><span class="line">static MIDIPortRef outPort = (MIDIPortRef) NULL;</span><br><span class="line">                             ^~~~~~~~~~~~~~~~~~</span><br><span class="line">/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:471:32: error: cast to smaller <span class="built_in">integer</span> <span class="built_in">type</span> <span class="string">'MIDIEndpointRef'</span> (aka <span class="string">'unsigned int'</span>) from <span class="string">'void *'</span> [-Werror,-Wvoid-pointer-to-int-cast]</span><br><span class="line">    MIDIEndpointRef endpoint = (MIDIEndpointRef) NULL;</span><br><span class="line">                               ^~~~~~~~~~~~~~~~~~~~~~</span><br><span class="line">   ... (rest of output omitted)</span><br><span class="line"></span><br><span class="line">* All <span class="built_in">command</span> lines available <span class="keyword">in</span> /Users/coachhe/Tools/jdk-compile/openjdk11/build/macosx-x86_64-normal-server-release/make-support/failure-logs.</span><br><span class="line">=== End of repeated output ===</span><br><span class="line"></span><br><span class="line">No indication of failed target found.</span><br><span class="line">Hint: Try searching the build <span class="built_in">log</span> <span class="keyword">for</span> <span class="string">'] Error'</span>.</span><br><span class="line">Hint: See doc/building.html<span class="comment">#troubleshooting for assistance.</span></span><br><span class="line"></span><br><span class="line">make[1]: *** [main] Error 2</span><br><span class="line">make: *** [default] Error 2</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="1-4-5-问题四"><a href="#1-4-5-问题四" class="headerlink" title="1.4.5 问题四:"></a>1.4.5 问题四:</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ERROR: Build failed <span class="token keyword">for</span> target <span class="token string">'default (exploded-image)'</span> <span class="token keyword">in</span> configuration <span class="token string">'macosx-x86_64-normal-server-release'</span> <span class="token punctuation">(</span>exit code <span class="token number">2</span><span class="token punctuation">)</span>
+Stopping sjavac server
+
+<span class="token operator">==</span><span class="token operator">=</span> Output from failing command<span class="token punctuation">(</span>s<span class="token punctuation">)</span> repeated here <span class="token operator">==</span><span class="token operator">=</span>
+* For target support_native_java.desktop_libjsound_PLATFORM_API_MacOSX_MidiUtils.o:
+/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:263:31: error: cast to smaller integer <span class="token builtin class-name">type</span> <span class="token string">'MIDIClientRef'</span> <span class="token punctuation">(</span>aka <span class="token string">'unsigned int'</span><span class="token punctuation">)</span> from <span class="token string">'void *'</span> <span class="token punctuation">[</span>-Werror,-Wvoid-pointer-to-int-cast<span class="token punctuation">]</span>
+static MIDIClientRef client <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIClientRef<span class="token punctuation">)</span> NULL<span class="token punctuation">;</span>
+                              ^~~~~~~~~~~~~~~~~~~~
+/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:264:29: error: cast to smaller integer <span class="token builtin class-name">type</span> <span class="token string">'MIDIPortRef'</span> <span class="token punctuation">(</span>aka <span class="token string">'unsigned int'</span><span class="token punctuation">)</span> from <span class="token string">'void *'</span> <span class="token punctuation">[</span>-Werror,-Wvoid-pointer-to-int-cast<span class="token punctuation">]</span>
+static MIDIPortRef inPort <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIPortRef<span class="token punctuation">)</span> NULL<span class="token punctuation">;</span>
+                            ^~~~~~~~~~~~~~~~~~
+/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:265:30: error: cast to smaller integer <span class="token builtin class-name">type</span> <span class="token string">'MIDIPortRef'</span> <span class="token punctuation">(</span>aka <span class="token string">'unsigned int'</span><span class="token punctuation">)</span> from <span class="token string">'void *'</span> <span class="token punctuation">[</span>-Werror,-Wvoid-pointer-to-int-cast<span class="token punctuation">]</span>
+static MIDIPortRef outPort <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIPortRef<span class="token punctuation">)</span> NULL<span class="token punctuation">;</span>
+                             ^~~~~~~~~~~~~~~~~~
+/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:471:32: error: cast to smaller integer <span class="token builtin class-name">type</span> <span class="token string">'MIDIEndpointRef'</span> <span class="token punctuation">(</span>aka <span class="token string">'unsigned int'</span><span class="token punctuation">)</span> from <span class="token string">'void *'</span> <span class="token punctuation">[</span>-Werror,-Wvoid-pointer-to-int-cast<span class="token punctuation">]</span>
+    MIDIEndpointRef endpoint <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIEndpointRef<span class="token punctuation">)</span> NULL<span class="token punctuation">;</span>
+                               ^~~~~~~~~~~~~~~~~~~~~~
+   <span class="token punctuation">..</span>. <span class="token punctuation">(</span>rest of output omitted<span class="token punctuation">)</span>
+
+* All <span class="token builtin class-name">command</span> lines available <span class="token keyword">in</span> /Users/coachhe/Tools/jdk-compile/openjdk11/build/macosx-x86_64-normal-server-release/make-support/failure-logs.
+<span class="token operator">==</span><span class="token operator">=</span> End of repeated output <span class="token operator">==</span><span class="token operator">=</span>
+
+No indication of failed target found.
+Hint: Try searching the build log <span class="token keyword">for</span> <span class="token string">'] Error'</span><span class="token builtin class-name">.</span>
+Hint: See doc/building.html<span class="token comment">#troubleshooting for assistance.</span>
+
+make<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>: *** <span class="token punctuation">[</span>main<span class="token punctuation">]</span> Error <span class="token number">2</span>
+make: *** <span class="token punctuation">[</span>default<span class="token punctuation">]</span> Error <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>修复方式:<br>src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c文件的4个地方。但是修改方式是统一的，都是将括号里的内容（MIDIClientRef,MIDIPortRef,MIDIEndpointRef）修改为unsigned long。</p>
 <p>修改前：</p>
-<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">263</span> <span class="type">static</span> MIDIClientRef client = (MIDIClientRef) <span class="literal">NULL</span>;</span><br><span class="line"><span class="number">264</span> <span class="type">static</span> MIDIPortRef inPort = (MIDIPortRef) <span class="literal">NULL</span>;</span><br><span class="line"><span class="number">265</span> <span class="type">static</span> MIDIPortRef outPort = (MIDIPortRef) <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="number">471</span> MIDIEndpointRef endpoint = (MIDIEndpointRef) <span class="literal">NULL</span>;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token number">263</span> <span class="token keyword">static</span> MIDIClientRef client <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIClientRef<span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+<span class="token number">264</span> <span class="token keyword">static</span> MIDIPortRef inPort <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIPortRef<span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+<span class="token number">265</span> <span class="token keyword">static</span> MIDIPortRef outPort <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIPortRef<span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+
+<span class="token number">471</span> MIDIEndpointRef endpoint <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIEndpointRef<span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>修改后：</p>
-<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">263</span> <span class="type">static</span> MIDIClientRef client = (<span class="type">unsigned</span> <span class="type">long</span>) <span class="literal">NULL</span>;</span><br><span class="line"><span class="number">264</span> <span class="type">static</span> MIDIPortRef inPort = (<span class="type">unsigned</span> <span class="type">long</span>) <span class="literal">NULL</span>;</span><br><span class="line"><span class="number">265</span> <span class="type">static</span> MIDIPortRef outPort = (<span class="type">unsigned</span> <span class="type">long</span>) <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="number">471</span> MIDIEndpointRef endpoint = (<span class="type">unsigned</span> <span class="type">long</span>) <span class="literal">NULL</span>;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token number">263</span> <span class="token keyword">static</span> MIDIClientRef client <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+<span class="token number">264</span> <span class="token keyword">static</span> MIDIPortRef inPort <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+<span class="token number">265</span> <span class="token keyword">static</span> MIDIPortRef outPort <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+
+<span class="token number">471</span> MIDIEndpointRef endpoint <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>重新执行make即可看到编译成功如下图所示:<br><img src="https://img-blog.csdnimg.cn/f29ba0b0217840b0813c3a911a074c36.png" alt="在这里插入图片描述"></p>
-<h2 id="1-5-验证新构建的JDK："><a href="#1-5-验证新构建的JDK：" class="headerlink" title="1.5 验证新构建的JDK："></a>1.5 验证新构建的JDK：</h2><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./build/*/images/jdk/bin/java -version</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="1-5-验证新构建的JDK："><a href="#1-5-验证新构建的JDK：" class="headerlink" title="1.5 验证新构建的JDK："></a>1.5 验证新构建的JDK：</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">./build/*/images/jdk/bin/java -version<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>如下图所示:<br><img src="https://img-blog.csdnimg.cn/a01c6f6b4f7c420b98b632f12d4d1794.png" alt="在这里插入图片描述"><br>打开如下目录即可看到JDK信息,可以尝试配置此jdk为默认JDK使用<br><img src="https://img-blog.csdnimg.cn/9bc97bd940a8488497dc79e3a4668345.png" alt="在这里插入图片描述"></p>
 <p>不过每个小伙伴电脑环境可能不太一样,遇到的问题也不一定完全相同,静下心来多搜搜或者研究下这个C代码的语法错误即可,Open JDK底层有些版本确实不够严谨, 不过社区都有对应解决方案。</p>
@@ -541,7 +524,7 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blog.elastic.link/2022/07/04/jdk/jdk11-1/">https://blog.elastic.link/2022/07/04/jdk/jdk11-1/</a>
+                    <a href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/">https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -578,7 +561,15 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/Typora/">
+                                    <span class="chip bg-color">Typora</span>
+                                </a>
+                            
+                                <a href="/tags/Markdown/">
+                                    <span class="chip bg-color">Markdown</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -755,7 +746,7 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
                 <i class="far fa-dot-circle"></i>&nbsp;本篇
             </div>
             <div class="card">
-                <a href="/2022/07/04/jdk/jdk11-1/">
+                <a href="/2022/09/07/jdk/jdk11-1/">
                     <div class="card-image">
                         
                         
@@ -767,22 +758,38 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-04
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-09-07
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            songxiaosheng
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JDK%E6%BA%90%E7%A0%81/" class="post-category">
+                                    JDK源码
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
 
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Typora/">
+                        <span class="chip bg-color">Typora</span>
+                    </a>
+                    
+                    <a href="/tags/Markdown/">
+                        <span class="chip bg-color">Markdown</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
@@ -835,6 +842,9 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
 <script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
 
 
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
 
 <!-- 代码语言 -->
 
@@ -851,87 +861,6 @@ OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
 <script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
 
 
-
-    </div>
-    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
-        <div class="toc-widget card" style="background-color: white;">
-            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
-            <div id="toc-content"></div>
-        </div>
-    </div>
-</div>
-
-<!-- TOC 悬浮按钮. -->
-
-<div id="floating-toc-btn" class="hide-on-med-and-down">
-    <a class="btn-floating btn-large bg-color">
-        <i class="fas fa-list-ul"></i>
-    </a>
-</div>
-
-
-<script src="/libs/tocbot/tocbot.min.js"></script>
-<script>
-    $(function () {
-        tocbot.init({
-            tocSelector: '#toc-content',
-            contentSelector: '#articleContent',
-            headingsOffset: -($(window).height() * 0.4 - 45),
-            collapseDepth: Number('0'),
-            headingSelector: 'h2, h3, h4'
-        });
-
-        // Set scroll toc fixed.
-        let tocHeight = parseInt($(window).height() * 0.4 - 64);
-        let $tocWidget = $('.toc-widget');
-        $(window).scroll(function () {
-            let scroll = $(window).scrollTop();
-            /* add post toc fixed. */
-            if (scroll > tocHeight) {
-                $tocWidget.addClass('toc-fixed');
-            } else {
-                $tocWidget.removeClass('toc-fixed');
-            }
-        });
-
-        
-        /* 修复文章卡片 div 的宽度. */
-        let fixPostCardWidth = function (srcId, targetId) {
-            let srcDiv = $('#' + srcId);
-            if (srcDiv.length === 0) {
-                return;
-            }
-
-            let w = srcDiv.width();
-            if (w >= 450) {
-                w = w + 21;
-            } else if (w >= 350 && w < 450) {
-                w = w + 18;
-            } else if (w >= 300 && w < 350) {
-                w = w + 16;
-            } else {
-                w = w + 14;
-            }
-            $('#' + targetId).width(w);
-        };
-
-        // 切换TOC目录展开收缩的相关操作.
-        const expandedClass = 'expanded';
-        let $tocAside = $('#toc-aside');
-        let $mainContent = $('#main-content');
-        $('#floating-toc-btn .btn-floating').click(function () {
-            if ($tocAside.hasClass(expandedClass)) {
-                $tocAside.removeClass(expandedClass).hide();
-                $mainContent.removeClass('l9');
-            } else {
-                $tocAside.addClass(expandedClass).show();
-                $mainContent.addClass('l9');
-            }
-            fixPostCardWidth('artDetail', 'prenext-posts');
-        });
-        
-    });
-</script>
 
     
 
