@@ -6,7 +6,7 @@
   <link href="https://blog.elastic.link/atom.xml" rel="self"/>
   
   <link href="https://blog.elastic.link/"/>
-  <updated>2022-07-05T05:17:43.255Z</updated>
+  <updated>2022-07-05T05:22:01.017Z</updated>
   <id>https://blog.elastic.link/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://blog.elastic.link/2022/09/07/jdk11-1/"/>
     <id>https://blog.elastic.link/2022/09/07/jdk11-1/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-05T05:17:43.255Z</updated>
+    <updated>2022-07-05T05:22:01.017Z</updated>
     
     
       
@@ -37,9 +37,9 @@
     <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
     
     
-    <category term="Typora" scheme="https://blog.elastic.link/tags/Typora/"/>
+    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
     
-    <category term="Markdown" scheme="https://blog.elastic.link/tags/Markdown/"/>
+    <category term="JAva" scheme="https://blog.elastic.link/tags/JAva/"/>
     
   </entry>
   
