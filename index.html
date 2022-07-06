@@ -514,10 +514,6 @@
                     
                         <div class="dream">
     
-    <div class="title center-align">
-        <i class="far fa-lightbulb"></i>&nbsp;&nbsp;我的梦想
-    </div>
-    
     <div class="row">
         <div class="col l8 offset-l2 m10 offset-m1 s10 offset-s1 center-align text">
             不是每个人都应该像我这样去建造一座水晶大教堂，但是每个人都应该拥有自己的梦想，设计自己的梦想，追求自己的梦想，实现自己的梦想。梦想是生命的灵魂，是心灵的灯塔，是引导人走向成功的信仰。有了崇高的梦想，只要矢志不渝地追求，梦想就会成为现实，奋斗就会变成壮举，生命就会创造奇迹。——罗伯·舒乐
@@ -528,6 +524,64 @@
                     
 
                     
+                        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="music-player">
+    
+        <div class="title center-align">
+            <i class="fas fa-music"></i>&nbsp;&nbsp;听听音乐
+        </div>
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='false'
+                   autoplay='true'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+                        
 
                     
 
@@ -880,7 +934,7 @@
              <!-- 隐藏某个文章 -->
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2022/06/18/kafka/4-fa-song-qi-sender-dui-xiang-de-chu-shi-hua/">
+                    <a href="/2022/06/18/kafka/3-kafkaproducer-sheng-chan-zhe-dui-xiang-de-chu-shi-hua/">
                         <div class="card-image">
                             
                             
@@ -893,11 +947,8 @@
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                发送器对象的创建对应Sender 对应代码：
-this.sender = newSender(logContext, kafkaClient, this.metadata);
-
-Sender类型实现了Runnable接口
-Sender对象处
+                                3.1 关于KafkaProducer的长篇简介生产者用来发送消息到kafka代理服务器，我们先来看下KafkaProducer类型的官方说明：
+KafkaProducer是将记录发布到Kafka群集的Kafka客户端。生产者是线程安全的，
                             
                         </div>
                         <div class="publish-info">
@@ -921,7 +972,7 @@ Sender对象处
              <!-- 隐藏某个文章 -->
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2022/06/18/kafka/3-kafkaproducer-sheng-chan-zhe-dui-xiang-de-chu-shi-hua/">
+                    <a href="/2022/06/18/kafka/4-fa-song-qi-sender-dui-xiang-de-chu-shi-hua/">
                         <div class="card-image">
                             
                             
@@ -934,8 +985,11 @@ Sender对象处
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                3.1 关于KafkaProducer的长篇简介生产者用来发送消息到kafka代理服务器，我们先来看下KafkaProducer类型的官方说明：
-KafkaProducer是将记录发布到Kafka群集的Kafka客户端。生产者是线程安全的，
+                                发送器对象的创建对应Sender 对应代码：
+this.sender = newSender(logContext, kafkaClient, this.metadata);
+
+Sender类型实现了Runnable接口
+Sender对象处
                             
                         </div>
                         <div class="publish-info">
@@ -1083,60 +1137,6 @@ listeners如果与配置属性不同，则发布到 ZooK
 
 
     <footer class="page-footer bg-color">
-    
-        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
-<style>
-    .aplayer .aplayer-lrc p {
-        
-        display: none;
-        
-        font-size: 12px;
-        font-weight: 700;
-        line-height: 16px !important;
-    }
-
-    .aplayer .aplayer-lrc p.aplayer-lrc-current {
-        
-        display: none;
-        
-        font-size: 15px;
-        color: #42b983;
-    }
-
-    
-    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
-        left: -66px !important;
-    }
-
-    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
-        left: 0px !important;
-    }
-
-    
-</style>
-<div class="">
-    
-    <div class="row">
-        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
-                   server="netease"
-                   type="playlist"
-                   id="503838841"
-                   fixed='true'
-                   autoplay='false'
-                   theme='#42b983'
-                   loop='all'
-                   order='random'
-                   preload='auto'
-                   volume='0.7'
-                   list-folded='true'
-        >
-        </meting-js>
-    </div>
-</div>
-
-<script src="/libs/aplayer/APlayer.min.js"></script>
-<script src="/libs/aplayer/Meting.min.js"></script>
-
     
 
     <div class="container row center-align"
