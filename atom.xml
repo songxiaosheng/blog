@@ -70,4 +70,31 @@
     
   </entry>
   
+  <entry>
+    <title>Apache Kafka 3.2源码解析系列-1-Kaka知识点全解析</title>
+    <link href="https://blog.elastic.link/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/"/>
+    <id>https://blog.elastic.link/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/</id>
+    <published>2016-09-07T12:25:00.000Z</published>
+    <updated>2022-07-06T15:16:32.542Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-Kaka知识全解析&quot;&gt;&lt;a href=&quot;#1-Kaka知识全解析&quot; class=&quot;headerlink&quot; title=&quot;1-Kaka知识全解析&quot;&gt;&lt;/a&gt;1-Kaka知识全解析&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
 </feed>
