@@ -1,0 +1,2138 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="中间件源码">
+    <meta name="description" content="简介这个线程其实是在发送消息之前KafkaProducer的构造器中就已经创建好了，不过为了更好地理解消息发送过程中数据的流转把这个IO线程放到发送数据的后面来说， 回到前面说的KafkaProducer的构造器的初始化在发送器执行之后将会">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    
+
+    <title>中间件源码</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">中间件源码</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">中间件源码</div>
+        <div class="logo-desc">
+            
+            中间件源码评测，分析
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title"></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-06-21
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2022-07-06
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    4.6k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    24 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>这个线程其实是在发送消息之前KafkaProducer的构造器中就已经创建好了，不过为了更好地理解消息发送过程中数据的流转把这个IO线程放到发送数据的后面来说， 回到前面说的KafkaProducer的构造器的初始化在发送器执行之后将会执行创建KafkaThread和启动线程的代码如下代码：</p>
+<p>KafkaProducer构造器中的部分代码</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">this</span><span class="token punctuation">.</span>errors <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>metrics<span class="token punctuation">.</span><span class="token function">sensor</span><span class="token punctuation">(</span><span class="token string">"errors"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>sender <span class="token operator">=</span> <span class="token function">newSender</span><span class="token punctuation">(</span>logContext<span class="token punctuation">,</span> kafkaClient<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//IO线程名字 前缀为kafka-producer-network-thread 排查问题时候可以用到</span>
+<span class="token class-name">String</span> ioThreadName <span class="token operator">=</span> NETWORK_THREAD_PREFIX <span class="token operator">+</span> <span class="token string">" | "</span> <span class="token operator">+</span> clientId<span class="token punctuation">;</span>
+<span class="token comment">//创建io线程 注意这里的线程Runnable对象为前面我们说到的sender对象核心的线程逻辑在发送器里面</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>ioThread <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KafkaThread</span><span class="token punctuation">(</span>ioThreadName<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>sender<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//启动线程</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>ioThread<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//打印未使用到的配置信息</span>
+config<span class="token punctuation">.</span><span class="token function">logUnused</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//注册jmx  kafka.producer</span>
+<span class="token class-name">AppInfoParser</span><span class="token punctuation">.</span><span class="token function">registerAppInfo</span><span class="token punctuation">(</span>JMX_PREFIX<span class="token punctuation">,</span> clientId<span class="token punctuation">,</span> metrics<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Kafka producer started"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="KafkaThread构造器"><a href="#KafkaThread构造器" class="headerlink" title="KafkaThread构造器"></a>KafkaThread构造器</h2><p>这个线程类型做的事情不多主要设置一下线程名字，然后将线程设置为守护线程如下代码所示：</p>
+<p>KafkaThread类型的构造器如下所示：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">KafkaThread</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">String</span> name<span class="token punctuation">,</span> <span class="token class-name">Runnable</span> runnable<span class="token punctuation">,</span> <span class="token keyword">boolean</span> daemon<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">super</span><span class="token punctuation">(</span>runnable<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">configureThread</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> daemon<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">configureThread</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">String</span> name<span class="token punctuation">,</span> <span class="token keyword">boolean</span> daemon<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">setDaemon</span><span class="token punctuation">(</span>daemon<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">setUncaughtExceptionHandler</span><span class="token punctuation">(</span><span class="token punctuation">(</span>t<span class="token punctuation">,</span> e<span class="token punctuation">)</span> <span class="token operator">-&gt;</span> log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Uncaught exception in thread '{}':"</span><span class="token punctuation">,</span> name<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="发送器Sender中执行线程的I-x2F-O主循环核心逻辑"><a href="#发送器Sender中执行线程的I-x2F-O主循环核心逻辑" class="headerlink" title="发送器Sender中执行线程的I/O主循环核心逻辑"></a>发送器Sender中执行线程的I/O主循环核心逻辑</h2><p>前面我们看到了 线程类型在初始化的时候传递了Sender对象来执行线程逻辑，Sender类型实现了Runnable接口，并重写了run方法，那接下来就来看Sender类型的run方法的线程逻辑吧，代码如下所示：</p>
+<p>发送线程主循环逻辑：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//I/O线程启动先打印个debug日志</span>
+    log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Starting Kafka producer I/O thread."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// main loop, runs until close is called</span>
+  <span class="token comment">//在关闭之前一直持续运行的I/O主循环,这里借助volatile修饰的成员标记变量running来</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>running<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token function">runOnce</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Uncaught error in kafka producer I/O thread: "</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Beginning shutdown of Kafka producer I/O thread, sending remaining records."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// okay we stopped accepting requests but there may still be</span>
+    <span class="token comment">// requests in the transaction manager, accumulator or waiting for acknowledgment,</span>
+    <span class="token comment">// wait until these are completed.</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span>forceClose <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">hasUndrained</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token keyword">this</span><span class="token punctuation">.</span>client<span class="token punctuation">.</span><span class="token function">inFlightRequestCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">hasPendingTransactionalRequests</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token function">runOnce</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Uncaught error in kafka producer I/O thread: "</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// Abort the transaction if any commit or abort didn't go through the transaction manager's queue</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span>forceClose <span class="token operator">&amp;&amp;</span> transactionManager <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> transactionManager<span class="token punctuation">.</span><span class="token function">hasOngoingTransaction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>transactionManager<span class="token punctuation">.</span><span class="token function">isCompleting</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Aborting incomplete transaction due to shutdown"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            transactionManager<span class="token punctuation">.</span><span class="token function">beginAbort</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token function">runOnce</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Uncaught error in kafka producer I/O thread: "</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>forceClose<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// We need to fail all the incomplete transactional requests and batches and wake up the threads waiting on</span>
+        <span class="token comment">// the futures.</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>transactionManager <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Aborting incomplete transactional requests due to forced shutdown"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            transactionManager<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Aborting incomplete batches due to forced shutdown"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">abortIncompleteBatches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>client<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Failed to close network client"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Shutdown of Kafka producer I/O thread has completed."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这个代码看着很长其实主要分为两个地方，第一个就是业务逻辑执行的主循环，另外一个就是关闭的逻辑</p>
+<h2 id="发送器Sender中执行线程的消息发送逻辑"><a href="#发送器Sender中执行线程的消息发送逻辑" class="headerlink" title="发送器Sender中执行线程的消息发送逻辑"></a>发送器Sender中执行线程的消息发送逻辑</h2><p>前面在一个无限循环中执行了发送消息的代码来进行消息的发送，消息是如何发送到kafka的我们可以继续看如下代码所示：</p>
+<pre class="line-numbers language-none"><code class="language-none">/**
+ * Run a single iteration of sending
+ *
+ */
+void runOnce() {
+   //这个if里面是事务管理器的逻辑
+    if (transactionManager != null) {
+       ...这个逻辑后面再看
+    }
+
+    long currentTimeMs = time.milliseconds();
+    //发送数据
+    long pollTimeout = sendProducerData(currentTimeMs);
+    //拉取数据
+    client.poll(pollTimeout, currentTimeMs);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="发送数据逻辑sendProducerData"><a href="#发送数据逻辑sendProducerData" class="headerlink" title="发送数据逻辑sendProducerData"></a>发送数据逻辑sendProducerData</h3><p>这里我来贴一下Sender类型中的发送生产者数据的代码，如下所示：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">long</span> <span class="token function">sendProducerData</span><span class="token punctuation">(</span><span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token comment">//对象类型为ProducerMetadata 这里是获取缓存的集群信息Cluster</span>
+    <span class="token class-name">Cluster</span> cluster <span class="token operator">=</span> metadata<span class="token punctuation">.</span><span class="token function">fetch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// get the list of partitions with data ready to send</span>
+   <span class="token comment">//记录累加器RecordAccumulator</span>
+    <span class="token class-name">RecordAccumulator<span class="token punctuation">.</span>ReadyCheckResult</span> result <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span>cluster<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// if there are any partitions whose leaders are not known yet, force metadata update</span>
+    <span class="token comment">//存在领导者的分区本地还不知道（数据不一致）则强制更新元数据</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>result<span class="token punctuation">.</span>unknownLeaderTopics<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// The set of topics with unknown leader contains topics with leader election pending as well as</span>
+        <span class="token comment">// topics which may have expired. Add the topic again to metadata to ensure it is included</span>
+        <span class="token comment">// and request metadata update, since there are messages to send to the topic.</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> topic <span class="token operator">:</span> result<span class="token punctuation">.</span>unknownLeaderTopics<span class="token punctuation">)</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>topic<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Requesting metadata update due to unknown leader topics from the batched records: {}"</span><span class="token punctuation">,</span>
+            result<span class="token punctuation">.</span>unknownLeaderTopics<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">.</span><span class="token function">requestUpdate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// remove any nodes we aren't ready to send to</span>
+   <span class="token comment">//移除一些状态不满足的的节点</span>
+    <span class="token class-name">Iterator</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Node</span><span class="token punctuation">&gt;</span></span> iter <span class="token operator">=</span> result<span class="token punctuation">.</span>readyNodes<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> notReadyTimeout <span class="token operator">=</span> <span class="token class-name">Long</span><span class="token punctuation">.</span>MAX_VALUE<span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>iter<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Node</span> node <span class="token operator">=</span> iter<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>client<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            iter<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            notReadyTimeout <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>notReadyTimeout<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>client<span class="token punctuation">.</span><span class="token function">pollDelayMs</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// create produce requests </span>
+  <span class="token comment">//为每个节点分别创建合适大小的批量请求数据  ，前面发送数据的时候会将数据存放在累加器中这里会从批处理集合之中取出来 </span>
+    <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> batches <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">drain</span><span class="token punctuation">(</span>cluster<span class="token punctuation">,</span> result<span class="token punctuation">.</span>readyNodes<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>maxRequestSize<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//添加到飞行窗口 在飞行批处理队列中: Map&lt;TopicPartition, List&lt;ProducerBatch&gt;&gt; inFlightBatches每个批处理分区队列按创建时间排序</span>
+  <span class="token comment">//A per-partition queue of batches ordered by creation time for tracking the in-flight batches</span>
+    <span class="token function">addToInflightBatches</span><span class="token punctuation">(</span>batches<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//标记变量生产者是否应该在代理节点上保证消息的顺序性在，注意最大飞行窗口配置maxInflightRequests为1时候这个标记变量就为true了 ，如果我们要保证消息顺序性这个飞行窗口最大值需要保证为1</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>guaranteeMessageOrder<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Mute all the partitions drained</span>
+       <span class="token comment">//合并所有分区</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span></span> batchList <span class="token operator">:</span> batches<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ProducerBatch</span> batch <span class="token operator">:</span> batchList<span class="token punctuation">)</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">mutePartition</span><span class="token punctuation">(</span>batch<span class="token punctuation">.</span>topicPartition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+	<span class="token comment">//重置下个批次的过期时间</span>
+    accumulator<span class="token punctuation">.</span><span class="token function">resetNextBatchExpiryTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span></span> expiredInflightBatches <span class="token operator">=</span> <span class="token function">getExpiredInflightBatches</span><span class="token punctuation">(</span>now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span></span> expiredBatches <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">expiredBatches</span><span class="token punctuation">(</span>now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//过期列表</span>
+    expiredBatches<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>expiredInflightBatches<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Reset the producer id if an expired batch has previously been sent to the broker. Also update the metrics</span>
+    <span class="token comment">// for expired batches. see the documentation of @TransactionState.resetIdempotentProducerId to understand why</span>
+    <span class="token comment">// we need to reset the producer id here.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>expiredBatches<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Expired {} batches in accumulator"</span><span class="token punctuation">,</span> expiredBatches<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ProducerBatch</span> expiredBatch <span class="token operator">:</span> expiredBatches<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">String</span> errorMessage <span class="token operator">=</span> <span class="token string">"Expiring "</span> <span class="token operator">+</span> expiredBatch<span class="token punctuation">.</span>recordCount <span class="token operator">+</span> <span class="token string">" record(s) for "</span> <span class="token operator">+</span> expiredBatch<span class="token punctuation">.</span>topicPartition
+            <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> <span class="token punctuation">(</span>now <span class="token operator">-</span> expiredBatch<span class="token punctuation">.</span>createdMs<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" ms has passed since batch creation"</span><span class="token punctuation">;</span>
+        <span class="token function">failBatch</span><span class="token punctuation">(</span>expiredBatch<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">TimeoutException</span><span class="token punctuation">(</span>errorMessage<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>transactionManager <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> expiredBatch<span class="token punctuation">.</span><span class="token function">inRetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// This ensures that no new batches are drained until the current in flight batches are fully resolved.</span>
+            transactionManager<span class="token punctuation">.</span><span class="token function">markSequenceUnresolved</span><span class="token punctuation">(</span>expiredBatch<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+   <span class="token comment">//传感器更新监控指标数据</span>
+    sensors<span class="token punctuation">.</span><span class="token function">updateProduceRequestMetrics</span><span class="token punctuation">(</span>batches<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// If we have any nodes that are ready to send + have sendable data, poll with 0 timeout so this can immediately</span>
+    <span class="token comment">// loop and try sending more data. Otherwise, the timeout will be the smaller value between next batch expiry</span>
+    <span class="token comment">// time, and the delay time for checking data availability. Note that the nodes may have data that isn't yet</span>
+    <span class="token comment">// sendable due to lingering, backing off, etc. This specifically does not include nodes with sendable data</span>
+    <span class="token comment">// that aren't ready to send since they would cause busy looping.</span>
+    <span class="token comment">//拉取超时时间</span>
+    <span class="token keyword">long</span> pollTimeout <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>result<span class="token punctuation">.</span>nextReadyCheckDelayMs<span class="token punctuation">,</span> notReadyTimeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    pollTimeout <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>pollTimeout<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">nextExpiryTimeMs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    pollTimeout <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>pollTimeout<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//存在准备中的节点</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>result<span class="token punctuation">.</span>readyNodes<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Nodes with data ready to send: {}"</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>readyNodes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// if some partitions are already ready to be sent, the select time would be 0;</span>
+        <span class="token comment">// otherwise if some partition already has some data accumulated but not ready yet,</span>
+        <span class="token comment">// the select time will be the time difference between now and its linger expiry time;</span>
+        <span class="token comment">// otherwise the select time will be the time difference between now and the metadata expiry time;</span>
+        pollTimeout <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">//发送生产者请求</span>
+    <span class="token function">sendProduceRequests</span><span class="token punctuation">(</span>batches<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> pollTimeout<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="批量请求发送方法sendProduceRequests"><a href="#批量请求发送方法sendProduceRequests" class="headerlink" title="批量请求发送方法sendProduceRequests"></a>批量请求发送方法sendProduceRequests</h2><p>直接来看代码</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">sendProduceRequests</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> collated<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token comment">//遍历所有批处理请求列表</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> entry <span class="token operator">:</span> collated<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token function">sendProduceRequest</span><span class="token punctuation">(</span>now<span class="token punctuation">,</span> entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> acks<span class="token punctuation">,</span> requestTimeoutMs<span class="token punctuation">,</span> entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="批量请求中的单个请求发送sendProduceRequest"><a href="#批量请求中的单个请求发送sendProduceRequest" class="headerlink" title="批量请求中的单个请求发送sendProduceRequest"></a>批量请求中的单个请求发送sendProduceRequest</h3><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">sendProduceRequest</span><span class="token punctuation">(</span><span class="token keyword">long</span> now<span class="token punctuation">,</span> <span class="token keyword">int</span> destination<span class="token punctuation">,</span> <span class="token keyword">short</span> acks<span class="token punctuation">,</span> <span class="token keyword">int</span> timeout<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span></span> batches<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token comment">//批处理请求为空直接返回</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>batches<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">final</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">TopicPartition</span><span class="token punctuation">,</span> <span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span></span> recordsByPartition <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>batches<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// find the minimum magic version used when creating the record sets</span>
+   <span class="token comment">//最小可用api版本</span>
+    <span class="token keyword">byte</span> minUsedMagic <span class="token operator">=</span> apiVersions<span class="token punctuation">.</span><span class="token function">maxUsableProduceMagic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ProducerBatch</span> batch <span class="token operator">:</span> batches<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>batch<span class="token punctuation">.</span><span class="token function">magic</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> minUsedMagic<span class="token punctuation">)</span>
+            minUsedMagic <span class="token operator">=</span> batch<span class="token punctuation">.</span><span class="token function">magic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token class-name">ProduceRequestData<span class="token punctuation">.</span>TopicProduceDataCollection</span> tpd <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ProduceRequestData<span class="token punctuation">.</span>TopicProduceDataCollection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ProducerBatch</span> batch <span class="token operator">:</span> batches<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//批处理分区 例如：topic1-0</span>
+        <span class="token class-name">TopicPartition</span> tp <span class="token operator">=</span> batch<span class="token punctuation">.</span>topicPartition<span class="token punctuation">;</span>
+        <span class="token comment">//使用直接内存ByteBuffer 保存的消息记录MemoryRecords获取</span>
+        <span class="token class-name">MemoryRecords</span> records <span class="token operator">=</span> batch<span class="token punctuation">.</span><span class="token function">records</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// down convert if necessary to the minimum magic used. In general, there can be a delay between the time</span>
+        <span class="token comment">// that the producer starts building the batch and the time that we send the request, and we may have</span>
+        <span class="token comment">// chosen the message format based on out-dated metadata. In the worst case, we optimistically chose to use</span>
+        <span class="token comment">// the new message format, but found that the broker didn't support it, so we need to down-convert on the</span>
+        <span class="token comment">// client before sending. This is intended to handle edge cases around cluster upgrades where brokers may</span>
+        <span class="token comment">// not all support the same message format version. For example, if a partition migrates from a broker</span>
+        <span class="token comment">// which is supporting the new magic version to one which doesn't, then we will need to convert.</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>records<span class="token punctuation">.</span><span class="token function">hasMatchingMagic</span><span class="token punctuation">(</span>minUsedMagic<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            records <span class="token operator">=</span> batch<span class="token punctuation">.</span><span class="token function">records</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">downConvert</span><span class="token punctuation">(</span>minUsedMagic<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> time<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">records</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//初始化请求需要的topic数据</span>
+        <span class="token class-name">ProduceRequestData<span class="token punctuation">.</span>TopicProduceData</span> tpData <span class="token operator">=</span> tpd<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>tp<span class="token punctuation">.</span><span class="token function">topic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>tpData <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            tpData <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ProduceRequestData<span class="token punctuation">.</span>TopicProduceData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span>tp<span class="token punctuation">.</span><span class="token function">topic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            tpd<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>tpData<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+       <span class="token comment">//初始化分区数据，包含分区的索引和分区的记录 然后将分区数据添加到topic数据对象中</span>
+        tpData<span class="token punctuation">.</span><span class="token function">partitionData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProduceRequestData<span class="token punctuation">.</span>PartitionProduceData</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">setIndex</span><span class="token punctuation">(</span>tp<span class="token punctuation">.</span><span class="token function">partition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">setRecords</span><span class="token punctuation">(</span>records<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//然后将包含分区和数据的topic对象存放到recordsByPartition 哈希表中</span>
+        recordsByPartition<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>tp<span class="token punctuation">,</span> batch<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+   <span class="token comment">//事务id初始化</span>
+    <span class="token class-name">String</span> transactionalId <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>transactionManager <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> transactionManager<span class="token punctuation">.</span><span class="token function">isTransactional</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        transactionalId <span class="token operator">=</span> transactionManager<span class="token punctuation">.</span><span class="token function">transactionalId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+   <span class="token comment">//创建生产者请求，包含两部分一部分是生产者请求参数，一部分是具体数据如：topic，分区，数据</span>
+    <span class="token class-name">ProduceRequest<span class="token punctuation">.</span>Builder</span> requestBuilder <span class="token operator">=</span> <span class="token class-name">ProduceRequest</span><span class="token punctuation">.</span><span class="token function">forMagic</span><span class="token punctuation">(</span>minUsedMagic<span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token class-name">ProduceRequestData</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">setAcks</span><span class="token punctuation">(</span>acks<span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">setTimeoutMs</span><span class="token punctuation">(</span>timeout<span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">setTransactionalId</span><span class="token punctuation">(</span>transactionalId<span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">setTopicData</span><span class="token punctuation">(</span>tpd<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//请求回调处理器创建</span>
+    <span class="token class-name">RequestCompletionHandler</span> callback <span class="token operator">=</span> response <span class="token operator">-&gt;</span> <span class="token function">handleProduceResponse</span><span class="token punctuation">(</span>response<span class="token punctuation">,</span> recordsByPartition<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token comment">//节点id这里是0</span>
+    <span class="token class-name">String</span> nodeId <span class="token operator">=</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span>destination<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//网络请求工具KafkaClient的子类NetworkClient创建一个客户端请求信息类ClientRequest</span>
+    <span class="token class-name">ClientRequest</span> clientRequest <span class="token operator">=</span> client<span class="token punctuation">.</span><span class="token function">newClientRequest</span><span class="token punctuation">(</span>nodeId<span class="token punctuation">,</span> requestBuilder<span class="token punctuation">,</span> now<span class="token punctuation">,</span> acks <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">,</span>
+            requestTimeoutMs<span class="token punctuation">,</span> callback<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//使用网络工具和请求信息的Request来发起请求</span>
+    client<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>clientRequest<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Sent produce request to {}: {}"</span><span class="token punctuation">,</span> nodeId<span class="token punctuation">,</span> requestBuilder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="NetworkClient的发送方法"><a href="#NetworkClient的发送方法" class="headerlink" title="NetworkClient的发送方法"></a>NetworkClient的发送方法</h3><pre class="line-numbers language-none"><code class="language-none">@Override
+public void send(ClientRequest request, long now) {
+    doSend(request, false, now);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>调用NetworkClient的doSend方法如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">doSend</span><span class="token punctuation">(</span><span class="token class-name">ClientRequest</span> clientRequest<span class="token punctuation">,</span> <span class="token keyword">boolean</span> isInternalRequest<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//确保连接状态是激活状态</span>
+  <span class="token comment">//状态有如下几种：DISCONNECTED, CONNECTING, CHECKING_API_VERSIONS, READY, AUTHENTICATION_FAILED;</span>
+    <span class="token function">ensureActive</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// 这里只有一个节点 节点id是0</span>
+    <span class="token class-name">String</span> nodeId <span class="token operator">=</span> clientRequest<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//发送数据的这个标记变量为false 非内部请求数据来自外部走这个if逻辑</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isInternalRequest<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// If this request came from outside the NetworkClient, validate</span>
+        <span class="token comment">// that we can send data.  If the request is internal, we trust</span>
+        <span class="token comment">// that internal code has done this validation.  Validation</span>
+        <span class="token comment">// will be slightly different for some internal requests (for</span>
+        <span class="token comment">// example, ApiVersionsRequests can be sent prior to being in</span>
+        <span class="token comment">// READY state.)</span>
+       <span class="token comment">//判断与节点的连接状态是否正常 connectionStates，selector，inFlightRequests信息的判断</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">canSendRequest</span><span class="token punctuation">(</span>nodeId<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Attempt to send a request to node "</span> <span class="token operator">+</span> nodeId <span class="token operator">+</span> <span class="token string">" which is not ready."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token class-name">AbstractRequest<span class="token punctuation">.</span>Builder</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> builder <span class="token operator">=</span> clientRequest<span class="token punctuation">.</span><span class="token function">requestBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+       <span class="token comment">//处理API版本 </span>
+        <span class="token class-name">NodeApiVersions</span> versionInfo <span class="token operator">=</span> apiVersions<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>nodeId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">short</span> version<span class="token punctuation">;</span>
+        <span class="token comment">// Note: if versionInfo is null, we have no server version information. This would be</span>
+        <span class="token comment">// the case when sending the initial ApiVersionRequest which fetches the version</span>
+        <span class="token comment">// information itself.  It is also the case when discoverBrokerVersions is set to false.</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>versionInfo <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            version <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token function">latestAllowedVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>discoverBrokerVersions <span class="token operator">&amp;&amp;</span> log<span class="token punctuation">.</span><span class="token function">isTraceEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"No version information found when sending {} with correlation id {} to node {}. "</span> <span class="token operator">+</span>
+                        <span class="token string">"Assuming version {}."</span><span class="token punctuation">,</span> clientRequest<span class="token punctuation">.</span><span class="token function">apiKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> clientRequest<span class="token punctuation">.</span><span class="token function">correlationId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> nodeId<span class="token punctuation">,</span> version<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            version <span class="token operator">=</span> versionInfo<span class="token punctuation">.</span><span class="token function">latestUsableVersion</span><span class="token punctuation">(</span>clientRequest<span class="token punctuation">.</span><span class="token function">apiKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> builder<span class="token punctuation">.</span><span class="token function">oldestAllowedVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    builder<span class="token punctuation">.</span><span class="token function">latestAllowedVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">// The call to build may also throw UnsupportedVersionException, if there are essential</span>
+        <span class="token comment">// fields that cannot be represented in the chosen version.</span>
+        <span class="token function">doSend</span><span class="token punctuation">(</span>clientRequest<span class="token punctuation">,</span> isInternalRequest<span class="token punctuation">,</span> now<span class="token punctuation">,</span> builder<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span>version<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">UnsupportedVersionException</span> unsupportedVersionException<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// If the version is not supported, skip sending the request over the wire.</span>
+        <span class="token comment">// Instead, simply add it to the local queue of aborted requests.</span>
+        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Version mismatch when attempting to send {} with correlation id {} to {}"</span><span class="token punctuation">,</span> builder<span class="token punctuation">,</span>
+                clientRequest<span class="token punctuation">.</span><span class="token function">correlationId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> clientRequest<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> unsupportedVersionException<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ClientResponse</span> clientResponse <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ClientResponse</span><span class="token punctuation">(</span>clientRequest<span class="token punctuation">.</span><span class="token function">makeHeader</span><span class="token punctuation">(</span>builder<span class="token punctuation">.</span><span class="token function">latestAllowedVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                clientRequest<span class="token punctuation">.</span><span class="token function">callback</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> clientRequest<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> now<span class="token punctuation">,</span> now<span class="token punctuation">,</span>
+                <span class="token boolean">false</span><span class="token punctuation">,</span> unsupportedVersionException<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isInternalRequest<span class="token punctuation">)</span>
+            abortedSends<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>clientResponse<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>clientRequest<span class="token punctuation">.</span><span class="token function">apiKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token class-name">ApiKeys</span><span class="token punctuation">.</span>METADATA<span class="token punctuation">)</span>
+            metadataUpdater<span class="token punctuation">.</span><span class="token function">handleFailedRequest</span><span class="token punctuation">(</span>now<span class="token punctuation">,</span> <span class="token class-name">Optional</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span>unsupportedVersionException<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+<p>调用NetworkClient重载的doSend方法如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">doSend</span><span class="token punctuation">(</span><span class="token class-name">ClientRequest</span> clientRequest<span class="token punctuation">,</span> <span class="token keyword">boolean</span> isInternalRequest<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">,</span> <span class="token class-name">AbstractRequest</span> request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token class-name">String</span> destination <span class="token operator">=</span> clientRequest<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//协议的请求头信息RequestHeader封装处理</span>
+     <span class="token class-name">RequestHeader</span> header <span class="token operator">=</span> clientRequest<span class="token punctuation">.</span><span class="token function">makeHeader</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">version</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token keyword">if</span> <span class="token punctuation">(</span>log<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Sending {} request with header {} and timeout {} to node {}: {}"</span><span class="token punctuation">,</span>
+             clientRequest<span class="token punctuation">.</span><span class="token function">apiKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> header<span class="token punctuation">,</span> clientRequest<span class="token punctuation">.</span><span class="token function">requestTimeoutMs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> destination<span class="token punctuation">,</span> request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+     <span class="token class-name">Send</span> send <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">toSend</span><span class="token punctuation">(</span>header<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//飞行窗口</span>
+     <span class="token class-name">InFlightRequest</span> inFlightRequest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InFlightRequest</span><span class="token punctuation">(</span>
+             clientRequest<span class="token punctuation">,</span>
+             header<span class="token punctuation">,</span>
+             isInternalRequest<span class="token punctuation">,</span>
+             request<span class="token punctuation">,</span>
+             send<span class="token punctuation">,</span>
+             now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token keyword">this</span><span class="token punctuation">.</span>inFlightRequests<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>inFlightRequest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//选择器发送数据</span>
+     selector<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">NetworkSend</span><span class="token punctuation">(</span>clientRequest<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> send<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="Selector类型的send方法将请求数据放入KafkaChannel"><a href="#Selector类型的send方法将请求数据放入KafkaChannel" class="headerlink" title="Selector类型的send方法将请求数据放入KafkaChannel"></a>Selector类型的send方法将请求数据放入KafkaChannel</h3><p>这里并不会真正的进行数据发送仅仅是将数据存放到通道之中</p>
+<p>Selector的发送方法send</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">send</span><span class="token punctuation">(</span><span class="token class-name">NetworkSend</span> send<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">String</span> connectionId <span class="token operator">=</span> send<span class="token punctuation">.</span><span class="token function">destinationId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//获取KafkaChannel</span>
+    <span class="token class-name">KafkaChannel</span> channel <span class="token operator">=</span> <span class="token function">openOrClosingChannelOrFail</span><span class="token punctuation">(</span>connectionId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>closingChannels<span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span>connectionId<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// ensure notification via `disconnected`, leave channel in the state in which closing was triggered</span>
+        <span class="token comment">//当前通道的连接被关闭了则加入到失败列表后续回调通知</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>failedSends<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>connectionId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+           <span class="token comment">//将待发送数据放置到通道之中 这里并不会真正的发起请求</span>
+            channel<span class="token punctuation">.</span><span class="token function">setSend</span><span class="token punctuation">(</span>send<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// update the state for consistency, the channel will be discarded after `close`</span>
+            channel<span class="token punctuation">.</span><span class="token function">state</span><span class="token punctuation">(</span><span class="token class-name">ChannelState</span><span class="token punctuation">.</span>FAILED_SEND<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// ensure notification via `disconnected` when `failedSends` are processed in the next poll</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>failedSends<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>connectionId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">close</span><span class="token punctuation">(</span>channel<span class="token punctuation">,</span> <span class="token class-name">CloseMode</span><span class="token punctuation">.</span>DISCARD_NO_NOTIFY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>e <span class="token keyword">instanceof</span> <span class="token class-name">CancelledKeyException</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Unexpected exception during send, closing connection {} and rethrowing exception {}"</span><span class="token punctuation">,</span>
+                        connectionId<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="Sender类型的runOnce-中的发送数据的方法"><a href="#Sender类型的runOnce-中的发送数据的方法" class="headerlink" title="Sender类型的runOnce() 中的发送数据的方法"></a>Sender类型的runOnce() 中的发送数据的方法</h2><p>下面再贴一些核心的代码，在sendProducerData之中仅仅是将数据存放到了KafkaChannel之中，并不会将数据发送出去，发送数据的代码是在这个client.poll方法之中，poll方法是进行实际的读或者写的方法，下面我们来详细按下</p>
+<p>回顾Sender类型的runOnce() 方法</p>
+<pre class="line-numbers language-none"><code class="language-none">void runOnce() {
+    ...
+    long currentTimeMs = time.milliseconds();
+    long pollTimeout = sendProducerData(currentTimeMs);
+    client.poll(pollTimeout, currentTimeMs);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="NetworkClientl类型的poll方法"><a href="#NetworkClientl类型的poll方法" class="headerlink" title="NetworkClientl类型的poll方法"></a>NetworkClientl类型的poll方法</h3><p>这个poll方法是进行实际的读或者写事件的，这个网络客户端的poll方法进行一些网络相关的逻辑处理</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> <span class="token function">poll</span><span class="token punctuation">(</span><span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token comment">//判断网络连接状态是否为ACTIVE</span>
+    <span class="token function">ensureActive</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+   <span class="token comment">//处理拒绝发送的数据（比如版本号不匹配）</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>abortedSends<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// If there are aborted sends because of unsupported version exceptions or disconnects,</span>
+        <span class="token comment">// handle them immediately without waiting for Selector#poll.</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> responses <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">handleAbortedSends</span><span class="token punctuation">(</span>responses<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">completeResponses</span><span class="token punctuation">(</span>responses<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> responses<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+   <span class="token comment">//发送数据之前是否要重新更新一下元数据</span>
+    <span class="token keyword">long</span> metadataTimeout <span class="token operator">=</span> metadataUpdater<span class="token punctuation">.</span><span class="token function">maybeUpdate</span><span class="token punctuation">(</span>now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>selector<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span><span class="token class-name">Utils</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>timeout<span class="token punctuation">,</span> metadataTimeout<span class="token punctuation">,</span> defaultRequestTimeoutMs<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Unexpected error during I/O"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// process completed actions</span>
+    <span class="token keyword">long</span> updatedNow <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> responses <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">handleCompletedSends</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">handleCompletedReceives</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">handleDisconnections</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">handleConnections</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">handleInitiateApiVersionRequests</span><span class="token punctuation">(</span>updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">handleTimedOutConnections</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">handleTimedOutRequests</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">completeResponses</span><span class="token punctuation">(</span>responses<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> responses<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="org-apache-kafka-common-network-Selector类型的poll方法"><a href="#org-apache-kafka-common-network-Selector类型的poll方法" class="headerlink" title="org.apache.kafka.common.network.Selector类型的poll方法"></a>org.apache.kafka.common.network.Selector类型的poll方法</h2><p>这里直接来贴代码了</p>
+<p>Do whatever I/O can be done on each connection without blocking. This includes completing connections, completing disconnections, initiating new sends, or making progress on in-progress sends or receives. When this call is completed the user can check for completed sends, receives, connections or disconnects using completedSends(), completedReceives(), connected(), disconnected(). These lists will be cleared at the beginning of each <code>poll</code> call and repopulated by the call if there is any completed I/O. In the “Plaintext” setting, we are using socketChannel to read &amp; write to the network. But for the “SSL” setting, we encrypt the data before we use socketChannel to write data to the network, and decrypt before we return the responses. This requires additional buffers to be maintained as we are reading from network, since the data on the wire is encrypted we won’t be able to read exact no.of bytes as kafka protocol requires. We read as many bytes as we can, up to SSLEngine’s application buffer size. This means we might be reading additional bytes than the requested size. If there is no further data to read from socketChannel selector won’t invoke that channel and we have additional bytes in the buffer. To overcome this issue we added “keysWithBufferedRead” map which tracks channels which have data in the SSL buffers. If there are channels with buffered data that can by processed, we set “timeout” to 0 and process the data even if there is no more data to read from the socket. Atmost one entry is added to “completedReceives” for a channel in each poll. This is necessary to guarantee that requests from a channel are processed on the broker in the order they are sent. Since outstanding requests added by SocketServer to the request queue may be processed by different request handler threads, requests on each channel must be processed one-at-a-time to guarantee ordering.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">poll</span><span class="token punctuation">(</span><span class="token keyword">long</span> timeout<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>timeout <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"timeout should be &gt;= 0"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">boolean</span> madeReadProgressLastCall <span class="token operator">=</span> madeReadProgressLastPoll<span class="token punctuation">;</span>
+   <span class="token comment">//重置变量</span>
+    <span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">boolean</span> dataInBuffers <span class="token operator">=</span> <span class="token operator">!</span>keysWithBufferedRead<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>immediatelyConnectedKeys<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">(</span>madeReadProgressLastCall <span class="token operator">&amp;&amp;</span> dataInBuffers<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        timeout <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+ 
+   <span class="token comment">//kafka的内存池是否溢出了</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>memoryPool<span class="token punctuation">.</span><span class="token function">isOutOfMemory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> outOfMemory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//we have recovered from memory pressure. unmute any channel not explicitly muted for other reasons</span>
+        log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Broker no longer low on memory - unmuting incoming sockets"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">KafkaChannel</span> channel <span class="token operator">:</span> channels<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">isInMutableState</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>explicitlyMutedChannels<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>channel<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                channel<span class="token punctuation">.</span><span class="token function">maybeUnmute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        outOfMemory <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/* check ready keys */</span>
+    <span class="token keyword">long</span> startSelect <span class="token operator">=</span> time<span class="token punctuation">.</span><span class="token function">nanoseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//执行nioSelector的select方法 超时时间为timeout参数（这里默认为30秒）</span>
+    <span class="token keyword">int</span> numReadyKeys <span class="token operator">=</span> <span class="token function">select</span><span class="token punctuation">(</span>timeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> endSelect <span class="token operator">=</span> time<span class="token punctuation">.</span><span class="token function">nanoseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//传感器统计下select选择器读取数据耗时</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>sensors<span class="token punctuation">.</span>selectTime<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span>endSelect <span class="token operator">-</span> startSelect<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>numReadyKeys <span class="token operator">&gt;</span> <span class="token number">0</span> <span class="token operator">||</span> <span class="token operator">!</span>immediatelyConnectedKeys<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> dataInBuffers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//查询SelectionKey集合</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SelectionKey</span><span class="token punctuation">&gt;</span></span> readyKeys <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>nioSelector<span class="token punctuation">.</span><span class="token function">selectedKeys</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Poll from channels that have buffered data (but nothing more from the underlying socket)</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>dataInBuffers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            keysWithBufferedRead<span class="token punctuation">.</span><span class="token function">removeAll</span><span class="token punctuation">(</span>readyKeys<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//so no channel gets polled twice</span>
+            <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SelectionKey</span><span class="token punctuation">&gt;</span></span> toPoll <span class="token operator">=</span> keysWithBufferedRead<span class="token punctuation">;</span>
+            keysWithBufferedRead <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//poll() calls will repopulate if needed</span>
+            <span class="token function">pollSelectionKeys</span><span class="token punctuation">(</span>toPoll<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> endSelect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// Poll from channels where the underlying socket has more data</span>
+       <span class="token comment">//拉取需要发送的数据</span>
+        <span class="token function">pollSelectionKeys</span><span class="token punctuation">(</span>readyKeys<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> endSelect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// Clear all selected keys so that they are included in the ready count for the next select</span>
+        readyKeys<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">pollSelectionKeys</span><span class="token punctuation">(</span>immediatelyConnectedKeys<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> endSelect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        immediatelyConnectedKeys<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        madeReadProgressLastPoll <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token comment">//no work is also "progress"</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">long</span> endIo <span class="token operator">=</span> time<span class="token punctuation">.</span><span class="token function">nanoseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>sensors<span class="token punctuation">.</span>ioTime<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span>endIo <span class="token operator">-</span> endSelect<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Close channels that were delayed and are now ready to be closed</span>
+    <span class="token function">completeDelayedChannelClose</span><span class="token punctuation">(</span>endIo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// we use the time at the end of select to ensure that we don't close any connections that</span>
+    <span class="token comment">// have just been processed in pollSelectionKeys</span>
+    <span class="token function">maybeCloseOldestConnection</span><span class="token punctuation">(</span>endSelect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+
+
+<p>拉取选择的key的方法</p>
+<p>pollSelectionKeys方法:</p>
+<p>参数selectionKeys是需要处理的nio事件，SelectionKey类型记录了详细的事件信息，读、写、连接、接收</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">pollSelectionKeys</span><span class="token punctuation">(</span><span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SelectionKey</span><span class="token punctuation">&gt;</span></span> selectionKeys<span class="token punctuation">,</span>
+                           <span class="token keyword">boolean</span> isImmediatelyConnected<span class="token punctuation">,</span>
+                           <span class="token keyword">long</span> currentTimeNanos<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">SelectionKey</span> key <span class="token operator">:</span> <span class="token function">determineHandlingOrder</span><span class="token punctuation">(</span>selectionKeys<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">KafkaChannel</span> channel <span class="token operator">=</span> <span class="token function">channel</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">long</span> channelStartTimeNanos <span class="token operator">=</span> recordTimePerConnection <span class="token operator">?</span> time<span class="token punctuation">.</span><span class="token function">nanoseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token keyword">boolean</span> sendFailed <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+            <span class="token class-name">String</span> nodeId <span class="token operator">=</span> channel<span class="token punctuation">.</span><span class="token function">id</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// register all per-connection metrics at once</span>
+            sensors<span class="token punctuation">.</span><span class="token function">maybeRegisterConnectionMetrics</span><span class="token punctuation">(</span>nodeId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>idleExpiryManager <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+                idleExpiryManager<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>nodeId<span class="token punctuation">,</span> currentTimeNanos<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token comment">/* complete any connections that have finished their handshake (either normally or immediately) */</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>isImmediatelyConnected <span class="token operator">||</span> key<span class="token punctuation">.</span><span class="token function">isConnectable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">finishConnect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">this</span><span class="token punctuation">.</span>connected<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>nodeId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token keyword">this</span><span class="token punctuation">.</span>sensors<span class="token punctuation">.</span>connectionCreated<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                        <span class="token class-name">SocketChannel</span> socketChannel <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">SocketChannel</span><span class="token punctuation">)</span> key<span class="token punctuation">.</span><span class="token function">channel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Created socket with SO_RCVBUF = {}, SO_SNDBUF = {}, SO_TIMEOUT = {} to node {}"</span><span class="token punctuation">,</span>
+                                socketChannel<span class="token punctuation">.</span><span class="token function">socket</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getReceiveBufferSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                socketChannel<span class="token punctuation">.</span><span class="token function">socket</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSendBufferSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                socketChannel<span class="token punctuation">.</span><span class="token function">socket</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSoTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                nodeId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment">/* if channel is not ready finish prepare */</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">isConnected</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>channel<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    channel<span class="token punctuation">.</span><span class="token function">prepare</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">long</span> readyTimeMs <span class="token operator">=</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token keyword">boolean</span> isReauthentication <span class="token operator">=</span> channel<span class="token punctuation">.</span><span class="token function">successfulAuthentications</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">1</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>isReauthentication<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            sensors<span class="token punctuation">.</span>successfulReauthentication<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span> readyTimeMs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">reauthenticationLatencyMs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+                                log<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span>
+                                    <span class="token string">"Should never happen: re-authentication latency for a re-authenticated channel was null; continuing..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token keyword">else</span>
+                                sensors<span class="token punctuation">.</span>reauthenticationLatency
+                                    <span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">reauthenticationLatencyMs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">doubleValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> readyTimeMs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                            sensors<span class="token punctuation">.</span>successfulAuthentication<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span> readyTimeMs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>channel<span class="token punctuation">.</span><span class="token function">connectedClientSupportsReauthentication</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                                sensors<span class="token punctuation">.</span>successfulAuthenticationNoReauth<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span> readyTimeMs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Successfully {}authenticated with {}"</span><span class="token punctuation">,</span> isReauthentication <span class="token operator">?</span>
+                            <span class="token string">"re-"</span> <span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span> channel<span class="token punctuation">.</span><span class="token function">socketDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> channel<span class="token punctuation">.</span><span class="token function">state</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token class-name">ChannelState</span><span class="token punctuation">.</span>NOT_CONNECTED<span class="token punctuation">)</span>
+                    channel<span class="token punctuation">.</span><span class="token function">state</span><span class="token punctuation">(</span><span class="token class-name">ChannelState</span><span class="token punctuation">.</span>READY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">Optional</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">NetworkReceive</span><span class="token punctuation">&gt;</span></span> responseReceivedDuringReauthentication <span class="token operator">=</span> channel<span class="token punctuation">.</span><span class="token function">pollResponseReceivedDuringReauthentication</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                responseReceivedDuringReauthentication<span class="token punctuation">.</span><span class="token function">ifPresent</span><span class="token punctuation">(</span>receive <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">long</span> currentTimeMs <span class="token operator">=</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token function">addToCompletedReceives</span><span class="token punctuation">(</span>channel<span class="token punctuation">,</span> receive<span class="token punctuation">,</span> currentTimeMs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">//if channel is ready and has bytes to read from socket or buffer, and has no</span>
+                <span class="token comment">//previous completed receive then read from it</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>key<span class="token punctuation">.</span><span class="token function">isReadable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> channel<span class="token punctuation">.</span><span class="token function">hasBytesBuffered</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">hasCompletedReceive</span><span class="token punctuation">(</span>channel<span class="token punctuation">)</span>
+                        <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>explicitlyMutedChannels<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>channel<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">attemptRead</span><span class="token punctuation">(</span>channel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">hasBytesBuffered</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>explicitlyMutedChannels<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>channel<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment">//this channel has bytes enqueued in intermediary buffers that we could not read</span>
+                    <span class="token comment">//(possibly because no memory). it may be the case that the underlying socket will</span>
+                    <span class="token comment">//not come up in the next poll() and so we need to remember this channel for the</span>
+                    <span class="token comment">//next poll call otherwise data may be stuck in said buffers forever. If we attempt</span>
+                    <span class="token comment">//to process buffered data and no progress is made, the channel buffered status is</span>
+                    <span class="token comment">//cleared to avoid the overhead of checking every time.</span>
+                    keysWithBufferedRead<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment">/* if channel is ready write to any sockets that have space in their buffer and for which we have data */</span>
+
+                <span class="token keyword">long</span> nowNanos <span class="token operator">=</span> channelStartTimeNanos <span class="token operator">!=</span> <span class="token number">0</span> <span class="token operator">?</span> channelStartTimeNanos <span class="token operator">:</span> currentTimeNanos<span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token function">attemptWrite</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> channel<span class="token punctuation">,</span> nowNanos<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    sendFailed <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                    <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment">/* cancel any defunct sockets */</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>key<span class="token punctuation">.</span><span class="token function">isValid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token function">close</span><span class="token punctuation">(</span>channel<span class="token punctuation">,</span> <span class="token class-name">CloseMode</span><span class="token punctuation">.</span>GRACEFUL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">String</span> desc <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"%s (channelId=%s)"</span><span class="token punctuation">,</span> channel<span class="token punctuation">.</span><span class="token function">socketDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> channel<span class="token punctuation">.</span><span class="token function">id</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>e <span class="token keyword">instanceof</span> <span class="token class-name">IOException</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Connection with {} disconnected"</span><span class="token punctuation">,</span> desc<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>e <span class="token keyword">instanceof</span> <span class="token class-name">AuthenticationException</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">boolean</span> isReauthentication <span class="token operator">=</span> channel<span class="token punctuation">.</span><span class="token function">successfulAuthentications</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>isReauthentication<span class="token punctuation">)</span>
+                        sensors<span class="token punctuation">.</span>failedReauthentication<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">else</span>
+                        sensors<span class="token punctuation">.</span>failedAuthentication<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token class-name">String</span> exceptionMessage <span class="token operator">=</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>e <span class="token keyword">instanceof</span> <span class="token class-name">DelayedResponseAuthenticationException</span><span class="token punctuation">)</span>
+                        exceptionMessage <span class="token operator">=</span> e<span class="token punctuation">.</span><span class="token function">getCause</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Failed {}authentication with {} ({})"</span><span class="token punctuation">,</span> isReauthentication <span class="token operator">?</span> <span class="token string">"re-"</span> <span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+                        desc<span class="token punctuation">,</span> exceptionMessage<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    log<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Unexpected error from {}; closing connection"</span><span class="token punctuation">,</span> desc<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>e <span class="token keyword">instanceof</span> <span class="token class-name">DelayedResponseAuthenticationException</span><span class="token punctuation">)</span>
+                    <span class="token function">maybeDelayCloseOnAuthenticationFailure</span><span class="token punctuation">(</span>channel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">else</span>
+                    <span class="token function">close</span><span class="token punctuation">(</span>channel<span class="token punctuation">,</span> sendFailed <span class="token operator">?</span> <span class="token class-name">CloseMode</span><span class="token punctuation">.</span>NOTIFY_ONLY <span class="token operator">:</span> <span class="token class-name">CloseMode</span><span class="token punctuation">.</span>GRACEFUL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                <span class="token function">maybeRecordTimePerConnection</span><span class="token punctuation">(</span>channel<span class="token punctuation">,</span> channelStartTimeNanos<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">songxiaosheng</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://blog.elastic.link/2022/06/21/kafka/6-kafkathread/">https://blog.elastic.link/2022/06/21/kafka/6-kafkathread/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">songxiaosheng</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/weixin.jpeg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/weixin.jpeg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments textarea {
+        box-sizing: border-box;
+        background: url("/medias/comment_bg.png") 100% 100% no-repeat;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #4cbf30;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="vcomments" class="card-content" style="display: grid">
+    </div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="/libs/valine/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN',
+        serverURLs: 'https://orwf9gex.lc-cn-e1-shared.com',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: 'just go go'
+    });
+</script>
+
+<!--酷Q推送-->
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2022/06/29/kafka/5-kafkaproducer-fa-song-shu-ju-de-luo-ji/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        
+                        <span class="card-title"></span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-06-29
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            songxiaosheng
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/06/18/kafka/4-fa-song-qi-sender-dui-xiang-de-chu-shi-hua/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        
+                        <span class="card-title"></span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-06-18
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            songxiaosheng
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2022</span>
+            
+            <a href="/about" target="_blank">songxiaosheng</a>
+            |&nbsp;Powered by&nbsp;<a href="#" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="#" target="_blank">Matery</a>
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">41.9k</span>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/songxiaosheng" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:songxiaosheng@elastic.link" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+    
+        <script src="//code.tidio.co/1fviirlucnndhycbhvsmqht9dgyfn9wc.js"></script>
+        <script>
+            $(document).ready(function () {
+                setInterval(change_Tidio, 50);
+                function change_Tidio() {
+                    var tidio=$("#tidio-chat iframe");
+                    if(tidio.css("display")=="block"&& $(window).width()>977 ){
+                        document.getElementById("tidio-chat-iframe").style.bottom= ($("div#backTop.top-scroll").css("display")=="none" &&$(window).width()>977)>0? "-40px" : ($("div.toc-title").length&&$(window).width()>977)>0?"85px":"20px";
+                        document.getElementById("tidio-chat-iframe").style.right="-15px";
+                        document.getElementById("tidio-chat-iframe").style.height=parseInt(tidio.css("height"))>=520?"520px":tidio.css("height");
+                        document.getElementById("tidio-chat-iframe").style.zIndex="997";
+                    }
+                    else if(tidio.css("display")=="block"&&$(window).width()>601 &&$(window).width()<992 ){
+                        document.getElementById("tidio-chat-iframe").style.bottom= ($("div#backTop.top-scroll").css("display")=="none" && 601< $(window).width()<992)>0? "-40px":"20px" ;
+                        document.getElementById("tidio-chat-iframe").style.right="-15px";
+                        document.getElementById("tidio-chat-iframe").style.zIndex="997";
+                    }
+                    else if(tidio.css("display")=="block"&&$(window).width()<601 && parseInt(tidio.css("height"))<230){
+                        document.getElementById("tidio-chat-iframe").style.bottom= ($("div#backTop.top-scroll").css("display")=="none" && $(window).width()<601)>0? "-10px":"45px" ;
+                        document.getElementById("tidio-chat-iframe").style.zIndex="997";
+                    }
+                    if( tidio.css("display")=="block"&&$(window).width()<601 && parseInt(tidio.css("height"))>=230){
+                        document.getElementById("tidio-chat-iframe").style.zIndex="998";
+                    }
+                }
+            });
+        </script>
+    
+
+    
+
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

@@ -4,8 +4,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="1-过五关斩六将开发属于自己的jdk版本, 中间件源码">
-    <meta name="description" content="OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。">
+    <meta name="keywords" content="中间件源码">
+    <meta name="description" content="为了在理论中可以更好的理解一些细节,我们通过一个Demo开始来详细看kafka的实现原理,首先我们要做的是本地启动一个kafka,关于启动kakfa可以看前面这个文章.
+启动完kafka之后我们就来编写一个生产者的示例代码,关于生产者的De">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +20,7 @@
 
     
 
-    <title>1-过五关斩六将开发属于自己的jdk版本 | 中间件源码</title>
+    <title>中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -249,12 +250,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">1-过五关斩六将开发属于自己的jdk版本</h1>
+                    <h1 class="description center-align post-title"></h1>
                 </div>
             </div>
         </div>
@@ -368,29 +369,12 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/JDK11%E6%BA%90%E7%A0%81/">
-                                <span class="chip bg-color">JDK11源码</span>
-                            </a>
-                        
-                            <a href="/tags/Java/">
-                                <span class="chip bg-color">Java</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
-                    
-                    <div class="post-cate">
-                        <i class="fas fa-bookmark fa-fw icon-category"></i>
-                        
-                            <a href="/categories/JDK%E6%BA%90%E7%A0%81/" class="post-category">
-                                JDK源码
-                            </a>
-                        
-                    </div>
                     
                 </div>
             </div>
@@ -399,28 +383,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-09-07
+                    2022-06-18
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-07-05
+                    2022-06-18
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.1k
+                    1.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    6 分
                 </div>
                 
 
@@ -443,112 +427,217 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="1-过五关斩六将开发属于自己的jdk版本"><a href="#1-过五关斩六将开发属于自己的jdk版本" class="headerlink" title="1-过五关斩六将开发属于自己的jdk版本"></a>1-过五关斩六将开发属于自己的jdk版本</h1><h2 id="1-1-简介"><a href="#1-1-简介" class="headerlink" title="1.1 简介"></a>1.1 简介</h2><p>这里主要做一下笔记,如果比较感兴趣也可以直接查阅官网<a target="_blank" rel="noopener" href="https://openjdk.java.net/groups/build/doc/building.html">open jdk building</a></p>
-<p>OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。</p>
-<h2 id="1-2-克隆代码"><a href="#1-2-克隆代码" class="headerlink" title="1.2  克隆代码"></a>1.2  克隆代码</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone https://git.openjdk.java.net/jdk/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+                <p>为了在理论中可以更好的理解一些细节,我们通过一个Demo开始来详细看kafka的实现原理,首先我们要做的是本地启动一个kafka,关于启动kakfa可以看前面这个文章.</p>
+<p>启动完kafka之后我们就来编写一个生产者的示例代码,关于生产者的Demo来源于,kafka官方源码中的example模块,不过这里稍加改造,方便理解</p>
+<p>这里先贴下生产者的Demo项目目录:</p>
+<p>![image-20220526074340859](/Users/song/Library/Application Support/typora-user-images/image-20220526074340859.png)</p>
+<p>首先引入依赖如下所示:</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token comment">&lt;!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients --&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.apache.kafka<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>kafka-clients<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>3.2.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+<span class="token comment">&lt;!--   我们使用log4j 日志实现 将日志打印到控制台方便调试     --&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.slf4j<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>slf4j-log4j12<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>1.7.25<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>切换分支到jdk-11+28</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> checkout jdk-11+28<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<h2 id="1-3-运行配置："><a href="#1-3-运行配置：" class="headerlink" title="1.3 运行配置："></a>1.3 运行配置：</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">bash</span> configure<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>如果configure由于缺少依赖项（工具链、构建工具、外部库或引导JDK）而失败，大多数情况下，它会打印一份关于如何在平台上解决这种情况的建议。按照说明操作，然后再次尝试运行bash configure。</p>
-<p>运行成功后会有如下日志打印<br><img src="https://img-blog.csdnimg.cn/c058f61885d3493cbb0f8ef1e8f6c7ce.png" alt="在这里插入图片描述"></p>
-<h2 id="1-4-运行Make"><a href="#1-4-运行Make" class="headerlink" title="1.4 运行Make"></a>1.4 运行Make</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">make</span> images<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
-<p>这个版本会有BUG如下错误所示:</p>
-<p><img src="https://img-blog.csdnimg.cn/4c2be8ed26d44b449a0953132d38063e.png" alt="在这里插入图片描述"></p>
-<p><a target="_blank" rel="noopener" href="https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=244803">issue 链接</a></p>
-<p>上面图片有点小我们继续看</p>
-<h2 id="1-4-1-问题1"><a href="#1-4-1-问题1" class="headerlink" title="1.4.1 问题1:"></a>1.4.1 问题1:</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/src/hotspot/share/runtime/arguments.cpp:1461:35: error: result of comparison against a string literal is unspecified <span class="token punctuation">(</span>use an explicit string comparison <span class="token keyword">function</span> instead<span class="token punctuation">)</span> <span class="token punctuation">[</span>-Werror,-Wstring-compare<span class="token punctuation">]</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>old_java_vendor_url_bug <span class="token operator">!=</span> DEFAULT_VENDOR_URL_BUG<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                                  ^  ~~~~~~~~~~~~~~~~~~~~~~
-<span class="token number">1</span> error generated.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后我们来编写Demo源码,这里客户端都以Java为例子:</p>
+<p>为了打印方便我们将使用log4j的slf4j的日志实现将日志打印到控制台配置log4j.properties如下:</p>
+<pre class="line-numbers language-properties" data-language="properties"><code class="language-properties"><span class="token comment">###set log levels###</span>
+<span class="token key attr-name">log4j.rootLogger</span><span class="token punctuation">=</span><span class="token value attr-value">info, stdout</span>
+<span class="token comment">###output to the console###</span>
+<span class="token key attr-name">log4j.appender.stdout</span><span class="token punctuation">=</span><span class="token value attr-value">org.apache.log4j.ConsoleAppender</span>
+<span class="token key attr-name">log4j.appender.stdout.Target</span><span class="token punctuation">=</span><span class="token value attr-value">System.out</span>
+<span class="token key attr-name">log4j.appender.stdout.layout</span><span class="token punctuation">=</span><span class="token value attr-value">org.apache.log4j.PatternLayout</span>
+<span class="token key attr-name">log4j.appender.stdout.layout.ConversionPattern</span><span class="token punctuation">=</span><span class="token value attr-value">[%d{dd/MM/yy HH:mm:ss:SSS z}] %t %5p %c{2}: %m%n</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>修复方法:<br>打开文件<strong>arguments.cpp:1461</strong> 修改1461行代码为如下所示:</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">strcmp</span><span class="token punctuation">(</span>old_java_vendor_url_bug <span class="token punctuation">,</span> DEFAULT_VENDOR_URL_BUG<span class="token punctuation">)</span><span class="token operator">!=</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<h2 id="1-4-2-问题2"><a href="#1-4-2-问题2" class="headerlink" title="1.4.2 问题2"></a>1.4.2 问题2</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">==</span><span class="token operator">=</span> Output from failing command<span class="token punctuation">(</span>s<span class="token punctuation">)</span> repeated here <span class="token operator">==</span><span class="token operator">=</span>
-* For target hotspot_variant-server_libjvm_objs_sharedRuntime.o:
-/Users/song/Desktop/Computer/A/github/jdk/src/hotspot/share/runtime/sharedRuntime.cpp:2798:85: error: expression does not compute the number of elements <span class="token keyword">in</span> this array<span class="token punctuation">;</span> element <span class="token builtin class-name">type</span> is <span class="token string">'double'</span>, not <span class="token string">'relocInfo'</span> <span class="token punctuation">[</span>-Werror,-Wsizeof-array-div<span class="token punctuation">]</span>
-      buffer.insts<span class="token punctuation">(</span><span class="token punctuation">)</span>-<span class="token operator">&gt;</span>initialize_shared_locs<span class="token variable"><span class="token punctuation">((</span>relocInfo<span class="token operator">*</span><span class="token punctuation">)</span>locs_buf<span class="token punctuation">,</span> sizeof<span class="token punctuation">(</span>locs_buf<span class="token punctuation">)</span> <span class="token operator">/</span> sizeof<span class="token punctuation">(</span>relocInfo<span class="token punctuation">))</span></span><span class="token punctuation">;</span>
-                                                                          ~~~~~~~~  ^
-/Users/song/Desktop/Computer/A/github/jdk/src/hotspot/share/runtime/sharedRuntime.cpp:2797:14: note: array <span class="token string">'locs_buf'</span> declared here
-      double locs_buf<span class="token punctuation">[</span><span class="token number">20</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-             ^
-/Users/song/Desktop/Computer/A/github/jdk/src/hotspot/share/runtime/sharedRuntime.cpp:2798:85: note: place parentheses around the <span class="token string">'sizeof(relocInfo)'</span> expression to silence this warning
-      buffer.insts<span class="token punctuation">(</span><span class="token punctuation">)</span>-<span class="token operator">&gt;</span>initialize_shared_locs<span class="token variable"><span class="token punctuation">((</span>relocInfo<span class="token operator">*</span><span class="token punctuation">)</span>locs_buf<span class="token punctuation">,</span> sizeof<span class="token punctuation">(</span>locs_buf<span class="token punctuation">)</span> <span class="token operator">/</span> sizeof<span class="token punctuation">(</span>relocInfo<span class="token punctuation">))</span></span><span class="token punctuation">;</span>
-                                                                                    ^
-<span class="token number">1</span> error generated.
 
-* All <span class="token builtin class-name">command</span> lines available <span class="token keyword">in</span> /Users/song/Desktop/Computer/A/github/jdk/build/macosx-x86_64-normal-server-release/make-support/failure-logs.
-<span class="token operator">==</span><span class="token operator">=</span> End of repeated output <span class="token operator">==</span><span class="token operator">=</span>
 
-No indication of failed target found.
-Hint: Try searching the build log <span class="token keyword">for</span> <span class="token string">'] Error'</span><span class="token builtin class-name">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>修复方法:<br>打开2798行 修改代码为这个</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">buffer.insts<span class="token punctuation">(</span><span class="token punctuation">)</span>-<span class="token operator">&gt;</span>initialize_shared_locs<span class="token variable"><span class="token punctuation">((</span>relocInfo<span class="token operator">*</span><span class="token punctuation">)</span>locs_buf<span class="token punctuation">,</span><span class="token punctuation">(</span>sizeof<span class="token punctuation">(</span>locs_buf<span class="token punctuation">))</span></span> /<span class="token punctuation">(</span>sizeof<span class="token punctuation">(</span>relocInfo<span class="token punctuation">))</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="1-4-3-问题三"><a href="#1-4-3-问题三" class="headerlink" title="1.4.3 问题三:"></a>1.4.3 问题三:</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">src/java.desktop/macosx/native/libawt_lwawt/awt/CSystemColors.m:134:9: error: converting the result of <span class="token string">'?:'</span> with integer constants to a boolean always evaluates to <span class="token string">'true'</span> <span class="token punctuation">[</span>-Werror,-Wtautological-constant-compare<span class="token punctuation">]</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>colorIndex <span class="token operator">&lt;</span> <span class="token punctuation">(</span>useAppleColor<span class="token punctuation">)</span> ? sun_lwawt_macosx_LWCToolkit_NUM_APPLE_COLORS <span class="token builtin class-name">:</span> java_awt_SystemColor_NUM_COLORS<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        ^
-<span class="token number">1</span> error generated.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>同理，参考github【<a target="_blank" rel="noopener" href="https://github.com/openjdk/jdk/commit/4622a18a%E3%80%91%E4%BF%AE%E6%94%B9%E6%BA%90%E7%A0%81%E3%80%82">https://github.com/openjdk/jdk/commit/4622a18a】修改源码。</a></p>
-<p>打开134行 修改代码为</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token keyword">if</span> <span class="token punctuation">(</span>colorIndex <span class="token operator">&lt;</span> <span class="token variable"><span class="token punctuation">((</span>useAppleColor<span class="token punctuation">)</span> <span class="token operator">?</span> sun_lwawt_macosx_LWCToolkit_NUM_APPLE_COLORS <span class="token operator">:</span>
-    java_awt_SystemColor_NUM_COLORS<span class="token punctuation">))</span></span> <span class="token punctuation">{</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>最后开始编写生产者Demo代码如下所示:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">link<span class="token punctuation">.</span>elastic<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>producer</span><span class="token punctuation">;</span>
 
-<h3 id="1-4-5-问题四"><a href="#1-4-5-问题四" class="headerlink" title="1.4.5 问题四:"></a>1.4.5 问题四:</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ERROR: Build failed <span class="token keyword">for</span> target <span class="token string">'default (exploded-image)'</span> <span class="token keyword">in</span> configuration <span class="token string">'macosx-x86_64-normal-server-release'</span> <span class="token punctuation">(</span>exit code <span class="token number">2</span><span class="token punctuation">)</span>
-Stopping sjavac server
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Properties</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>concurrent<span class="token punctuation">.</span></span><span class="token class-name">ExecutionException</span></span><span class="token punctuation">;</span>
 
-<span class="token operator">==</span><span class="token operator">=</span> Output from failing command<span class="token punctuation">(</span>s<span class="token punctuation">)</span> repeated here <span class="token operator">==</span><span class="token operator">=</span>
-* For target support_native_java.desktop_libjsound_PLATFORM_API_MacOSX_MidiUtils.o:
-/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:263:31: error: cast to smaller integer <span class="token builtin class-name">type</span> <span class="token string">'MIDIClientRef'</span> <span class="token punctuation">(</span>aka <span class="token string">'unsigned int'</span><span class="token punctuation">)</span> from <span class="token string">'void *'</span> <span class="token punctuation">[</span>-Werror,-Wvoid-pointer-to-int-cast<span class="token punctuation">]</span>
-static MIDIClientRef client <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIClientRef<span class="token punctuation">)</span> NULL<span class="token punctuation">;</span>
-                              ^~~~~~~~~~~~~~~~~~~~
-/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:264:29: error: cast to smaller integer <span class="token builtin class-name">type</span> <span class="token string">'MIDIPortRef'</span> <span class="token punctuation">(</span>aka <span class="token string">'unsigned int'</span><span class="token punctuation">)</span> from <span class="token string">'void *'</span> <span class="token punctuation">[</span>-Werror,-Wvoid-pointer-to-int-cast<span class="token punctuation">]</span>
-static MIDIPortRef inPort <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIPortRef<span class="token punctuation">)</span> NULL<span class="token punctuation">;</span>
-                            ^~~~~~~~~~~~~~~~~~
-/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:265:30: error: cast to smaller integer <span class="token builtin class-name">type</span> <span class="token string">'MIDIPortRef'</span> <span class="token punctuation">(</span>aka <span class="token string">'unsigned int'</span><span class="token punctuation">)</span> from <span class="token string">'void *'</span> <span class="token punctuation">[</span>-Werror,-Wvoid-pointer-to-int-cast<span class="token punctuation">]</span>
-static MIDIPortRef outPort <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIPortRef<span class="token punctuation">)</span> NULL<span class="token punctuation">;</span>
-                             ^~~~~~~~~~~~~~~~~~
-/Users/coachhe/Tools/jdk-compile/openjdk11/src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c:471:32: error: cast to smaller integer <span class="token builtin class-name">type</span> <span class="token string">'MIDIEndpointRef'</span> <span class="token punctuation">(</span>aka <span class="token string">'unsigned int'</span><span class="token punctuation">)</span> from <span class="token string">'void *'</span> <span class="token punctuation">[</span>-Werror,-Wvoid-pointer-to-int-cast<span class="token punctuation">]</span>
-    MIDIEndpointRef endpoint <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIEndpointRef<span class="token punctuation">)</span> NULL<span class="token punctuation">;</span>
-                               ^~~~~~~~~~~~~~~~~~~~~~
-   <span class="token punctuation">..</span>. <span class="token punctuation">(</span>rest of output omitted<span class="token punctuation">)</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>clients<span class="token punctuation">.</span>producer<span class="token punctuation">.</span></span><span class="token class-name">Callback</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>clients<span class="token punctuation">.</span>producer<span class="token punctuation">.</span></span><span class="token class-name">KafkaProducer</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>clients<span class="token punctuation">.</span>producer<span class="token punctuation">.</span></span><span class="token class-name">ProducerRecord</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>clients<span class="token punctuation">.</span>producer<span class="token punctuation">.</span></span><span class="token class-name">RecordMetadata</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>clients<span class="token punctuation">.</span>producer<span class="token punctuation">.</span></span><span class="token class-name">ProducerConfig</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>common<span class="token punctuation">.</span>serialization<span class="token punctuation">.</span></span><span class="token class-name">IntegerSerializer</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>common<span class="token punctuation">.</span>serialization<span class="token punctuation">.</span></span><span class="token class-name">StringSerializer</span></span><span class="token punctuation">;</span>
 
-* All <span class="token builtin class-name">command</span> lines available <span class="token keyword">in</span> /Users/coachhe/Tools/jdk-compile/openjdk11/build/macosx-x86_64-normal-server-release/make-support/failure-logs.
-<span class="token operator">==</span><span class="token operator">=</span> End of repeated output <span class="token operator">==</span><span class="token operator">=</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ProduceDemo</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Properties</span> props <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"bootstrap.servers"</span><span class="token punctuation">,</span> <span class="token string">"localhost"</span> <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> <span class="token string">"9092"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"client.id"</span><span class="token punctuation">,</span> <span class="token string">"DemoProducer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"key.serializer"</span><span class="token punctuation">,</span> <span class="token class-name">IntegerSerializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"value.serializer"</span><span class="token punctuation">,</span> <span class="token class-name">StringSerializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"transaction.timeout.ms"</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"enable.idempotence"</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-No indication of failed target found.
-Hint: Try searching the build log <span class="token keyword">for</span> <span class="token string">'] Error'</span><span class="token builtin class-name">.</span>
-Hint: See doc/building.html<span class="token comment">#troubleshooting for assistance.</span>
+        <span class="token class-name">KafkaProducer</span> producer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KafkaProducer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-make<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>: *** <span class="token punctuation">[</span>main<span class="token punctuation">]</span> Error <span class="token number">2</span>
-make: *** <span class="token punctuation">[</span>default<span class="token punctuation">]</span> Error <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+        <span class="token keyword">int</span> messageKey <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> recordsSent <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> numRecords <span class="token operator">=</span> <span class="token number">1000</span><span class="token punctuation">;</span>
+        <span class="token keyword">boolean</span> isAsync <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> topic <span class="token operator">=</span> <span class="token string">"topic1"</span><span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>recordsSent <span class="token operator">&lt;</span> numRecords<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">String</span> messageStr <span class="token operator">=</span> <span class="token string">"Message_"</span> <span class="token operator">+</span> messageKey<span class="token punctuation">;</span>
+            <span class="token keyword">long</span> startTime <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<p>修复方式:<br>src/java.desktop/macosx/native/libjsound/PLATFORM_API_MacOSX_MidiUtils.c文件的4个地方。但是修改方式是统一的，都是将括号里的内容（MIDIClientRef,MIDIPortRef,MIDIEndpointRef）修改为unsigned long。</p>
-<p>修改前：</p>
-<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token number">263</span> <span class="token keyword">static</span> MIDIClientRef client <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIClientRef<span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-<span class="token number">264</span> <span class="token keyword">static</span> MIDIPortRef inPort <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIPortRef<span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-<span class="token number">265</span> <span class="token keyword">static</span> MIDIPortRef outPort <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIPortRef<span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+            <span class="token comment">// Send synchronously</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                producer<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProducerRecord</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>topic<span class="token punctuation">,</span>
+                        messageKey<span class="token punctuation">,</span>
+                        messageStr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Sent message: ("</span> <span class="token operator">+</span> messageKey <span class="token operator">+</span> <span class="token string">", "</span> <span class="token operator">+</span> messageStr <span class="token operator">+</span> <span class="token string">")"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> <span class="token operator">|</span> <span class="token class-name">ExecutionException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            messageKey <span class="token operator">+=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+            recordsSent <span class="token operator">+=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Producer sent "</span> <span class="token operator">+</span> numRecords <span class="token operator">+</span> <span class="token string">" records successfully"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-<span class="token number">471</span> MIDIEndpointRef endpoint <span class="token operator">=</span> <span class="token punctuation">(</span>MIDIEndpointRef<span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>修改后：</p>
-<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token number">263</span> <span class="token keyword">static</span> MIDIClientRef client <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-<span class="token number">264</span> <span class="token keyword">static</span> MIDIPortRef inPort <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-<span class="token number">265</span> <span class="token keyword">static</span> MIDIPortRef outPort <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
 
-<span class="token number">471</span> MIDIEndpointRef endpoint <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token constant">NULL</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>重新执行make即可看到编译成功如下图所示:<br><img src="https://img-blog.csdnimg.cn/f29ba0b0217840b0813c3a911a074c36.png" alt="在这里插入图片描述"></p>
-<h2 id="1-5-验证新构建的JDK："><a href="#1-5-验证新构建的JDK：" class="headerlink" title="1.5 验证新构建的JDK："></a>1.5 验证新构建的JDK：</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">./build/*/images/jdk/bin/java -version<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>点击运行按钮接下来我们观察Zookeeper上的节点就可以看到了当前节点的分区信息和节点信息</p>
+<p>![image-20220526080054347](/Users/song/Library/Application Support/typora-user-images/image-20220526080054347.png)</p>
+<p>也可以在kafka manager控制台看到topic1的存在</p>
+<p>![image-20220526081145741](/Users/song/Library/Application Support/typora-user-images/image-20220526081145741.png)</p>
+<p>关于消费者的Demo代码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">link<span class="token punctuation">.</span>elastic<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>consumer</span><span class="token punctuation">;</span>
 
-<p>如下图所示:<br><img src="https://img-blog.csdnimg.cn/a01c6f6b4f7c420b98b632f12d4d1794.png" alt="在这里插入图片描述"><br>打开如下目录即可看到JDK信息,可以尝试配置此jdk为默认JDK使用<br><img src="https://img-blog.csdnimg.cn/9bc97bd940a8488497dc79e3a4668345.png" alt="在这里插入图片描述"></p>
-<p>不过每个小伙伴电脑环境可能不太一样,遇到的问题也不一定完全相同,静下心来多搜搜或者研究下这个C代码的语法错误即可,Open JDK底层有些版本确实不够严谨, 不过社区都有对应解决方案。</p>
-<p>查看原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>clients<span class="token punctuation">.</span>consumer<span class="token punctuation">.</span></span><span class="token class-name">ConsumerConfig</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>clients<span class="token punctuation">.</span>consumer<span class="token punctuation">.</span></span><span class="token class-name">ConsumerRecord</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>clients<span class="token punctuation">.</span>consumer<span class="token punctuation">.</span></span><span class="token class-name">ConsumerRecords</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>kafka<span class="token punctuation">.</span>clients<span class="token punctuation">.</span>consumer<span class="token punctuation">.</span></span><span class="token class-name">KafkaConsumer</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>time<span class="token punctuation">.</span></span><span class="token class-name">Duration</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Collections</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Properties</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ConsumerDemo</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Properties</span> props <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"bootstrap.servers"</span><span class="token punctuation">,</span> <span class="token string">"8.131.79.126"</span> <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> <span class="token string">"9092"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> groupId <span class="token operator">=</span> <span class="token string">"DemoConsumer"</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"group.id"</span><span class="token punctuation">,</span> groupId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"enable.auto.commit"</span><span class="token punctuation">,</span> <span class="token string">"true"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"auto.commit.interval.ms"</span><span class="token punctuation">,</span> <span class="token string">"1000"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"session.timeout.ms"</span><span class="token punctuation">,</span> <span class="token string">"30000"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"key.deserializer"</span><span class="token punctuation">,</span> <span class="token string">"org.apache.kafka.common.serialization.IntegerDeserializer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"value.deserializer"</span><span class="token punctuation">,</span> <span class="token string">"org.apache.kafka.common.serialization.StringDeserializer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">boolean</span> readCommitted <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>readCommitted<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"isolation.level"</span><span class="token punctuation">,</span> <span class="token string">"read_committed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"auto.offset.reset"</span><span class="token punctuation">,</span> <span class="token string">"earliest"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">KafkaConsumer</span> consumer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KafkaConsumer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> topic <span class="token operator">=</span> <span class="token string">"topic1"</span><span class="token punctuation">;</span>
+        consumer<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">singletonList</span><span class="token punctuation">(</span>topic<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">long</span> count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token class-name">ConsumerRecords</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> records <span class="token operator">=</span> consumer<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span><span class="token class-name">Duration</span><span class="token punctuation">.</span><span class="token function">ofSeconds</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ConsumerRecord</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> record <span class="token operator">:</span> records<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>groupId <span class="token operator">+</span> <span class="token string">" received message : from partition "</span> <span class="token operator">+</span> record<span class="token punctuation">.</span><span class="token function">partition</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                        <span class="token operator">+</span> <span class="token string">", ("</span> <span class="token operator">+</span> record<span class="token punctuation">.</span><span class="token function">key</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">", "</span> <span class="token operator">+</span> record<span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">") at offset "</span> <span class="token operator">+</span> record<span class="token punctuation">.</span><span class="token function">offset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                count<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+             <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>groupId <span class="token operator">+</span> <span class="token string">" finished reading "</span> <span class="token operator">+</span> count <span class="token operator">+</span> <span class="token string">" messages"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p>生产者用到的配置：</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th>说明</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bootstrap.servers</td>
+<td>用于建立与 Kafka 集群的初始连接的主机/端口对列表。客户端将使用所有服务器，无论此处指定哪些服务器进行引导——此列表仅影响用于发现完整服务器集的初始主机。此列表应采用<code>host1:port1,host2:port2,...</code>. 由于这些服务器仅用于初始连接以发现完整的集群成员（可能会动态更改），因此此列表不需要包含完整的服务器集（但您可能需要多个服务器，以防服务器停机） .</td>
+<td>localhost:9092</td>
+</tr>
+<tr>
+<td>client.id</td>
+<td>发出请求时传递给服务器的 id 字符串。这样做的目的是通过允许将逻辑应用程序名称包含在服务器端请求日志中来跟踪请求的来源，而不仅仅是 ip/port。</td>
+<td>DemoProducer</td>
+</tr>
+<tr>
+<td>key.serializer</td>
+<td>实现<code>org.apache.kafka.common.serialization.Serializer</code>接口的键的序列化程序类。</td>
+<td>IntegerSerializer.class.getName()</td>
+</tr>
+<tr>
+<td>value.serializer</td>
+<td>实现<code>org.apache.kafka.common.serialization.Serializer</code>接口的值的序列化程序类。</td>
+<td>StringSerializer.class.getName()</td>
+</tr>
+<tr>
+<td>transaction.timeout.ms</td>
+<td>事务协调器在主动中止正在进行的事务之前等待生产者的事务状态更新的最长时间（毫秒）。如果此值大于代理中的 transaction.max.timeout.ms 设置，则请求将失败并出现<code>InvalidTxnTimeoutException</code>错误</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>enable.idempotence</td>
+<td>当设置为“true”时，生产者将确保每条消息的一个副本被写入流中。如果为“false”，生产者由于代理失败等原因重试，可能会在流中写入重试消息的副本。请注意，启用幂等性要求<code>max.in.flight.requests.per.connection</code>小于或等于 5（保留任何允许值的消息顺序），<code>retries</code>大于 0，并且<code>acks</code>必须为“全部”。</td>
+<td>false</td>
+</tr>
+</tbody></table>
+<p>消费者额外的配置</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>group.id</td>
+<td>标识此消费者所属的消费者组的唯一字符串。<code>subscribe(topic)</code>如果消费者通过 using或基于 Kafka 的偏移管理策略使用组管理功能，则需要此属性</td>
+<td>DemoConsumer</td>
+</tr>
+<tr>
+<td>enable.auto.commit</td>
+<td>如果为 true，消费者的偏移量将在后台定期提交。</td>
+<td>true</td>
+</tr>
+<tr>
+<td>auto.commit.interval.ms</td>
+<td><code>enable.auto.commit</code>如果设置为 <code>true</code>，则消费者偏移量自动提交到 Kafka 的频率（以毫秒为单位） 。</td>
+<td>1000</td>
+</tr>
+<tr>
+<td>session.timeout.ms</td>
+<td></td>
+<td>30000</td>
+</tr>
+</tbody></table>
 
                 
             </div>
@@ -575,7 +664,7 @@ make: *** <span class="token punctuation">[</span>default<span class="token punc
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blog.elastic.link/2022/09/07/jdk11-1/">https://blog.elastic.link/2022/09/07/jdk11-1/</a>
+                    <a href="https://blog.elastic.link/2022/06/18/kafka/2-cong-yi-ge-kafka-de-demo-shuo-qi/">https://blog.elastic.link/2022/06/18/kafka/2-cong-yi-ge-kafka-de-demo-shuo-qi/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -612,15 +701,7 @@ make: *** <span class="token punctuation">[</span>default<span class="token punc
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/JDK11%E6%BA%90%E7%A0%81/">
-                                    <span class="chip bg-color">JDK11源码</span>
-                                </a>
-                            
-                                <a href="/tags/Java/">
-                                    <span class="chip bg-color">Java</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -1059,54 +1140,36 @@ make: *** <span class="token punctuation">[</span>default<span class="token punc
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/09/07/jdk11-1/">
+                <a href="/2022/06/18/kafka/pei-zhi/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="1-过五关斩六将开发属于自己的jdk版本">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
                         
-                        <span class="card-title">1-过五关斩六将开发属于自己的jdk版本</span>
+                        <span class="card-title"></span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
+                            
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-09-07
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-06-18
+                        </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/JDK%E6%BA%90%E7%A0%81/" class="post-category">
-                                    JDK源码
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            songxiaosheng
                             
                         </span>
                     </div>
-                </div>
-
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/JDK11%E6%BA%90%E7%A0%81/">
-                        <span class="chip bg-color">JDK11源码</span>
-                    </a>
-                    
-                    <a href="/tags/Java/">
-                        <span class="chip bg-color">Java</span>
-                    </a>
-                    
                 </div>
                 
             </div>
@@ -1118,48 +1181,32 @@ make: *** <span class="token punctuation">[</span>default<span class="token punc
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/09/07/erlang/erlang-1/">
+                <a href="/2022/06/18/kafka/1-kafka-de-she-ji/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="1-Erlang 语法基础">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
                         
-                        <span class="card-title">1-Erlang 语法基础</span>
+                        <span class="card-title"></span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            在终端输入erl即可进入erl环境的终端
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-09-07
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-06-18
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Erlang/" class="post-category">
-                                    Erlang
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            songxiaosheng
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Erlang/">
-                        <span class="chip bg-color">Erlang</span>
-                    </a>
-                    
-                    <a href="/tags/Erlang%E8%AF%AD%E6%B3%95/">
-                        <span class="chip bg-color">Erlang语法</span>
-                    </a>
-                    
                 </div>
                 
             </div>

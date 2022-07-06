@@ -72,6 +72,27 @@
   
   <entry>
     <title></title>
+    <link href="https://blog.elastic.link/2022/07/06/linux/1-linuxcpu-xing-neng-you-hua-ming-ling-da-quan/"/>
+    <id>https://blog.elastic.link/2022/07/06/linux/1-linuxcpu-xing-neng-you-hua-ming-ling-da-quan/</id>
+    <published>2022-07-06T00:09:34.679Z</published>
+    <updated>2022-07-06T00:13:02.871Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;uptime&quot;&gt;&lt;a href=&quot;#uptime&quot; class=&quot;headerlink&quot; title=&quot;uptime&quot;&gt;&lt;/a&gt;uptime&lt;/h1&gt;&lt;pre class=&quot;line-numbers language-bash&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
     <link href="https://blog.elastic.link/2022/07/02/kafka-1/"/>
     <id>https://blog.elastic.link/2022/07/02/kafka-1/</id>
     <published>2022-07-01T23:08:50.775Z</published>
@@ -84,6 +105,155 @@
         
     <summary type="html">&lt;p&gt;[Apache Kafka 3.2源码解析系列]-1-Kaka知识点全解析&lt;/p&gt;
 &lt;h1 id=&quot;1-Kaka知识全解析&quot;&gt;&lt;a href=&quot;#1-Kaka知识全解析&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/06/29/kafka/5-kafkaproducer-fa-song-shu-ju-de-luo-ji/"/>
+    <id>https://blog.elastic.link/2022/06/29/kafka/5-kafkaproducer-fa-song-shu-ju-de-luo-ji/</id>
+    <published>2022-06-29T00:40:24.980Z</published>
+    <updated>2022-07-04T00:32:51.217Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;6-KafkaProducer发送数据的逻辑&quot;&gt;&lt;a href=&quot;#6-KafkaProducer发送数据的逻辑&quot; class=&quot;headerlink&quot; title=&quot;6 KafkaProducer发送数据的逻辑&quot;&gt;&lt;/a&gt;6</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/06/21/kafka/6-kafkathread/"/>
+    <id>https://blog.elastic.link/2022/06/21/kafka/6-kafkathread/</id>
+    <published>2022-06-21T00:31:05.780Z</published>
+    <updated>2022-07-06T00:41:26.919Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/06/18/kafka/4-fa-song-qi-sender-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/06/18/kafka/4-fa-song-qi-sender-dui-xiang-de-chu-shi-hua/</id>
+    <published>2022-06-18T13:04:35.200Z</published>
+    <updated>2022-06-21T00:53:06.958Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;发送器对象的创建&quot;&gt;&lt;a href=&quot;#发送器对象的创建&quot; class=&quot;headerlink&quot; title=&quot;发送器对象的创建&quot;&gt;&lt;/a&gt;发送器对象的创建&lt;/h2&gt;&lt;p&gt;对应Sender 对应代码：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/06/18/kafka/3-kafkaproducer-sheng-chan-zhe-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/06/18/kafka/3-kafkaproducer-sheng-chan-zhe-dui-xiang-de-chu-shi-hua/</id>
+    <published>2022-06-18T13:04:35.200Z</published>
+    <updated>2022-06-18T13:04:35.200Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;3-1-关于KafkaProducer的长篇简介&quot;&gt;&lt;a href=&quot;#3-1-关于KafkaProducer的长篇简介&quot; class=&quot;headerlink&quot; title=&quot;3.1 关于KafkaProducer的长篇简介&quot;&gt;&lt;/a&gt;3.1</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/06/18/kafka/pei-zhi/"/>
+    <id>https://blog.elastic.link/2022/06/18/kafka/pei-zhi/</id>
+    <published>2022-06-18T13:01:08.189Z</published>
+    <updated>2022-06-18T13:01:08.189Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;1-4-1-代理配置&quot;&gt;&lt;a href=&quot;#1-4-1-代理配置&quot; class=&quot;headerlink&quot; title=&quot;1.4.1  代理配置&quot;&gt;&lt;/a&gt;1.4.1 </summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/06/18/kafka/2-cong-yi-ge-kafka-de-demo-shuo-qi/"/>
+    <id>https://blog.elastic.link/2022/06/18/kafka/2-cong-yi-ge-kafka-de-demo-shuo-qi/</id>
+    <published>2022-06-18T13:01:08.187Z</published>
+    <updated>2022-06-18T13:01:08.187Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;为了在理论中可以更好的理解一些细节,我们通过一个Demo开始来详细看kafka的实现原理,首先我们要做的是本地启动一个kafka,关于启动kakfa可以看前面这个文章.&lt;/p&gt;
+&lt;p&gt;启动完kafka之后我们就来编写一个生产者的示例代码,关于生产者的Demo来源于,kafk</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/06/18/kafka/1-kafka-de-she-ji/"/>
+    <id>https://blog.elastic.link/2022/06/18/kafka/1-kafka-de-she-ji/</id>
+    <published>2022-06-18T13:01:08.185Z</published>
+    <updated>2022-06-18T13:01:08.187Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;**</summary>
         
       
     
