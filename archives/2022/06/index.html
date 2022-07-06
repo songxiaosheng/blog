@@ -508,7 +508,7 @@
             <article class="cd-timeline-content" data-aos="fade-up">
                 <div class="article col s12 m6">
                     <div class="card">
-                        <a href="/2022/06/18/kafka/4-fa-song-qi-sender-dui-xiang-de-chu-shi-hua/">
+                        <a href="/2022/06/18/kafka/3-kafkaproducer-sheng-chan-zhe-dui-xiang-de-chu-shi-hua/">
                             <div class="card-image">
                                 
                                 
@@ -520,11 +520,8 @@
                         <div class="card-content article-content">
                             <div class="summary block-with-text">
                                 
-                                    发送器对象的创建对应Sender 对应代码：
-this.sender = newSender(logContext, kafkaClient, this.metadata);
-
-Sender类型实现了Runnable接口
-Sender对象处
+                                    3.1 关于KafkaProducer的长篇简介生产者用来发送消息到kafka代理服务器，我们先来看下KafkaProducer类型的官方说明：
+KafkaProducer是将记录发布到Kafka群集的Kafka客户端。生产者是线程安全的，
                                 
                             </div>
                             <div class="publish-info">
@@ -561,7 +558,7 @@ Sender对象处
             <article class="cd-timeline-content" data-aos="fade-up">
                 <div class="article col s12 m6">
                     <div class="card">
-                        <a href="/2022/06/18/kafka/3-kafkaproducer-sheng-chan-zhe-dui-xiang-de-chu-shi-hua/">
+                        <a href="/2022/06/18/kafka/4-fa-song-qi-sender-dui-xiang-de-chu-shi-hua/">
                             <div class="card-image">
                                 
                                 
@@ -573,8 +570,11 @@ Sender对象处
                         <div class="card-content article-content">
                             <div class="summary block-with-text">
                                 
-                                    3.1 关于KafkaProducer的长篇简介生产者用来发送消息到kafka代理服务器，我们先来看下KafkaProducer类型的官方说明：
-KafkaProducer是将记录发布到Kafka群集的Kafka客户端。生产者是线程安全的，
+                                    发送器对象的创建对应Sender 对应代码：
+this.sender = newSender(logContext, kafkaClient, this.metadata);
+
+Sender类型实现了Runnable接口
+Sender对象处
                                 
                             </div>
                             <div class="publish-info">
@@ -1039,7 +1039,7 @@ $(function () {
     <!--腾讯兔小巢-->
     
         <div style="position:fixed;bottom:125px;right:16px;cursor: pointer;">
-            <a title="兔小巢" target="_blank" rel="noopener" href="https://support.qq.com/products/1221"><i class="fa fa-comments fa-3x"  aria-hidden="true"></i></a>
+            <a title="兔小巢" target="_blank" rel="noopener" href="https://support.qq.com/products/416824"><i class="fa fa-comments fa-3x"  aria-hidden="true"></i></a>
         </div>
     
     
