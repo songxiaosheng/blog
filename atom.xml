@@ -157,27 +157,6 @@
   
   <entry>
     <title></title>
-    <link href="https://blog.elastic.link/2022/06/18/kafka/3-kafkaproducer-sheng-chan-zhe-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/06/18/kafka/3-kafkaproducer-sheng-chan-zhe-dui-xiang-de-chu-shi-hua/</id>
-    <published>2022-06-18T13:04:35.200Z</published>
-    <updated>2022-06-18T13:04:35.200Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;3-1-关于KafkaProducer的长篇简介&quot;&gt;&lt;a href=&quot;#3-1-关于KafkaProducer的长篇简介&quot; class=&quot;headerlink&quot; title=&quot;3.1 关于KafkaProducer的长篇简介&quot;&gt;&lt;/a&gt;3.1</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
     <link href="https://blog.elastic.link/2022/06/18/kafka/4-fa-song-qi-sender-dui-xiang-de-chu-shi-hua/"/>
     <id>https://blog.elastic.link/2022/06/18/kafka/4-fa-song-qi-sender-dui-xiang-de-chu-shi-hua/</id>
     <published>2022-06-18T13:04:35.200Z</published>
@@ -190,6 +169,27 @@
         
     <summary type="html">&lt;h2 id=&quot;发送器对象的创建&quot;&gt;&lt;a href=&quot;#发送器对象的创建&quot; class=&quot;headerlink&quot; title=&quot;发送器对象的创建&quot;&gt;&lt;/a&gt;发送器对象的创建&lt;/h2&gt;&lt;p&gt;对应Sender 对应代码：&lt;/p&gt;
 &lt;pre class=&quot;line-numbers</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/06/18/kafka/3-kafkaproducer-sheng-chan-zhe-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/06/18/kafka/3-kafkaproducer-sheng-chan-zhe-dui-xiang-de-chu-shi-hua/</id>
+    <published>2022-06-18T13:04:35.200Z</published>
+    <updated>2022-06-18T13:04:35.200Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;3-1-关于KafkaProducer的长篇简介&quot;&gt;&lt;a href=&quot;#3-1-关于KafkaProducer的长篇简介&quot; class=&quot;headerlink&quot; title=&quot;3.1 关于KafkaProducer的长篇简介&quot;&gt;&lt;/a&gt;3.1</summary>
         
       
     
