@@ -58,6 +58,33 @@
     
     
     <entry>
+      <title>escocked 5.8.0源码解析系列-1-escokd简介</title>
+      <link href="/2016/09/07/esockd/1-escockd-ru-men/"/>
+      <url>/2016/09/07/esockd/1-escockd-ru-men/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h2><p>escocked是emqx开发的Erlang通用非阻塞TCP/SSL套接字服务器<br>特征</p><ul><li>通用非阻塞TCP/SSL套接字服务器</li><li>接受池和异步TCP接受</li><li>UDP/DTLS服务器</li><li>最大连接数管理</li><li>通过对等地址允许/拒绝</li><li>代理协议V1/V2</li><li>Keepalive支持</li><li>利率限制</li><li>IPv6支持</li></ul><h2 id="克隆代码"><a href="#克隆代码" class="headerlink" title="克隆代码"></a>克隆代码</h2><pre class="line-numbers language-none"><code class="language-none">git clone git@github.com:emqx/esockd.git<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><h2 id="切换分支"><a href="#切换分支" class="headerlink" title="切换分支"></a>切换分支</h2><pre class="line-numbers language-none"><code class="language-none">git checkout v5.8.0<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><h2 id="查看分支"><a href="#查看分支" class="headerlink" title="查看分支"></a>查看分支</h2><pre class="line-numbers language-none"><code class="language-none">mac@MacdeMacBook-Pro esockd % git branch -v* (HEAD detached at v5.8.0) 9b959fc Merge pull request #142 from emqx/refactor/avoid_anonymous_func  master                    3ba3a8a Merge pull request #162 from lafirest/fix/udp_listen_addr<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> escoked </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> escoked源码 </tag>
+            
+            <tag> erlang </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Apache Kafka 3.2源码解析系列-1-Kaka知识点全解析</title>
       <link href="/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/"/>
       <url>/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/</url>
