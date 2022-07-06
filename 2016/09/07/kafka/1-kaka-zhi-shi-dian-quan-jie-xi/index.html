@@ -454,7 +454,7 @@
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">wget</span> https://dlcdn.apache.org/kafka/3.1.0/kafka_2.13-3.1.0.tgz
 $ <span class="token function">tar</span> -xzf kafka_2.13-3.1.0.tgz
 $ <span class="token builtin class-name">cd</span> kafka_2.13-3.1.0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><img src="/../../img/kafka/1_8_list.png" alt="在这里插入图片描述"></p>
+<p><img src="/img/kafka/1_8_list.png" alt="在这里插入图片描述"></p>
 <h3 id="1-2-2-第二步：启动KAFKA环境"><a href="#1-2-2-第二步：启动KAFKA环境" class="headerlink" title="1.2.2 第二步：启动KAFKA环境"></a>1.2.2 第二步：启动KAFKA环境</h3><p>注意：您的本地环境必须安装 Java 8+。</p>
 <p>运行以下命令以按正确顺序启动所有服务：</p>
 <p><strong>1) 安装Java环境</strong><br>这里我以Centos yum安装 jdk11为例</p>
@@ -487,24 +487,24 @@ yum <span class="token function">install</span> -y java-11-openjdk-headless.x86_
 <p>  注意：很快，Apache Kafka将不再需要ZooKeeper。<br>  下面这个Zookeeper是Kafka自带的Zookeeper 这个版本是3.6.3的Zookeeper</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/zookeeper-server-start.sh config/zookeeper.properties<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<p><img src="/../../img/kafka/1_7_start_zk.png" alt="在这里插入图片描述"></p>
+<p><img src="/img/kafka/1_7_start_zk.png" alt="在这里插入图片描述"></p>
 <p><strong>2) 启动kafka</strong><br>打开另一个终端会话并运行：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/kafka-server-start.sh config/server.properties<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p><img src="/../../img/kafka/1_6_startkafka.png" alt="在这里插入图片描述"></p>
+<p><img src="/img/kafka/1_6_startkafka.png" alt="在这里插入图片描述"></p>
 <p>成功启动所有服务后，您将拥有一个基本的 Kafka 环境运行并可以使用。</p>
 <h3 id="1-2-3-第-3-步：创建一个主题来存储您的事件"><a href="#1-2-3-第-3-步：创建一个主题来存储您的事件" class="headerlink" title="1.2.3 第 3 步：创建一个主题来存储您的事件"></a>1.2.3 第 3 步：创建一个主题来存储您的事件</h3><p>Kafka 是一个分布式事件流平台，可让您跨多台机器 读取、写入、存储和处理 事件（在文档中也称为记录或 消息）。</p>
 <p>示例事件包括支付交易、来自手机的地理位置更新、运输订单、来自物联网设备或医疗设备的传感器测量等等。这些事件被组织并存储在 主题中。非常简化，主题类似于文件系统中的文件夹，事件是该文件夹中的文件。</p>
 <p>因此，在您编写第一个事件之前，您必须创建一个主题。打开另一个终端会话并运行：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<p><img src="/../../img/kafka/1_5_topic.png" alt="在这里插入图片描述"></p>
+<p><img src="/img/kafka/1_5_topic.png" alt="在这里插入图片描述"></p>
 <p>Kafka 的所有命令行工具都有其他选项：运行kafka-topics.sh不带任何参数的命令以显示使用信息。例如，它还可以显示 新主题 的分区数等详细信息：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/kafka-topics.sh --describe --topic quickstart-events --bootstrap-server localhost:9092
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">
 Topic:quickstart-events  PartitionCount:1    ReplicationFactor:1 Configs:
     Topic: quickstart-events Partition: <span class="token number">0</span>    Leader: <span class="token number">0</span>   Replicas: <span class="token number">0</span> Isr: <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><img src="/../../img/kafka/4_start_topic.png" alt="在这里插入图片描述"></p>
+<p><img src="/img/kafka/4_start_topic.png" alt="在这里插入图片描述"></p>
 <h3 id="1-2-4-第-4-步：将一些事件写入主题"><a href="#1-2-4-第-4-步：将一些事件写入主题" class="headerlink" title="1.2.4 第 4 步：将一些事件写入主题"></a>1.2.4 第 4 步：将一些事件写入主题</h3><p>Kafka 客户端通过网络与 Kafka 代理通信以写入（或读取）事件。一旦收到，代理将以持久和容错的方式存储事件，只要您需要 - 甚至永远。</p>
 <p>运行控制台生产者客户端将一些事件写入您的主题。默认情况下，您输入的每一行都会导致将一个单独的事件写入主题。</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/kafka-console-producer.sh --topic quickstart-events --bootstrap-server localhost:9092<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -512,14 +512,14 @@ Topic:quickstart-events  PartitionCount:1    ReplicationFactor:1 Configs:
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">This is my first event
 This is my second event<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<p><img src="/../../img/kafka/3_kafka_console.png" alt="在这里插入图片描述"></p>
+<p><img src="/img/kafka/3_kafka_console.png" alt="在这里插入图片描述"></p>
 <p>您可以随时停止生产者客户端<strong>Ctrl-C</strong> </p>
 <h3 id="1-2-5-第-5-步：消费事件"><a href="#1-2-5-第-5-步：消费事件" class="headerlink" title="1.2.5 第 5 步：消费事件"></a>1.2.5 第 5 步：消费事件</h3><p>打开另一个终端会话并运行控制台使用者客户端以读取您刚刚创建的事件：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/kafka-console-consumer.sh --topic quickstart-events --from-beginning --bootstrap-server localhost:9092<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">This is my first event
 This is my second event<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<p>执行命令后会将所有消息消费掉入下图所示:<br><img src="/../../img/kafka/2_kafka_start.png" alt="在这里插入图片描述"></p>
+<p>执行命令后会将所有消息消费掉入下图所示:<br><img src="/img/kafka/2_kafka_start.png" alt="在这里插入图片描述"></p>
 <p>您可以随时停止消费者客户端<strong>Ctrl-C</strong> </p>
 <p>随意尝试：例如，切换回您的生产者终端（上一步）以编写其他事件，并查看事件如何立即显示在您的消费者终端中。</p>
 <p>因为事件被持久地存储在 Kafka 中，所以它们可以被尽可能多的消费者多次读取。您可以通过打开另一个终端会话并再次重新运行上一个命令来轻松验证这一点。</p>
@@ -545,7 +545,7 @@ This is my second event<span aria-hidden="true" class="line-numbers-rows"><span>
 <li><p>主题中的事件可以根据需要随时读取——与传统的消息传递系统不同，事件在消费后不会被删除。相反，您可以通过每个主题的配置设置来定义 Kafka 应该将您的事件保留多长时间，之后旧事件将被丢弃。Kafka 的性能在数据大小方面实际上是恒定的，因此长时间存储数据是非常好的</p>
 </li>
 </ul>
-<h4 id="1-3-1-4-分区"><a href="#1-3-1-4-分区" class="headerlink" title="1.3.1.4 分区"></a>1.3.1.4 分区</h4><p> <strong>主题</strong>是<strong>分区</strong>的，这意味着一个主题分布在位于不同 Kafka 代理上的多个“桶”中。数据的这种分布式放置对于可伸缩性非常重要，因为它允许客户端应用程序同时从多个代理读取和写入数据。<strong>当一个新事件发布到一个主题时，它实际上是附加到主题的分区之一</strong>。具有相同事件键（例如，客户或车辆 ID）的事件被写入同一个分区，并且 Kafka保证给定主题分区的任何消费者将始终以与写入事件完全相同的顺序读取该分区的事件。<br><img src="/../../img/kafka/partion.png" alt="在这里插入图片描述"></p>
+<h4 id="1-3-1-4-分区"><a href="#1-3-1-4-分区" class="headerlink" title="1.3.1.4 分区"></a>1.3.1.4 分区</h4><p> <strong>主题</strong>是<strong>分区</strong>的，这意味着一个主题分布在位于不同 Kafka 代理上的多个“桶”中。数据的这种分布式放置对于可伸缩性非常重要，因为它允许客户端应用程序同时从多个代理读取和写入数据。<strong>当一个新事件发布到一个主题时，它实际上是附加到主题的分区之一</strong>。具有相同事件键（例如，客户或车辆 ID）的事件被写入同一个分区，并且 Kafka保证给定主题分区的任何消费者将始终以与写入事件完全相同的顺序读取该分区的事件。<br><img src="/img/kafka/partion.png" alt="在这里插入图片描述"></p>
 <p>此示例主题有四个分区 P1–P4。两个不同的生产者客户端通过网络将事件写入主题的分区，彼此独立地向主题发布新事件。具有相同键的事件（在图中由它们的颜色表示）被写入同一个分区。请注意，如果合适的话，两个生产者都可以写入同一个分区。</p>
 <p>为了使您的数据具有容错性和高可用性，可以复制每个主题，甚至跨地理区域或数据中心，以便始终有多个代理拥有数据副本，以防万一出现问题，您想要对经纪人进行维护，等等。一个常见的生产设置是复制因子为 3，即始终存在三个数据副本。此复制在主题分区级别执行。</p>
 <h3 id="1-3-2-Kafka-API"><a href="#1-3-2-Kafka-API" class="headerlink" title="1.3.2 Kafka API"></a>1.3.2 Kafka API</h3><p>Kafka包括五个核心api：</p>
@@ -576,7 +576,7 @@ This is my second event<span aria-hidden="true" class="line-numbers-rows"><span>
 	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>3.1.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>查看原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="/../../img/weixin/gongzhonghao.png" alt="在这里插入图片描述"></p>
+<p>查看原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="/img/weixin/gongzhonghao.png" alt="在这里插入图片描述"></p>
 
                 
             </div>
@@ -1144,7 +1144,7 @@ This is my second event<span aria-hidden="true" class="line-numbers-rows"><span>
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2016/09/07/erlang/esockd/1-escockd-ru-men/">
+                <a href="/2016/09/07/esockd/1-escockd-ru-men/">
                     <div class="card-image">
                         
                         
