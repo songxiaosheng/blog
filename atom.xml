@@ -241,31 +241,4 @@
     
   </entry>
   
-  <entry>
-    <title>1-Kafka的设计</title>
-    <link href="https://blog.elastic.link/2016/09/07/kafka/1-kafka-de-she-ji/"/>
-    <id>https://blog.elastic.link/2016/09/07/kafka/1-kafka-de-she-ji/</id>
-    <published>2016-09-07T12:25:00.000Z</published>
-    <updated>2022-07-06T14:43:17.712Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;**</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
 </feed>
