@@ -351,14 +351,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.2k
+                    2.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    8 分
+                    9 分
                 </div>
                 
 
@@ -548,52 +548,63 @@
 <p>另外可以看到的是这里使用了双重校验锁来保证单例对象的创建，发现Dubbo种大量的使用了双重校验锁的逻辑。</p>
 <h3 id="21-4-2-初始化引用服务"><a href="#21-4-2-初始化引用服务" class="headerlink" title="21.4.2 初始化引用服务"></a>21.4.2 初始化引用服务</h3><p>这个就直接看代码了这，初始化过程相对复杂一点，我们一点点来看<br>ReferenceConfig类型init()方法</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//初始化标记变量保证只初始化一次，这里又是加锁🔐又是加标记变量的</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>initialized<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token keyword">return</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
         initialized <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-
+        <span class="token comment">//刷新配置</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">isRefreshed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
 
         <span class="token comment">// init serviceMetadata</span>
+        <span class="token comment">//初始化ServiceMetadata类型对象serviceMetadata 为其设置服务基本属性比如版本号，分组，服务接口名</span>
         <span class="token function">initServiceMetadata</span><span class="token punctuation">(</span>consumer<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
+      <span class="token comment">//继续初始化元数据信息 服务接口类型和key</span>
         serviceMetadata<span class="token punctuation">.</span><span class="token function">setServiceType</span><span class="token punctuation">(</span><span class="token function">getServiceInterfaceClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment">// TODO, uncomment this line once service key is unified</span>
         serviceMetadata<span class="token punctuation">.</span><span class="token function">setServiceKey</span><span class="token punctuation">(</span>URL<span class="token punctuation">.</span><span class="token function">buildKey</span><span class="token punctuation">(</span>interfaceName<span class="token punctuation">,</span> group<span class="token punctuation">,</span> version<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
+        <span class="token comment">//配置转Map类型</span>
         <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> referenceParameters <span class="token operator">=</span> <span class="token function">appendConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment">// init service-application mapping</span>
+        <span class="token comment">//来自本地存储和url参数的初始化映射。 参数转URL配置初始化 Dubbo中喜欢用url作为配置的一种处理方式</span>
         <span class="token function">initServiceAppsMapping</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
+         <span class="token comment">//本地内存模块服务存储库</span>
         <span class="token class-name">ModuleServiceRepository</span> repository <span class="token operator">=</span> <span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getServiceRepository</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//ServiceModel和ServiceMetadata在某种程度上是相互重复的。我们将来应该合并它们。</span>
         <span class="token class-name">ServiceDescriptor</span> serviceDescriptor<span class="token punctuation">;</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>NATIVE_STUB<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token function">getProxy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             serviceDescriptor <span class="token operator">=</span> <span class="token class-name">StubSuppliers</span><span class="token punctuation">.</span><span class="token function">getServiceDescriptor</span><span class="token punctuation">(</span>interfaceName<span class="token punctuation">)</span><span class="token punctuation">;</span>
             repository<span class="token punctuation">.</span><span class="token function">registerService</span><span class="token punctuation">(</span>serviceDescriptor<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment">//本地存储库注册服务接口类型</span>
             serviceDescriptor <span class="token operator">=</span> repository<span class="token punctuation">.</span><span class="token function">registerService</span><span class="token punctuation">(</span>interfaceClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
+        <span class="token comment">//消费者模型对象</span>
         consumerModel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConsumerModel</span><span class="token punctuation">(</span>serviceMetadata<span class="token punctuation">.</span><span class="token function">getServiceKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> proxy<span class="token punctuation">,</span> serviceDescriptor<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">,</span>
             <span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> serviceMetadata<span class="token punctuation">,</span> <span class="token function">createAsyncMethodInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
+         <span class="token comment">//本地存储库注册消费者模型对象</span>
         repository<span class="token punctuation">.</span><span class="token function">registerConsumer</span><span class="token punctuation">(</span>consumerModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
+        <span class="token comment">//与前面代码一样基础初始化服务元数据对象为其设置附加参数</span>
         serviceMetadata<span class="token punctuation">.</span><span class="token function">getAttachments</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">putAll</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
+        <span class="token comment">//创建服务的代理对象 ！！！核心代码在这里</span>
         ref <span class="token operator">=</span> <span class="token function">createProxy</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
+        <span class="token comment">//为服务元数据对象设置代理对象</span>
         serviceMetadata<span class="token punctuation">.</span><span class="token function">setTarget</span><span class="token punctuation">(</span>ref<span class="token punctuation">)</span><span class="token punctuation">;</span>
         serviceMetadata<span class="token punctuation">.</span><span class="token function">addAttribute</span><span class="token punctuation">(</span>PROXY_CLASS_REF<span class="token punctuation">,</span> ref<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
         consumerModel<span class="token punctuation">.</span><span class="token function">setProxyObject</span><span class="token punctuation">(</span>ref<span class="token punctuation">)</span><span class="token punctuation">;</span>
         consumerModel<span class="token punctuation">.</span><span class="token function">initMethodModels</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
+        <span class="token comment">//检查invoker对象初始结果</span>
         <span class="token function">checkInvokerAvailable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>未完待续</p>
 
                 
@@ -1332,7 +1343,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">16.5k</span>
+                        class="white-color">16.8k</span>
             
             
             
