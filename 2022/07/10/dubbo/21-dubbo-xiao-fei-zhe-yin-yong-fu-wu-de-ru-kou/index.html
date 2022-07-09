@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="中间件源码">
-    <meta name="description" content="21-Dubbo3服务引用的入口21.1 简介前面我们通过Demo说了一个服务引用配置的创建。另外也在前面的文章说了服务提供者的启动完整过程，不过在说服务提供者启动的过程中并未提到服务消费者是如何发现服务，如果调用服务的，这里先就不再说关于">
+    <meta name="keywords" content="21-Dubbo3消费者引用服务入口, 中间件源码">
+    <meta name="description" content="Dubbo3消费者引用服务入口">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +19,7 @@
 
     
 
-    <title>中间件源码</title>
+    <title>21-Dubbo3消费者引用服务入口 | 中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
@@ -161,12 +161,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">21-Dubbo3消费者引用服务入口</h1>
                 </div>
             </div>
         </div>
@@ -280,12 +280,33 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Dubbo/">
+                                <span class="chip bg-color">Dubbo</span>
+                            </a>
+                        
+                            <a href="/tags/Dubbo3/">
+                                <span class="chip bg-color">Dubbo3</span>
+                            </a>
+                        
+                            <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                <span class="chip bg-color">Dubbo3源码解析</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                Dubbo3源码
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -294,7 +315,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-07-09
+                    2022-07-10
                 </div>
                 
 
@@ -308,7 +329,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    775
+                    777
                 </div>
                 
 
@@ -333,7 +354,7 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="21-Dubbo3服务引用的入口"><a href="#21-Dubbo3服务引用的入口" class="headerlink" title="21-Dubbo3服务引用的入口"></a>21-Dubbo3服务引用的入口</h1><h2 id="21-1-简介"><a href="#21-1-简介" class="headerlink" title="21.1 简介"></a>21.1 简介</h2><p>前面我们通过Demo说了一个服务引用配置的创建。另外也在前面的文章说了服务提供者的启动完整过程，不过在说服务提供者启动的过程中并未提到服务消费者是如何发现服务，如果调用服务的，这里先就不再说关于服务消费者启动的一个细节了，直接来看前面未提到的服务消费者是如何引用到服务提供者提供的服务的。<br>先来回顾下样例代码：</p>
+                <h1 id="21-Dubbo3消费者引用服务入口"><a href="#21-Dubbo3消费者引用服务入口" class="headerlink" title="21-Dubbo3消费者引用服务入口"></a>21-Dubbo3消费者引用服务入口</h1><h2 id="21-1-简介"><a href="#21-1-简介" class="headerlink" title="21.1 简介"></a>21.1 简介</h2><p>前面我们通过Demo说了一个服务引用配置的创建。另外也在前面的文章说了服务提供者的启动完整过程，不过在说服务提供者启动的过程中并未提到服务消费者是如何发现服务，如果调用服务的，这里先就不再说关于服务消费者启动的一个细节了，直接来看前面未提到的服务消费者是如何引用到服务提供者提供的服务的。<br>先来回顾下样例代码：</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ConsumerApplication</span> <span class="token punctuation">{</span>
     <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token function">runWithBootstrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -461,7 +482,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blog.elastic.link/2022/07/09/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/">https://blog.elastic.link/2022/07/09/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/</a>
+                    <a href="https://blog.elastic.link/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/">https://blog.elastic.link/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -498,7 +519,19 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/Dubbo/">
+                                    <span class="chip bg-color">Dubbo</span>
+                                </a>
+                            
+                                <a href="/tags/Dubbo3/">
+                                    <span class="chip bg-color">Dubbo3</span>
+                                </a>
+                            
+                                <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                    <span class="chip bg-color">Dubbo3源码解析</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -941,19 +974,19 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/09/07/erlang/erlang-1/">
+                <a href="/2022/09/07/jdk/jdk11-1/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="1-Erlang 语法基础">
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="1-过五关斩六将开发属于自己的jdk版本">
                         
-                        <span class="card-title">1-Erlang 语法基础</span>
+                        <span class="card-title">1-过五关斩六将开发属于自己的jdk版本</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            在终端输入erl即可进入erl环境的终端
+                            OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
                         
                     </div>
                     <div class="publish-info">
@@ -964,8 +997,8 @@
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Erlang/" class="post-category">
-                                    Erlang
+                            <a href="/categories/JDK%E6%BA%90%E7%A0%81/" class="post-category">
+                                    JDK源码
                                 </a>
                             
                             
@@ -975,12 +1008,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Erlang/">
-                        <span class="chip bg-color">Erlang</span>
+                    <a href="/tags/JDK11%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">JDK11源码</span>
                     </a>
                     
-                    <a href="/tags/Erlang%E8%AF%AD%E6%B3%95/">
-                        <span class="chip bg-color">Erlang语法</span>
+                    <a href="/tags/Java/">
+                        <span class="chip bg-color">Java</span>
                     </a>
                     
                 </div>
