@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>中间件源码</title>
   
-  <subtitle>中间件源码调研，分析，评测</subtitle>
+  <subtitle>开源组件调研，分析，评测</subtitle>
   <link href="https://blog.elastic.link/atom.xml" rel="self"/>
   
   <link href="https://blog.elastic.link/"/>
