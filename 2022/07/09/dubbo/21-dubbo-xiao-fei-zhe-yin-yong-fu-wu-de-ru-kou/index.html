@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="中间件源码">
-    <meta name="description" content="">
+    <meta name="description" content="21-Dubbo3服务引用的入口21.1 简介前面我们通过Demo说了一个服务引用配置的创建。另外也在前面的文章说了服务提供者的启动完整过程，不过在说服务提供者启动的过程中并未提到服务消费者是如何发现服务，如果调用服务的，这里先就不再说关于">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -308,14 +308,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    0
+                    775
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    3 分
                 </div>
                 
 
@@ -333,7 +333,109 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h1 id="21-Dubbo3服务引用的入口"><a href="#21-Dubbo3服务引用的入口" class="headerlink" title="21-Dubbo3服务引用的入口"></a>21-Dubbo3服务引用的入口</h1><h2 id="21-1-简介"><a href="#21-1-简介" class="headerlink" title="21.1 简介"></a>21.1 简介</h2><p>前面我们通过Demo说了一个服务引用配置的创建。另外也在前面的文章说了服务提供者的启动完整过程，不过在说服务提供者启动的过程中并未提到服务消费者是如何发现服务，如果调用服务的，这里先就不再说关于服务消费者启动的一个细节了，直接来看前面未提到的服务消费者是如何引用到服务提供者提供的服务的。<br>先来回顾下样例代码：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ConsumerApplication</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">runWithBootstrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">runWithBootstrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">ReferenceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">DemoService</span><span class="token punctuation">&gt;</span></span> reference <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReferenceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        reference<span class="token punctuation">.</span><span class="token function">setInterface</span><span class="token punctuation">(</span><span class="token class-name">DemoService</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        reference<span class="token punctuation">.</span><span class="token function">setGeneric</span><span class="token punctuation">(</span><span class="token string">"true"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        reference<span class="token punctuation">.</span><span class="token function">setProtocol</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">DubboBootstrap</span> bootstrap <span class="token operator">=</span> <span class="token class-name">DubboBootstrap</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ApplicationConfig</span> applicationConfig <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ApplicationConfig</span><span class="token punctuation">(</span><span class="token string">"dubbo-demo-api-consumer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        applicationConfig<span class="token punctuation">.</span><span class="token function">setQosEnable</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        applicationConfig<span class="token punctuation">.</span><span class="token function">setQosPort</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        bootstrap<span class="token punctuation">.</span><span class="token function">application</span><span class="token punctuation">(</span>applicationConfig<span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">registry</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegistryConfig</span><span class="token punctuation">(</span><span class="token string">"zookeeper://8.131.79.126:2181"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">protocol</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProtocolConfig</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">reference</span><span class="token punctuation">(</span>reference<span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">DemoService</span> demoService <span class="token operator">=</span> bootstrap<span class="token punctuation">.</span><span class="token function">getCache</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>reference<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> message <span class="token operator">=</span> demoService<span class="token punctuation">.</span><span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token string">"dubbo"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// generic invoke</span>
+        <span class="token class-name">GenericService</span> genericService <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">GenericService</span><span class="token punctuation">)</span> demoService<span class="token punctuation">;</span>
+        <span class="token class-name">Object</span> genericInvokeResult <span class="token operator">=</span> genericService<span class="token punctuation">.</span>$<span class="token function">invoke</span><span class="token punctuation">(</span><span class="token string">"sayHello"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token string">"dubbo generic invoke"</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>genericInvokeResult<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这段代码我们前面详细说了服务引用的配置ReferenceConfig和Dubbo启动器启动应用的过程DubboBootstrap，后面我们直接定位到消费者引用服务的代码位置来看。</p>
+<h2 id="21-2-入口代码"><a href="#21-2-入口代码" class="headerlink" title="21.2 入口代码"></a>21.2 入口代码</h2><h3 id="21-2-1-DefaultModuleDeployer的start方法"><a href="#21-2-1-DefaultModuleDeployer的start方法" class="headerlink" title="21.2.1 DefaultModuleDeployer的start方法"></a>21.2.1 DefaultModuleDeployer的start方法</h3><p>第一个要关注的就是模块发布器DefaultModuleDeployer的start方法，这个start方法包含了Dubbo应用启动的过程</p>
+<p>DefaultModuleDeployer的start方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token class-name">Future</span> <span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IllegalStateException</span> <span class="token punctuation">{</span>
+          <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>省略掉若干代码
+
+            <span class="token function">onModuleStarting</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// initialize</span>
+            applicationDeployer<span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// export services</span>
+            <span class="token function">exportServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// prepare application instance</span>
+            <span class="token comment">// exclude internal module to avoid wait itself</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>moduleModel <span class="token operator">!=</span> moduleModel<span class="token punctuation">.</span><span class="token function">getApplicationModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getInternalModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                applicationDeployer<span class="token punctuation">.</span><span class="token function">prepareInternalModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">// refer services</span>
+            <span class="token function">referServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>省略掉若干代码
+        <span class="token keyword">return</span> startFuture<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这个方法大部分代码已经省略，也不会详细去说了，感兴趣的可以看之前讲到的博客，这里主要来看引用服务方法referServices</p>
+<h3 id="21-2-2-DefaultModuleDeployer的referServices方法"><a href="#21-2-2-DefaultModuleDeployer的referServices方法" class="headerlink" title="21.2.2 DefaultModuleDeployer的referServices方法"></a>21.2.2 DefaultModuleDeployer的referServices方法</h3><p>下面就要来看消费者应用如何引用的服务的入口了，这个方法主要从大的方面做了一些服务引用生命周期的代码，看懂了这个方法我们就可以不依赖Dubbo负载的启动逻辑可以单独调用ReferenceConfigBase类型的对应方法来刷新，启动，销毁引用的服务了这里先来看下代码再详细介绍内容：</p>
+<p>DefaultModuleDeployer的referServices方法 </p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">referServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token comment">//这个是获取配置的所有的ReferenceConfigBase类型对象</span>
+    configManager<span class="token punctuation">.</span><span class="token function">getReferences</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>rc <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token class-name">ReferenceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> referenceConfig <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">ReferenceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> rc<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>referenceConfig<span class="token punctuation">.</span><span class="token function">isRefreshed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment">//刷新引用配置</span>
+                referenceConfig<span class="token punctuation">.</span><span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>rc<span class="token punctuation">.</span><span class="token function">shouldInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>referAsync <span class="token operator">||</span> rc<span class="token punctuation">.</span><span class="token function">shouldReferAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token class-name">ExecutorService</span> executor <span class="token operator">=</span> executorRepository<span class="token punctuation">.</span><span class="token function">getServiceReferExecutor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token class-name">CompletableFuture</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Void</span><span class="token punctuation">&gt;</span></span> future <span class="token operator">=</span> <span class="token class-name">CompletableFuture</span><span class="token punctuation">.</span><span class="token function">runAsync</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                            <span class="token comment">//间接的通过缓存对象来引用服务配置</span>
+                            referenceCache<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>rc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token function">getIdentifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" refer async catch error : "</span> <span class="token operator">+</span> t<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span><span class="token punctuation">,</span> executor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                    asyncReferringFutures<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>future<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token comment">//间接的通过缓存对象来引用服务配置</span>
+                    referenceCache<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>rc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token function">getIdentifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" refer catch error."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//出现异常销毁引用配置</span>
+            referenceCache<span class="token punctuation">.</span><span class="token function">destroy</span><span class="token punctuation">(</span>rc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">throw</span> t<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在这个代码中我们核心需要关心的就是SimpleReferenceCache类型的get方法了，在获取服务对象之外包装了一层缓存。</p>
+
                 
             </div>
             <hr/>
@@ -839,19 +941,19 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/09/07/jdk/jdk11-1/">
+                <a href="/2022/09/07/erlang/erlang-1/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="1-过五关斩六将开发属于自己的jdk版本">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="1-Erlang 语法基础">
                         
-                        <span class="card-title">1-过五关斩六将开发属于自己的jdk版本</span>
+                        <span class="card-title">1-Erlang 语法基础</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
+                            在终端输入erl即可进入erl环境的终端
                         
                     </div>
                     <div class="publish-info">
@@ -862,8 +964,8 @@
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/JDK%E6%BA%90%E7%A0%81/" class="post-category">
-                                    JDK源码
+                            <a href="/categories/Erlang/" class="post-category">
+                                    Erlang
                                 </a>
                             
                             
@@ -873,12 +975,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/JDK11%E6%BA%90%E7%A0%81/">
-                        <span class="chip bg-color">JDK11源码</span>
+                    <a href="/tags/Erlang/">
+                        <span class="chip bg-color">Erlang</span>
                     </a>
                     
-                    <a href="/tags/Java/">
-                        <span class="chip bg-color">Java</span>
+                    <a href="/tags/Erlang%E8%AF%AD%E6%B3%95/">
+                        <span class="chip bg-color">Erlang语法</span>
                     </a>
                     
                 </div>
@@ -1058,7 +1160,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">14.3k</span>
+                        class="white-color">15.1k</span>
             
             
             
