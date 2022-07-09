@@ -351,14 +351,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    824
+                    2.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    8 分
                 </div>
                 
 
@@ -478,7 +478,123 @@
     <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>在这个代码中我们核心需要关心的就是SimpleReferenceCache类型的get方法了，在获取服务对象之外包装了一层缓存。</p>
-<h2 id="21-3-开始引用服务"><a href="#21-3-开始引用服务" class="headerlink" title="21.3 开始引用服务"></a>21.3 开始引用服务</h2><h3 id="21-3-1-SimpleReferenceCache是什么？"><a href="#21-3-1-SimpleReferenceCache是什么？" class="headerlink" title="21.3.1 SimpleReferenceCache是什么？"></a>21.3.1 SimpleReferenceCache是什么？</h3><h3 id="21-3-2-引用服务之前的缓存处理逻辑？"><a href="#21-3-2-引用服务之前的缓存处理逻辑？" class="headerlink" title="21.3.2 引用服务之前的缓存处理逻辑？"></a>21.3.2 引用服务之前的缓存处理逻辑？</h3><h2 id="21-4-初始化引用服务的过程"><a href="#21-4-初始化引用服务的过程" class="headerlink" title="21.4 初始化引用服务的过程"></a>21.4 初始化引用服务的过程</h2><p>未完待续</p>
+<p>如果出现了异常则执行referenceCache的destroy方法进行销毁引用配置。</p>
+<h2 id="21-3-开始引用服务"><a href="#21-3-开始引用服务" class="headerlink" title="21.3 开始引用服务"></a>21.3 开始引用服务</h2><h3 id="21-3-1-SimpleReferenceCache是什么？"><a href="#21-3-1-SimpleReferenceCache是什么？" class="headerlink" title="21.3.1 SimpleReferenceCache是什么？"></a>21.3.1 SimpleReferenceCache是什么？</h3><p>一个用于缓存引用ReferenceConfigBase的util工具类。<br>ReferenceConfigBase是一个重对象，对于频繁创建ReferenceConfigBase的框架来说，有必要缓存这些对象。<br>如果需要使用复杂的策略，可以实现并使用自己的ReferenceConfigBase缓存<br>这个Cache是引用服务的开始如果我们想在代码中自定义一些服务引用的逻辑，可以直接创建SimpleReferenceCache类型对象然后调用其get方法进行引用服务。那这个缓存对象是和缓存与引用服务的可以继续往下看。</p>
+<h3 id="21-3-2-引用服务之前的缓存处理逻辑？"><a href="#21-3-2-引用服务之前的缓存处理逻辑？" class="headerlink" title="21.3.2 引用服务之前的缓存处理逻辑？"></a>21.3.2 引用服务之前的缓存处理逻辑？</h3><p>关于逻辑的处理，看代码有时候比文字更清晰明了，这里可以直接来看 SimpleReferenceCache类型的get方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
+   <span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">T</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">ReferenceConfigBase</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> rc<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//这个生成的key规则是这样的 服务分组/服务接口:版本号  详细的代码就不看了</span>
+        <span class="token comment">//例如： group/link.elastic.dubbo.entity.DemoService:1.0</span>
+       <span class="token class-name">String</span> key <span class="token operator">=</span> generator<span class="token punctuation">.</span><span class="token function">generateKey</span><span class="token punctuation">(</span>rc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//服务类型 如果是泛化调用则这个类型为GenericService</span>
+       <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> type <span class="token operator">=</span> rc<span class="token punctuation">.</span><span class="token function">getInterfaceClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">//服务是否为单例的这里默认值都为空，为单例模式</span>
+       <span class="token keyword">boolean</span> singleton <span class="token operator">=</span> rc<span class="token punctuation">.</span><span class="token function">getSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> rc<span class="token punctuation">.</span><span class="token function">getSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token class-name">T</span> proxy <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+       <span class="token comment">// Check existing proxy of the same 'key' and 'type' first.</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>singleton<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token comment">//一般为单例的 这个方法是从缓存中获取</span>
+           proxy <span class="token operator">=</span> <span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+           <span class="token comment">//非单例容易造成内存泄露，无法从缓存中获取</span>
+           logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Using non-singleton ReferenceConfig and ReferenceCache at the same time may cause memory leak. "</span> <span class="token operator">+</span>
+               <span class="token string">"Call ReferenceConfig#get() directly for non-singleton ReferenceConfig instead of using ReferenceCache#get(ReferenceConfig)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token comment">//前面是从缓存中拿，如果缓存中获取不到则开始引用服务</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>proxy <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token comment">//获取或者创建值，为引用类型referencesOfType对象（类型为Map&lt;Class&lt;?&gt;, List&lt;ReferenceConfigBase&lt;?&gt;&gt;&gt;）缓存对象生成值（值不存咋时候会生成一个）</span>
+           <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ReferenceConfigBase</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> referencesOfType <span class="token operator">=</span> referenceTypeMap<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> _t <span class="token operator">-&gt;</span> <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">synchronizedList</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//每次走到这里都会添加一个ReferenceConfigBase 引用配置对象（单例的从缓存中拿到就可以直接返回了）</span>
+           referencesOfType<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>rc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+           <span class="token comment">//与前面一样 前面是类型映射，这里是key映射</span>
+           <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ReferenceConfigBase</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> referenceConfigList <span class="token operator">=</span> referenceKeyMap<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> _k <span class="token operator">-&gt;</span> <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">synchronizedList</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           referenceConfigList<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>rc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//开始引用服务</span>
+           proxy <span class="token operator">=</span> rc<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+
+       <span class="token keyword">return</span> proxy<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到这个逻辑使用了享元模式（其实就是先查缓存，缓存不存在则创建对象存入缓存）来进行引用对象的管理这样一个过程，这里一共有两个缓存对象referencesOfType和referenceConfigList<br>key分别为引用类型和引用的服务的key，值是引用服务的基础配置对象列表List&lt;ReferenceConfigBase&lt;?&gt;&gt;</p>
+<p>后面可以详细看下如果借助ReferenceConfigBase类型对象来进行具体类型的引用。</p>
+<h2 id="21-4-初始化引用服务的过程"><a href="#21-4-初始化引用服务的过程" class="headerlink" title="21.4 初始化引用服务的过程"></a>21.4 初始化引用服务的过程</h2><h3 id="21-4-1-初始化引用服务的调用入口"><a href="#21-4-1-初始化引用服务的调用入口" class="headerlink" title="21.4.1 初始化引用服务的调用入口"></a>21.4.1 初始化引用服务的调用入口</h3><p>引用服务的逻辑其实是相对复杂一点的，包含了服务发现，引用对象的创建等等，接下来就让我们详细看下:</p>
+<p>ReferenceConfig类型的get方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">T</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>destroyed<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"The invoker of ReferenceConfig("</span> <span class="token operator">+</span> url <span class="token operator">+</span> <span class="token string">") has already destroyed!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">//ref类型为 transient volatile T ref;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>ref <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// ensure start module, compatible with old api usage</span>
+            <span class="token comment">//这个前面已经调用了模块发布器启动过了，这里有这么一行代码是有一定作用的，如果使用方直接调用了ReferenceConfigBase的get方法或者缓存对象SimpleReferenceCache类型的对象的get方法来引用服务端的时候就会造成很多配置没有初始化下面执行逻辑的时候出现问题，这个代码其实就是启动模块进行一些基础配置的初始化操作 比如元数据中心默认配置选择，注册中心默认配置选择这些都是比较重要的</span>
+            <span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDeployer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>ref <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> ref<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里有一段代码是：getScopeModel().getDeployer().start();<br>这个前面已经调用了模块发布器启动过了，这里有这么一行代码是有一定作用的，如果使用方直接调用了ReferenceConfigBase的get方法或者缓存对象SimpleReferenceCache类型的对象的get方法来引用服务端的时候就会造成很多配置没有初始化下面执行逻辑的时候出现问题，这个代码其实就是启动模块进行一些基础配置的初始化操作 比如元数据中心默认配置选择，注册中心默认配置选择这些都是比较重要的。</p>
+<p>另外可以看到的是这里使用了双重校验锁来保证单例对象的创建，发现Dubbo种大量的使用了双重校验锁的逻辑。</p>
+<h3 id="21-4-2-初始化引用服务"><a href="#21-4-2-初始化引用服务" class="headerlink" title="21.4.2 初始化引用服务"></a>21.4.2 初始化引用服务</h3><p>这个就直接看代码了这，初始化过程相对复杂一点，我们一点点来看<br>ReferenceConfig类型init()方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>initialized<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        initialized <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">isRefreshed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// init serviceMetadata</span>
+        <span class="token function">initServiceMetadata</span><span class="token punctuation">(</span>consumer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        serviceMetadata<span class="token punctuation">.</span><span class="token function">setServiceType</span><span class="token punctuation">(</span><span class="token function">getServiceInterfaceClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// TODO, uncomment this line once service key is unified</span>
+        serviceMetadata<span class="token punctuation">.</span><span class="token function">setServiceKey</span><span class="token punctuation">(</span>URL<span class="token punctuation">.</span><span class="token function">buildKey</span><span class="token punctuation">(</span>interfaceName<span class="token punctuation">,</span> group<span class="token punctuation">,</span> version<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> referenceParameters <span class="token operator">=</span> <span class="token function">appendConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// init service-application mapping</span>
+        <span class="token function">initServiceAppsMapping</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">ModuleServiceRepository</span> repository <span class="token operator">=</span> <span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getServiceRepository</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ServiceDescriptor</span> serviceDescriptor<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>NATIVE_STUB<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token function">getProxy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            serviceDescriptor <span class="token operator">=</span> <span class="token class-name">StubSuppliers</span><span class="token punctuation">.</span><span class="token function">getServiceDescriptor</span><span class="token punctuation">(</span>interfaceName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            repository<span class="token punctuation">.</span><span class="token function">registerService</span><span class="token punctuation">(</span>serviceDescriptor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            serviceDescriptor <span class="token operator">=</span> repository<span class="token punctuation">.</span><span class="token function">registerService</span><span class="token punctuation">(</span>interfaceClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        consumerModel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConsumerModel</span><span class="token punctuation">(</span>serviceMetadata<span class="token punctuation">.</span><span class="token function">getServiceKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> proxy<span class="token punctuation">,</span> serviceDescriptor<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">,</span>
+            <span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> serviceMetadata<span class="token punctuation">,</span> <span class="token function">createAsyncMethodInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        repository<span class="token punctuation">.</span><span class="token function">registerConsumer</span><span class="token punctuation">(</span>consumerModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        serviceMetadata<span class="token punctuation">.</span><span class="token function">getAttachments</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">putAll</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        ref <span class="token operator">=</span> <span class="token function">createProxy</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        serviceMetadata<span class="token punctuation">.</span><span class="token function">setTarget</span><span class="token punctuation">(</span>ref<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        serviceMetadata<span class="token punctuation">.</span><span class="token function">addAttribute</span><span class="token punctuation">(</span>PROXY_CLASS_REF<span class="token punctuation">,</span> ref<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        consumerModel<span class="token punctuation">.</span><span class="token function">setProxyObject</span><span class="token punctuation">(</span>ref<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        consumerModel<span class="token punctuation">.</span><span class="token function">initMethodModels</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">checkInvokerAvailable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>未完待续</p>
 
                 
             </div>
@@ -1216,7 +1332,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">15.1k</span>
+                        class="white-color">16.5k</span>
             
             
             
