@@ -444,8 +444,7 @@
 <p>这个方法大部分代码已经省略，也不会详细去说了，感兴趣的可以看之前讲到的博客，这里主要来看引用服务方法referServices</p>
 <h3 id="21-2-2-DefaultModuleDeployer的referServices方法"><a href="#21-2-2-DefaultModuleDeployer的referServices方法" class="headerlink" title="21.2.2 DefaultModuleDeployer的referServices方法"></a>21.2.2 DefaultModuleDeployer的referServices方法</h3><p>下面就要来看消费者应用如何引用的服务的入口了，这个方法主要从大的方面做了一些服务引用生命周期的代码，看懂了这个方法我们就可以不依赖Dubbo负载的启动逻辑可以单独调用ReferenceConfigBase类型的对应方法来刷新，启动，销毁引用的服务了这里先来看下代码再详细介绍内容：</p>
 <p>DefaultModuleDeployer的referServices方法 </p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">
-<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">referServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">referServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
      <span class="token comment">//这个是获取配置的所有的ReferenceConfigBase类型对象</span>
     configManager<span class="token punctuation">.</span><span class="token function">getReferences</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>rc <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
@@ -480,7 +479,7 @@
             <span class="token keyword">throw</span> t<span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>在这个代码中我们核心需要关心的就是SimpleReferenceCache类型的get方法了，在获取服务对象之外包装了一层缓存。</p>
 <p>如果出现了异常则执行referenceCache的destroy方法进行销毁引用配置。</p>
 <h2 id="21-3-开始引用服务"><a href="#21-3-开始引用服务" class="headerlink" title="21.3 开始引用服务"></a>21.3 开始引用服务</h2><h3 id="21-3-1-SimpleReferenceCache是什么？"><a href="#21-3-1-SimpleReferenceCache是什么？" class="headerlink" title="21.3.1 SimpleReferenceCache是什么？"></a>21.3.1 SimpleReferenceCache是什么？</h3><p>一个用于缓存引用ReferenceConfigBase的util工具类。<br>ReferenceConfigBase是一个重对象，对于频繁创建ReferenceConfigBase的框架来说，有必要缓存这些对象。<br>如果需要使用复杂的策略，可以实现并使用自己的ReferenceConfigBase缓存<br>这个Cache是引用服务的开始如果我们想在代码中自定义一些服务引用的逻辑，可以直接创建SimpleReferenceCache类型对象然后调用其get方法进行引用服务。那这个缓存对象是和缓存与引用服务的可以继续往下看。</p>
@@ -1300,19 +1299,19 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/09/07/jdk/jdk11-1/">
+                <a href="/2022/09/07/erlang/erlang-1/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="1-过五关斩六将开发属于自己的jdk版本">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="1-Erlang 语法基础">
                         
-                        <span class="card-title">1-过五关斩六将开发属于自己的jdk版本</span>
+                        <span class="card-title">1-Erlang 语法基础</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
+                            在终端输入erl即可进入erl环境的终端
                         
                     </div>
                     <div class="publish-info">
@@ -1323,8 +1322,8 @@
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/JDK%E6%BA%90%E7%A0%81/" class="post-category">
-                                    JDK源码
+                            <a href="/categories/Erlang/" class="post-category">
+                                    Erlang
                                 </a>
                             
                             
@@ -1334,12 +1333,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/JDK11%E6%BA%90%E7%A0%81/">
-                        <span class="chip bg-color">JDK11源码</span>
+                    <a href="/tags/Erlang/">
+                        <span class="chip bg-color">Erlang</span>
                     </a>
                     
-                    <a href="/tags/Java/">
-                        <span class="chip bg-color">Java</span>
+                    <a href="/tags/Erlang%E8%AF%AD%E6%B3%95/">
+                        <span class="chip bg-color">Erlang语法</span>
                     </a>
                     
                 </div>
