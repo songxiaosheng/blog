@@ -355,14 +355,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.7k
+                    1.8k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    7 分
                 </div>
                 
 
@@ -521,14 +521,17 @@
 <p> MigrationInvoker类型的migrateToApplicationFirstInvoker方法：<br> </p><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">migrateToApplicationFirstInvoker</span><span class="token punctuation">(</span><span class="token class-name">MigrationRule</span> newRule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
        <span class="token class-name">CountDownLatch</span> latch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountDownLatch</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//刷新接口级服务发现Invoker </span>
        <span class="token function">refreshInterfaceInvoker</span><span class="token punctuation">(</span>latch<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//刷新应用级服务发现Invoker类型对象</span>
        <span class="token function">refreshServiceDiscoveryInvoker</span><span class="token punctuation">(</span>latch<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
        <span class="token comment">// directly calculate preferred invoker, will not wait until address notify</span>
        <span class="token comment">// calculation will re-occurred when address notify later</span>
+       <span class="token comment">//计算当前使用应用级还是接口级服务发现的Invoker对象</span>
        <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span>newRule<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p></p>
-
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p></p>
+<h3 id="22-3-4-刷新接口级服务发现Invoker"><a href="#22-3-4-刷新接口级服务发现Invoker" class="headerlink" title="22.3.4 刷新接口级服务发现Invoker"></a>22.3.4 刷新接口级服务发现Invoker</h3><h3 id="22-3-5-刷新应用级服务发现Invoker类型对象"><a href="#22-3-5-刷新应用级服务发现Invoker类型对象" class="headerlink" title="22.3.5 刷新应用级服务发现Invoker类型对象"></a>22.3.5 刷新应用级服务发现Invoker类型对象</h3><h3 id="22-3-6-计算当前使用应用级还是接口级服务发现的Invoker对象"><a href="#22-3-6-计算当前使用应用级还是接口级服务发现的Invoker对象" class="headerlink" title="22.3.6 计算当前使用应用级还是接口级服务发现的Invoker对象"></a>22.3.6 计算当前使用应用级还是接口级服务发现的Invoker对象</h3>
                 
             </div>
             <hr/>
@@ -1046,6 +1049,59 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
+                <a href="/2022/09/07/jdk/jdk11-1/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="1-过五关斩六将开发属于自己的jdk版本">
+                        
+                        <span class="card-title">1-过五关斩六将开发属于自己的jdk版本</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-09-07
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JDK%E6%BA%90%E7%A0%81/" class="post-category">
+                                    JDK源码
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JDK11%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">JDK11源码</span>
+                    </a>
+                    
+                    <a href="/tags/Java/">
+                        <span class="chip bg-color">Java</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
                 <a href="/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/">
                     <div class="card-image">
                         
@@ -1062,9 +1118,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -1092,43 +1148,6 @@
                         <span class="chip bg-color">Dubbo3源码解析</span>
                     </a>
                     
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2022/07/07/esockd/2-esockd-li-zi-echo/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
-                        
-                        <span class="card-title"></span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-07
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            songxiaosheng
-                            
-                        </span>
-                    </div>
                 </div>
                 
             </div>
@@ -1269,7 +1288,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">20.1k</span>
+                        class="white-color">20.2k</span>
             
             
             
