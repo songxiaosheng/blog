@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="21-Dubbo3消费者引用服务原理, 中间件源码">
+    <meta name="keywords" content="21-Dubbo3消费者引用服务入口, 中间件源码">
     <meta name="description" content="Dubbo3消费者引用服务入口">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -19,7 +19,7 @@
 
     
 
-    <title>21-Dubbo3消费者引用服务原理 | 中间件源码</title>
+    <title>21-Dubbo3消费者引用服务入口 | 中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
@@ -187,12 +187,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">21-Dubbo3消费者引用服务原理</h1>
+                    <h1 class="description center-align post-title">21-Dubbo3消费者引用服务入口</h1>
                 </div>
             </div>
         </div>
@@ -355,7 +355,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    4k
+                    4.1k
                 </div>
                 
 
@@ -380,7 +380,7 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="21-Dubbo3消费者引用服务原理"><a href="#21-Dubbo3消费者引用服务原理" class="headerlink" title="21-Dubbo3消费者引用服务原理"></a>21-Dubbo3消费者引用服务原理</h1><h2 id="21-1-简介"><a href="#21-1-简介" class="headerlink" title="21.1 简介"></a>21.1 简介</h2><p>前面我们通过Demo说了一个服务引用配置的创建。另外也在前面的文章说了服务提供者的启动完整过程，不过在说服务提供者启动的过程中并未提到服务消费者是如何发现服务，如果调用服务的，这里先就不再说关于服务消费者启动的一个细节了，直接来看前面未提到的服务消费者是如何引用到服务提供者提供的服务的。<br>先来回顾下样例代码：</p>
+                <h1 id="21-Dubbo3消费者引用服务入口"><a href="#21-Dubbo3消费者引用服务入口" class="headerlink" title="21-Dubbo3消费者引用服务入口"></a>21-Dubbo3消费者引用服务入口</h1><h2 id="21-1-简介"><a href="#21-1-简介" class="headerlink" title="21.1 简介"></a>21.1 简介</h2><p>前面我们通过Demo说了一个服务引用配置的创建。另外也在前面的文章说了服务提供者的启动完整过程，不过在说服务提供者启动的过程中并未提到服务消费者是如何发现服务，如果调用服务的，这里先就不再说关于服务消费者启动的一个细节了，直接来看前面未提到的服务消费者是如何引用到服务提供者提供的服务的。<br>先来回顾下样例代码：</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ConsumerApplication</span> <span class="token punctuation">{</span>
     <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token function">runWithBootstrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -780,6 +780,7 @@
 
 <p>该方法尝试加载所有RegistryProtocolListener定义，这些定义通过与定义的交互来控制调用器的行为，然后使用这些侦听器更改MigrationInvoker的状态和行为。<br>当前可用的监听器是MigrationRuleListener，用于通过动态变化的规则控制迁移行为。</p>
 <p>可以看到核心的逻辑集中在了这个位置MigrationRuleListener类型的onRefer方法，这个这里就不深入往下说了，后续会有个文章专门来看Dubbo2迁移Dubbo3时候处理的逻辑。</p>
+<p>Invoker对象的创建完成其实就代表了服务引用执行完成，不过这里核心的协议并没有来说</p>
 <p>未完待续</p>
 
                 
@@ -1518,7 +1519,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">18.3k</span>
+                        class="white-color">18.4k</span>
             
             
             
