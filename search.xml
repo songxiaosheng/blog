@@ -183,33 +183,6 @@
     
     
     <entry>
-      <title>1-K8S命令大全</title>
-      <link href="/2016/09/07/k8s/1-k8s-ming-ling-da-quan/"/>
-      <url>/2016/09/07/k8s/1-k8s-ming-ling-da-quan/</url>
-      
-        <content type="html"><![CDATA[<h1 id="deployment"><a href="#deployment" class="headerlink" title="deployment"></a>deployment</h1><p>直接修改deployment镜像</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl <span class="token builtin class-name">set</span> image deployment/nginx-deployment <span class="token assign-left variable">nginx</span><span class="token operator">=</span>nginx:1.91<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>回滚deployment变更</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout undo deployment/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>查询deployment信息</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl describe deployment nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>deployment变更历史查询</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout <span class="token function">history</span> deployment/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>查看deployment变更历史中某个版本(版本号是变更历史查询到的版本号)的细节</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout <span class="token function">history</span> deployment/nginx-deployment --revision<span class="token operator">=</span><span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>回滚deployment到某个版本号,前面两个命令可以查看历史版本信息</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout undo deployment/nginx-deployment --to-revision<span class="token operator">=</span><span class="token number">6</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>不要触发deployment的自动滚动更新功能:</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout pause deployment/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>恢复deployment的自动滚动更新功能</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout resume deploy/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>命令式-更新deployment</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl replace -f nginx.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>声明式API-创建或者更新deployment</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl apply -f nginx.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><h1 id="副本"><a href="#副本" class="headerlink" title="副本"></a>副本</h1><p>查询副本<br>kubectl get rs</p><h1 id="POD"><a href="#POD" class="headerlink" title="POD"></a>POD</h1><p>通过标签查询pods</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl get pods -w -l <span class="token assign-left variable">app</span><span class="token operator">=</span>nginx<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><h1 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h1><p>Headless Service的DNS域名记录格式</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>pod-name<span class="token operator">&gt;</span>.<span class="token operator">&lt;</span>svc-name<span class="token operator">&gt;</span>.<span class="token operator">&lt;</span>namespace<span class="token operator">&gt;</span>.svc.cluster.local<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>默认的命名空间为default</p><h1 id="进入容器"><a href="#进入容器" class="headerlink" title="进入容器"></a>进入容器</h1><p>进入容器查询容器主机名字</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl <span class="token builtin class-name">exec</span> web-0 -- <span class="token function">sh</span> -c <span class="token string">'hostname'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> kubernetes </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> kubernetes </tag>
-            
-            <tag> K8S命令大全 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>2-K8S运行MySQL的yaml配置</title>
       <link href="/2016/09/07/k8s/2-k8s-yun-xing-mysql-de-yaml/"/>
       <url>/2016/09/07/k8s/2-k8s-yun-xing-mysql-de-yaml/</url>
@@ -229,6 +202,33 @@
             <tag> kubernetes </tag>
             
             <tag> K8S运行MySQL的yaml配置 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>1-K8S命令大全</title>
+      <link href="/2016/09/07/k8s/1-k8s-ming-ling-da-quan/"/>
+      <url>/2016/09/07/k8s/1-k8s-ming-ling-da-quan/</url>
+      
+        <content type="html"><![CDATA[<h1 id="deployment"><a href="#deployment" class="headerlink" title="deployment"></a>deployment</h1><p>直接修改deployment镜像</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl <span class="token builtin class-name">set</span> image deployment/nginx-deployment <span class="token assign-left variable">nginx</span><span class="token operator">=</span>nginx:1.91<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>回滚deployment变更</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout undo deployment/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>查询deployment信息</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl describe deployment nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>deployment变更历史查询</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout <span class="token function">history</span> deployment/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>查看deployment变更历史中某个版本(版本号是变更历史查询到的版本号)的细节</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout <span class="token function">history</span> deployment/nginx-deployment --revision<span class="token operator">=</span><span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>回滚deployment到某个版本号,前面两个命令可以查看历史版本信息</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout undo deployment/nginx-deployment --to-revision<span class="token operator">=</span><span class="token number">6</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>不要触发deployment的自动滚动更新功能:</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout pause deployment/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>恢复deployment的自动滚动更新功能</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout resume deploy/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>命令式-更新deployment</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl replace -f nginx.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>声明式API-创建或者更新deployment</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl apply -f nginx.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><h1 id="副本"><a href="#副本" class="headerlink" title="副本"></a>副本</h1><p>查询副本<br>kubectl get rs</p><h1 id="POD"><a href="#POD" class="headerlink" title="POD"></a>POD</h1><p>通过标签查询pods</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl get pods -w -l <span class="token assign-left variable">app</span><span class="token operator">=</span>nginx<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><h1 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h1><p>Headless Service的DNS域名记录格式</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>pod-name<span class="token operator">&gt;</span>.<span class="token operator">&lt;</span>svc-name<span class="token operator">&gt;</span>.<span class="token operator">&lt;</span>namespace<span class="token operator">&gt;</span>.svc.cluster.local<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>默认的命名空间为default</p><h1 id="进入容器"><a href="#进入容器" class="headerlink" title="进入容器"></a>进入容器</h1><p>进入容器查询容器主机名字</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl <span class="token builtin class-name">exec</span> web-0 -- <span class="token function">sh</span> -c <span class="token string">'hostname'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> kubernetes </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> kubernetes </tag>
+            
+            <tag> K8S命令大全 </tag>
             
         </tags>
       
