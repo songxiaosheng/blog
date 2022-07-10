@@ -355,14 +355,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    1.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    6 分
                 </div>
                 
 
@@ -468,7 +468,7 @@
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="22-3-2-服务发现调用器对象的选择（决策服务发现策略）"><a href="#22-3-2-服务发现调用器对象的选择（决策服务发现策略）" class="headerlink" title="22.3.2 服务发现调用器对象的选择（决策服务发现策略）"></a>22.3.2 服务发现调用器对象的选择（决策服务发现策略）</h3><p>这里就是关键代码了：通过迁移配置和当前提供者注册信息来决定创建什么类型的调用器对象（Invoker)来为后续服务调用做准备</p>
-<p>MigrationRuleHandler的refreshInvoker</p>
+<p>MigrationRuleHandler的refreshInvoker，注意默认情况下这个step参数为APPLICATION_FIRST</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">refreshInvoker</span><span class="token punctuation">(</span><span class="token class-name">MigrationStep</span> step<span class="token punctuation">,</span> <span class="token class-name">Float</span> threshold<span class="token punctuation">,</span> <span class="token class-name">MigrationRule</span> newRule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
        <span class="token keyword">if</span> <span class="token punctuation">(</span>step <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> threshold <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Step or threshold of migration rule cannot be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -479,12 +479,15 @@
            <span class="token keyword">boolean</span> success <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
            <span class="token keyword">switch</span> <span class="token punctuation">(</span>step<span class="token punctuation">)</span> <span class="token punctuation">{</span>
                <span class="token keyword">case</span> APPLICATION_FIRST<span class="token operator">:</span>
+                   <span class="token comment">//默认和配置了应用级优先的服务发现则走这里</span>
                    migrationInvoker<span class="token punctuation">.</span><span class="token function">migrateToApplicationFirstInvoker</span><span class="token punctuation">(</span>newRule<span class="token punctuation">)</span><span class="token punctuation">;</span>
                    <span class="token keyword">break</span><span class="token punctuation">;</span>
                <span class="token keyword">case</span> FORCE_APPLICATION<span class="token operator">:</span>
+               <span class="token comment">//配置了应用级服务发现则走这里</span>
                    success <span class="token operator">=</span> migrationInvoker<span class="token punctuation">.</span><span class="token function">migrateToForceApplicationInvoker</span><span class="token punctuation">(</span>newRule<span class="token punctuation">)</span><span class="token punctuation">;</span>
                    <span class="token keyword">break</span><span class="token punctuation">;</span>
                <span class="token keyword">case</span> FORCE_INTERFACE<span class="token operator">:</span>
+               <span class="token comment">//配置了接口级服务发现则走这里</span>
                <span class="token keyword">default</span><span class="token operator">:</span>
                    success <span class="token operator">=</span> migrationInvoker<span class="token punctuation">.</span><span class="token function">migrateToForceInterfaceInvoker</span><span class="token punctuation">(</span>newRule<span class="token punctuation">)</span><span class="token punctuation">;</span>
            <span class="token punctuation">}</span>
@@ -504,11 +507,27 @@
        <span class="token punctuation">}</span>
        <span class="token comment">// ignore if step is same with previous, will continue override rule for MigrationInvoker</span>
        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
+<p>可以看到这个代码做了判断的逻辑分别对应了Dubbo3消费者迁移的一个状态逻辑：<br>三种状态分别如下枚举类型：<br>当前共存在三种状态，</p>
+<ul>
+<li>FORCE_INTERFACE（强制接口级）</li>
+<li>APPLICATION_FIRST（应用级优先）</li>
+<li>FORCE_APPLICATION（强制应用级）</li>
+</ul>
+<p>通过代码我们可以看到默认情况下都会走APPLICATION_FIRST（应用级优先）的策略，这里我们也重点来说 APPLICATION_FIRST（应用级优先）来看下Dubbo3是如何决策使用接口级还是应用级发现模型来兼容迁移的服务的。</p>
+<h3 id="22-3-3-用级优先的服务发现规则逻辑"><a href="#22-3-3-用级优先的服务发现规则逻辑" class="headerlink" title="22.3.3 用级优先的服务发现规则逻辑"></a>22.3.3 用级优先的服务发现规则逻辑</h3><p> 这个规则就是智能选择应用级还是接口级的代码了，对应类型为MigrationInvoker的migrateToApplicationFirstInvoker方法，接下来我们详细看下：</p>
+<p> MigrationInvoker类型的migrateToApplicationFirstInvoker方法：<br> </p><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">migrateToApplicationFirstInvoker</span><span class="token punctuation">(</span><span class="token class-name">MigrationRule</span> newRule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token class-name">CountDownLatch</span> latch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountDownLatch</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token function">refreshInterfaceInvoker</span><span class="token punctuation">(</span>latch<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token function">refreshServiceDiscoveryInvoker</span><span class="token punctuation">(</span>latch<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-
+       <span class="token comment">// directly calculate preferred invoker, will not wait until address notify</span>
+       <span class="token comment">// calculation will re-occurred when address notify later</span>
+       <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span>newRule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p></p>
 
                 
             </div>
@@ -1250,7 +1269,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">19.8k</span>
+                        class="white-color">20.1k</span>
             
             
             
