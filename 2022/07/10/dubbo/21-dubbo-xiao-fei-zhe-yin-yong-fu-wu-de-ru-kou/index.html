@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="21-Dubbo3消费者引用服务入口, 中间件源码">
+    <meta name="keywords" content="21-Dubbo3消费者引用服务原理, 中间件源码">
     <meta name="description" content="Dubbo3消费者引用服务入口">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -19,7 +19,7 @@
 
     
 
-    <title>21-Dubbo3消费者引用服务入口 | 中间件源码</title>
+    <title>21-Dubbo3消费者引用服务原理 | 中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
@@ -187,12 +187,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">21-Dubbo3消费者引用服务入口</h1>
+                    <h1 class="description center-align post-title">21-Dubbo3消费者引用服务原理</h1>
                 </div>
             </div>
         </div>
@@ -348,21 +348,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-07-09
+                    2022-07-10
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.4k
+                    3.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    9 分
+                    15 分
                 </div>
                 
 
@@ -380,7 +380,7 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="21-Dubbo3消费者引用服务入口"><a href="#21-Dubbo3消费者引用服务入口" class="headerlink" title="21-Dubbo3消费者引用服务入口"></a>21-Dubbo3消费者引用服务入口</h1><h2 id="21-1-简介"><a href="#21-1-简介" class="headerlink" title="21.1 简介"></a>21.1 简介</h2><p>前面我们通过Demo说了一个服务引用配置的创建。另外也在前面的文章说了服务提供者的启动完整过程，不过在说服务提供者启动的过程中并未提到服务消费者是如何发现服务，如果调用服务的，这里先就不再说关于服务消费者启动的一个细节了，直接来看前面未提到的服务消费者是如何引用到服务提供者提供的服务的。<br>先来回顾下样例代码：</p>
+                <h1 id="21-Dubbo3消费者引用服务原理"><a href="#21-Dubbo3消费者引用服务原理" class="headerlink" title="21-Dubbo3消费者引用服务原理"></a>21-Dubbo3消费者引用服务原理</h1><h2 id="21-1-简介"><a href="#21-1-简介" class="headerlink" title="21.1 简介"></a>21.1 简介</h2><p>前面我们通过Demo说了一个服务引用配置的创建。另外也在前面的文章说了服务提供者的启动完整过程，不过在说服务提供者启动的过程中并未提到服务消费者是如何发现服务，如果调用服务的，这里先就不再说关于服务消费者启动的一个细节了，直接来看前面未提到的服务消费者是如何引用到服务提供者提供的服务的。<br>先来回顾下样例代码：</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ConsumerApplication</span> <span class="token punctuation">{</span>
     <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token function">runWithBootstrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -609,6 +609,154 @@
         <span class="token function">checkInvokerAvailable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h2 id="21-5-ReferenceConfig创建服务引用代理对象的原理"><a href="#21-5-ReferenceConfig创建服务引用代理对象的原理" class="headerlink" title="21.5 ReferenceConfig创建服务引用代理对象的原理"></a>21.5 ReferenceConfig创建服务引用代理对象的原理</h2><h3 id="21-5-1-代理对象的创建过程"><a href="#21-5-1-代理对象的创建过程" class="headerlink" title="21.5.1 代理对象的创建过程"></a>21.5.1 代理对象的创建过程</h3><p>这里就要继续看 ReferenceConfig类型的创建代理方法createProxy了<br>直接贴一下源码：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">T</span> <span class="token function">createProxy</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> referenceParameters<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//本地引用 这里为false</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">shouldJvmRefer</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token function">createInvokerForLocal</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+           urls<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token comment">//url存在则为点对点引用</span>
+               <span class="token comment">// user specified URL, could be peer-to-peer address, or register center's address.</span>
+               <span class="token function">parseUrl</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+               <span class="token comment">// if protocols not in jvm checkRegistry</span>
+               <span class="token comment">//这里不是local协议默认这里为空</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>LOCAL_PROTOCOL<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   <span class="token comment">//从注册表中获取URL并将其聚合。这个其实就是初始化一下注册中心的url配置</span>
+                   <span class="token function">aggregateUrlFromRegistry</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token punctuation">}</span>
+           <span class="token punctuation">}</span>
+           <span class="token comment">//这个代码非常重要 创建远程引用，创建远程引用调用器</span>
+           <span class="token function">createInvokerForRemote</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Referred dubbo service: ["</span> <span class="token operator">+</span> referenceParameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>INTERFACE_KEY<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"]."</span> <span class="token operator">+</span>
+               <span class="token punctuation">(</span><span class="token class-name">Boolean</span><span class="token punctuation">.</span><span class="token function">parseBoolean</span><span class="token punctuation">(</span>referenceParameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>GENERIC_KEY<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">?</span>
+                   <span class="token string">" it's GenericService reference"</span> <span class="token operator">:</span> <span class="token string">" it's not GenericService reference"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+
+       <span class="token class-name">URL</span> consumerUrl <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServiceConfigURL</span><span class="token punctuation">(</span>CONSUMER_PROTOCOL<span class="token punctuation">,</span> referenceParameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>REGISTER_IP_KEY<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span>
+           referenceParameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>INTERFACE_KEY<span class="token punctuation">)</span><span class="token punctuation">,</span> referenceParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       consumerUrl <span class="token operator">=</span> consumerUrl<span class="token punctuation">.</span><span class="token function">setScopeModel</span><span class="token punctuation">(</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       consumerUrl <span class="token operator">=</span> consumerUrl<span class="token punctuation">.</span><span class="token function">setServiceModel</span><span class="token punctuation">(</span>consumerModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token class-name">MetadataUtils</span><span class="token punctuation">.</span><span class="token function">publishServiceDefinition</span><span class="token punctuation">(</span>consumerUrl<span class="token punctuation">,</span> consumerModel<span class="token punctuation">.</span><span class="token function">getServiceModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">getApplicationModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">// create service proxy</span>
+       <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">T</span><span class="token punctuation">)</span> proxyFactory<span class="token punctuation">.</span><span class="token function">getProxy</span><span class="token punctuation">(</span>invoker<span class="token punctuation">,</span> <span class="token class-name">ProtocolUtils</span><span class="token punctuation">.</span><span class="token function">isGeneric</span><span class="token punctuation">(</span>generic<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="21-5-2-创建远程引用，创建远程引用调用器"><a href="#21-5-2-创建远程引用，创建远程引用调用器" class="headerlink" title="21.5.2 创建远程引用，创建远程引用调用器"></a>21.5.2 创建远程引用，创建远程引用调用器</h3><p>ReferenceConfig类型的createInvokerForRemote方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">createInvokerForRemote</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token comment">//这个url 为注册协议如registry://127.0.0.1:2181/org.apache.dubbo.registry.RegistryService?application=dubbo-demo-api-consumer&amp;dubbo=2.0.2&amp;pid=6204&amp;qos.enable=false&amp;qos.port=-1&amp;registry=zookeeper&amp;release=3.0.9&amp;timestamp=1657439419495</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>urls<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">URL</span> curUrl <span class="token operator">=</span> urls<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//这个SPI对象是由字节码动态生成的自适应对象Protocol$Adaptie直接看看不到源码，后续可以解析一个字节码生成的类型，这里后续来调用链路即可</span>
+            invoker <span class="token operator">=</span> protocolSPI<span class="token punctuation">.</span><span class="token function">refer</span><span class="token punctuation">(</span>interfaceClass<span class="token punctuation">,</span> curUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token class-name">UrlUtils</span><span class="token punctuation">.</span><span class="token function">isRegistry</span><span class="token punctuation">(</span>curUrl<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Invoker</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> invokers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                invokers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>invoker<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                invoker <span class="token operator">=</span> <span class="token class-name">Cluster</span><span class="token punctuation">.</span><span class="token function">getCluster</span><span class="token punctuation">(</span>scopeModel<span class="token punctuation">,</span> <span class="token class-name">Cluster</span><span class="token punctuation">.</span>DEFAULT<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StaticDirectory</span><span class="token punctuation">(</span>curUrl<span class="token punctuation">,</span> invokers<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Invoker</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> invokers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">URL</span> registryUrl <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span>URL url <span class="token operator">:</span> urls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment">// For multi-registry scenarios, it is not checked whether each referInvoker is available.</span>
+                <span class="token comment">// Because this invoker may become available later.</span>
+                invokers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>protocolSPI<span class="token punctuation">.</span><span class="token function">refer</span><span class="token punctuation">(</span>interfaceClass<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">UrlUtils</span><span class="token punctuation">.</span><span class="token function">isRegistry</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment">// use last registry url</span>
+                    registryUrl <span class="token operator">=</span> url<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>registryUrl <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment">// registry url is available</span>
+                <span class="token comment">// for multi-subscription scenario, use 'zone-aware' policy by default</span>
+                <span class="token class-name">String</span> cluster <span class="token operator">=</span> registryUrl<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>CLUSTER_KEY<span class="token punctuation">,</span> <span class="token class-name">ZoneAwareCluster</span><span class="token punctuation">.</span>NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">// The invoker wrap sequence would be: ZoneAwareClusterInvoker(StaticDirectory) -&gt; FailoverClusterInvoker</span>
+                <span class="token comment">// (RegistryDirectory, routing happens here) -&gt; Invoker</span>
+                invoker <span class="token operator">=</span> <span class="token class-name">Cluster</span><span class="token punctuation">.</span><span class="token function">getCluster</span><span class="token punctuation">(</span>registryUrl<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> cluster<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StaticDirectory</span><span class="token punctuation">(</span>registryUrl<span class="token punctuation">,</span> invokers<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment">// not a registry url, must be direct invoke.</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>invokers<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"invokers == null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token class-name">URL</span> curUrl <span class="token operator">=</span> invokers<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">String</span> cluster <span class="token operator">=</span> curUrl<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>CLUSTER_KEY<span class="token punctuation">,</span> <span class="token class-name">Cluster</span><span class="token punctuation">.</span>DEFAULT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                invoker <span class="token operator">=</span> <span class="token class-name">Cluster</span><span class="token punctuation">.</span><span class="token function">getCluster</span><span class="token punctuation">(</span>scopeModel<span class="token punctuation">,</span> cluster<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StaticDirectory</span><span class="token punctuation">(</span>curUrl<span class="token punctuation">,</span> invokers<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="21-5-3-Invoker对象创建的全过程"><a href="#21-5-3-Invoker对象创建的全过程" class="headerlink" title="21.5.3 Invoker对象创建的全过程"></a>21.5.3 Invoker对象创建的全过程</h3><p>为了更好理解Protocol$Adaptie内部的引用执行过程这里我把Debug的链路截图了过来<br>按照固定的顺序先执行AOP的逻辑再执行具体的逻辑:</p>
+<ul>
+<li>Protocol$Adaptie的refer方法</li>
+<li>ProtocolSerializationWrapper AOP类型的协议序列化器refer方法</li>
+<li>ProtocolFilterWrapper AOP类型的协议过滤器的refer方法</li>
+<li>QosProtocolWrapper AOP类型的QOS协议包装器的refer方法</li>
+<li>ProtocolListenerWrapper APO类型监听器包装器的refer方法</li>
+<li>RegistryProtocol 注册协议的refer方法 （会添加容错逻辑）</li>
+<li>RegistryProtocol 注册协议的doRefer方法（调用方法创建Invoker对象）</li>
+</ul>
+<p><a href="/img/dubbo/createInvokerRemote.png"></a></p>
+<p>这里我们不再详细说这个引用链的具体过程直接定位到RegistryProtocol中创建Invoker类型的地方。<br>先来看RegistryProtocol类型的refer方法，如下代码所示：</p>
+<p>RegistryProtocol类型的refer方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+    <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">Invoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">refer</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> type<span class="token punctuation">,</span> <span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">RpcException</span> <span class="token punctuation">{</span>
+        <span class="token comment">//这个url已经被转换为具体的注册中心协议类型了</span>
+        <span class="token comment">//zookeeper://127.0.0.1:2181/org.apache.dubbo.registry.RegistryService?application=dubbo-demo-api-consumer&amp;dubbo=2.0.2&amp;pid=7944&amp;qos.enable=false&amp;qos.port=-1&amp;release=3.0.9&amp;timestamp=1657440673100</span>
+        url <span class="token operator">=</span> <span class="token function">getRegistryUrl</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//获取用于操作Zookeeper的Registry类型 </span>
+        <span class="token class-name">Registry</span> registry <span class="token operator">=</span> <span class="token function">getRegistry</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">RegistryService</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> proxyFactory<span class="token punctuation">.</span><span class="token function">getInvoker</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">T</span><span class="token punctuation">)</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// group="a,b" or group="*"</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> qs <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> url<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span>REFER_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> group <span class="token operator">=</span> qs<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>GROUP_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>group<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>COMMA_SPLIT_PATTERN<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span>group<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length <span class="token operator">&gt;</span> <span class="token number">1</span> <span class="token operator">||</span> <span class="token string">"*"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>group<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> <span class="token function">doRefer</span><span class="token punctuation">(</span><span class="token class-name">Cluster</span><span class="token punctuation">.</span><span class="token function">getCluster</span><span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">MergeableCluster</span><span class="token punctuation">.</span>NAME<span class="token punctuation">)</span><span class="token punctuation">,</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">,</span> url<span class="token punctuation">,</span> qs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//降级容错的逻辑处理对象 类型为Cluster 实际类型为MockClusterWrapper 内部包装的是FailoverCluster</span>
+        <span class="token comment">//后续调用服务失败时候会先失效转移再降级</span>
+        <span class="token class-name">Cluster</span> cluster <span class="token operator">=</span> <span class="token class-name">Cluster</span><span class="token punctuation">.</span><span class="token function">getCluster</span><span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> qs<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>CLUSTER_KEY<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//这里才是具体的Invoker对象的创建</span>
+        <span class="token keyword">return</span> <span class="token function">doRefer</span><span class="token punctuation">(</span>cluster<span class="token punctuation">,</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">,</span> url<span class="token punctuation">,</span> qs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>RegistryProtocol类型的doRefer方法创建Invoker对象<br>直接来看代码了</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">Invoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">doRefer</span><span class="token punctuation">(</span><span class="token class-name">Cluster</span> cluster<span class="token punctuation">,</span> <span class="token class-name">Registry</span> registry<span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> type<span class="token punctuation">,</span> <span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> parameters<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> consumerAttribute <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">getAttributes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       consumerAttribute<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>REFER_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token class-name">String</span> p <span class="token operator">=</span> <span class="token function">isEmpty</span><span class="token punctuation">(</span>parameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>PROTOCOL_KEY<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">?</span> CONSUMER <span class="token operator">:</span> parameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>PROTOCOL_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token class-name">URL</span> consumerUrl <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServiceConfigURL</span> <span class="token punctuation">(</span>
+           p<span class="token punctuation">,</span>
+           <span class="token keyword">null</span><span class="token punctuation">,</span>
+           <span class="token keyword">null</span><span class="token punctuation">,</span>
+           parameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>REGISTER_IP_KEY<span class="token punctuation">)</span><span class="token punctuation">,</span>
+           <span class="token number">0</span><span class="token punctuation">,</span> <span class="token function">getPath</span><span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">,</span>
+           parameters<span class="token punctuation">,</span>
+           consumerAttribute
+       <span class="token punctuation">)</span><span class="token punctuation">;</span>
+       url <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">putAttribute</span><span class="token punctuation">(</span>CONSUMER_URL_KEY<span class="token punctuation">,</span> consumerUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//重点看这一行 带迁移性质的Invoker对象</span>
+       <span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> migrationInvoker <span class="token operator">=</span> <span class="token function">getMigrationInvoker</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> cluster<span class="token punctuation">,</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">,</span> url<span class="token punctuation">,</span> consumerUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//这一行回来执行迁移规则创建应用级优先的服务发现Invoker对象</span>
+       <span class="token keyword">return</span> <span class="token function">interceptInvoker</span><span class="token punctuation">(</span>migrationInvoker<span class="token punctuation">,</span> url<span class="token punctuation">,</span> consumerUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>未完待续</p>
 
                 
@@ -1128,19 +1276,19 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/09/07/erlang/erlang-1/">
+                <a href="/2022/09/07/jdk/jdk11-1/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="1-Erlang 语法基础">
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="1-过五关斩六将开发属于自己的jdk版本">
                         
-                        <span class="card-title">1-Erlang 语法基础</span>
+                        <span class="card-title">1-过五关斩六将开发属于自己的jdk版本</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            在终端输入erl即可进入erl环境的终端
+                            OpenJDK是JDK的开放源码版本,了解源码学习更优秀的编程思想。
                         
                     </div>
                     <div class="publish-info">
@@ -1151,8 +1299,8 @@
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Erlang/" class="post-category">
-                                    Erlang
+                            <a href="/categories/JDK%E6%BA%90%E7%A0%81/" class="post-category">
+                                    JDK源码
                                 </a>
                             
                             
@@ -1162,12 +1310,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Erlang/">
-                        <span class="chip bg-color">Erlang</span>
+                    <a href="/tags/JDK11%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">JDK11源码</span>
                     </a>
                     
-                    <a href="/tags/Erlang%E8%AF%AD%E6%B3%95/">
-                        <span class="chip bg-color">Erlang语法</span>
+                    <a href="/tags/Java/">
+                        <span class="chip bg-color">Java</span>
                     </a>
                     
                 </div>
@@ -1347,7 +1495,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">16.8k</span>
+                        class="white-color">17.9k</span>
             
             
             
