@@ -355,14 +355,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.8k
+                    2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    8 分
                 </div>
                 
 
@@ -531,7 +531,71 @@
        <span class="token comment">//计算当前使用应用级还是接口级服务发现的Invoker对象</span>
        <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span>newRule<span class="token punctuation">)</span><span class="token punctuation">;</span>
    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p></p>
-<h3 id="22-3-4-刷新接口级服务发现Invoker"><a href="#22-3-4-刷新接口级服务发现Invoker" class="headerlink" title="22.3.4 刷新接口级服务发现Invoker"></a>22.3.4 刷新接口级服务发现Invoker</h3><h3 id="22-3-5-刷新应用级服务发现Invoker类型对象"><a href="#22-3-5-刷新应用级服务发现Invoker类型对象" class="headerlink" title="22.3.5 刷新应用级服务发现Invoker类型对象"></a>22.3.5 刷新应用级服务发现Invoker类型对象</h3><h3 id="22-3-6-计算当前使用应用级还是接口级服务发现的Invoker对象"><a href="#22-3-6-计算当前使用应用级还是接口级服务发现的Invoker对象" class="headerlink" title="22.3.6 计算当前使用应用级还是接口级服务发现的Invoker对象"></a>22.3.6 计算当前使用应用级还是接口级服务发现的Invoker对象</h3>
+<h3 id="22-3-4-刷新接口级服务发现Invoker"><a href="#22-3-4-刷新接口级服务发现Invoker" class="headerlink" title="22.3.4 刷新接口级服务发现Invoker"></a>22.3.4 刷新接口级服务发现Invoker</h3><p>MigrationInvoker类型的refreshInterfaceInvoker方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">refreshInterfaceInvoker</span><span class="token punctuation">(</span><span class="token class-name">CountDownLatch</span> latch<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">clearListener</span><span class="token punctuation">(</span>invoker<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">needRefresh</span><span class="token punctuation">(</span>invoker<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Re-subscribing interface addresses for interface "</span> <span class="token operator">+</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>invoker <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                invoker<span class="token punctuation">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            invoker <span class="token operator">=</span> registryProtocol<span class="token punctuation">.</span><span class="token function">getInvoker</span><span class="token punctuation">(</span>cluster<span class="token punctuation">,</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">setListener</span><span class="token punctuation">(</span>invoker<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+            latch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>reportService<span class="token punctuation">.</span><span class="token function">hasReporter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                reportService<span class="token punctuation">.</span><span class="token function">reportConsumptionStatus</span><span class="token punctuation">(</span>
+                    reportService<span class="token punctuation">.</span><span class="token function">createConsumptionReport</span><span class="token punctuation">(</span>consumerUrl<span class="token punctuation">.</span><span class="token function">getServiceInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"interface"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>step <span class="token operator">==</span> APPLICATION_FIRST<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span>rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="22-3-5-刷新应用级服务发现Invoker类型对象"><a href="#22-3-5-刷新应用级服务发现Invoker类型对象" class="headerlink" title="22.3.5 刷新应用级服务发现Invoker类型对象"></a>22.3.5 刷新应用级服务发现Invoker类型对象</h3><p>MigrationInvoker类型的refreshServiceDiscoveryInvoker方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">refreshServiceDiscoveryInvoker</span><span class="token punctuation">(</span><span class="token class-name">CountDownLatch</span> latch<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">clearListener</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">needRefresh</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Re-subscribing instance addresses, current interface "</span> <span class="token operator">+</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>serviceDiscoveryInvoker <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                serviceDiscoveryInvoker<span class="token punctuation">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            serviceDiscoveryInvoker <span class="token operator">=</span> registryProtocol<span class="token punctuation">.</span><span class="token function">getServiceDiscoveryInvoker</span><span class="token punctuation">(</span>cluster<span class="token punctuation">,</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">setListener</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+            latch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>reportService<span class="token punctuation">.</span><span class="token function">hasReporter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                reportService<span class="token punctuation">.</span><span class="token function">reportConsumptionStatus</span><span class="token punctuation">(</span>
+                    reportService<span class="token punctuation">.</span><span class="token function">createConsumptionReport</span><span class="token punctuation">(</span>consumerUrl<span class="token punctuation">.</span><span class="token function">getServiceInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"app"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>step <span class="token operator">==</span> APPLICATION_FIRST<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span>rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="22-3-6-计算当前使用应用级还是接口级服务发现的Invoker对象"><a href="#22-3-6-计算当前使用应用级还是接口级服务发现的Invoker对象" class="headerlink" title="22.3.6 计算当前使用应用级还是接口级服务发现的Invoker对象"></a>22.3.6 计算当前使用应用级还是接口级服务发现的Invoker对象</h3><p>MigrationInvoker类型的的calcPreferredInvoker方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span><span class="token class-name">MigrationRule</span> migrationRule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>serviceDiscoveryInvoker <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> invoker <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">MigrationAddressComparator</span><span class="token punctuation">&gt;</span></span> detectors <span class="token operator">=</span> <span class="token class-name">ScopeModelUtil</span><span class="token punctuation">.</span><span class="token function">getApplicationModel</span><span class="token punctuation">(</span>consumerUrl <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token keyword">null</span> <span class="token operator">:</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">MigrationAddressComparator</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSupportedExtensionInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>detectors<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// pick preferred invoker</span>
+            <span class="token comment">// the real invoker choice in invocation will be affected by promotion</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>detectors<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">allMatch</span><span class="token punctuation">(</span>comparator <span class="token operator">-&gt;</span> comparator<span class="token punctuation">.</span><span class="token function">shouldMigrate</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">,</span> invoker<span class="token punctuation">,</span> migrationRule<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>currentAvailableInvoker <span class="token operator">=</span> serviceDiscoveryInvoker<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>currentAvailableInvoker <span class="token operator">=</span> invoker<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
                 
             </div>
             <hr/>
@@ -1272,7 +1336,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">20.2k</span>
+                        class="white-color">20.4k</span>
             
             
             
