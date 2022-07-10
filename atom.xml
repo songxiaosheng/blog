@@ -100,6 +100,35 @@
   </entry>
   
   <entry>
+    <title>22-Dubbo3消费者自动感应决策应用级服务发现原理</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/22-dubbo3-xiao-fei-zhe-zi-dong-gan-ying-jue-ce-ying-yong-ji-fu-wu-fa-xian-yuan-li/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/22-dubbo3-xiao-fei-zhe-zi-dong-gan-ying-jue-ce-ying-yong-ji-fu-wu-fa-xian-yuan-li/</id>
+    <published>2022-07-10T12:25:00.000Z</published>
+    <updated>2022-07-10T11:24:28.220Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;22-Dubbo3消费者自动感应决策应用级服务发现原理&quot;&gt;&lt;a href=&quot;#22-Dubbo3消费者自动感应决策应用级服务发现原理&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
+    
+    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
+    
+    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+  </entry>
+  
+  <entry>
     <title></title>
     <link href="https://blog.elastic.link/2022/07/07/esockd/2-esockd-li-zi-echo/"/>
     <id>https://blog.elastic.link/2022/07/07/esockd/2-esockd-li-zi-echo/</id>
