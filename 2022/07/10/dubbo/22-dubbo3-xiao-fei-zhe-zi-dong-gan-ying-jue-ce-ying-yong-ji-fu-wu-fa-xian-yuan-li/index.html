@@ -54,10 +54,10 @@
 
 <a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
 <ul class="right nav-menu">
-  <li>
+  <li class="hide-on-med-and-down nav-item">
     <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
     </li>
-    <li>
+    <li class="hide-on-med-and-down nav-item">
     <a href="#searchModal" class="modal-trigger waves-effect waves-light">
       <span><input type="text" placeholder="搜索"></span>
     </a>
@@ -355,14 +355,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    418
+                    608
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    2 分
                 </div>
                 
 
@@ -386,6 +386,20 @@
 <p>第二个图是消费者订阅决策的图：<br><img src="https://dubbo.apache.org/imgs/v3/migration/consumer-subscription.png" alt="在这里插入图片描述"></p>
 <p>第三个图就是精确到消费者订阅的代码层的逻辑了，消费者服务间调用通过一个Invoker类型对象来进行对象，如下图所示消费者代理对象通过创建一个迁移容错的调用器对象来对应用级或者接口级订阅进行适配如下所示<br><img src="https://dubbo.apache.org/imgs/v3/migration/migration-cluster-invoker.png" alt="在这里插入图片描述"></p>
 <p>第二个图和第三个图是重点要关注的这一个文章的内容主要就是说这里的逻辑。</p>
+<p> 关于代码位置如果不知道是如何调用到这一块逻辑的可以查看博文<a href="https://blog.elastic.link/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/">《21-Dubbo3消费者引用服务入口》</a></p>
+<p> 这里直接将代码位置定位到：RegistryProtocol类型的interceptInvoker方法中：<br> 如下所示：</p>
+<p> RegistryProtocol类型的interceptInvoker方法<br> </p><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">Invoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">interceptInvoker</span><span class="token punctuation">(</span><span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> invoker<span class="token punctuation">,</span> <span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">URL</span> consumerUrl<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RegistryProtocolListener</span><span class="token punctuation">&gt;</span></span> listeners <span class="token operator">=</span> <span class="token function">findRegistryProtocolListeners</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>listeners<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span> invoker<span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+
+       <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">RegistryProtocolListener</span> listener <span class="token operator">:</span> listeners<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           listener<span class="token punctuation">.</span><span class="token function">onRefer</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> invoker<span class="token punctuation">,</span> consumerUrl<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token keyword">return</span> invoker<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p></p>
+<p>该方法尝试加载所有RegistryProtocolListener定义，这些定义通过与定义的交互来控制调用器的行为，然后使用这些侦听器更改MigrationInvoker的状态和行为。当前可用的监听器是MigrationRuleListener，用于通过动态变化的规则控制迁移行为。</p>
 
                 
             </div>
@@ -1127,7 +1141,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">18.8k</span>
+                        class="white-color">19k</span>
             
             
             
