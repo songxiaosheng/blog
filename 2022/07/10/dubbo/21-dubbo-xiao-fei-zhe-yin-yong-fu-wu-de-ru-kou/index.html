@@ -355,14 +355,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.6k
+                    4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    15 分
+                    17 分
                 </div>
                 
 
@@ -756,7 +756,30 @@
        <span class="token comment">//这一行回来执行迁移规则创建应用级优先的服务发现Invoker对象</span>
        <span class="token keyword">return</span> <span class="token function">interceptInvoker</span><span class="token punctuation">(</span>migrationInvoker<span class="token punctuation">,</span> url<span class="token punctuation">,</span> consumerUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里代码比较重要的其实只有两行getMigrationInvoker和interceptInvoker方法<br>比较核心也是Dubbo3比较重要的消费者启动逻辑基本都在这个方法里面interceptInvoker，这个方法执行了消费者应用级发现和接口级发现迁移的逻辑，会自动帮忙决策一个Invoker类型对象，不过这个逻辑这里先简单看下，后续单独整个文章来说。</p>
+<p>这里我们先来看 ClusterInvoker对象的创建，下面先看代码：</p>
+<p>RegistryProtocol类型的getMigrationInvoker方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">getMigrationInvoker</span><span class="token punctuation">(</span><span class="token class-name">RegistryProtocol</span> registryProtocol<span class="token punctuation">,</span> <span class="token class-name">Cluster</span> cluster<span class="token punctuation">,</span> <span class="token class-name">Registry</span> registry<span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> type<span class="token punctuation">,</span> <span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">URL</span> consumerUrl<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ServiceDiscoveryMigrationInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>registryProtocol<span class="token punctuation">,</span> cluster<span class="token punctuation">,</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">,</span> url<span class="token punctuation">,</span> consumerUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>详细的逻辑这里就不再看了，我们继续看RegistryProtocol类型的interceptInvoker方法：</p>
+<p>具体代码如下：<br>RegistryProtocol类型的interceptInvoker方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">Invoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">interceptInvoker</span><span class="token punctuation">(</span><span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> invoker<span class="token punctuation">,</span> <span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">URL</span> consumerUrl<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token comment">//获取激活的注册协议监听器扩展里面registry.protocol.listener，这里激活的类型为MigrationRuleListener</span>
+       <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RegistryProtocolListener</span><span class="token punctuation">&gt;</span></span> listeners <span class="token operator">=</span> <span class="token function">findRegistryProtocolListeners</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>listeners<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span> invoker<span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
 
+       <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">RegistryProtocolListener</span> listener <span class="token operator">:</span> listeners<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token comment">//这里执行MigrationRuleListener类型的onRefer方法</span>
+           listener<span class="token punctuation">.</span><span class="token function">onRefer</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> invoker<span class="token punctuation">,</span> consumerUrl<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token keyword">return</span> invoker<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>该方法尝试加载所有RegistryProtocolListener定义，这些定义通过与定义的交互来控制调用器的行为，然后使用这些侦听器更改MigrationInvoker的状态和行为。<br>当前可用的监听器是MigrationRuleListener，用于通过动态变化的规则控制迁移行为。</p>
+<p>可以看到核心的逻辑集中在了这个位置MigrationRuleListener类型的onRefer方法，这个这里就不深入往下说了，后续会有个文章专门来看Dubbo2迁移Dubbo3时候处理的逻辑。</p>
 <p>未完待续</p>
 
                 
@@ -1495,7 +1518,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">17.9k</span>
+                        class="white-color">18.3k</span>
             
             
             
