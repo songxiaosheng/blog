@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="中间件源码">
-    <meta name="description" content="">
+    <meta name="keywords" content="【escocked 5.8.0源码解析系列】-2-esockd例子echo, 中间件源码">
+    <meta name="description" content="escocked是emqx开发的Erlang通用非阻塞TCP/SSL套接字服务器">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +19,7 @@
 
     
 
-    <title>中间件源码</title>
+    <title>【escocked 5.8.0源码解析系列】-2-esockd例子echo | 中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
@@ -187,12 +187,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">【escocked 5.8.0源码解析系列】-2-esockd例子echo</h1>
                 </div>
             </div>
         </div>
@@ -306,12 +306,29 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/escoked%E6%BA%90%E7%A0%81/">
+                                <span class="chip bg-color">escoked源码</span>
+                            </a>
+                        
+                            <a href="/tags/erlang/">
+                                <span class="chip bg-color">erlang</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/escoked/" class="post-category">
+                                escoked
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -320,21 +337,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-07-07
+                    2016-09-07
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-07-07
+                    2022-07-12
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    0
+                    296
                 </div>
                 
 
@@ -359,7 +376,68 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h1 id="2-esockd例子echo"><a href="#2-esockd例子echo" class="headerlink" title="2-esockd例子echo"></a>2-esockd例子echo</h1><h2 id="2-1-例子代码"><a href="#2-1-例子代码" class="headerlink" title="2.1 例子代码"></a>2.1 例子代码</h2><p>这个例子比较简单在README.md文件中即可找到</p>
+<p>接下来先试用rebar3 来生成新项目<br>关于rebar3使用文档如下所示：<br><a target="_blank" rel="noopener" href="https://www.rebar3.org/">rebar3</a></p>
+<p>生成新项目：</p>
+<pre class="line-numbers language-none"><code class="language-none">rebar3 new echo<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后在项目的app.src文件中引入 esockd 应用<br>然后打开src目录<br>首先创建echo_server模块如下所示：</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang">
+<span class="token operator">-</span><span class="token function">module</span><span class="token punctuation">(</span><span class="token atom">echo_server</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token operator">-</span><span class="token function">export</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token atom">start_link</span><span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token atom">init</span><span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token function">start_link</span><span class="token punctuation">(</span><span class="token variable">Transport</span><span class="token punctuation">,</span> <span class="token variable">Sock</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+    <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span> <span class="token function">spawn_link</span><span class="token punctuation">(</span><span class="token variable">?MODULE</span><span class="token punctuation">,</span> <span class="token atom">init</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Transport</span><span class="token punctuation">,</span> <span class="token variable">Sock</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">.</span>
+
+<span class="token function">init</span><span class="token punctuation">(</span><span class="token variable">Transport</span><span class="token punctuation">,</span> <span class="token variable">Sock</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+    <span class="token keyword">case</span> <span class="token variable">Transport</span><span class="token punctuation">:</span><span class="token function">wait</span><span class="token punctuation">(</span><span class="token variable">Sock</span><span class="token punctuation">)</span> <span class="token keyword">of</span>
+        <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span> <span class="token variable">NewSock</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+            <span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Transport</span><span class="token punctuation">,</span> <span class="token variable">NewSock</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">Error</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token variable">Error</span>
+    <span class="token keyword">end</span><span class="token punctuation">.</span>
+
+<span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Transport</span><span class="token punctuation">,</span> <span class="token variable">Sock</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+    <span class="token keyword">case</span> <span class="token variable">Transport</span><span class="token punctuation">:</span><span class="token function">recv</span><span class="token punctuation">(</span><span class="token variable">Sock</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">of</span>
+        <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span> <span class="token variable">Data</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+            <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span> <span class="token variable">Peername</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token variable">Transport</span><span class="token punctuation">:</span><span class="token function">peername</span><span class="token punctuation">(</span><span class="token variable">Sock</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token variable">Transport</span><span class="token punctuation">:</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token variable">Sock</span><span class="token punctuation">,</span> <span class="token variable">Data</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Transport</span><span class="token punctuation">,</span> <span class="token variable">Sock</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">{</span><span class="token atom">error</span><span class="token punctuation">,</span> <span class="token variable">Reason</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+            <span class="token atom">io</span><span class="token punctuation">:</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"TCP Error: ~s~n"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Reason</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token punctuation">{</span><span class="token atom">stop</span><span class="token punctuation">,</span> <span class="token variable">Reason</span><span class="token punctuation">}</span>
+    <span class="token keyword">end</span><span class="token punctuation">.</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后新建一个listener具体代码如下：</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token operator">-</span><span class="token function">module</span><span class="token punctuation">(</span><span class="token atom">kc_listener</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+<span class="token operator">-</span><span class="token function">author</span><span class="token punctuation">(</span><span class="token string">"mac"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token comment">%% API</span>
+<span class="token operator">-</span><span class="token function">export</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token atom">start</span><span class="token operator">/</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token comment">%% @doc Start all listeners.</span>
+<span class="token operator">-</span><span class="token atom">spec</span> <span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token atom">ok</span><span class="token punctuation">.</span>
+<span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+  <span class="token function">do_start_listener</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token atom">ok</span><span class="token punctuation">.</span>
+
+<span class="token function">do_start_listener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+  <span class="token atom">esockd</span><span class="token punctuation">:</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token atom">kc_connection</span><span class="token punctuation">,</span> <span class="token number">5000</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token atom">tcp_options</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token atom">binary</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">reuseaddr</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token atom">kc_connection</span><span class="token punctuation">,</span> <span class="token atom">start_link</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p> 最后在主应用里面调用<br> </p><pre class="line-numbers language-none"><code class="language-none">kc_listener:start()<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p></p>
+<p>然后执行rebar3 release 来打包</p>
+<p>找到编译后的二进制问加你执行echo console进入控制台，接下来就可以执行telent命令来访问了<br>如下所示：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">mac<span class="token annotation punctuation">@MacdeMacBook</span><span class="token operator">-</span><span class="token class-name">Pro</span> keep_connection <span class="token operator">%</span> telnet <span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span> <span class="token number">5000</span>
+<span class="token class-name">Trying</span> <span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token class-name">Connected</span> <span class="token keyword">to</span> <span class="token namespace">localhost<span class="token punctuation">.</span></span>
+<span class="token class-name">Escape</span> character is <span class="token char">'^]'</span><span class="token punctuation">.</span>
+hello
+hello
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
                 
             </div>
             <hr/>
@@ -385,7 +463,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blog.elastic.link/2022/07/07/esockd/2-esockd-li-zi-echo/">https://blog.elastic.link/2022/07/07/esockd/2-esockd-li-zi-echo/</a>
+                    <a href="https://blog.elastic.link/2016/09/07/esockd/2-esockd-li-zi-echo/">https://blog.elastic.link/2016/09/07/esockd/2-esockd-li-zi-echo/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -422,7 +500,15 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/escoked%E6%BA%90%E7%A0%81/">
+                                    <span class="chip bg-color">escoked源码</span>
+                                </a>
+                            
+                                <a href="/tags/erlang/">
+                                    <span class="chip bg-color">erlang</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -865,31 +951,31 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/07/10/dubbo/22-dubbo3-xiao-fei-zhe-zi-dong-gan-ying-jue-ce-ying-yong-ji-fu-wu-fa-xian-yuan-li/">
+                <a href="/2016/09/07/esockd/1-escockd-ru-men/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="22-Dubbo3消费者自动感应决策应用级服务发现原理">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="【escocked 5.8.0源码解析系列】-1-escokd简介">
                         
-                        <span class="card-title">22-Dubbo3消费者自动感应决策应用级服务发现原理</span>
+                        <span class="card-title">【escocked 5.8.0源码解析系列】-1-escokd简介</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            22-Dubbo3消费者自动感应决策应用级服务发现原理
+                            escocked是emqx开发的Erlang通用非阻塞TCP/SSL套接字服务器
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
+                            <i class="far fa-clock fa-fw icon-date"></i>2016-09-07
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
-                                    Dubbo3源码
+                            <a href="/categories/escoked/" class="post-category">
+                                    escoked
                                 </a>
                             
                             
@@ -899,16 +985,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Dubbo/">
-                        <span class="chip bg-color">Dubbo</span>
+                    <a href="/tags/escoked%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">escoked源码</span>
                     </a>
                     
-                    <a href="/tags/Dubbo3/">
-                        <span class="chip bg-color">Dubbo3</span>
-                    </a>
-                    
-                    <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
-                        <span class="chip bg-color">Dubbo3源码解析</span>
+                    <a href="/tags/erlang/">
+                        <span class="chip bg-color">erlang</span>
                     </a>
                     
                 </div>
@@ -922,31 +1004,31 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/09/07/elasticjob/1-elasticjob-jian-jie/">
+                <a href="/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="1-Elastic-Job 分布式定时任务调度系统的简介">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析">
                         
-                        <span class="card-title">1-Elastic-Job 分布式定时任务调度系统的简介</span>
+                        <span class="card-title">【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Elastic-Job是由当当网基于Quartz 二次开发之后的分布式调度解决方案，是一个分布式调度解决方案，由 2 个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。
+                            在终端输入erl即可进入erl环境的终端
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-07
+                                <i class="far fa-clock fa-fw icon-date"></i>2016-09-07
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-category">
-                                    ElasticJob源码解析
+                            <a href="/categories/Kafka%E6%BA%90%E7%A0%81/" class="post-category">
+                                    Kafka源码
                                 </a>
                             
                             
@@ -956,12 +1038,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/ElasticJob/">
-                        <span class="chip bg-color">ElasticJob</span>
+                    <a href="/tags/Kafka/">
+                        <span class="chip bg-color">Kafka</span>
                     </a>
                     
-                    <a href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
-                        <span class="chip bg-color">ElasticJob源码解析</span>
+                    <a href="/tags/Kafka%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">Kafka源码</span>
                     </a>
                     
                 </div>
@@ -1104,7 +1186,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">20.4k</span>
+                        class="white-color">20.7k</span>
             
             
             
