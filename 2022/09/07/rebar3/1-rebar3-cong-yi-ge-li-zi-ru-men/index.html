@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="中间件源码">
-    <meta name="description" content="">
+    <meta name="keywords" content="1-Rebar3 从一个例子入门, 中间件源码">
+    <meta name="description" content="1-Rebar3 从一个例子入门">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +19,7 @@
 
     
 
-    <title>中间件源码</title>
+    <title>1-Rebar3 从一个例子入门 | 中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
@@ -187,12 +187,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">1-Rebar3 从一个例子入门</h1>
                 </div>
             </div>
         </div>
@@ -306,12 +306,29 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Erlang/">
+                                <span class="chip bg-color">Erlang</span>
+                            </a>
+                        
+                            <a href="/tags/Rebar3/">
+                                <span class="chip bg-color">Rebar3</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Rebar3/" class="post-category">
+                                Rebar3
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -320,7 +337,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-07-14
+                    2022-09-07
                 </div>
                 
 
@@ -334,14 +351,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    0
+                    533
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    2 分
                 </div>
                 
 
@@ -359,7 +376,36 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h1 id="1-Rebar3-从一个例子入门"><a href="#1-Rebar3-从一个例子入门" class="headerlink" title="1-Rebar3 从一个例子入门"></a>1-Rebar3 从一个例子入门</h1><h2 id="1-1-简介"><a href="#1-1-简介" class="headerlink" title="1.1 简介"></a>1.1 简介</h2><p>Rebar3 是 Erlang 社区中的标准构建工具。它本质上集成了 Erlang 附带的许多其他工具以及一些开源工具，并使它们都在统一的项目结构下工作。</p>
+<h2 id="1-2-安装"><a href="#1-2-安装" class="headerlink" title="1.2 安装"></a>1.2 安装</h2><p>Rebar3 脚本安装，这个可以直接参考官方文档<a target="_blank" rel="noopener" href="http://rebar3.org/docs/getting-started/">http://rebar3.org/docs/getting-started/</a></p>
+<h2 id="1-3-创建新项目"><a href="#1-3-创建新项目" class="headerlink" title="1.3 创建新项目"></a>1.3 创建新项目</h2><p>Rebar3 提供的<strong>模板</strong>可以确保您的 Erlang 项目适合常规的 OTP 结构：</p>
+<p>使用 rebar3 项目组织代码有两种主要方式：</p>
+<ul>
+<li><p>作为单个应用程序，</p>
+</li>
+<li><p>作为一个综合项目。</p>
+</li>
+<li><p><strong>单个应用程序项目</strong> 在目录的根目录中包含一个单独的顶级应用程序，其 Erlang 源模块直接位于src/目录中。这种格式适用于要在 GitHub 上发布的库或以 hex 格式发布的库，目的是让它们可与世界共享，但也可以与Releases一起使用，它允许发布一个直接启动应用程序的 Erlang 运行时系统。</p>
+</li>
+<li><p><strong>Umbrella 项目</strong> 的定义特征是它们可以包含多个顶级 Erlang/OTP 应用程序，通常位于顶级apps/或lib/目录中。这些应用程序中的每一个都可能包含自己的 rebar.config 文件。此格式仅适用于具有一个或多个顶级应用程序的版本。</p>
+</li>
+</ul>
+<p>Rebar3 带有用于创建任一类型项目的模板，可通过rebar3 new <template> <project-name>命令调用。该<template>值可以是以下任何一种：
+<ul>
+<li>app：具有监督树的有状态 OTP 应用程序，作为单个应用程序项目</li>
+<li>lib：一个库 OTP 应用程序（没有监督树），用于将各种模块组合在一起，作为单个应用程序项目</li>
+<li>release: 准备发布的总括项目</li>
+<li>escript：一种特殊形式的单一应用程序项目，可以构建为可运行的脚本</li>
+<li>plugin: rebar3 插件的结构。<br>例如：<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token number">$ </span><span class="token atom">rebar3</span> <span class="token atom">new</span> <span class="token atom">app</span> <span class="token atom">myapp</span>
+<span class="token operator">==</span><span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">Writing</span> <span class="token atom">myapp</span><span class="token operator">/</span><span class="token atom">src</span><span class="token operator">/</span><span class="token atom">myapp_app</span><span class="token punctuation">.</span><span class="token atom">erl</span>
+<span class="token operator">==</span><span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">Writing</span> <span class="token atom">myapp</span><span class="token operator">/</span><span class="token atom">src</span><span class="token operator">/</span><span class="token atom">myapp_sup</span><span class="token punctuation">.</span><span class="token atom">erl</span>
+<span class="token operator">==</span><span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">Writing</span> <span class="token atom">myapp</span><span class="token operator">/</span><span class="token atom">src</span><span class="token operator">/</span><span class="token atom">myapp</span><span class="token punctuation">.</span><span class="token atom">app</span><span class="token punctuation">.</span><span class="token atom">src</span>
+<span class="token operator">==</span><span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">Writing</span> <span class="token atom">myapp</span><span class="token operator">/</span><span class="token atom">rebar</span><span class="token punctuation">.</span><span class="token atom">config</span>
+<span class="token operator">==</span><span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">Writing</span> <span class="token atom">myapp</span><span class="token operator">/</span><span class="token punctuation">.</span><span class="token atom">gitignore</span>
+<span class="token operator">==</span><span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">Writing</span> <span class="token atom">myapp</span><span class="token operator">/</span><span class="token variable">LICENSE</span>
+<span class="token operator">==</span><span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">Writing</span> <span class="token atom">myapp</span><span class="token operator">/</span><span class="token variable">README</span><span class="token punctuation">.</span><span class="token atom">md</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+</template></project-name></template></p>
                 
             </div>
             <hr/>
@@ -385,7 +431,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blog.elastic.link/2022/07/14/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/">https://blog.elastic.link/2022/07/14/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</a>
+                    <a href="https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/">https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -422,7 +468,15 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/Erlang/">
+                                    <span class="chip bg-color">Erlang</span>
+                                </a>
+                            
+                                <a href="/tags/Rebar3/">
+                                    <span class="chip bg-color">Rebar3</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -865,6 +919,59 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
+                <a href="/2022/09/07/erlang/erlang-1/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="1-Erlang 语法基础">
+                        
+                        <span class="card-title">1-Erlang 语法基础</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            在终端输入erl即可进入erl环境的终端
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-09-07
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Erlang/" class="post-category">
+                                    Erlang
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Erlang/">
+                        <span class="chip bg-color">Erlang</span>
+                    </a>
+                    
+                    <a href="/tags/Erlang%E8%AF%AD%E6%B3%95/">
+                        <span class="chip bg-color">Erlang语法</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
                 <a href="/2022/09/07/jdk/jdk11-1/">
                     <div class="card-image">
                         
@@ -881,9 +988,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-09-07
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-09-07
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -905,63 +1012,6 @@
                     
                     <a href="/tags/Java/">
                         <span class="chip bg-color">Java</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2022/07/10/dubbo/1-cong-yi-ge-demo-shuo-qi/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="1-从一个服务提供者的Demo说起">
-                        
-                        <span class="card-title">1-从一个服务提供者的Demo说起</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            【Dubbo3.0.8源码解析系列】-1-从一个服务提供者的Demo说起
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
-                                    Dubbo3源码
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Dubbo/">
-                        <span class="chip bg-color">Dubbo</span>
-                    </a>
-                    
-                    <a href="/tags/Dubbo3/">
-                        <span class="chip bg-color">Dubbo3</span>
-                    </a>
-                    
-                    <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
-                        <span class="chip bg-color">Dubbo3源码解析</span>
                     </a>
                     
                 </div>
@@ -1104,7 +1154,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">21.4k</span>
+                        class="white-color">22k</span>
             
             
             
