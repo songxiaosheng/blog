@@ -241,33 +241,6 @@
   </entry>
   
   <entry>
-    <title>【escocked 5.8.0源码解析系列】-1-escokd简介</title>
-    <link href="https://blog.elastic.link/2016/09/07/esockd/1-escockd-ru-men/"/>
-    <id>https://blog.elastic.link/2016/09/07/esockd/1-escockd-ru-men/</id>
-    <published>2016-09-07T12:25:00.000Z</published>
-    <updated>2022-07-07T15:15:12.426Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-escokd简介&quot;&gt;&lt;a href=&quot;#1-escokd简介&quot; class=&quot;headerlink&quot; title=&quot;1 escokd简介&quot;&gt;&lt;/a&gt;1 escokd简介&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="escoked" scheme="https://blog.elastic.link/categories/escoked/"/>
-    
-    
-    <category term="escoked源码" scheme="https://blog.elastic.link/tags/escoked%E6%BA%90%E7%A0%81/"/>
-    
-    <category term="erlang" scheme="https://blog.elastic.link/tags/erlang/"/>
-    
-  </entry>
-  
-  <entry>
     <title>【escocked 5.8.0源码解析系列】-2-esockd例子echo</title>
     <link href="https://blog.elastic.link/2016/09/07/esockd/2-esockd-li-zi-echo/"/>
     <id>https://blog.elastic.link/2016/09/07/esockd/2-esockd-li-zi-echo/</id>
@@ -291,6 +264,33 @@
     <category term="escoked源码" scheme="https://blog.elastic.link/tags/escoked%E6%BA%90%E7%A0%81/"/>
     
     <category term="erlang" scheme="https://blog.elastic.link/tags/erlang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</title>
+    <link href="https://blog.elastic.link/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/"/>
+    <id>https://blog.elastic.link/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/</id>
+    <published>2016-09-07T12:25:00.000Z</published>
+    <updated>2022-07-06T23:59:38.639Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-Kaka知识全解析&quot;&gt;&lt;a href=&quot;#1-Kaka知识全解析&quot; class=&quot;headerlink&quot; title=&quot;1-Kaka知识全解析&quot;&gt;&lt;/a&gt;1-Kaka知识全解析&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
     
   </entry>
   
@@ -351,29 +351,29 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</title>
-    <link href="https://blog.elastic.link/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/"/>
-    <id>https://blog.elastic.link/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/</id>
+    <title>【escocked 5.8.0源码解析系列】-1-escokd简介</title>
+    <link href="https://blog.elastic.link/2016/09/07/esockd/1-escockd-ru-men/"/>
+    <id>https://blog.elastic.link/2016/09/07/esockd/1-escockd-ru-men/</id>
     <published>2016-09-07T12:25:00.000Z</published>
-    <updated>2022-07-06T23:59:38.639Z</updated>
+    <updated>2022-07-07T15:15:12.426Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;1-Kaka知识全解析&quot;&gt;&lt;a href=&quot;#1-Kaka知识全解析&quot; class=&quot;headerlink&quot; title=&quot;1-Kaka知识全解析&quot;&gt;&lt;/a&gt;1-Kaka知识全解析&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
+    <summary type="html">&lt;h1 id=&quot;1-escokd简介&quot;&gt;&lt;a href=&quot;#1-escokd简介&quot; class=&quot;headerlink&quot; title=&quot;1 escokd简介&quot;&gt;&lt;/a&gt;1 escokd简介&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
         
       
     
     
     
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    <category term="escoked" scheme="https://blog.elastic.link/categories/escoked/"/>
     
     
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    <category term="escoked源码" scheme="https://blog.elastic.link/tags/escoked%E6%BA%90%E7%A0%81/"/>
     
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    <category term="erlang" scheme="https://blog.elastic.link/tags/erlang/"/>
     
   </entry>
   
