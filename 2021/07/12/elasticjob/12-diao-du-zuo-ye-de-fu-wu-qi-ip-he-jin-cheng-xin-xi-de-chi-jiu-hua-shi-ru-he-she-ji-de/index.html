@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="7-线程安全的单例模式设计全局作业注册表JobRegistry, 中间件源码">
-    <meta name="description" content="线程安全的单例模式设计全局作业注册表JobRegistry">
+    <meta name="keywords" content="12-调度作业的服务器IP和进程信息的持久化是如何设计的?, 中间件源码">
+    <meta name="description" content="12-调度作业的服务器IP和进程信息的持久化是如何设计的?">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +19,7 @@
 
     
 
-    <title>7-线程安全的单例模式设计全局作业注册表JobRegistry | 中间件源码</title>
+    <title>12-调度作业的服务器IP和进程信息的持久化是如何设计的? | 中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
@@ -187,12 +187,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">7-线程安全的单例模式设计全局作业注册表JobRegistry</h1>
+                    <h1 class="description center-align post-title">12-调度作业的服务器IP和进程信息的持久化是如何设计的?</h1>
                 </div>
             </div>
         </div>
@@ -316,10 +316,6 @@
                                 <span class="chip bg-color">ElasticJob源码解析</span>
                             </a>
                         
-                            <a href="/tags/%E4%BD%9C%E4%B8%9A%E7%9A%84%E9%85%8D%E7%BD%AE/">
-                                <span class="chip bg-color">作业的配置</span>
-                            </a>
-                        
                     </div>
                     
                 </div>
@@ -341,7 +337,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-09-07
+                    2021-07-12
                 </div>
                 
 
@@ -355,14 +351,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.2k
+                    762
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    2 分
                 </div>
                 
 
@@ -380,85 +376,69 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>@<a href="%E7%9B%AE%E5%BD%95">TOC</a></p>
-<h1 id="7-线程安全的单例模式设计全局作业注册表JobRegistry"><a href="#7-线程安全的单例模式设计全局作业注册表JobRegistry" class="headerlink" title="7-线程安全的单例模式设计全局作业注册表JobRegistry"></a>7-线程安全的单例模式设计全局作业注册表JobRegistry</h1><h2 id="7-1-注册作业分片总数"><a href="#7-1-注册作业分片总数" class="headerlink" title="7.1 注册作业分片总数"></a>7.1 注册作业分片总数</h2><p>在作业调度器配置信息同步之后，接下来需要将分片总数写入全局注册表中，方便在程序的任何位置获取分片总数，比如我们后期程序运行时，在调度后台动态修改Zookeeper上存储的分片总数配置，这个时候是需要重新触发分片的，运行中的调度作业程序可以通过判断Zookeeper上发生变更的分片总数与本地注册表中的分片总数进行比较，来判断是否发生了分片总数变更，如果分片总数发生了变更，则需要重新设置分片标记进行重新分片。</p>
-<p>那接下来就来看下是如何将分片总数写入本地注册表，代码如下：</p>
-<pre class="line-numbers language-none"><code class="language-none">//向作业注册表中写入分片总数
-JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCenter.getJobName(),
-        liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getShardingTotalCount());<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+                <h1 id="12-调度作业的服务器IP和进程信息的持久化是如何设计的"><a href="#12-调度作业的服务器IP和进程信息的持久化是如何设计的" class="headerlink" title="12-调度作业的服务器IP和进程信息的持久化是如何设计的?"></a>12-调度作业的服务器IP和进程信息的持久化是如何设计的?</h1><h2 id="12-1-作业服务器信息"><a href="#12-1-作业服务器信息" class="headerlink" title="12.1 作业服务器信息"></a>12.1 作业服务器信息</h2><p>作业服务器信息的持久化主要调用了如下两行代码:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">serverService<span class="token punctuation">.</span><span class="token function">persistOnline</span><span class="token punctuation">(</span>enabled<span class="token punctuation">)</span><span class="token punctuation">;</span>
+instanceService<span class="token punctuation">.</span><span class="token function">persistOnline</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<p>写入过程非常简单只需要一行代码，获取全局单例的作业注册表然后将配置中的分片总数写入即可，而作业注册表JobRegistry类型中的setCurrentShardingTotalCount方法就是将作业名和分片总数的映射关系存入Map中，具体代码如下：</p>
-<pre class="line-numbers language-none"><code class="language-none">/**
-    * 设置当前分片总数.
-    *
-    * @param jobName 作业名称
-    * @param currentShardingTotalCount 当前分片总数
-    */
-   public void setCurrentShardingTotalCount(final String jobName, final int currentShardingTotalCount) {
-       currentShardingTotalCountMap.put(jobName, currentShardingTotalCount);
-   }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>了解到了分片总数写入全局作业注册表的过程，那在下面我们就来详细看下全局作业注册表的设计。</p>
-<h2 id="7-2-作业全局注册表JobRegistry"><a href="#7-2-作业全局注册表JobRegistry" class="headerlink" title="7.2 作业全局注册表JobRegistry"></a>7.2 作业全局注册表JobRegistry</h2><p>我们可以看到在注册作业分片总数的时候有将配置中的分片总数写入到JobRegistry类型的单例子对象中，来进行保存，这个分片总数存储到这个JobRegistry注册表类型对象中，在整个系统中都可以通过获取JobRegistry单例对象来获取属性，作业注册表其实就是用来管理一些公共对象，这些对象可以做为全局变量在任何地方都可以使用， JobRegistry目前系统提供了5种信息的注册，分别为：作业调度控制器对象，协调注册中心对象，作业实例对象，作业运行状态对象，当前分片总数对象。具体类型则使用ConcurrentHashMap来保证线程安全，KEY值均为作业名字，VALUE则为具体对象，如下所示：</p>
+<p>作业服务器信息上线需要两个节点:</p>
+<ul>
+<li>一个是用来存储实例启用/禁用状态的持久节点servers</li>
+<li>一个是可以表示进程上线，下线状态的临时节点instances</li>
+</ul>
+<p>我们先来看一下两者区别的表格：</p>
 <table>
 <thead>
 <tr>
-<th>字段</th>
-<th>类型</th>
-<th>说明</th>
+<th align="left"></th>
+<th align="left">持久实例节点servers</th>
+<th align="left">临时实例节点instances</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>schedulerMap</td>
-<td>Map**&lt;<strong>String,JobScheduleController**&gt;</strong></td>
-<td>作业调度控制器映射KEY为作业名，值为作业调度控制器</td>
+<td align="left"><strong>节点路径</strong></td>
+<td align="left">{jobName}/servers/节点ip</td>
+<td align="left">{jobName}/instances/节点ip@-@进程id</td>
 </tr>
 <tr>
-<td>regCenterMap</td>
-<td>Map**&lt;<strong>String, CoordinatorRegistryCenter**&gt;</strong></td>
-<td>作业协调注册中心映射，KEY为作业名，值为协调注册中心</td>
+<td align="left"><strong>Znode节点类型</strong></td>
+<td align="left">持久节点</td>
+<td align="left">临时节点</td>
 </tr>
 <tr>
-<td>jobInstanceMap</td>
-<td>Map**&lt;<strong>String, JobInstance**&gt;</strong></td>
-<td>作业实例映射，KEY为作业名值为作业实例对象</td>
-</tr>
-<tr>
-<td><code>jobRunningMap</code></td>
-<td>Map**&lt;<strong>String, Boolean**&gt;</strong></td>
-<td>作业的运行状态，true为正在运行</td>
-</tr>
-<tr>
-<td>currentShardingTotalCountMap</td>
-<td>Map**&lt;<strong>String, Integer**&gt;</strong></td>
-<td>作业分片总数映射，KEY为作业名，值为分片总数</td>
+<td align="left"><strong>节点作用</strong></td>
+<td align="left">用于存储作业实例状态(启用/禁用)</td>
+<td align="left">标示作业进程是否正常启动(临时节点存在则进程正常启动,节点不存在则对应实例进程启动异常)</td>
 </tr>
 </tbody></table>
-<p>实现一个全局的作业注册表JobRegistry，需要用到单例模式， 保证全局对象唯一，这里就直接介绍下JobRegistry类型使用到的单例模式，在这里使用到了单例模式中的 双检锁/双重校验锁（DCL，即 double-checked locking），这种方式采用双锁机制，安全且在多线程情况下能保持高性能。接下来我们来看一下双检锁单例模式的实现，需要如下几个部分：</p>
-<ul>
-<li>私有的单例对象成员变量singleton，使用保证线程间变量可见的volatile 类型来修饰</li>
-<li>私有的构造器，保证外部无法创建对象，对象只能在内部创建保证对象创建可控</li>
-<li>公有的获取单例对象的静态方法getSingleton</li>
-<li>getSingleton中进行对象初始化，加锁之前判断单例对象是否为空，加锁之后也判断下对象是否为空，两次判断对象均为空条件下创建对象，并赋值给singleton对象</li>
-</ul>
-<p>简化后的单例代码如下：</p>
-<pre class="line-numbers language-none"><code class="language-none">public class Singleton {  
-    private volatile static Singleton singleton;  
-    private Singleton (){}  
-    public static Singleton getSingleton() {  
-    if (singleton == null) {  
-        synchronized (Singleton.class) {  
-        if (singleton == null) {  
-            singleton = new Singleton();  
-        }  
-        }  
-    }  
-    return singleton;  
-    }  
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>①持久实例节点servers</p>
+<p>持久节点是调用如下代码来进行写入的:</p>
+<pre class="line-numbers language-jjava" data-language="jjava"><code class="language-jjava">/**
+    * 持久化作业服务器上线信息.
+    * 
+    * @param enabled 作业是否启用
+    */
+   public void persistOnline(final boolean enabled) {
+       if (!JobRegistry.getInstance().isShutdown(jobName)) {
+           jobNodeStorage.fillJobNode(serverNode.getServerNode(JobRegistry.getInstance().getJobInstance(jobName).getIp()), enabled ? "" : ServerStatus.DISABLED.name());
+       }
+   }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>getSingleton方法为什么需要两次判断呢，第一个if减少性能开销，第二个if避免多线程环境下多线程同时在第一次判断时候对象为空，导致生成多个对象实例。</p>
-<p>全局作业注册表的单例对象可以在程序任何位置获取到，然后通过作业名字即可获取到本地内存存储的对象然后进行操作。</p>
+<p>参数enabled设置服务器是否启用。enabled参数是上面一开始我们说到的轻量级作业配置LiteJobConfiguration中的disabled属性是否禁用服务器，当禁用配置为false的时候我们才会启用服务器状态，这里对应节点为/{jobName}/servers/{ip},存储数据如下:</p>
+<ul>
+<li>启用状态存储数据为:空</li>
+<li>禁用状态存储数据为:DISABLED</li>
+</ul>
+<p>通过这个节点可以有效的控制作业对应机器是否可以执行当前作业，这里servers节点为持久节点不用担心重启后重新修改配置,这样在作业运行时我们可以通过动态修改Zookeeper的servers节点下的实例信息来动态的修改作业实例的启用/禁用状态信息。</p>
+<p>② 临时实例节点instances</p>
+<p>临时节点的持久化是调用如下代码进行写入的:</p>
+<pre class="line-numbers language-none"><code class="language-none">/**
+     * 持久化作业运行实例上线相关信息.
+     */
+    public void persistOnline() {
+        jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstanceNode(), "");
+    }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>作业服务器每次启动时候会创建临时节点/{jobName}/instances/{jobInstanceId}，如果作业实例关闭的话,节点会自动被删除，通过这个节点我们可以用来观察当前作业下启动的进程有哪些，也就是说有哪个实例启动了作业进程,如果实例节点不存在则说明当前作业进程启动失败或者作业未连接上当前Zookeeper,我们可以通过查看instances下的临时实例节点来判断进程是否正常存在,这个状态是可以实时被观察到的,如果出现这样的情况可以优先排查作业进程是否启动成功。</p>
 <p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
 
                 
@@ -486,7 +466,7 @@ JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCente
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blog.elastic.link/2021/09/07/elasticjob/7-xian-cheng-an-quan-de-dan-li-mo-shi-she-ji-quan-ju-zuo-ye-zhu-ce-biao-jobregistry/">https://blog.elastic.link/2021/09/07/elasticjob/7-xian-cheng-an-quan-de-dan-li-mo-shi-she-ji-quan-ju-zuo-ye-zhu-ce-biao-jobregistry/</a>
+                    <a href="https://blog.elastic.link/2021/07/12/elasticjob/12-diao-du-zuo-ye-de-fu-wu-qi-ip-he-jin-cheng-xin-xi-de-chi-jiu-hua-shi-ru-he-she-ji-de/">https://blog.elastic.link/2021/07/12/elasticjob/12-diao-du-zuo-ye-de-fu-wu-qi-ip-he-jin-cheng-xin-xi-de-chi-jiu-hua-shi-ru-he-she-ji-de/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -530,10 +510,6 @@ JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCente
                             
                                 <a href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
                                     <span class="chip bg-color">ElasticJob源码解析</span>
-                                </a>
-                            
-                                <a href="/tags/%E4%BD%9C%E4%B8%9A%E7%9A%84%E9%85%8D%E7%BD%AE/">
-                                    <span class="chip bg-color">作业的配置</span>
                                 </a>
                             
                         </div>
@@ -978,19 +954,19 @@ JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCente
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/09/07/elasticjob/5-diao-du-zuo-ye-mo-ban-lei-xing-she-ji/">
+                <a href="/2021/09/07/elasticjob/8-shi-yong-quartz-wei-mei-ge-zuo-ye-chuang-jian-dan-ji-zhi-xing-de-diao-du-qi-dui-xiang/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="5 调度作业模版类型设计">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="8 - 使用Quartz为每个作业创建单机执行的调度器对象">
                         
-                        <span class="card-title">5 调度作业模版类型设计</span>
+                        <span class="card-title">8 - 使用Quartz为每个作业创建单机执行的调度器对象</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            调度作业是定时调度的核心，调度程序整个生命周期主要是围绕调度作业来说的，从一开始的调度作业配置初始化，调度作业触发，调度作业治理，调度作业监控等等
+                            线程安全的单例模式设计全局作业注册表JobRegistry
                         
                     </div>
                     <div class="publish-info">
@@ -1020,8 +996,8 @@ JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCente
                         <span class="chip bg-color">ElasticJob源码解析</span>
                     </a>
                     
-                    <a href="/tags/%E4%BD%9C%E4%B8%9A%E6%A8%A1%E7%89%88%E7%B1%BB%E5%9E%8B%E8%AE%BE%E8%AE%A1/">
-                        <span class="chip bg-color">作业模版类型设计</span>
+                    <a href="/tags/Quartz/">
+                        <span class="chip bg-color">Quartz</span>
                     </a>
                     
                 </div>
@@ -1035,24 +1011,24 @@ JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCente
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/09/07/elasticjob/6-diao-du-zuo-ye-de-pei-zhi-shi-ru-he-zai-fen-bu-shi-chang-jing-xia-cun-chu-de/">
+                <a href="/2021/07/11/elasticjob/11-ji-yu-zookeeper-fen-bu-shi-suo-shi-xian-xuan-ju-zuo-ye-zhu-jie-dian-yuan-li/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="6-调度作业的配置是如何在分布式场景下存储的？">
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="11-基于Zookeeper的分布式锁实现 选举 作业主节点">
                         
-                        <span class="card-title">6-调度作业的配置是如何在分布式场景下存储的？</span>
+                        <span class="card-title">11-基于Zookeeper的分布式锁实现 选举 作业主节点</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            调度作业的配置是如何在分布式场景下存储的？
+                            11 基于Zookeeper的分布式锁实现 选举 作业主节点
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-07
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-11
                             </span>
                         <span class="publish-author">
                             
@@ -1077,8 +1053,12 @@ JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCente
                         <span class="chip bg-color">ElasticJob源码解析</span>
                     </a>
                     
-                    <a href="/tags/%E4%BD%9C%E4%B8%9A%E7%9A%84%E9%85%8D%E7%BD%AE/">
-                        <span class="chip bg-color">作业的配置</span>
+                    <a href="/tags/Zookeeper%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
+                        <span class="chip bg-color">Zookeeper分布式锁</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
+                        <span class="chip bg-color">分布式锁</span>
                     </a>
                     
                 </div>
@@ -1221,7 +1201,7 @@ JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCente
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">37.4k</span>
+                        class="white-color">38.7k</span>
             
             
             
