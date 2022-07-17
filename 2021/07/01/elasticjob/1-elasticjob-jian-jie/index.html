@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="4-Builder建造者设计模式构造复杂的作业配置, 中间件源码">
-    <meta name="description" content="这里我们主要了解了调度作业配置类型的3大类，作业核心配置类型主要封装一些公共的配置信息，作业类型配置类型主要是针对不同种定制作业的配置，轻量级作业配置主要是针对调度使用过程中的一些功能配置">
+    <meta name="keywords" content="01-Elastic-Job 分布式定时任务调度系统的简介, 中间件源码">
+    <meta name="description" content="Elastic-Job是由当当网基于Quartz 二次开发之后的分布式调度解决方案，是一个分布式调度解决方案，由 2 个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +19,7 @@
 
     
 
-    <title>4-Builder建造者设计模式构造复杂的作业配置 | 中间件源码</title>
+    <title>01-Elastic-Job 分布式定时任务调度系统的简介 | 中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
@@ -187,12 +187,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">4-Builder建造者设计模式构造复杂的作业配置</h1>
+                    <h1 class="description center-align post-title">01-Elastic-Job 分布式定时任务调度系统的简介</h1>
                 </div>
             </div>
         </div>
@@ -316,10 +316,6 @@
                                 <span class="chip bg-color">ElasticJob源码解析</span>
                             </a>
                         
-                            <a href="/tags/%E4%BD%9C%E4%B8%9A%E9%85%8D%E7%BD%AE/">
-                                <span class="chip bg-color">作业配置</span>
-                            </a>
-                        
                     </div>
                     
                 </div>
@@ -341,7 +337,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-09-07
+                    2021-07-01
                 </div>
                 
 
@@ -355,14 +351,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    956
+                    1.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    5 分
                 </div>
                 
 
@@ -380,73 +376,145 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="4-Builder建造者设计模式构造复杂的作业配置"><a href="#4-Builder建造者设计模式构造复杂的作业配置" class="headerlink" title="4 Builder建造者设计模式构造复杂的作业配置"></a>4 Builder建造者设计模式构造复杂的作业配置</h1><h2 id="4-1-作业配置示例"><a href="#4-1-作业配置示例" class="headerlink" title="4.1 作业配置示例"></a>4.1 作业配置示例</h2><p>在了解具体配置信息之前我们先来看下调度作业配置信息对象的初始化代码如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//作业初始化</span>
-<span class="token comment">//这里是定义JOB的名字</span>
-<span class="token class-name">String</span> jobName <span class="token operator">=</span> <span class="token string">"JavaSimpleJob"</span><span class="token punctuation">;</span>
+                <h1 id="1-ElasticJob-分布式定时任务调度系统的简介"><a href="#1-ElasticJob-分布式定时任务调度系统的简介" class="headerlink" title="1 ElasticJob 分布式定时任务调度系统的简介"></a>1 ElasticJob 分布式定时任务调度系统的简介</h1><h2 id="1-1-项目介绍"><a href="#1-1-项目介绍" class="headerlink" title="1.1 项目介绍"></a>1.1 项目介绍</h2><p>Elastic-Job是由当当网基于Quartz 二次开发之后的分布式调度解决方案，是一个分布式调度解决方案，由 2 个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。</p>
+<p>ElasticJob-Lite 定位为轻量级无中心化解决方案，使用jar的形式提供分布式任务的协调服务。</p>
+<p>ElasticJob-Cloud 使用 Mesos 的解决方案，额外提供资源治理、应用分发以及进程隔离等服务。</p>
+<p>Elastic-Job 的各个产品使用统一的作业 API，开发者仅需要一次开发，即可随意部署。Elastic-Job开发在停滞数年后，2020年，Elastic-Job 携首个 Apache 版本 3.0.0-alpha 回归！2020年6月，经过Apache ShardingSphere社区投票，接纳Elastic-Job为其子项目。目前ElasticJob的四个子项目已经正式迁入Apache仓库。并更名为shardingsphere-elasticjob。对于功能强大的分布式调度系统elastic-job很多优秀的分布式设计思想值得学习，接下来本系列文章会针对Elastic-Job版本2.1.5的核心源码与原理进行分析讲解。</p>
+<h2 id="1-2-分布式弹性调度系统特征"><a href="#1-2-分布式弹性调度系统特征" class="headerlink" title="1.2 分布式弹性调度系统特征"></a>1.2 分布式弹性调度系统特征</h2><p>（1） 弹性调度<br>支持任务在分布式场景下的分片和高可用。<br>能够水平扩展任务的吞吐量和执行效率。</p>
+<p>任务处理能力随资源配备弹性伸缩。</p>
+<p>（2）资源分配</p>
+<p>在适合的时间将适合的资源分配给任务并使其生效。</p>
+<p>相同任务聚合至相同的执行器统一处理。</p>
+<p>动态调配追加资源至新分配的任务 。</p>
+<p>（3）作业治理</p>
+<p>失效转移执行。</p>
+<p>错过执行作业重新触发。</p>
+<p>自诊断并修复分布式不稳定造成的问题。</p>
+<p>支持并行调度。</p>
+<p>作业调度。</p>
+<p>幂等执行。</p>
+<p>（4）作业依赖（2.x 目前未实现功能TODO，迁移后的项目后期会实现）</p>
+<p>基于有向无环图（DAG）的作业间依赖。</p>
+<p>基于有向无环图（DAG）的作业分片间依赖。</p>
+<p>（5）作业开放生态</p>
+<p>可扩展的作业类型统一接口。</p>
+<p>丰富的作业类型库，如数据流、脚本、HTTP、文件、大数据等</p>
+<p>易于对接业务作业，能够与 Spring 依赖注入无缝整合。</p>
+<p>（6）可视化管控端</p>
+<p>作业管控端。</p>
+<p>作业执行历史数据追踪。</p>
+<p>注册中心管理。</p>
+<p>作业编排管理。</p>
+<h1 id="2-Elastic-Job的使用"><a href="#2-Elastic-Job的使用" class="headerlink" title="2 Elastic-Job的使用"></a>2 Elastic-Job的使用</h1><h2 id="2-1-使用Java代码创建第一个调度例子"><a href="#2-1-使用Java代码创建第一个调度例子" class="headerlink" title="2.1 使用Java代码创建第一个调度例子"></a>2.1 使用Java代码创建第一个调度例子</h2><p>（1）导入Maven包</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.dangdang<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+ <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>elastic-job-lite-core<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+ <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>2.1.5<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<span class="token comment">//创建JAVA核心配置的建造者builder</span>
-<span class="token class-name">JobCoreConfiguration<span class="token punctuation">.</span>Builder</span> javaCoreConfigurationBuilder <span class="token operator">=</span>
-        <span class="token class-name">JobCoreConfiguration</span><span class="token punctuation">.</span><span class="token function">newBuilder</span><span class="token punctuation">(</span>jobName<span class="token punctuation">,</span> cron<span class="token punctuation">,</span> shardingTotalCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">//根据builder构建核心配置</span>
-<span class="token class-name">JobCoreConfiguration</span> jobCoreConfiguration <span class="token operator">=</span> javaCoreConfigurationBuilder<span class="token punctuation">.</span><span class="token function">shardingItemParameters</span><span class="token punctuation">(</span>shardingItemParameters<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<p>（2）手动启动一个简单的调度例子<br> 实现作业接口，重写作业执行方法，编写作业执行业务逻辑。</p>
+<p>Zookeeper注册中心的配置与初始化。</p>
+<p>作业属性的配置初始化。</p>
+<p>作业调度器对象的创建与初始化。</p>
+<p>触发作业。</p>
+<p>具体流程如下图所示：<br><img src="/img/elasticjob/1-demo.png" alt="图片"></p>
+<p>图2.1 ElasticJob作业初始化过程</p>
+<p>（3）示例代码<br>实现一个简单定时任务</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">JavaSimpleJob</span> <span class="token keyword">implements</span> <span class="token class-name">SimpleJob</span> <span class="token punctuation">{</span>
 
-<span class="token comment">//getCanonicalName 返回包名+类名字</span>
-<span class="token class-name">String</span> canonicalName <span class="token operator">=</span> <span class="token class-name">JavaSimpleJob</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getCanonicalName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">//根据核心配置创建作业具体配置</span>
-<span class="token class-name">JobTypeConfiguration</span> jobTypeConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleJobConfiguration</span><span class="token punctuation">(</span>jobCoreConfiguration<span class="token punctuation">,</span> canonicalName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token annotation punctuation">@Override</span>
+ <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">ShardingContext</span> shardingContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>"<span class="token class-name">Hello</span> <span class="token class-name">Job</span>”<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<span class="token comment">//根据作业配置初始化轻量级job配置</span>
-<span class="token class-name">LiteJobConfiguration</span> liteJobConfiguration <span class="token operator">=</span> <span class="token class-name">LiteJobConfiguration</span><span class="token punctuation">.</span><span class="token function">newBuilder</span><span class="token punctuation">(</span>jobTypeConfiguration<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>初始化一个定时任务</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">JobDemo</span> <span class="token punctuation">{</span>
+ <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//注册中心地址</span>
+  <span class="token class-name">String</span> serverList <span class="token operator">=</span> <span class="token string">"127.0.0.1:2181"</span><span class="token punctuation">;</span>
+    <span class="token comment">//调度作业注册中心命名空间名字</span>
+  <span class="token class-name">String</span> namespace <span class="token operator">=</span> <span class="token string">"elastic-job-lite-demo"</span><span class="token punctuation">;</span>
+    <span class="token comment">//作业执行的cron表达式</span>
+  <span class="token class-name">String</span> cron <span class="token operator">=</span> <span class="token string">"* * * * * ?"</span><span class="token punctuation">;</span>
+    <span class="token comment">//作业进行分片执行的分片总数</span>
+  <span class="token keyword">int</span> shardingTotalCount <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+    <span class="token comment">//分片项参数</span>
+  <span class="token class-name">String</span> shardingItemParameters <span class="token operator">=</span> <span class="token string">"0=Beijing,1=Shanghai,2=Guangzhou"</span><span class="token punctuation">;</span>
+
+  <span class="token comment">//Zookeeper初始化</span>
+  <span class="token comment">//创建zookeeper配置对象</span>
+  <span class="token class-name">ZookeeperConfiguration</span> zookeeperConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZookeeperConfiguration</span><span class="token punctuation">(</span>serverList<span class="token punctuation">,</span> namespace<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//创建协调注册中心对象</span>
+  <span class="token class-name">CoordinatorRegistryCenter</span> zookeeperRegistryCenter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZookeeperRegistryCenter</span><span class="token punctuation">(</span>zookeeperConfiguration<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//初始化注册中心</span>
+  zookeeperRegistryCenter<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">//作业初始化</span>
+  <span class="token comment">//这里是定义JOB的名字</span>
+  <span class="token class-name">String</span> jobName <span class="token operator">=</span> <span class="token string">"JavaSimpleJob"</span><span class="token punctuation">;</span>
+  <span class="token comment">//创建作业核心配置的建造者builder类型</span>
+  <span class="token class-name">JobCoreConfiguration<span class="token punctuation">.</span>Builder</span> javaCoreConfigurationBuilder <span class="token operator">=</span>
+  <span class="token class-name">JobCoreConfiguration</span><span class="token punctuation">.</span><span class="token function">newBuilder</span><span class="token punctuation">(</span>jobName<span class="token punctuation">,</span> cron<span class="token punctuation">,</span> shardingTotalCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//根据builder构建核心配置</span>
+  <span class="token class-name">JobCoreConfiguration</span> jobCoreConfiguration <span class="token operator">=</span>    javaCoreConfigurationBuilder<span class="token punctuation">.</span><span class="token function">shardingItemParameters</span><span class="token punctuation">(</span>shardingItemParameters<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">//getCanonicalName 返回包名+类名字，这里是作业执行类的信息</span>
+  <span class="token class-name">String</span> canonicalName <span class="token operator">=</span> <span class="token class-name">JavaSimpleJob</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getCanonicalName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//根据核心配置和作业执行类创建作业类型配置</span>
+  <span class="token class-name">JobTypeConfiguration</span> jobTypeConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleJobConfiguration</span><span class="token punctuation">(</span>jobCoreConfiguration<span class="token punctuation">,</span> canonicalName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">//根据作业类型配置初始化轻量级作业配置</span>
+  <span class="token class-name">LiteJobConfiguration</span> liteJobConfiguration <span class="token operator">=</span> <span class="token class-name">LiteJobConfiguration</span><span class="token punctuation">.</span><span class="token function">newBuilder</span><span class="token punctuation">(</span>jobTypeConfiguration<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">//作业调度器初始化</span>
+  <span class="token class-name">JobScheduler</span> jobScheduler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">JobScheduler</span><span class="token punctuation">(</span>zookeeperRegistryCenter<span class="token punctuation">,</span>liteJobConfiguration<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  jobScheduler<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
-<p>看代码之后我们可以了解到调度作业配置对象初始化过程主要如下图：</p>
-<p><img src="https://img-blog.csdnimg.cn/958afd2776ae451dbaed15d5cb6ad535.png" alt="图片"></p>
-<p>图4.1 调度作业的初始化过程</p>
-<p>调度作业配置对象主要有3种：</p>
+<p>首先确保zookeeper服务已经启动，然后直接运行main方法即可。<br>2.2 使用Spring配置一个作业<br>（1）导入Maven包</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+ <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.dangdang<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+ <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>elastic-job-lite-spring<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+ <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>2.1.5<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>（2）配置Spring文件<br>配置注册中心对象</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">reg:</span>zookeeper</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>regCenter<span class="token punctuation">"</span></span> 
+               <span class="token attr-name">server-lists</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${serverLists}<span class="token punctuation">"</span></span> 
+               <span class="token attr-name">namespace</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${namespace}<span class="token punctuation">"</span></span> 
+               <span class="token attr-name">base-sleep-time-milliseconds</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${baseSleepTimeMilliseconds}<span class="token punctuation">"</span></span>             
+               <span class="token attr-name">max-sleep-time-milliseconds</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${maxSleepTimeMilliseconds}<span class="token punctuation">"</span></span> 
+               <span class="token attr-name">max-retries</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${maxRetries}<span class="token punctuation">"</span></span><span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>配置作业对象</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">job:</span>simple</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.id}<span class="token punctuation">"</span></span> 
+            <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.class}<span class="token punctuation">"</span></span> 
+            <span class="token attr-name">registry-center-ref</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>regCenter<span class="token punctuation">"</span></span>
+            <span class="token attr-name">sharding-total-count</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.shardingTotalCount}<span class="token punctuation">"</span></span>
+            <span class="token attr-name">cron</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.cron}<span class="token punctuation">"</span></span>  
+            <span class="token attr-name">sharding-item-parameters</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.shardingItemParameters}<span class="token punctuation">"</span></span>
+            <span class="token attr-name">monitor-execution</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.monitorExecution}<span class="token punctuation">"</span></span> 
+            <span class="token attr-name">monitor-port</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.monitorPort}<span class="token punctuation">"</span></span>
+            <span class="token attr-name">failover</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.failover}<span class="token punctuation">"</span></span>
+            <span class="token attr-name">description</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.description}<span class="token punctuation">"</span></span> 
+            <span class="token attr-name">disabled</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.disabled}<span class="token punctuation">"</span></span>
+            <span class="token attr-name">overwrite</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.overwrite}<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>本实例只展示来我们配置Spring时候需要铁添加的配置，如果想要完整跑一个项目可以参考官方源码的elastic-job-example示例文件。</p>
+<p>参考网站：</p>
 <ul>
-<li><p>JobCoreConfiguration</p>
+<li><p>版本2.1.5源码：<br><a target="_blank" rel="noopener" href="https://gitee.com/elasticjob/elastic-job/tree/2.1.5/">https://gitee.com/elasticjob/elastic-job/tree/2.1.5/</a></p>
 </li>
-<li><p>JobTypeConfiguration</p>
+<li><p>例子源码地址：<br><a target="_blank" rel="noopener" href="https://gitee.com/elasticjob/elastic-job/tree/2.1.5/elastic-job-example">https://gitee.com/elasticjob/elastic-job/tree/2.1.5/elastic-job-example</a>  </p>
 </li>
-<li><p>LiteJobConfiguration</p>
+<li><p>最新版本源码：<br><a target="_blank" rel="noopener" href="https://github.com/apache/shardingsphere-elasticjob">https://github.com/apache/shardingsphere-elasticjob</a></p>
+</li>
+<li><p>官方网站：<br><a target="_blank" rel="noopener" href="http://shardingsphere.apache.org/elasticjob/">http://shardingsphere.apache.org/elasticjob/</a></p>
 </li>
 </ul>
-<p>这里我们主要了解了调度作业配置类型的3大类，作业核心配置类型主要封装一些公共的配置信息，作业类型配置类型主要是针对不同种定制作业的配置，轻量级作业配置主要是针对调度使用过程中的一些功能配置，我们需要将想要初始化的配置信息放入对象属性即可。</p>
-<h2 id="4-2-作业配置的类结构信息"><a href="#4-2-作业配置的类结构信息" class="headerlink" title="4.2 作业配置的类结构信息"></a>4.2 作业配置的类结构信息</h2><p>调度作业配置对象的初始化过程我们已经大致了解了，再来看下配置相关的类型具体有哪些：</p>
-<p><img src="https://img-blog.csdnimg.cn/481b550b606a44288c2ec6bbdddd60a4.png" alt="图片"></p>
-<p>   图4.2 作业配置相关类型</p>
-<ul>
-<li><p>通过UML图我们可以看到最外层是轻量级作业配置类型LiteJobConfiguration</p>
-</li>
-<li><p>LiteJobConfiguration内部包含了作业类型配置JobTypeConfiguration</p>
-</li>
-<li><p>JobTypeConfiguration内部包含了核心作业配置JobCoreConfiguration</p>
-</li>
-<li><p>JobTypeConfiguration接口目前提供了三种配置类型的实现类如下：</p>
-<ul>
-<li>SimpleJobConfiguration</li>
-<li>DataflowJobConfiguration</li>
-<li>ScriptJobConfiguration</li>
-</ul>
-</li>
-</ul>
-<p>这三种作业配置信息分别对应了调度系统中提供的三种定制化作业类型：简单作业，数据流作业，脚本作业，如果后期我们需要定制化自己的作业，可以优先实现自定义作业配置，来进行特殊化配置。</p>
-<h2 id="4-3-常见配置类属性讲解"><a href="#4-3-常见配置类属性讲解" class="headerlink" title="4.3 常见配置类属性讲解"></a>4.3 常见配置类属性讲解</h2><p>前面了解了作业的配置类型的关系，接下来我们可以看下每种作业配置类型在使用的时候分别可以针对作业进行哪种信息的配置。</p>
-<p>LiteJobConfiguration 轻量级作业配置类</p>
-<p><img src="https://img-blog.csdnimg.cn/6b8b4a13370d4fd982e58f8534043360.png" alt="图片"></p>
-<p>JobTypeConfiguration 作业类型配置接口 ，这个类型是作业类型接口并不需要具体的配置类型，后面我们会介绍到它的三种实现类的配置信息，这里呢我们列举下作业类型配置中存在的成员方法</p>
-<p><img src="https://img-blog.csdnimg.cn/d38be6dc0c564af4a7485983f2a654c3.png" alt="图片"></p>
-<p>JobCoreConfiguration 作业核心配置</p>
-<p><img src="https://img-blog.csdnimg.cn/6e432f12e54f42a69f409ac2be1cdc83.png" alt="图片"></p>
-<p>SimpleJobConfiguration 简单类型作业配置</p>
-<p><img src="https://img-blog.csdnimg.cn/03d030ff93c64ae2abc5c34eb947fc24.png" alt="片"></p>
-<p>DataflowJobConfiguration 数据流类型作业配置信息</p>
-<p><img src="https://img-blog.csdnimg.cn/743f34a6802a4201a4fd7c9bee4f5fce.png" alt="图片"></p>
-<p>ScriptJobConfiguration 脚本作业类型配置信息</p>
-<p><img src="https://img-blog.csdnimg.cn/6b062df34e064b01b30a35b2d2360c71.png" alt="图片"></p>
-<p>作业配置类使用Builder建造者设计模式，来解决复杂配置对象的赋值问题，通过建造者模式将各种配置信息组装为完整的配置。将核心参数放到JobCoreConfiguration配置类中，将每个作业的特性分别放到对应配置实体类中如：简单作业配置SimpleJobConfiguration，数据流作业配置信息DataflowJobConfiguration，脚本作业配置信息ScriptJobConfiguration。这里列举到的各种作业配置信息可以先作为一种参考，了解下Elastic-Job对于作业配置的设计，到后面我们会在介绍具体功能的时候看到每种配置配置后是如何生效的，每个配置的作用与使用方法。</p>
-<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<p>查看原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://pic.imgdb.cn/item/62c93473f54cd3f937997ccf.png" alt="在这里插入图片描述"></p>
 
                 
             </div>
@@ -473,7 +541,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blog.elastic.link/2021/09/07/elasticjob/4-builder-jian-zao-zhe-she-ji-mo-shi-gou-zao-fu-za-de-zuo-ye-pei-zhi/">https://blog.elastic.link/2021/09/07/elasticjob/4-builder-jian-zao-zhe-she-ji-mo-shi-gou-zao-fu-za-de-zuo-ye-pei-zhi/</a>
+                    <a href="https://blog.elastic.link/2021/07/01/elasticjob/1-elasticjob-jian-jie/">https://blog.elastic.link/2021/07/01/elasticjob/1-elasticjob-jian-jie/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -517,10 +585,6 @@
                             
                                 <a href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
                                     <span class="chip bg-color">ElasticJob源码解析</span>
-                                </a>
-                            
-                                <a href="/tags/%E4%BD%9C%E4%B8%9A%E9%85%8D%E7%BD%AE/">
-                                    <span class="chip bg-color">作业配置</span>
                                 </a>
                             
                         </div>
@@ -965,66 +1029,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/09/07/elasticjob/1-elasticjob-jian-jie/">
+                <a href="/2021/07/02/elasticjob/3-zhu-ce-zhong-xin-de-she-ji/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="1-Elastic-Job 分布式定时任务调度系统的简介">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="03-Elastic-Job 注册中心的设计原理">
                         
-                        <span class="card-title">1-Elastic-Job 分布式定时任务调度系统的简介</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            Elastic-Job是由当当网基于Quartz 二次开发之后的分布式调度解决方案，是一个分布式调度解决方案，由 2 个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-09-07
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-category">
-                                    ElasticJob源码解析
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/ElasticJob/">
-                        <span class="chip bg-color">ElasticJob</span>
-                    </a>
-                    
-                    <a href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
-                        <span class="chip bg-color">ElasticJob源码解析</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/09/07/elasticjob/3-zhu-ce-zhong-xin-de-she-ji/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="3-Elastic-Job 注册中心的设计原理">
-                        
-                        <span class="card-title">3-Elastic-Job 注册中心的设计原理</span>
+                        <span class="card-title">03-Elastic-Job 注册中心的设计原理</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1034,9 +1045,9 @@
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-07
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-07-02
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -1062,6 +1073,59 @@
                     
                     <a href="/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">
                         <span class="chip bg-color">注册中心</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2016/09/07/esockd/1-escockd-ru-men/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="【escocked 5.8.0源码解析系列】-1-escokd简介">
+                        
+                        <span class="card-title">【escocked 5.8.0源码解析系列】-1-escokd简介</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            escocked是emqx开发的Erlang通用非阻塞TCP/SSL套接字服务器
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2016-09-07
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/escoked/" class="post-category">
+                                    escoked
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/escoked%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">escoked源码</span>
+                    </a>
+                    
+                    <a href="/tags/erlang/">
+                        <span class="chip bg-color">erlang</span>
                     </a>
                     
                 </div>

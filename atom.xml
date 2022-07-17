@@ -185,181 +185,6 @@
   </entry>
   
   <entry>
-    <title>1-Elastic-Job 分布式定时任务调度系统的简介</title>
-    <link href="https://blog.elastic.link/2021/09/07/elasticjob/1-elasticjob-jian-jie/"/>
-    <id>https://blog.elastic.link/2021/09/07/elasticjob/1-elasticjob-jian-jie/</id>
-    <published>2021-09-07T12:25:00.000Z</published>
-    <updated>2022-07-10T02:04:36.158Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-ElasticJob-分布式定时任务调度系统的简介&quot;&gt;&lt;a href=&quot;#1-ElasticJob-分布式定时任务调度系统的简介&quot; class=&quot;headerlink&quot; title=&quot;1 ElasticJob 分布式定时任务调度系统的简介&quot;&gt;&lt;/a&gt;1</summary>
-        
-      
-    
-    
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    
-    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>4-Builder建造者设计模式构造复杂的作业配置</title>
-    <link href="https://blog.elastic.link/2021/09/07/elasticjob/4-builder-jian-zao-zhe-she-ji-mo-shi-gou-zao-fu-za-de-zuo-ye-pei-zhi/"/>
-    <id>https://blog.elastic.link/2021/09/07/elasticjob/4-builder-jian-zao-zhe-she-ji-mo-shi-gou-zao-fu-za-de-zuo-ye-pei-zhi/</id>
-    <published>2021-09-07T12:25:00.000Z</published>
-    <updated>2022-07-17T11:21:48.130Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;4-Builder建造者设计模式构造复杂的作业配置&quot;&gt;&lt;a href=&quot;#4-Builder建造者设计模式构造复杂的作业配置&quot; class=&quot;headerlink&quot; title=&quot;4 Builder建造者设计模式构造复杂的作业配置&quot;&gt;&lt;/a&gt;4</summary>
-        
-      
-    
-    
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    
-    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    <category term="作业配置" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E9%85%8D%E7%BD%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>3-Elastic-Job 注册中心的设计原理</title>
-    <link href="https://blog.elastic.link/2021/09/07/elasticjob/3-zhu-ce-zhong-xin-de-she-ji/"/>
-    <id>https://blog.elastic.link/2021/09/07/elasticjob/3-zhu-ce-zhong-xin-de-she-ji/</id>
-    <published>2021-09-07T12:25:00.000Z</published>
-    <updated>2022-07-17T08:45:38.686Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;3-注册中心的设计原理&quot;&gt;&lt;a href=&quot;#3-注册中心的设计原理&quot; class=&quot;headerlink&quot; title=&quot;3  注册中心的设计原理&quot;&gt;&lt;/a&gt;3  注册中心的设计原理&lt;/h1&gt;&lt;h2 id=&quot;3-1-调度系统使用Zookeeper做什么&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    
-    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    <category term="注册中心" scheme="https://blog.elastic.link/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>5 调度作业模版类型设计</title>
-    <link href="https://blog.elastic.link/2021/09/07/elasticjob/5-diao-du-zuo-ye-mo-ban-lei-xing-she-ji/"/>
-    <id>https://blog.elastic.link/2021/09/07/elasticjob/5-diao-du-zuo-ye-mo-ban-lei-xing-she-ji/</id>
-    <published>2021-09-07T12:25:00.000Z</published>
-    <updated>2022-07-17T11:26:07.039Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
-&lt;h1 id=&quot;5-调度作业模版类型设计&quot;&gt;&lt;a href=&quot;#5-调度作业模版类型设计&quot; class=&quot;headerlink&quot; title=&quot;5 调度作业模版类型设计&quot;&gt;&lt;/a&gt;5</summary>
-        
-      
-    
-    
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    
-    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    <category term="作业模版类型设计" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E6%A8%A1%E7%89%88%E7%B1%BB%E5%9E%8B%E8%AE%BE%E8%AE%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>6-调度作业的配置是如何在分布式场景下存储的？</title>
-    <link href="https://blog.elastic.link/2021/09/07/elasticjob/6-diao-du-zuo-ye-de-pei-zhi-shi-ru-he-zai-fen-bu-shi-chang-jing-xia-cun-chu-de/"/>
-    <id>https://blog.elastic.link/2021/09/07/elasticjob/6-diao-du-zuo-ye-de-pei-zhi-shi-ru-he-zai-fen-bu-shi-chang-jing-xia-cun-chu-de/</id>
-    <published>2021-09-07T12:25:00.000Z</published>
-    <updated>2022-07-17T11:21:28.540Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
-&lt;h1 id=&quot;6-6-调度作业的配置是如何在分布式场景下存储的？&quot;&gt;&lt;a href=&quot;#6-6-调度作业的配置是如何在分布式场景下存储的？&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    
-    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    <category term="作业的配置" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>8 - 使用Quartz为每个作业创建单机执行的调度器对象</title>
-    <link href="https://blog.elastic.link/2021/09/07/elasticjob/8-shi-yong-quartz-wei-mei-ge-zuo-ye-chuang-jian-dan-ji-zhi-xing-de-diao-du-qi-dui-xiang/"/>
-    <id>https://blog.elastic.link/2021/09/07/elasticjob/8-shi-yong-quartz-wei-mei-ge-zuo-ye-chuang-jian-dan-ji-zhi-xing-de-diao-du-qi-dui-xiang/</id>
-    <published>2021-09-07T12:25:00.000Z</published>
-    <updated>2022-07-17T11:25:27.229Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
-&lt;h1 id=&quot;8-使用Quartz为每个作业创建单机执行的调度器对象&quot;&gt;&lt;a href=&quot;#8-使用Quartz为每个作业创建单机执行的调度器对象&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    
-    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    <category term="Quartz" scheme="https://blog.elastic.link/tags/Quartz/"/>
-    
-  </entry>
-  
-  <entry>
     <title>12-调度作业的服务器IP和进程信息的持久化是如何设计的?</title>
     <link href="https://blog.elastic.link/2021/07/12/elasticjob/12-diao-du-zuo-ye-de-fu-wu-qi-ip-he-jin-cheng-xin-xi-de-chi-jiu-hua-shi-ru-he-she-ji-de/"/>
     <id>https://blog.elastic.link/2021/07/12/elasticjob/12-diao-du-zuo-ye-de-fu-wu-qi-ip-he-jin-cheng-xin-xi-de-chi-jiu-hua-shi-ru-he-she-ji-de/</id>
@@ -474,6 +299,36 @@
   </entry>
   
   <entry>
+    <title>08 - 使用Quartz为每个作业创建单机执行的调度器对象</title>
+    <link href="https://blog.elastic.link/2021/07/07/elasticjob/8-shi-yong-quartz-wei-mei-ge-zuo-ye-chuang-jian-dan-ji-zhi-xing-de-diao-du-qi-dui-xiang/"/>
+    <id>https://blog.elastic.link/2021/07/07/elasticjob/8-shi-yong-quartz-wei-mei-ge-zuo-ye-chuang-jian-dan-ji-zhi-xing-de-diao-du-qi-dui-xiang/</id>
+    <published>2021-07-07T12:25:00.000Z</published>
+    <updated>2022-07-17T11:36:13.343Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&quot;8-使用Quartz为每个作业创建单机执行的调度器对象&quot;&gt;&lt;a href=&quot;#8-使用Quartz为每个作业创建单机执行的调度器对象&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    
+    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    <category term="Quartz" scheme="https://blog.elastic.link/tags/Quartz/"/>
+    
+  </entry>
+  
+  <entry>
     <title>07-线程安全的单例模式设计全局作业注册表JobRegistry</title>
     <link href="https://blog.elastic.link/2021/07/06/elasticjob/7-xian-cheng-an-quan-de-dan-li-mo-shi-she-ji-quan-ju-zuo-ye-zhu-ce-biao-jobregistry/"/>
     <id>https://blog.elastic.link/2021/07/06/elasticjob/7-xian-cheng-an-quan-de-dan-li-mo-shi-she-ji-quan-ju-zuo-ye-zhu-ce-biao-jobregistry/</id>
@@ -500,6 +355,151 @@
     <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
     
     <category term="作业的配置" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>06-调度作业的配置是如何在分布式场景下存储的？</title>
+    <link href="https://blog.elastic.link/2021/07/05/elasticjob/6-diao-du-zuo-ye-de-pei-zhi-shi-ru-he-zai-fen-bu-shi-chang-jing-xia-cun-chu-de/"/>
+    <id>https://blog.elastic.link/2021/07/05/elasticjob/6-diao-du-zuo-ye-de-pei-zhi-shi-ru-he-zai-fen-bu-shi-chang-jing-xia-cun-chu-de/</id>
+    <published>2021-07-05T12:25:00.000Z</published>
+    <updated>2022-07-17T11:36:13.356Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&quot;6-6-调度作业的配置是如何在分布式场景下存储的？&quot;&gt;&lt;a href=&quot;#6-6-调度作业的配置是如何在分布式场景下存储的？&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    
+    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    <category term="作业的配置" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>05 调度作业模版类型设计</title>
+    <link href="https://blog.elastic.link/2021/07/04/elasticjob/5-diao-du-zuo-ye-mo-ban-lei-xing-she-ji/"/>
+    <id>https://blog.elastic.link/2021/07/04/elasticjob/5-diao-du-zuo-ye-mo-ban-lei-xing-she-ji/</id>
+    <published>2021-07-04T12:25:00.000Z</published>
+    <updated>2022-07-17T11:36:13.347Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&quot;5-调度作业模版类型设计&quot;&gt;&lt;a href=&quot;#5-调度作业模版类型设计&quot; class=&quot;headerlink&quot; title=&quot;5 调度作业模版类型设计&quot;&gt;&lt;/a&gt;5</summary>
+        
+      
+    
+    
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    
+    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    <category term="作业模版类型设计" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E6%A8%A1%E7%89%88%E7%B1%BB%E5%9E%8B%E8%AE%BE%E8%AE%A1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>04-Builder建造者设计模式构造复杂的作业配置</title>
+    <link href="https://blog.elastic.link/2021/07/03/elasticjob/4-builder-jian-zao-zhe-she-ji-mo-shi-gou-zao-fu-za-de-zuo-ye-pei-zhi/"/>
+    <id>https://blog.elastic.link/2021/07/03/elasticjob/4-builder-jian-zao-zhe-she-ji-mo-shi-gou-zao-fu-za-de-zuo-ye-pei-zhi/</id>
+    <published>2021-07-03T12:25:00.000Z</published>
+    <updated>2022-07-17T11:36:13.356Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;4-Builder建造者设计模式构造复杂的作业配置&quot;&gt;&lt;a href=&quot;#4-Builder建造者设计模式构造复杂的作业配置&quot; class=&quot;headerlink&quot; title=&quot;4 Builder建造者设计模式构造复杂的作业配置&quot;&gt;&lt;/a&gt;4</summary>
+        
+      
+    
+    
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    
+    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    <category term="作业配置" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E9%85%8D%E7%BD%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>03-Elastic-Job 注册中心的设计原理</title>
+    <link href="https://blog.elastic.link/2021/07/02/elasticjob/3-zhu-ce-zhong-xin-de-she-ji/"/>
+    <id>https://blog.elastic.link/2021/07/02/elasticjob/3-zhu-ce-zhong-xin-de-she-ji/</id>
+    <published>2021-07-02T12:25:00.000Z</published>
+    <updated>2022-07-17T11:36:13.356Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;3-注册中心的设计原理&quot;&gt;&lt;a href=&quot;#3-注册中心的设计原理&quot; class=&quot;headerlink&quot; title=&quot;3  注册中心的设计原理&quot;&gt;&lt;/a&gt;3  注册中心的设计原理&lt;/h1&gt;&lt;h2 id=&quot;3-1-调度系统使用Zookeeper做什么&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    
+    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    <category term="注册中心" scheme="https://blog.elastic.link/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>01-Elastic-Job 分布式定时任务调度系统的简介</title>
+    <link href="https://blog.elastic.link/2021/07/01/elasticjob/1-elasticjob-jian-jie/"/>
+    <id>https://blog.elastic.link/2021/07/01/elasticjob/1-elasticjob-jian-jie/</id>
+    <published>2021-07-01T12:25:00.000Z</published>
+    <updated>2022-07-17T11:36:13.356Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-ElasticJob-分布式定时任务调度系统的简介&quot;&gt;&lt;a href=&quot;#1-ElasticJob-分布式定时任务调度系统的简介&quot; class=&quot;headerlink&quot; title=&quot;1 ElasticJob 分布式定时任务调度系统的简介&quot;&gt;&lt;/a&gt;1</summary>
+        
+      
+    
+    
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    
+    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
+    
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
     
   </entry>
   
@@ -558,19 +558,19 @@
   </entry>
   
   <entry>
-    <title>1-K8S命令大全</title>
-    <link href="https://blog.elastic.link/2016/09/07/k8s/1-k8s-ming-ling-da-quan/"/>
-    <id>https://blog.elastic.link/2016/09/07/k8s/1-k8s-ming-ling-da-quan/</id>
+    <title>2-K8S运行MySQL的yaml配置</title>
+    <link href="https://blog.elastic.link/2016/09/07/k8s/2-k8s-yun-xing-mysql-de-yaml/"/>
+    <id>https://blog.elastic.link/2016/09/07/k8s/2-k8s-yun-xing-mysql-de-yaml/</id>
     <published>2016-09-07T12:25:00.000Z</published>
-    <updated>2022-07-07T14:49:50.473Z</updated>
+    <updated>2022-07-09T08:08:08.111Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;deployment&quot;&gt;&lt;a href=&quot;#deployment&quot; class=&quot;headerlink&quot; title=&quot;deployment&quot;&gt;&lt;/a&gt;deployment&lt;/h1&gt;&lt;p&gt;直接修改deployment镜像&lt;/p&gt;
-&lt;pre</summary>
+    <summary type="html">&lt;p&gt;样例文件如下所示：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-yaml&quot; data-language=&quot;yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key</summary>
         
       
     
@@ -581,7 +581,7 @@
     
     <category term="kubernetes" scheme="https://blog.elastic.link/tags/kubernetes/"/>
     
-    <category term="K8S命令大全" scheme="https://blog.elastic.link/tags/K8S%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/"/>
+    <category term="K8S运行MySQL的yaml配置" scheme="https://blog.elastic.link/tags/K8S%E8%BF%90%E8%A1%8CMySQL%E7%9A%84yaml%E9%85%8D%E7%BD%AE/"/>
     
   </entry>
   
