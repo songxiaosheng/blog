@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="2-K8S运行MySQL的yaml配置, 中间件源码">
-    <meta name="description" content="2-K8S运行MySQL的yaml配置">
+    <meta name="keywords" content="8 - 使用Quartz为每个作业创建单机执行的调度器对象, 中间件源码">
+    <meta name="description" content="线程安全的单例模式设计全局作业注册表JobRegistry">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +19,7 @@
 
     
 
-    <title>2-K8S运行MySQL的yaml配置 | 中间件源码</title>
+    <title>8 - 使用Quartz为每个作业创建单机执行的调度器对象 | 中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
@@ -187,12 +187,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/18.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">2-K8S运行MySQL的yaml配置</h1>
+                    <h1 class="description center-align post-title">8 - 使用Quartz为每个作业创建单机执行的调度器对象</h1>
                 </div>
             </div>
         </div>
@@ -308,12 +308,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/kubernetes/">
-                                <span class="chip bg-color">kubernetes</span>
+                            <a href="/tags/ElasticJob/">
+                                <span class="chip bg-color">ElasticJob</span>
                             </a>
                         
-                            <a href="/tags/K8S%E8%BF%90%E8%A1%8CMySQL%E7%9A%84yaml%E9%85%8D%E7%BD%AE/">
-                                <span class="chip bg-color">K8S运行MySQL的yaml配置</span>
+                            <a href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                <span class="chip bg-color">ElasticJob源码解析</span>
+                            </a>
+                        
+                            <a href="/tags/Quartz/">
+                                <span class="chip bg-color">Quartz</span>
                             </a>
                         
                     </div>
@@ -324,8 +328,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/kubernetes/" class="post-category">
-                                kubernetes
+                            <a href="/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-category">
+                                ElasticJob源码解析
                             </a>
                         
                     </div>
@@ -337,28 +341,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2016-09-07
+                    2021-09-07
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-07-09
+                    2022-07-17
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    107
+                    2.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    9 分
                 </div>
                 
 
@@ -376,61 +380,163 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>样例文件如下所示：</p>
-<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> apps/v1
-<span class="token key atrule">kind</span><span class="token punctuation">:</span> Deployment
-<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
-  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
-    <span class="token key atrule">app</span><span class="token punctuation">:</span> mysql
-  <span class="token key atrule">name</span><span class="token punctuation">:</span> mysql
-<span class="token key atrule">spec</span><span class="token punctuation">:</span>
-  <span class="token key atrule">replicas</span><span class="token punctuation">:</span> <span class="token number">1</span>
-  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
-    <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
-      <span class="token key atrule">app</span><span class="token punctuation">:</span> mysql
-  <span class="token key atrule">template</span><span class="token punctuation">:</span>
-    <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
-      <span class="token key atrule">labels</span><span class="token punctuation">:</span>
-        <span class="token key atrule">app</span><span class="token punctuation">:</span> mysql
-    <span class="token key atrule">spec</span><span class="token punctuation">:</span>
-      <span class="token key atrule">containers</span><span class="token punctuation">:</span>
-        <span class="token punctuation">-</span> <span class="token key atrule">env</span><span class="token punctuation">:</span>
-            <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> MYSQL_ROOT_PASSWORD
-              <span class="token key atrule">value</span><span class="token punctuation">:</span> <span class="token string">'123456'</span>
-          <span class="token key atrule">image</span><span class="token punctuation">:</span> <span class="token string">'mysql:oracle'</span>
-          <span class="token key atrule">name</span><span class="token punctuation">:</span> mysql
-          <span class="token key atrule">ports</span><span class="token punctuation">:</span> 
-            <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">3306</span>
-              <span class="token key atrule">hostPort</span><span class="token punctuation">:</span> <span class="token number">3306</span>
-          <span class="token key atrule">resources</span><span class="token punctuation">:</span>
-            <span class="token key atrule">limits</span><span class="token punctuation">:</span>
-              <span class="token key atrule">cpu</span><span class="token punctuation">:</span> <span class="token string">"0.5"</span>
-            <span class="token key atrule">requests</span><span class="token punctuation">:</span>
-              <span class="token key atrule">cpu</span><span class="token punctuation">:</span> <span class="token string">"0.5"</span>
-          <span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
-            <span class="token punctuation">-</span> <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> /var/lib/mysql
-              <span class="token key atrule">name</span><span class="token punctuation">:</span> volv
-      <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
-        <span class="token punctuation">-</span> <span class="token key atrule">hostPath</span><span class="token punctuation">:</span>
-            <span class="token key atrule">path</span><span class="token punctuation">:</span> /Users/mac/Desktop/computer/A/k8s/data/mysql/var/lib/mysql
-            <span class="token key atrule">type</span><span class="token punctuation">:</span> DirectoryOrCreate
-          <span class="token key atrule">name</span><span class="token punctuation">:</span> volv
-<span class="token punctuation">---</span>
-<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
-<span class="token key atrule">kind</span><span class="token punctuation">:</span> Service
-<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
-  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
-    <span class="token key atrule">app</span><span class="token punctuation">:</span> mysql
-  <span class="token key atrule">name</span><span class="token punctuation">:</span> mysql
-<span class="token key atrule">spec</span><span class="token punctuation">:</span>
-  <span class="token key atrule">ports</span><span class="token punctuation">:</span>
-    <span class="token punctuation">-</span> <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">3306</span>
-      <span class="token key atrule">protocol</span><span class="token punctuation">:</span> TCP
-      <span class="token key atrule">targetPort</span><span class="token punctuation">:</span> <span class="token number">3306</span>
-      <span class="token key atrule">nodePort</span><span class="token punctuation">:</span> <span class="token number">30006</span>
-  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
-    <span class="token key atrule">app</span><span class="token punctuation">:</span> mysql
-  <span class="token key atrule">type</span><span class="token punctuation">:</span> LoadBalancer<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+                <p>@<a href="%E7%9B%AE%E5%BD%95">TOC</a></p>
+<h1 id="8-使用Quartz为每个作业创建单机执行的调度器对象"><a href="#8-使用Quartz为每个作业创建单机执行的调度器对象" class="headerlink" title="8 - 使用Quartz为每个作业创建单机执行的调度器对象"></a>8 - 使用Quartz为每个作业创建单机执行的调度器对象</h1><h2 id="8-1-JobScheduleController简介"><a href="#8-1-JobScheduleController简介" class="headerlink" title="8.1 JobScheduleController简介"></a>8.1 JobScheduleController简介</h2><p>作业调度控制器类型为JobScheduleController，这个类型的主要功能是承接调度系统针对Quartz框架Scheduler对象的管理，Quartz的Scheduler对象主要作用是来控制一个作业的绑定，触发，暂停，关闭等操作，JobScheduleController主要实现的操作如下UML图所示：</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/c550507a4b09c412e6974f07c098196d.png" alt="图片"></p>
+<p>图6.1 作业调度控制器UML</p>
+<p>通过UML图我们可以看到这个类里面主要的方法都是与作业有关系的比如调度作业，暂停作业，启动作业，触发作业，关闭作业等等。</p>
+<p>这个类包含了三个成员变量，scheduler，jobDetail和triggerIdentity。这三个成员变量都是与触发作业紧密相关的，</p>
+<ul>
+<li>其中Scheduler对象是与Quartz调度程序进行交互的主要API，可用来绑定定时任务作业对象与触发器对象</li>
+<li>JobDetail-用于定义Job的实例信息</li>
+<li>triggerIdentity用来标示作业触发器，后续可以使用此标示来获取触发器对象来进行作业的触发，暂停，重新调度，Trigger触发器-定义将在其上执行给定作业的时间表的组件，触发器类型有多种，在本系统中使用CRON类型的触发器，方便对CRON表达式的支持来进行作业执行时间的灵活配置。</li>
+</ul>
+<p>通过下表来了解下三个属性的具体作用：</p>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>属性类型</th>
+<th>属性描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>scheduler</td>
+<td>Scheduler</td>
+<td>调度器，这个是来源org.quartz包下面的类型， Quartz Scheduler的主接口为调度器负责整个定时系统的调度内部提供了调度，启动，暂停，关闭恢复作业等方法，是我们使用Quartz操作作业的主接口。</td>
+</tr>
+<tr>
+<td>jobDetail</td>
+<td>JobDetail</td>
+<td>作业详情接口，也就是作业的元数据接口，主要存储作业的标示，作业描述，作业执行类，作业自定义参数等方法。后期调度器可以通过作业元数据获取到作业信息进行执行作业。</td>
+</tr>
+<tr>
+<td>triggerIdentity</td>
+<td>String</td>
+<td>作业触发器的唯一标示，后期可以使用这个标示来获取触发器对象进行判断作业执行状态，重新调度作业，本系统中使用作业名字来做为触发器的唯一标示。</td>
+</tr>
+</tbody></table>
+<h2 id="8-2-JobScheduleController对象的创建"><a href="#8-2-JobScheduleController对象的创建" class="headerlink" title="8.2 JobScheduleController对象的创建"></a>8.2 JobScheduleController对象的创建</h2><p>了解了JobScheduleController作业调度控制器的作用后我们来看下作业调度控制器的创建过程：</p>
+<pre class="line-numbers language-none"><code class="language-none">//创建作业调度控制器
+JobScheduleController jobScheduleController = new JobScheduleController(
+        //对应scheduler对象
+        createScheduler(),
+        //对应jobDetail对象 
+        createJobDetail(liteJobConfigFromRegCenter.getTypeConfig().getJobClass()),
+        //对应作业触发器标示对象
+        liteJobConfigFromRegCenter.getJobName());<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>作业调度控制器的创建比较简单，主要是初始化前面我们介绍过的三个成员变量，</p>
+<ul>
+<li>Scheduler对象的创建是通过 createScheduler()方法</li>
+<li>JobDetail对象的创建则是通过createJobDetail方法</li>
+<li>对应作业触发器的标示则使用作业名字来进行标示</li>
+</ul>
+<p>那我们比较重要的Scheduler对象和JobDetail对象如何创建呢，可以详细来看下。</p>
+<h2 id="8-3-Scheduler-调度对象的创建"><a href="#8-3-Scheduler-调度对象的创建" class="headerlink" title="8.3 Scheduler 调度对象的创建"></a>8.3 Scheduler 调度对象的创建</h2><p>看具体信息之前可以先来看下源码：</p>
+<pre class="line-numbers language-none"><code class="language-none">private Scheduler createScheduler() {
+    Scheduler result;
+    try {
+        StdSchedulerFactory factory = new StdSchedulerFactory();
+        factory.initialize(getBaseQuartzProperties());
+        //工厂创建调度器 这里调度器对象类型为StdScheduler
+        result = factory.getScheduler();
+        //添加触发监听器
+        result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
+    } catch (final SchedulerException ex) {
+        throw new JobSystemException(ex);
+    }
+    return result;
+}
+//调度器工厂的基本属性初始化
+private Properties getBaseQuartzProperties() {
+    Properties result = new Properties();
+    result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
+    result.put("org.quartz.threadPool.threadCount", "1");
+    result.put("org.quartz.scheduler.instanceName", liteJobConfig.getJobName());
+    result.put("org.quartz.jobStore.misfireThreshold", "1");
+    result.put("org.quartz.plugin.shutdownhook.class", JobShutdownHookPlugin.class.getName());
+    result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
+    return result;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Scheduler调度器的创建比较简单，这里主要经过了如下过程：</p>
+<ol>
+<li>先创建标准调度器工厂</li>
+<li>然后初始化调度程序的基本属性</li>
+<li>最后调用工厂方法获取调度器对象</li>
+<li>创建完Scheduler调度器对象后进行触发监听器的注册</li>
+</ol>
+<p>调度器工厂在加载基本属性配置的时候使用Properties类型来进行基本配置的参数传递，这里初始化的参数我们可以来了解下：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>org.quartz.threadPool.class</td>
+<td>要使用的ThreadPool实现类型的名称。Quartz附带的线程池是“ org.quartz.simpl.SimpleThreadPool”，并且应该满足几乎每个用户的需求。它的行为非常简单，并且经过了很好的测试。它提供了一个固定大小的线程池，这些线程池在“调度程序”的生存期内“有效”.</td>
+</tr>
+<tr>
+<td>org.quartz.threadPool.threadCount</td>
+<td>可以是任何正整数，1到100之间的数字是非常实用的。这是可用于并发执行作业的线程数。如果每天只能执行少量工作，那么一个线程就足够了！如果有成千上万的工作，每分钟触发许多工作，那么可能希望线程数更像50或100（这在很大程度上取决于您工作执行的工作性质以及系统资源！）。本系统设置线程数量为1则在执行调度的时候如果上次的作业未结束下次调度是无法执行的。</td>
+</tr>
+<tr>
+<td>org.quartz.scheduler.instanceName</td>
+<td>可以是任何字符串，并且该值对调度程序本身没有意义,而是当同一程序中使用多个实例时，它用作客户端代码区分调度程序的机制。如果使用的是集群功能，则必须为集群中的每个实例使用“在逻辑上”相同的Scheduler的相同名称。</td>
+</tr>
+<tr>
+<td>org.quartz.jobStore.misfireThreshold</td>
+<td>调度程序在被认为是“误触发”之前，将“容忍”触发器经过下一次触发时间的毫秒数。默认值（如果未在配置中输入此属性）为60000（60秒）。misfire产生需要有2个前置条件，一个是job到达触发时间时没有被执行，二是被执行的延迟时间超过了Quartz配置的misfireThreshold阀值。如果延迟执行的时间小于阀值，则Quartz不认为发生了misfire，立即执行job；如果延迟执行的时间大于或者等于阀值，则被判断为misfire，然后会按照指定的策略来执行。本程序设置的为1毫秒如果当前作业因为上次错过了执行时间触发,则会触发错过执行监听器，然后在Zookeeper写入错过执行的标示来执行作业，具体的实现可以在后面章节详细来看。</td>
+</tr>
+<tr>
+<td>org.quartz.plugin.shutdownhook.class</td>
+<td>此插件捕获JVM终止的事件（例如在CRTL-C上）并告诉调度程序关闭</td>
+</tr>
+<tr>
+<td>org.quartz.plugin.shutdownhook.cleanShutdown</td>
+<td>如果设置为true，则等待当前正在运行的作业完成。</td>
+</tr>
+</tbody></table>
+<h2 id="8-4-JobDetail-作业信息对象的创建"><a href="#8-4-JobDetail-作业信息对象的创建" class="headerlink" title="8.4 JobDetail 作业信息对象的创建"></a>8.4 JobDetail 作业信息对象的创建</h2><p>JobDetail作业详情接口，也就是作业的元数据接口，记录着作业的基本信息我们看下他是如何创建的初始化了哪些属性。</p>
+<pre class="line-numbers language-none"><code class="language-none">private JobDetail createJobDetail(final String jobClass) {
+    JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
+    result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
+    Optional&lt;ElasticJob&gt; elasticJobInstance = createElasticJobInstance();
+    if (elasticJobInstance.isPresent()) {
+        result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJobInstance.get());
+    } else if (!jobClass.equals(ScriptJob.class.getCanonicalName())) {
+        try {
+            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobClass).newInstance());
+        } catch (final ReflectiveOperationException ex) {
+            throw new JobConfigurationException("Elastic-Job: Job class '%s' can not initialize.", jobClass);
+        }
+    }
+    return result;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>本方法为创建Quartz调度需要的作业元数据对象JobDetail，主要经历如下过程：</p>
+<ul>
+<li>使用作业建造器JobBuilder来构建作业元数据对象JobDetail，其中作业类型为LiteJob类型 ，作业标识为作业名字</li>
+<li>通过元数据对象的JobDataMap类型来传递参数给作业</li>
+<li>向LiteJob作业对象传递jobFacade 对象 </li>
+<li>向LiteJob作业传递定制化ElasticJob弹性作业对象</li>
+</ul>
+<p>下面我们先介绍下新遇到的几个类型</p>
+<ul>
+<li><p>LiteJob类型实现了Quartz的Job接口，在Quartz触发调度的时候将调用LiteJob类型重写的execute方法，LiteJob再来调用我们定制化的ElasticJob类型的弹性作业执行方法。</p>
+</li>
+<li><p>JobFacade见名知意为作业门面类型，主要对外提供一些作业相关的操作比如,在触发作业的时候可以使用作业门面来执行一些常规作业操作。JobFacade类型实现方法如下：</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/c64c180f2a3318d8c8543e73ebe3c319.png" alt="图片"></p>
+</li>
+<li><p>ElasticJob类型在前面我们已经了解过,这是调度作业的顶层类型,系统中主要提供了三种作业类型：简单作业，流式作业，和脚本作业，在这里可以看到代码有判断是不是脚本类型, 如果不是脚本类型则会在运行时创建作业对象,那脚本类型没有脚本对象实例如何执行作业呢，到后面我们会将会说到作业执行器，由于脚本执行方法比较通用，脚本作业会在执行器中直接执行脚本，无需我们来实现执行脚本作业的方法，而其他作业类型的话执行器一般会调用我们定制化ElasticJob类型作业的execute执行方法。</p>
+</li>
+</ul>
+<p>Elastic-Job使用Quartz来实现单机环境下单个作业的执行，每个作业在同一个进程下均有有一个独立的Scheduler调度器对象来进行作业的触发，在后面初始化作业完毕的时候调度器Scheduler对象会将作业详情和带有CRON表达式的Quartz触发器绑定起来让调度作业生效，在这里我们仔细观察可以得知的是在系统初始化每个作业的时候都会为当前作业创建独立的Quartz调度器对象来执行各自的作业，互不影响，进行作业线程隔离，并且执行当前作业的线程只有一个，面对耗时较长的作业也只能单线程来执行作业，容易出现错过作业执行的场景。在这里与Quartz交互的调度控制器就创建完成了，想要了解Quartz怎么去执行作业的可以深入研究一下源码。</p>
+<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
                 
             </div>
             <hr/>
@@ -456,7 +562,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blog.elastic.link/2016/09/07/k8s/2-k8s-yun-xing-mysql-de-yaml/">https://blog.elastic.link/2016/09/07/k8s/2-k8s-yun-xing-mysql-de-yaml/</a>
+                    <a href="https://blog.elastic.link/2021/09/07/elasticjob/8-shi-yong-quartz-wei-mei-ge-zuo-ye-chuang-jian-dan-ji-zhi-xing-de-diao-du-qi-dui-xiang/">https://blog.elastic.link/2021/09/07/elasticjob/8-shi-yong-quartz-wei-mei-ge-zuo-ye-chuang-jian-dan-ji-zhi-xing-de-diao-du-qi-dui-xiang/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -494,12 +600,16 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/kubernetes/">
-                                    <span class="chip bg-color">kubernetes</span>
+                                <a href="/tags/ElasticJob/">
+                                    <span class="chip bg-color">ElasticJob</span>
                                 </a>
                             
-                                <a href="/tags/K8S%E8%BF%90%E8%A1%8CMySQL%E7%9A%84yaml%E9%85%8D%E7%BD%AE/">
-                                    <span class="chip bg-color">K8S运行MySQL的yaml配置</span>
+                                <a href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                    <span class="chip bg-color">ElasticJob源码解析</span>
+                                </a>
+                            
+                                <a href="/tags/Quartz/">
+                                    <span class="chip bg-color">Quartz</span>
                                 </a>
                             
                         </div>
@@ -944,31 +1054,31 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2016/09/07/k8s/1-k8s-ming-ling-da-quan/">
+                <a href="/2021/09/07/elasticjob/7-xian-cheng-an-quan-de-dan-li-mo-shi-she-ji-quan-ju-zuo-ye-zhu-ce-biao-jobregistry/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="1-K8S命令大全">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="7-线程安全的单例模式设计全局作业注册表JobRegistry">
                         
-                        <span class="card-title">1-K8S命令大全</span>
+                        <span class="card-title">7-线程安全的单例模式设计全局作业注册表JobRegistry</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            K8S命令大全
+                            线程安全的单例模式设计全局作业注册表JobRegistry
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2016-09-07
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-09-07
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/kubernetes/" class="post-category">
-                                    kubernetes
+                            <a href="/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-category">
+                                    ElasticJob源码解析
                                 </a>
                             
                             
@@ -978,12 +1088,16 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/kubernetes/">
-                        <span class="chip bg-color">kubernetes</span>
+                    <a href="/tags/ElasticJob/">
+                        <span class="chip bg-color">ElasticJob</span>
                     </a>
                     
-                    <a href="/tags/K8S%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/">
-                        <span class="chip bg-color">K8S命令大全</span>
+                    <a href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                        <span class="chip bg-color">ElasticJob源码解析</span>
+                    </a>
+                    
+                    <a href="/tags/%E4%BD%9C%E4%B8%9A%E7%9A%84%E9%85%8D%E7%BD%AE/">
+                        <span class="chip bg-color">作业的配置</span>
                     </a>
                     
                 </div>
@@ -997,19 +1111,19 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/">
+                <a href="/2016/09/07/esockd/1-escockd-ru-men/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="【escocked 5.8.0源码解析系列】-1-escokd简介">
                         
-                        <span class="card-title">【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</span>
+                        <span class="card-title">【escocked 5.8.0源码解析系列】-1-escokd简介</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            在终端输入erl即可进入erl环境的终端
+                            escocked是emqx开发的Erlang通用非阻塞TCP/SSL套接字服务器
                         
                     </div>
                     <div class="publish-info">
@@ -1020,8 +1134,8 @@
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Kafka%E6%BA%90%E7%A0%81/" class="post-category">
-                                    Kafka源码
+                            <a href="/categories/escoked/" class="post-category">
+                                    escoked
                                 </a>
                             
                             
@@ -1031,12 +1145,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Kafka/">
-                        <span class="chip bg-color">Kafka</span>
+                    <a href="/tags/escoked%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">escoked源码</span>
                     </a>
                     
-                    <a href="/tags/Kafka%E6%BA%90%E7%A0%81/">
-                        <span class="chip bg-color">Kafka源码</span>
+                    <a href="/tags/erlang/">
+                        <span class="chip bg-color">erlang</span>
                     </a>
                     
                 </div>
