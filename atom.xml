@@ -283,29 +283,32 @@
   </entry>
   
   <entry>
-    <title>【escocked 5.8.0源码解析系列】-1-escokd简介</title>
-    <link href="https://blog.elastic.link/2016/09/07/esockd/1-escockd-ru-men/"/>
-    <id>https://blog.elastic.link/2016/09/07/esockd/1-escockd-ru-men/</id>
-    <published>2016-09-07T12:25:00.000Z</published>
-    <updated>2022-07-07T15:15:12.426Z</updated>
+    <title>6-调度作业的配置是如何在分布式场景下存储的？</title>
+    <link href="https://blog.elastic.link/2021/09/07/elasticjob/6-diao-du-zuo-ye-de-pei-zhi-shi-ru-he-zai-fen-bu-shi-chang-jing-xia-cun-chu-de/"/>
+    <id>https://blog.elastic.link/2021/09/07/elasticjob/6-diao-du-zuo-ye-de-pei-zhi-shi-ru-he-zai-fen-bu-shi-chang-jing-xia-cun-chu-de/</id>
+    <published>2021-09-07T12:25:00.000Z</published>
+    <updated>2022-07-17T11:21:28.540Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;1-escokd简介&quot;&gt;&lt;a href=&quot;#1-escokd简介&quot; class=&quot;headerlink&quot; title=&quot;1 escokd简介&quot;&gt;&lt;/a&gt;1 escokd简介&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
+    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&quot;6-6-调度作业的配置是如何在分布式场景下存储的？&quot;&gt;&lt;a href=&quot;#6-6-调度作业的配置是如何在分布式场景下存储的？&quot; class=&quot;headerlink&quot;</summary>
         
       
     
     
     
-    <category term="escoked" scheme="https://blog.elastic.link/categories/escoked/"/>
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/categories/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
     
     
-    <category term="escoked源码" scheme="https://blog.elastic.link/tags/escoked%E6%BA%90%E7%A0%81/"/>
+    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
     
-    <category term="erlang" scheme="https://blog.elastic.link/tags/erlang/"/>
+    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    <category term="作业的配置" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
     
   </entry>
   
@@ -337,29 +340,29 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</title>
-    <link href="https://blog.elastic.link/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/"/>
-    <id>https://blog.elastic.link/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/</id>
+    <title>【escocked 5.8.0源码解析系列】-1-escokd简介</title>
+    <link href="https://blog.elastic.link/2016/09/07/esockd/1-escockd-ru-men/"/>
+    <id>https://blog.elastic.link/2016/09/07/esockd/1-escockd-ru-men/</id>
     <published>2016-09-07T12:25:00.000Z</published>
-    <updated>2022-07-06T23:59:38.639Z</updated>
+    <updated>2022-07-07T15:15:12.426Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;1-Kaka知识全解析&quot;&gt;&lt;a href=&quot;#1-Kaka知识全解析&quot; class=&quot;headerlink&quot; title=&quot;1-Kaka知识全解析&quot;&gt;&lt;/a&gt;1-Kaka知识全解析&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
+    <summary type="html">&lt;h1 id=&quot;1-escokd简介&quot;&gt;&lt;a href=&quot;#1-escokd简介&quot; class=&quot;headerlink&quot; title=&quot;1 escokd简介&quot;&gt;&lt;/a&gt;1 escokd简介&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
         
       
     
     
     
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    <category term="escoked" scheme="https://blog.elastic.link/categories/escoked/"/>
     
     
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    <category term="escoked源码" scheme="https://blog.elastic.link/tags/escoked%E6%BA%90%E7%A0%81/"/>
     
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    <category term="erlang" scheme="https://blog.elastic.link/tags/erlang/"/>
     
   </entry>
   
@@ -416,6 +419,33 @@
     <category term="kubernetes" scheme="https://blog.elastic.link/tags/kubernetes/"/>
     
     <category term="K8S运行MySQL的yaml配置" scheme="https://blog.elastic.link/tags/K8S%E8%BF%90%E8%A1%8CMySQL%E7%9A%84yaml%E9%85%8D%E7%BD%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</title>
+    <link href="https://blog.elastic.link/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/"/>
+    <id>https://blog.elastic.link/2016/09/07/kafka/1-kaka-zhi-shi-dian-quan-jie-xi/</id>
+    <published>2016-09-07T12:25:00.000Z</published>
+    <updated>2022-07-06T23:59:38.639Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-Kaka知识全解析&quot;&gt;&lt;a href=&quot;#1-Kaka知识全解析&quot; class=&quot;headerlink&quot; title=&quot;1-Kaka知识全解析&quot;&gt;&lt;/a&gt;1-Kaka知识全解析&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
     
   </entry>
   
