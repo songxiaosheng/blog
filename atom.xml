@@ -6,7 +6,7 @@
   <link href="https://blog.elastic.link/atom.xml" rel="self"/>
   
   <link href="https://blog.elastic.link/"/>
-  <updated>2022-07-05T13:54:07.766Z</updated>
+  <updated>2022-07-05T05:25:49.790Z</updated>
   <id>https://blog.elastic.link/</id>
   
   <author>
@@ -15,33 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>1-Erlang 语法基础</title>
-    <link href="https://blog.elastic.link/2022/09/07/erlang/erlang-1/"/>
-    <id>https://blog.elastic.link/2022/09/07/erlang/erlang-1/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-05T13:54:07.766Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-语法基础&quot;&gt;&lt;a href=&quot;#1-语法基础&quot; class=&quot;headerlink&quot; title=&quot;1-语法基础&quot;&gt;&lt;/a&gt;1-语法基础&lt;/h1&gt;&lt;h2 id=&quot;shell终端&quot;&gt;&lt;a href=&quot;#shell终端&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
-    
-  </entry>
   
   <entry>
     <title>1-过五关斩六将开发属于自己的jdk版本</title>
@@ -94,6 +67,33 @@
     <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
     
     <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>1-Erlang 语法基础</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/erlang-1/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/erlang-1/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-05T13:54:07.766Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-语法基础&quot;&gt;&lt;a href=&quot;#1-语法基础&quot; class=&quot;headerlink&quot; title=&quot;1-语法基础&quot;&gt;&lt;/a&gt;1-语法基础&lt;/h1&gt;&lt;h2 id=&quot;shell终端&quot;&gt;&lt;a href=&quot;#shell终端&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
     
   </entry>
   
@@ -264,6 +264,36 @@
     <category term="Zookeeper" scheme="https://blog.elastic.link/tags/Zookeeper/"/>
     
     <category term="Zookeeper源码解析" scheme="https://blog.elastic.link/tags/Zookeeper%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>03-Zookeeper安装配置</title>
+    <link href="https://blog.elastic.link/2021/07/12/zookeeper/3-zookeeper-an-zhuang-pei-zhi-lai-zi-guan-wang-de-xue-xi-bi-ji/"/>
+    <id>https://blog.elastic.link/2021/07/12/zookeeper/3-zookeeper-an-zhuang-pei-zhi-lai-zi-guan-wang-de-xue-xi-bi-ji/</id>
+    <published>2021-07-12T12:25:00.000Z</published>
+    <updated>2022-07-18T14:08:03.818Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&quot;3-zookeeper安装配置&quot;&gt;&lt;a href=&quot;#3-zookeeper安装配置&quot; class=&quot;headerlink&quot; title=&quot;3</summary>
+        
+      
+    
+    
+    
+    <category term="Zookeeper版本3.6.2源码系列" scheme="https://blog.elastic.link/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/"/>
+    
+    
+    <category term="Zookeeper" scheme="https://blog.elastic.link/tags/Zookeeper/"/>
+    
+    <category term="Zookeeper源码解析" scheme="https://blog.elastic.link/tags/Zookeeper%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    <category term="Zookeeper安装配置" scheme="https://blog.elastic.link/tags/Zookeeper%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"/>
     
   </entry>
   
@@ -556,33 +586,6 @@
     <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
     
     <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【escocked 5.8.0源码解析系列】-1-escokd简介</title>
-    <link href="https://blog.elastic.link/2016/09/07/esockd/1-escockd-ru-men/"/>
-    <id>https://blog.elastic.link/2016/09/07/esockd/1-escockd-ru-men/</id>
-    <published>2016-09-07T12:25:00.000Z</published>
-    <updated>2022-07-07T15:15:12.426Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-escokd简介&quot;&gt;&lt;a href=&quot;#1-escokd简介&quot; class=&quot;headerlink&quot; title=&quot;1 escokd简介&quot;&gt;&lt;/a&gt;1 escokd简介&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="escoked" scheme="https://blog.elastic.link/categories/escoked/"/>
-    
-    
-    <category term="escoked源码" scheme="https://blog.elastic.link/tags/escoked%E6%BA%90%E7%A0%81/"/>
-    
-    <category term="erlang" scheme="https://blog.elastic.link/tags/erlang/"/>
     
   </entry>
   
