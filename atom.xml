@@ -98,6 +98,28 @@
   </entry>
   
   <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/07/19/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/"/>
+    <id>https://blog.elastic.link/2022/07/19/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</id>
+    <published>2022-07-19T14:51:58.576Z</published>
+    <updated>2022-07-19T14:52:33.861Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Rebar3 支持一些会影响工具批发行为的选项。这些被定义为操作系统环境变量，如下所示：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-erlang&quot; data-language=&quot;erlang&quot;&gt;&lt;code</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>01-【Dubbo3.0.8源码解析系列】从一个服务提供者的Demo说起</title>
     <link href="https://blog.elastic.link/2022/07/10/dubbo/1-cong-yi-ge-demo-shuo-qi/"/>
     <id>https://blog.elastic.link/2022/07/10/dubbo/1-cong-yi-ge-demo-shuo-qi/</id>
@@ -561,35 +583,6 @@
     <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
     
     <category term="作业模版类型设计" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E6%A8%A1%E7%89%88%E7%B1%BB%E5%9E%8B%E8%AE%BE%E8%AE%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>04-Builder建造者设计模式构造复杂的作业配置</title>
-    <link href="https://blog.elastic.link/2021/07/03/elasticjob/4-builder-jian-zao-zhe-she-ji-mo-shi-gou-zao-fu-za-de-zuo-ye-pei-zhi/"/>
-    <id>https://blog.elastic.link/2021/07/03/elasticjob/4-builder-jian-zao-zhe-she-ji-mo-shi-gou-zao-fu-za-de-zuo-ye-pei-zhi/</id>
-    <published>2021-07-03T12:25:00.000Z</published>
-    <updated>2022-07-19T14:31:30.508Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;4-Builder建造者设计模式构造复杂的作业配置&quot;&gt;&lt;a href=&quot;#4-Builder建造者设计模式构造复杂的作业配置&quot; class=&quot;headerlink&quot; title=&quot;4 Builder建造者设计模式构造复杂的作业配置&quot;&gt;&lt;/a&gt;4</summary>
-        
-      
-    
-    
-    
-    <category term="Elastic-Job2.1.5源码" scheme="https://blog.elastic.link/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    <category term="作业配置" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E9%85%8D%E7%BD%AE/"/>
     
   </entry>
   
