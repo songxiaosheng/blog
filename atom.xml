@@ -127,18 +127,19 @@
   </entry>
   
   <entry>
-    <title>21-Dubbo3消费者引用服务入口</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/</id>
+    <title>02- ServiceConfig对象的建模</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/2-qi-dong-fu-wu-qian-fu-wu-pei-zhi-serviceconfig-lei-xing-shi-ru-he-chu-shi-hua-de/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/2-qi-dong-fu-wu-qian-fu-wu-pei-zhi-serviceconfig-lei-xing-shi-ru-he-chu-shi-hua-de/</id>
     <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-10T11:23:02.337Z</updated>
+    <updated>2022-07-19T14:18:27.558Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;21-Dubbo3消费者引用服务入口&quot;&gt;&lt;a href=&quot;#21-Dubbo3消费者引用服务入口&quot; class=&quot;headerlink&quot; title=&quot;21-Dubbo3消费者引用服务入口&quot;&gt;&lt;/a&gt;21-Dubbo3消费者引用服务入口&lt;/h1&gt;&lt;h2</summary>
+    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&quot;2-ServiceConfig对象的建模&quot;&gt;&lt;a href=&quot;#2-ServiceConfig对象的建模&quot; class=&quot;headerlink&quot; title=&quot;2</summary>
         
       
     
@@ -156,19 +157,18 @@
   </entry>
   
   <entry>
-    <title>02- ServiceConfig对象的建模</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/2-qi-dong-fu-wu-qian-fu-wu-pei-zhi-serviceconfig-lei-xing-shi-ru-he-chu-shi-hua-de/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/2-qi-dong-fu-wu-qian-fu-wu-pei-zhi-serviceconfig-lei-xing-shi-ru-he-chu-shi-hua-de/</id>
+    <title>21-【Dubbo3.0.8源码解析系列】Dubbo3消费者引用服务入口</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/</id>
     <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-19T14:18:27.558Z</updated>
+    <updated>2022-07-19T14:27:28.765Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
-&lt;h1 id=&quot;2-ServiceConfig对象的建模&quot;&gt;&lt;a href=&quot;#2-ServiceConfig对象的建模&quot; class=&quot;headerlink&quot; title=&quot;2</summary>
+    <summary type="html">&lt;h1 id=&quot;21-Dubbo3消费者引用服务入口&quot;&gt;&lt;a href=&quot;#21-Dubbo3消费者引用服务入口&quot; class=&quot;headerlink&quot; title=&quot;21-Dubbo3消费者引用服务入口&quot;&gt;&lt;/a&gt;21-Dubbo3消费者引用服务入口&lt;/h1&gt;&lt;h2</summary>
         
       
     
@@ -219,7 +219,7 @@
     <link href="https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/"/>
     <id>https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/</id>
     <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-19T14:19:43.919Z</updated>
+    <updated>2022-07-19T14:27:31.317Z</updated>
     
     
       
