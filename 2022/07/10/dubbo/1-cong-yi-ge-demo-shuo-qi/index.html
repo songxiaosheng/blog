@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="01-Elastic-Job 分布式定时任务调度系统的简介, 中间件源码">
-    <meta name="description" content="Elastic-Job是由当当网基于Quartz 二次开发之后的分布式调度解决方案，是一个分布式调度解决方案，由 2 个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。">
+    <meta name="keywords" content="01-【Dubbo3.0.8源码解析系列】从一个服务提供者的Demo说起, 中间件源码">
+    <meta name="description" content="【Dubbo3.0.8源码解析系列】-1-从一个服务提供者的Demo说起">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +19,7 @@
 
     
 
-    <title>01-Elastic-Job 分布式定时任务调度系统的简介 | 中间件源码</title>
+    <title>01-【Dubbo3.0.8源码解析系列】从一个服务提供者的Demo说起 | 中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
@@ -187,12 +187,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://img-blog.csdnimg.cn/5f7e544069184da3b5eedbce85c8b1de.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5a6L5bCP55SfLeS4remXtOS7tg==,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">01-Elastic-Job 分布式定时任务调度系统的简介</h1>
+                    <h1 class="description center-align post-title">01-【Dubbo3.0.8源码解析系列】从一个服务提供者的Demo说起</h1>
                 </div>
             </div>
         </div>
@@ -308,12 +308,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/ElasticJob/">
-                                <span class="chip bg-color">ElasticJob</span>
+                            <a href="/tags/Dubbo/">
+                                <span class="chip bg-color">Dubbo</span>
                             </a>
                         
-                            <a href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
-                                <span class="chip bg-color">ElasticJob源码解析</span>
+                            <a href="/tags/Dubbo3/">
+                                <span class="chip bg-color">Dubbo3</span>
+                            </a>
+                        
+                            <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                <span class="chip bg-color">Dubbo3源码解析</span>
                             </a>
                         
                     </div>
@@ -324,8 +328,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/" class="post-category">
-                                Elastic-Job2.1.5源码
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                Dubbo3源码
                             </a>
                         
                     </div>
@@ -337,7 +341,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-07-01
+                    2022-07-10
                 </div>
                 
 
@@ -351,14 +355,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    729
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    3 分
                 </div>
                 
 
@@ -376,145 +380,96 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="1-ElasticJob-分布式定时任务调度系统的简介"><a href="#1-ElasticJob-分布式定时任务调度系统的简介" class="headerlink" title="1 ElasticJob 分布式定时任务调度系统的简介"></a>1 ElasticJob 分布式定时任务调度系统的简介</h1><h2 id="1-1-项目介绍"><a href="#1-1-项目介绍" class="headerlink" title="1.1 项目介绍"></a>1.1 项目介绍</h2><p>Elastic-Job是由当当网基于Quartz 二次开发之后的分布式调度解决方案，是一个分布式调度解决方案，由 2 个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。</p>
-<p>ElasticJob-Lite 定位为轻量级无中心化解决方案，使用jar的形式提供分布式任务的协调服务。</p>
-<p>ElasticJob-Cloud 使用 Mesos 的解决方案，额外提供资源治理、应用分发以及进程隔离等服务。</p>
-<p>Elastic-Job 的各个产品使用统一的作业 API，开发者仅需要一次开发，即可随意部署。Elastic-Job开发在停滞数年后，2020年，Elastic-Job 携首个 Apache 版本 3.0.0-alpha 回归！2020年6月，经过Apache ShardingSphere社区投票，接纳Elastic-Job为其子项目。目前ElasticJob的四个子项目已经正式迁入Apache仓库。并更名为shardingsphere-elasticjob。对于功能强大的分布式调度系统elastic-job很多优秀的分布式设计思想值得学习，接下来本系列文章会针对Elastic-Job版本2.1.5的核心源码与原理进行分析讲解。</p>
-<h2 id="1-2-分布式弹性调度系统特征"><a href="#1-2-分布式弹性调度系统特征" class="headerlink" title="1.2 分布式弹性调度系统特征"></a>1.2 分布式弹性调度系统特征</h2><p>（1） 弹性调度<br>支持任务在分布式场景下的分片和高可用。<br>能够水平扩展任务的吞吐量和执行效率。</p>
-<p>任务处理能力随资源配备弹性伸缩。</p>
-<p>（2）资源分配</p>
-<p>在适合的时间将适合的资源分配给任务并使其生效。</p>
-<p>相同任务聚合至相同的执行器统一处理。</p>
-<p>动态调配追加资源至新分配的任务 。</p>
-<p>（3）作业治理</p>
-<p>失效转移执行。</p>
-<p>错过执行作业重新触发。</p>
-<p>自诊断并修复分布式不稳定造成的问题。</p>
-<p>支持并行调度。</p>
-<p>作业调度。</p>
-<p>幂等执行。</p>
-<p>（4）作业依赖（2.x 目前未实现功能TODO，迁移后的项目后期会实现）</p>
-<p>基于有向无环图（DAG）的作业间依赖。</p>
-<p>基于有向无环图（DAG）的作业分片间依赖。</p>
-<p>（5）作业开放生态</p>
-<p>可扩展的作业类型统一接口。</p>
-<p>丰富的作业类型库，如数据流、脚本、HTTP、文件、大数据等</p>
-<p>易于对接业务作业，能够与 Spring 依赖注入无缝整合。</p>
-<p>（6）可视化管控端</p>
-<p>作业管控端。</p>
-<p>作业执行历史数据追踪。</p>
-<p>注册中心管理。</p>
-<p>作业编排管理。</p>
-<h1 id="2-Elastic-Job的使用"><a href="#2-Elastic-Job的使用" class="headerlink" title="2 Elastic-Job的使用"></a>2 Elastic-Job的使用</h1><h2 id="2-1-使用Java代码创建第一个调度例子"><a href="#2-1-使用Java代码创建第一个调度例子" class="headerlink" title="2.1 使用Java代码创建第一个调度例子"></a>2.1 使用Java代码创建第一个调度例子</h2><p>（1）导入Maven包</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.dangdang<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
- <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>elastic-job-lite-core<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
- <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>2.1.5<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+                <h1 id="1-从一个服务提供者的Demo说起"><a href="#1-从一个服务提供者的Demo说起" class="headerlink" title="1 从一个服务提供者的Demo说起"></a>1 从一个服务提供者的Demo说起</h1><p>为了更方便了解原理,我们先来编写一个Demo,从例子中来看源码实现:</p>
+<h2 id="1-1-启动Zookeeper"><a href="#1-1-启动Zookeeper" class="headerlink" title="1.1 启动Zookeeper"></a>1.1 启动Zookeeper</h2><p>为了Demo可以正常启动,需要我们先在本地启动一个Zookeeper如下图所示:<br><img src="https://img-blog.csdnimg.cn/5f7e544069184da3b5eedbce85c8b1de.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5a6L5bCP55SfLeS4remXtOS7tg==,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center" alt="在这里插入图片描述"></p>
+<h2 id="1-2-服务提供者"><a href="#1-2-服务提供者" class="headerlink" title="1.2 服务提供者"></a>1.2 服务提供者</h2><p>接下来给大家贴一下示例源码,这个源码来源于Dubbo源码目录的	dubbo-demo/dubbo-demo-api 目录下面的dubbo-demo-api-provider子项目,这里我做了删减,方便看核心代码:<br>首先我们定义一个服务接口如下所示:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>concurrent<span class="token punctuation">.</span></span><span class="token class-name">CompletableFuture</span></span><span class="token punctuation">;</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">DemoService</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * 同步处理的服务方法
+     * @param name
+     * @return
+     */</span>
+    <span class="token class-name">String</span> <span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<p>（2）手动启动一个简单的调度例子<br> 实现作业接口，重写作业执行方法，编写作业执行业务逻辑。</p>
-<p>Zookeeper注册中心的配置与初始化。</p>
-<p>作业属性的配置初始化。</p>
-<p>作业调度器对象的创建与初始化。</p>
-<p>触发作业。</p>
-<p>具体流程如下图所示：<br><img src="/img/elasticjob/1-demo.png" alt="图片"></p>
-<p>图2.1 ElasticJob作业初始化过程</p>
-<p>（3）示例代码<br>实现一个简单定时任务</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">JavaSimpleJob</span> <span class="token keyword">implements</span> <span class="token class-name">SimpleJob</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * 用于异步处理的服务方法
+     * @param name
+     * @return
+     */</span>
+    <span class="token keyword">default</span> <span class="token class-name">CompletableFuture</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">sayHelloAsync</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token class-name">CompletableFuture</span><span class="token punctuation">.</span><span class="token function">completedFuture</span><span class="token punctuation">(</span><span class="token function">sayHello</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
- <span class="token annotation punctuation">@Override</span>
- <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">ShardingContext</span> shardingContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>"<span class="token class-name">Hello</span> <span class="token class-name">Job</span>”<span class="token punctuation">)</span><span class="token punctuation">;</span>
- <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+服务实现类如下<span class="token operator">:</span>
 
-<p>初始化一个定时任务</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">JobDemo</span> <span class="token punctuation">{</span>
- <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">//注册中心地址</span>
-  <span class="token class-name">String</span> serverList <span class="token operator">=</span> <span class="token string">"127.0.0.1:2181"</span><span class="token punctuation">;</span>
-    <span class="token comment">//调度作业注册中心命名空间名字</span>
-  <span class="token class-name">String</span> namespace <span class="token operator">=</span> <span class="token string">"elastic-job-lite-demo"</span><span class="token punctuation">;</span>
-    <span class="token comment">//作业执行的cron表达式</span>
-  <span class="token class-name">String</span> cron <span class="token operator">=</span> <span class="token string">"* * * * * ?"</span><span class="token punctuation">;</span>
-    <span class="token comment">//作业进行分片执行的分片总数</span>
-  <span class="token keyword">int</span> shardingTotalCount <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
-    <span class="token comment">//分片项参数</span>
-  <span class="token class-name">String</span> shardingItemParameters <span class="token operator">=</span> <span class="token string">"0=Beijing,1=Shanghai,2=Guangzhou"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span></span><span class="token class-name">RpcContext</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>slf4j<span class="token punctuation">.</span></span><span class="token class-name">Logger</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>slf4j<span class="token punctuation">.</span></span><span class="token class-name">LoggerFactory</span></span><span class="token punctuation">;</span>
 
-  <span class="token comment">//Zookeeper初始化</span>
-  <span class="token comment">//创建zookeeper配置对象</span>
-  <span class="token class-name">ZookeeperConfiguration</span> zookeeperConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZookeeperConfiguration</span><span class="token punctuation">(</span>serverList<span class="token punctuation">,</span> namespace<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">//创建协调注册中心对象</span>
-  <span class="token class-name">CoordinatorRegistryCenter</span> zookeeperRegistryCenter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZookeeperRegistryCenter</span><span class="token punctuation">(</span>zookeeperConfiguration<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">//初始化注册中心</span>
-  zookeeperRegistryCenter<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>concurrent<span class="token punctuation">.</span></span><span class="token class-name">CompletableFuture</span></span><span class="token punctuation">;</span>
 
-  <span class="token comment">//作业初始化</span>
-  <span class="token comment">//这里是定义JOB的名字</span>
-  <span class="token class-name">String</span> jobName <span class="token operator">=</span> <span class="token string">"JavaSimpleJob"</span><span class="token punctuation">;</span>
-  <span class="token comment">//创建作业核心配置的建造者builder类型</span>
-  <span class="token class-name">JobCoreConfiguration<span class="token punctuation">.</span>Builder</span> javaCoreConfigurationBuilder <span class="token operator">=</span>
-  <span class="token class-name">JobCoreConfiguration</span><span class="token punctuation">.</span><span class="token function">newBuilder</span><span class="token punctuation">(</span>jobName<span class="token punctuation">,</span> cron<span class="token punctuation">,</span> shardingTotalCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">//根据builder构建核心配置</span>
-  <span class="token class-name">JobCoreConfiguration</span> jobCoreConfiguration <span class="token operator">=</span>    javaCoreConfigurationBuilder<span class="token punctuation">.</span><span class="token function">shardingItemParameters</span><span class="token punctuation">(</span>shardingItemParameters<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DemoServiceImpl</span> <span class="token keyword">implements</span> <span class="token class-name">DemoService</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> logger <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token class-name">DemoServiceImpl</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-  <span class="token comment">//getCanonicalName 返回包名+类名字，这里是作业执行类的信息</span>
-  <span class="token class-name">String</span> canonicalName <span class="token operator">=</span> <span class="token class-name">JavaSimpleJob</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getCanonicalName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">//根据核心配置和作业执行类创建作业类型配置</span>
-  <span class="token class-name">JobTypeConfiguration</span> jobTypeConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleJobConfiguration</span><span class="token punctuation">(</span>jobCoreConfiguration<span class="token punctuation">,</span> canonicalName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Hello "</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">", request from consumer: "</span> <span class="token operator">+</span> <span class="token class-name">RpcContext</span><span class="token punctuation">.</span><span class="token function">getServiceContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getRemoteAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">"Hello "</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">", response from provider: "</span> <span class="token operator">+</span> <span class="token class-name">RpcContext</span><span class="token punctuation">.</span><span class="token function">getServiceContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getLocalAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-  <span class="token comment">//根据作业类型配置初始化轻量级作业配置</span>
-  <span class="token class-name">LiteJobConfiguration</span> liteJobConfiguration <span class="token operator">=</span> <span class="token class-name">LiteJobConfiguration</span><span class="token punctuation">.</span><span class="token function">newBuilder</span><span class="token punctuation">(</span>jobTypeConfiguration<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">CompletableFuture</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">sayHelloAsync</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-  <span class="token comment">//作业调度器初始化</span>
-  <span class="token class-name">JobScheduler</span> jobScheduler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">JobScheduler</span><span class="token punctuation">(</span>zookeeperRegistryCenter<span class="token punctuation">,</span>liteJobConfiguration<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  jobScheduler<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
- <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<h2 id="1-3-启用服务"><a href="#1-3-启用服务" class="headerlink" title="1.3 启用服务"></a>1.3 启用服务</h2><p>有了服务接口之后我们来启用服务,启用服务的源码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>constants<span class="token punctuation">.</span></span><span class="token class-name">CommonConstants</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>config<span class="token punctuation">.</span></span><span class="token class-name">ApplicationConfig</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>config<span class="token punctuation">.</span></span><span class="token class-name">MetadataReportConfig</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>config<span class="token punctuation">.</span></span><span class="token class-name">ProtocolConfig</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>config<span class="token punctuation">.</span></span><span class="token class-name">RegistryConfig</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>config<span class="token punctuation">.</span></span><span class="token class-name">ServiceConfig</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>config<span class="token punctuation">.</span>bootstrap<span class="token punctuation">.</span></span><span class="token class-name">DubboBootstrap</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>demo<span class="token punctuation">.</span></span><span class="token class-name">DemoService</span></span><span class="token punctuation">;</span>
 
-<p>首先确保zookeeper服务已经启动，然后直接运行main方法即可。<br>2.2 使用Spring配置一个作业<br>（1）导入Maven包</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
- <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.dangdang<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
- <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>elastic-job-lite-spring<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
- <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>2.1.5<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Application</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+            <span class="token function">startWithBootstrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">startWithBootstrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">ServiceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">DemoServiceImpl</span><span class="token punctuation">&gt;</span></span> service <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServiceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        service<span class="token punctuation">.</span><span class="token function">setInterface</span><span class="token punctuation">(</span><span class="token class-name">DemoService</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        service<span class="token punctuation">.</span><span class="token function">setRef</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">DemoServiceImpl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">DubboBootstrap</span> bootstrap <span class="token operator">=</span> <span class="token class-name">DubboBootstrap</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        bootstrap<span class="token punctuation">.</span><span class="token function">application</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ApplicationConfig</span><span class="token punctuation">(</span><span class="token string">"dubbo-demo-api-provider"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">registry</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegistryConfig</span><span class="token punctuation">(</span><span class="token string">"zookeeper://127.0.0.1:2181"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">protocol</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProtocolConfig</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">service</span><span class="token punctuation">(</span>service<span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>（2）配置Spring文件<br>配置注册中心对象</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">reg:</span>zookeeper</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>regCenter<span class="token punctuation">"</span></span> 
-               <span class="token attr-name">server-lists</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${serverLists}<span class="token punctuation">"</span></span> 
-               <span class="token attr-name">namespace</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${namespace}<span class="token punctuation">"</span></span> 
-               <span class="token attr-name">base-sleep-time-milliseconds</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${baseSleepTimeMilliseconds}<span class="token punctuation">"</span></span>             
-               <span class="token attr-name">max-sleep-time-milliseconds</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${maxSleepTimeMilliseconds}<span class="token punctuation">"</span></span> 
-               <span class="token attr-name">max-retries</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${maxRetries}<span class="token punctuation">"</span></span><span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>配置作业对象</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">job:</span>simple</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.id}<span class="token punctuation">"</span></span> 
-            <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.class}<span class="token punctuation">"</span></span> 
-            <span class="token attr-name">registry-center-ref</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>regCenter<span class="token punctuation">"</span></span>
-            <span class="token attr-name">sharding-total-count</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.shardingTotalCount}<span class="token punctuation">"</span></span>
-            <span class="token attr-name">cron</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.cron}<span class="token punctuation">"</span></span>  
-            <span class="token attr-name">sharding-item-parameters</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.shardingItemParameters}<span class="token punctuation">"</span></span>
-            <span class="token attr-name">monitor-execution</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.monitorExecution}<span class="token punctuation">"</span></span> 
-            <span class="token attr-name">monitor-port</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.monitorPort}<span class="token punctuation">"</span></span>
-            <span class="token attr-name">failover</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.failover}<span class="token punctuation">"</span></span>
-            <span class="token attr-name">description</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.description}<span class="token punctuation">"</span></span> 
-            <span class="token attr-name">disabled</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.disabled}<span class="token punctuation">"</span></span>
-            <span class="token attr-name">overwrite</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${simple.overwrite}<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>本实例只展示来我们配置Spring时候需要铁添加的配置，如果想要完整跑一个项目可以参考官方源码的elastic-job-example示例文件。</p>
-<p>参考网站：</p>
+<h2 id="1-4-启用服务后写入Zookeeper的节点数据"><a href="#1-4-启用服务后写入Zookeeper的节点数据" class="headerlink" title="1.4 启用服务后写入Zookeeper的节点数据"></a>1.4 启用服务后写入Zookeeper的节点数据</h2><p>启动服务,这个时候我们打开Zookeeper图形化客户端来看看这个服务在Zookeeper上面写入来哪些数据,如下图:<br><img src="https://img-blog.csdnimg.cn/9618e61167c94835b5203174c481b14a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5a6L5bCP55SfLeS4remXtOS7tg==,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center" alt="在这里插入图片描述"><br>写入Zookeper上的节点用于服务在分布式场景下的协调,这些节点是比较重要的。</p>
+<p>如果了解过Dubbo的同学,应该会知道Dubbo在低版本的时候会向注册中心中写入服务接口,具体路径在上面的  <strong>dubbo目录下</strong>  ,然后在 <strong>/dubbo/服务接口/</strong> 路径下写入如下信息:</p>
 <ul>
-<li><p>版本2.1.5源码：<br><a target="_blank" rel="noopener" href="https://gitee.com/elasticjob/elastic-job/tree/2.1.5/">https://gitee.com/elasticjob/elastic-job/tree/2.1.5/</a></p>
-</li>
-<li><p>例子源码地址：<br><a target="_blank" rel="noopener" href="https://gitee.com/elasticjob/elastic-job/tree/2.1.5/elastic-job-example">https://gitee.com/elasticjob/elastic-job/tree/2.1.5/elastic-job-example</a>  </p>
-</li>
-<li><p>最新版本源码：<br><a target="_blank" rel="noopener" href="https://github.com/apache/shardingsphere-elasticjob">https://github.com/apache/shardingsphere-elasticjob</a></p>
-</li>
-<li><p>官方网站：<br><a target="_blank" rel="noopener" href="http://shardingsphere.apache.org/elasticjob/">http://shardingsphere.apache.org/elasticjob/</a></p>
-</li>
+<li><strong>服务提供者</strong>配置信息URL形式</li>
+<li><strong>服务消费者</strong>的配置信息URL形式</li>
+<li>服务<strong>路由信息</strong></li>
+<li><strong>配置信息</strong></li>
 </ul>
-<p>查看原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://pic.imgdb.cn/item/62c93473f54cd3f937997ccf.png" alt="在这里插入图片描述"></p>
+<p>上面这个图就是Dubbo3的注册信息了,后面我们也会围绕细节来说明下,这里可以看下新增了:</p>
+<ul>
+<li>/dubbo/metadata <strong>元数据信息</strong></li>
+<li>/dubbo/mapping 服务和应用的<strong>映射信息</strong> </li>
+<li>/dubbo/config <strong>注册中心配置</strong> </li>
+<li>/services目录<strong>应用信息</strong></li>
+</ul>
+<p>在这里可以大致了解下,在后面会有更详细的源码解析这个示例代码.通过透析代码来看透Dubbo3服务注册原理,服务提供原理。</p>
 
                 
             </div>
@@ -541,7 +496,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blog.elastic.link/2021/07/01/elasticjob/1-elasticjob-jian-jie/">https://blog.elastic.link/2021/07/01/elasticjob/1-elasticjob-jian-jie/</a>
+                    <a href="https://blog.elastic.link/2022/07/10/dubbo/1-cong-yi-ge-demo-shuo-qi/">https://blog.elastic.link/2022/07/10/dubbo/1-cong-yi-ge-demo-shuo-qi/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -579,12 +534,16 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/ElasticJob/">
-                                    <span class="chip bg-color">ElasticJob</span>
+                                <a href="/tags/Dubbo/">
+                                    <span class="chip bg-color">Dubbo</span>
                                 </a>
                             
-                                <a href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
-                                    <span class="chip bg-color">ElasticJob源码解析</span>
+                                <a href="/tags/Dubbo3/">
+                                    <span class="chip bg-color">Dubbo3</span>
+                                </a>
+                            
+                                <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                    <span class="chip bg-color">Dubbo3源码解析</span>
                                 </a>
                             
                         </div>
@@ -1029,31 +988,31 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/07/02/elasticjob/3-zhu-ce-zhong-xin-de-she-ji/">
+                <a href="/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="03-Elastic-Job 注册中心的设计原理">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="1-Rebar3 从一个例子入门">
                         
-                        <span class="card-title">03-Elastic-Job 注册中心的设计原理</span>
+                        <span class="card-title">1-Rebar3 从一个例子入门</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            ZooKeeper 是 Apache 软件基金会的一个软件项目，它是一个针对大型分布式系统的可靠协调系统，为大型分布式计算提供开源的分布式配置服务、同步服务和命名注册。调度系统使用Zookeeper进行分布式环境下作业配置信息注册，监听更新，使用Zookeeper实现分布式锁进行主节点选举，使用临时节点实现作业实例上下线等操作。
+                            1-Rebar3 从一个例子入门
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-07-02
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-09-07
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/" class="post-category">
-                                    Elastic-Job2.1.5源码
+                            <a href="/categories/Rebar3/" class="post-category">
+                                    Rebar3
                                 </a>
                             
                             
@@ -1063,16 +1022,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/ElasticJob/">
-                        <span class="chip bg-color">ElasticJob</span>
+                    <a href="/tags/Erlang/">
+                        <span class="chip bg-color">Erlang</span>
                     </a>
                     
-                    <a href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
-                        <span class="chip bg-color">ElasticJob源码解析</span>
-                    </a>
-                    
-                    <a href="/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">
-                        <span class="chip bg-color">注册中心</span>
+                    <a href="/tags/Rebar3/">
+                        <span class="chip bg-color">Rebar3</span>
                     </a>
                     
                 </div>
@@ -1086,31 +1041,31 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2016/09/07/esockd/1-escockd-ru-men/">
+                <a href="/2022/07/10/dubbo/2-qi-dong-fu-wu-qian-fu-wu-pei-zhi-serviceconfig-lei-xing-shi-ru-he-chu-shi-hua-de/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="【escocked 5.8.0源码解析系列】-1-escokd简介">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="02-【Dubbo3.0.8源码解析系列】ServiceConfig对象的建模">
                         
-                        <span class="card-title">【escocked 5.8.0源码解析系列】-1-escokd简介</span>
+                        <span class="card-title">02-【Dubbo3.0.8源码解析系列】ServiceConfig对象的建模</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            escocked是emqx开发的Erlang通用非阻塞TCP/SSL套接字服务器
+                            ServiceConfig对象的建模
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2016-09-07
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/escoked/" class="post-category">
-                                    escoked
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                    Dubbo3源码
                                 </a>
                             
                             
@@ -1120,12 +1075,16 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/escoked%E6%BA%90%E7%A0%81/">
-                        <span class="chip bg-color">escoked源码</span>
+                    <a href="/tags/Dubbo/">
+                        <span class="chip bg-color">Dubbo</span>
                     </a>
                     
-                    <a href="/tags/erlang/">
-                        <span class="chip bg-color">erlang</span>
+                    <a href="/tags/Dubbo3/">
+                        <span class="chip bg-color">Dubbo3</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                        <span class="chip bg-color">Dubbo3源码解析</span>
                     </a>
                     
                 </div>
