@@ -124,7 +124,7 @@
     <link href="https://blog.elastic.link/2022/07/10/dubbo/1-cong-yi-ge-demo-shuo-qi/"/>
     <id>https://blog.elastic.link/2022/07/10/dubbo/1-cong-yi-ge-demo-shuo-qi/</id>
     <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-19T14:49:57.513Z</updated>
+    <updated>2022-07-20T14:01:07.859Z</updated>
     
     
       
@@ -250,6 +250,36 @@
         
     <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
 &lt;h1 id=&quot;3-框架-应用程序-模块领域模型Model对象的初始化&quot;&gt;&lt;a href=&quot;#3-框架-应用程序-模块领域模型Model对象的初始化&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
+    
+    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
+    
+    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>04-【Dubbo3.0.8源码解析系列】Dubbo的扩展机制</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/</id>
+    <published>2022-07-10T12:25:00.000Z</published>
+    <updated>2022-07-20T14:01:51.336Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&quot;4-Dubbo的扩展机制&quot;&gt;&lt;a href=&quot;#4-Dubbo的扩展机制&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -553,36 +583,6 @@
     <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
     
     <category term="作业的配置" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>05-调度作业模版类型设计</title>
-    <link href="https://blog.elastic.link/2021/07/04/elasticjob/5-diao-du-zuo-ye-mo-ban-lei-xing-she-ji/"/>
-    <id>https://blog.elastic.link/2021/07/04/elasticjob/5-diao-du-zuo-ye-mo-ban-lei-xing-she-ji/</id>
-    <published>2021-07-04T12:25:00.000Z</published>
-    <updated>2022-07-19T14:33:30.455Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
-&lt;h1 id=&quot;5-调度作业模版类型设计&quot;&gt;&lt;a href=&quot;#5-调度作业模版类型设计&quot; class=&quot;headerlink&quot; title=&quot;5 调度作业模版类型设计&quot;&gt;&lt;/a&gt;5</summary>
-        
-      
-    
-    
-    
-    <category term="Elastic-Job2.1.5源码" scheme="https://blog.elastic.link/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    <category term="作业模版类型设计" scheme="https://blog.elastic.link/tags/%E4%BD%9C%E4%B8%9A%E6%A8%A1%E7%89%88%E7%B1%BB%E5%9E%8B%E8%AE%BE%E8%AE%A1/"/>
     
   </entry>
   
