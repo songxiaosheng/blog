@@ -208,6 +208,36 @@
   </entry>
   
   <entry>
+    <title>03-【Dubbo3.0.8源码解析系列】框架,应用程序,模块领域模型Model对象的初始化</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/</id>
+    <published>2022-07-10T12:25:00.000Z</published>
+    <updated>2022-07-19T14:33:30.455Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&quot;3-框架-应用程序-模块领域模型Model对象的初始化&quot;&gt;&lt;a href=&quot;#3-框架-应用程序-模块领域模型Model对象的初始化&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
+    
+    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
+    
+    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+  </entry>
+  
+  <entry>
     <title>22-【Dubbo3.0.8源码解析系列】Dubbo3消费者自动感应决策应用级服务发现原理</title>
     <link href="https://blog.elastic.link/2022/07/10/dubbo/22-dubbo3-xiao-fei-zhe-zi-dong-gan-ying-jue-ce-ying-yong-ji-fu-wu-fa-xian-yuan-li/"/>
     <id>https://blog.elastic.link/2022/07/10/dubbo/22-dubbo3-xiao-fei-zhe-zi-dong-gan-ying-jue-ce-ying-yong-ji-fu-wu-fa-xian-yuan-li/</id>
@@ -250,36 +280,6 @@
         
     <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
 &lt;h1 id=&quot;4-Dubbo的扩展机制&quot;&gt;&lt;a href=&quot;#4-Dubbo的扩展机制&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>03-【Dubbo3.0.8源码解析系列】框架,应用程序,模块领域模型Model对象的初始化</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/</id>
-    <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-19T14:33:30.455Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
-&lt;h1 id=&quot;3-框架-应用程序-模块领域模型Model对象的初始化&quot;&gt;&lt;a href=&quot;#3-框架-应用程序-模块领域模型Model对象的初始化&quot; class=&quot;headerlink&quot;</summary>
         
       
     
