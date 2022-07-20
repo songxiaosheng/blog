@@ -237,11 +237,11 @@
   </entry>
   
   <entry>
-    <title>03-【Dubbo3.0.8源码解析系列】框架,应用程序,模块领域模型Model对象的初始化</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/</id>
+    <title>04-【Dubbo3.0.8源码解析系列】Dubbo的扩展机制</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/</id>
     <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-19T14:33:30.455Z</updated>
+    <updated>2022-07-20T14:01:51.336Z</updated>
     
     
       
@@ -249,7 +249,7 @@
         
         
     <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
-&lt;h1 id=&quot;3-框架-应用程序-模块领域模型Model对象的初始化&quot;&gt;&lt;a href=&quot;#3-框架-应用程序-模块领域模型Model对象的初始化&quot; class=&quot;headerlink&quot;</summary>
+&lt;h1 id=&quot;4-Dubbo的扩展机制&quot;&gt;&lt;a href=&quot;#4-Dubbo的扩展机制&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -267,11 +267,11 @@
   </entry>
   
   <entry>
-    <title>04-【Dubbo3.0.8源码解析系列】Dubbo的扩展机制</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/</id>
+    <title>03-【Dubbo3.0.8源码解析系列】框架,应用程序,模块领域模型Model对象的初始化</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/</id>
     <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-20T14:01:51.336Z</updated>
+    <updated>2022-07-19T14:33:30.455Z</updated>
     
     
       
@@ -279,7 +279,7 @@
         
         
     <summary type="html">&lt;p&gt;@&lt;a href=&quot;%E7%9B%AE%E5%BD%95&quot;&gt;TOC&lt;/a&gt;&lt;/p&gt;
-&lt;h1 id=&quot;4-Dubbo的扩展机制&quot;&gt;&lt;a href=&quot;#4-Dubbo的扩展机制&quot; class=&quot;headerlink&quot;</summary>
+&lt;h1 id=&quot;3-框架-应用程序-模块领域模型Model对象的初始化&quot;&gt;&lt;a href=&quot;#3-框架-应用程序-模块领域模型Model对象的初始化&quot; class=&quot;headerlink&quot;</summary>
         
       
     
