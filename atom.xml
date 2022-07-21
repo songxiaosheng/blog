@@ -236,35 +236,6 @@
   </entry>
   
   <entry>
-    <title>04-【Dubbo3.0.8源码解析系列】Dubbo的扩展机制</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/</id>
-    <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-21T12:53:52.270Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;4-Dubbo的扩展机制&quot;&gt;&lt;a href=&quot;#4-Dubbo的扩展机制&quot; class=&quot;headerlink&quot; title=&quot;4-Dubbo的扩展机制&quot;&gt;&lt;/a&gt;4-Dubbo的扩展机制&lt;/h1&gt;&lt;h2 id=&quot;4-1-回顾我们前面使用到扩展场景&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
     <title>03-【Dubbo3.0.8源码解析系列】框架,应用程序,模块领域模型Model对象的初始化</title>
     <link href="https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/"/>
     <id>https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/</id>
@@ -294,18 +265,18 @@
   </entry>
   
   <entry>
-    <title>06-【Dubbo3.0.8源码解析系列】Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/6-dubbo-de-spi-kuo-zhan-ji-zhi-zhi-pu-tong-kuo-zhan-dui-xiang-de-chuang-jian-yu-wrapper-ji-zhi-de-yuan-ma-jie-xi/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/6-dubbo-de-spi-kuo-zhan-ji-zhi-zhi-pu-tong-kuo-zhan-dui-xiang-de-chuang-jian-yu-wrapper-ji-zhi-de-yuan-ma-jie-xi/</id>
+    <title>04-【Dubbo3.0.8源码解析系列】Dubbo的扩展机制</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/</id>
     <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-21T12:55:32.205Z</updated>
+    <updated>2022-07-21T12:53:52.270Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;6-Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析&quot;&gt;&lt;a href=&quot;#6-Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析&quot; class=&quot;headerlink&quot; title=&quot;6</summary>
+    <summary type="html">&lt;h1 id=&quot;4-Dubbo的扩展机制&quot;&gt;&lt;a href=&quot;#4-Dubbo的扩展机制&quot; class=&quot;headerlink&quot; title=&quot;4-Dubbo的扩展机制&quot;&gt;&lt;/a&gt;4-Dubbo的扩展机制&lt;/h1&gt;&lt;h2 id=&quot;4-1-回顾我们前面使用到扩展场景&quot;&gt;&lt;a</summary>
         
       
     
@@ -335,6 +306,35 @@
         
         
     <summary type="html">&lt;h2 id=&quot;5-自适应扩展对象的创建getAdaptiveExtension方法&quot;&gt;&lt;a href=&quot;#5-自适应扩展对象的创建getAdaptiveExtension方法&quot; class=&quot;headerlink&quot; title=&quot;5</summary>
+        
+      
+    
+    
+    
+    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
+    
+    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
+    
+    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>06-【Dubbo3.0.8源码解析系列】Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/6-dubbo-de-spi-kuo-zhan-ji-zhi-zhi-pu-tong-kuo-zhan-dui-xiang-de-chuang-jian-yu-wrapper-ji-zhi-de-yuan-ma-jie-xi/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/6-dubbo-de-spi-kuo-zhan-ji-zhi-zhi-pu-tong-kuo-zhan-dui-xiang-de-chuang-jian-yu-wrapper-ji-zhi-de-yuan-ma-jie-xi/</id>
+    <published>2022-07-10T12:25:00.000Z</published>
+    <updated>2022-07-21T12:55:32.205Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;6-Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析&quot;&gt;&lt;a href=&quot;#6-Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析&quot; class=&quot;headerlink&quot; title=&quot;6</summary>
         
       
     
