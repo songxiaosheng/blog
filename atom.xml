@@ -98,24 +98,59 @@
   </entry>
   
   <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/07/19/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/"/>
-    <id>https://blog.elastic.link/2022/07/19/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</id>
-    <published>2022-07-19T14:51:58.576Z</published>
-    <updated>2022-07-19T14:52:33.861Z</updated>
+    <title>2-Rebar3 基本配置</title>
+    <link href="https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/"/>
+    <id>https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-21T14:05:37.247Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;Rebar3 支持一些会影响工具批发行为的选项。这些被定义为操作系统环境变量，如下所示：&lt;/p&gt;
-&lt;pre class=&quot;line-numbers language-erlang&quot; data-language=&quot;erlang&quot;&gt;&lt;code</summary>
+    <summary type="html">&lt;h1 id=&quot;基本配置&quot;&gt;&lt;a href=&quot;#基本配置&quot; class=&quot;headerlink&quot; title=&quot;基本配置&quot;&gt;&lt;/a&gt;基本配置&lt;/h1&gt;&lt;p&gt;下面列举一些常见的配置项，如果对所有配置项感兴趣可以去看官网&lt;/p&gt;
+&lt;h2 id=&quot;环境配置&quot;&gt;&lt;a</summary>
         
       
     
     
     
+    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>3-Rebar3 命令</title>
+    <link href="https://blog.elastic.link/2022/09/07/rebar3/3-rebar3-ming-ling-xing/"/>
+    <id>https://blog.elastic.link/2022/09/07/rebar3/3-rebar3-ming-ling-xing/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-21T14:05:28.719Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;命令&quot;&gt;&lt;a href=&quot;#命令&quot; class=&quot;headerlink&quot; title=&quot;命令&quot;&gt;&lt;/a&gt;命令&lt;/h1&gt;&lt;p&gt;每个 Rebar3 命令的用法。&lt;/p&gt;
+&lt;p&gt;每个命令代表一个任务，它运行一个或多个提供者来完成任务。&lt;/p&gt;
+&lt;h2</summary>
+        
+      
+    
+    
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
     
   </entry>
   
@@ -236,35 +271,6 @@
   </entry>
   
   <entry>
-    <title>03-【Dubbo3.0.8源码解析系列】框架,应用程序,模块领域模型Model对象的初始化</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/</id>
-    <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-21T12:53:52.270Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;3-框架-应用程序-模块领域模型Model对象的初始化&quot;&gt;&lt;a href=&quot;#3-框架-应用程序-模块领域模型Model对象的初始化&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
     <title>04-【Dubbo3.0.8源码解析系列】Dubbo的扩展机制</title>
     <link href="https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/"/>
     <id>https://blog.elastic.link/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/</id>
@@ -294,18 +300,18 @@
   </entry>
   
   <entry>
-    <title>05-【Dubbo3.0.8源码解析系列】自适应扩展对象的创建getAdaptiveExtension方法</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/5-dubbo-de-spi-kuo-zhan-ji-zhi-yu-zi-gua-ying-kuo-zhan-dui-xiang-de-chuang-jian-yu-kuo-zhan-wen-jian-de-sao-miao-yuan-ma-jie-xi/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/5-dubbo-de-spi-kuo-zhan-ji-zhi-yu-zi-gua-ying-kuo-zhan-dui-xiang-de-chuang-jian-yu-kuo-zhan-wen-jian-de-sao-miao-yuan-ma-jie-xi/</id>
+    <title>03-【Dubbo3.0.8源码解析系列】框架,应用程序,模块领域模型Model对象的初始化</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/3-kuang-jia-ying-yong-cheng-xu-mo-kuai-ling-yu-mo-xing-model-dui-xiang-de-chu-shi-hua/</id>
     <published>2022-07-10T12:25:00.000Z</published>
-    <updated>2022-07-21T12:55:21.170Z</updated>
+    <updated>2022-07-21T12:53:52.270Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;5-自适应扩展对象的创建getAdaptiveExtension方法&quot;&gt;&lt;a href=&quot;#5-自适应扩展对象的创建getAdaptiveExtension方法&quot; class=&quot;headerlink&quot; title=&quot;5</summary>
+    <summary type="html">&lt;h1 id=&quot;3-框架-应用程序-模块领域模型Model对象的初始化&quot;&gt;&lt;a href=&quot;#3-框架-应用程序-模块领域模型Model对象的初始化&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -335,6 +341,35 @@
         
         
     <summary type="html">&lt;h1 id=&quot;6-Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析&quot;&gt;&lt;a href=&quot;#6-Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析&quot; class=&quot;headerlink&quot; title=&quot;6</summary>
+        
+      
+    
+    
+    
+    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
+    
+    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
+    
+    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>05-【Dubbo3.0.8源码解析系列】自适应扩展对象的创建getAdaptiveExtension方法</title>
+    <link href="https://blog.elastic.link/2022/07/10/dubbo/5-dubbo-de-spi-kuo-zhan-ji-zhi-yu-zi-gua-ying-kuo-zhan-dui-xiang-de-chuang-jian-yu-kuo-zhan-wen-jian-de-sao-miao-yuan-ma-jie-xi/"/>
+    <id>https://blog.elastic.link/2022/07/10/dubbo/5-dubbo-de-spi-kuo-zhan-ji-zhi-yu-zi-gua-ying-kuo-zhan-dui-xiang-de-chuang-jian-yu-kuo-zhan-wen-jian-de-sao-miao-yuan-ma-jie-xi/</id>
+    <published>2022-07-10T12:25:00.000Z</published>
+    <updated>2022-07-21T12:55:21.170Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;5-自适应扩展对象的创建getAdaptiveExtension方法&quot;&gt;&lt;a href=&quot;#5-自适应扩展对象的创建getAdaptiveExtension方法&quot; class=&quot;headerlink&quot; title=&quot;5</summary>
         
       
     
@@ -543,35 +578,6 @@
     <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
     
     <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>08 - 使用Quartz为每个作业创建单机执行的调度器对象</title>
-    <link href="https://blog.elastic.link/2021/07/07/elasticjob/8-shi-yong-quartz-wei-mei-ge-zuo-ye-chuang-jian-dan-ji-zhi-xing-de-diao-du-qi-dui-xiang/"/>
-    <id>https://blog.elastic.link/2021/07/07/elasticjob/8-shi-yong-quartz-wei-mei-ge-zuo-ye-chuang-jian-dan-ji-zhi-xing-de-diao-du-qi-dui-xiang/</id>
-    <published>2021-07-07T12:25:00.000Z</published>
-    <updated>2022-07-21T12:53:52.333Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;8-使用Quartz为每个作业创建单机执行的调度器对象&quot;&gt;&lt;a href=&quot;#8-使用Quartz为每个作业创建单机执行的调度器对象&quot; class=&quot;headerlink&quot; title=&quot;8 - 使用Quartz为每个作业创建单机执行的调度器对象&quot;&gt;&lt;/a&gt;8</summary>
-        
-      
-    
-    
-    
-    <category term="Elastic-Job2.1.5源码" scheme="https://blog.elastic.link/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="ElasticJob" scheme="https://blog.elastic.link/tags/ElasticJob/"/>
-    
-    <category term="ElasticJob源码解析" scheme="https://blog.elastic.link/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-    <category term="Quartz" scheme="https://blog.elastic.link/tags/Quartz/"/>
     
   </entry>
   

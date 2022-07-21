@@ -4,10 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="中间件源码">
-    <meta name="description" content="Rebar3 支持一些会影响工具批发行为的选项。这些被定义为操作系统环境变量，如下所示：
-REBAR_PROFILE=&#34;term&#34;         # force a base profile
-HEX_CDN=&#34;https://...&#34;  ">
+    <meta name="keywords" content="2-Rebar3 基本配置, 中间件源码">
+    <meta name="description" content="2-Rebar3 基本配置">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -21,7 +19,7 @@ HEX_CDN=&#34;https://...&#34;  ">
 
     
 
-    <title>中间件源码</title>
+    <title>2-Rebar3 基本配置 | 中间件源码</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
@@ -189,12 +187,12 @@ HEX_CDN=&#34;https://...&#34;  ">
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://pic.imgdb.cn/item/62d80b72f54cd3f9375583e1.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://pic.imgdb.cn/item/62d80ccbf54cd3f9375d24ee.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">2-Rebar3 基本配置</h1>
                 </div>
             </div>
         </div>
@@ -308,12 +306,29 @@ HEX_CDN=&#34;https://...&#34;  ">
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Erlang/">
+                                <span class="chip bg-color">Erlang</span>
+                            </a>
+                        
+                            <a href="/tags/Rebar3/">
+                                <span class="chip bg-color">Rebar3</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Rebar3/" class="post-category">
+                                Rebar3
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -322,28 +337,28 @@ HEX_CDN=&#34;https://...&#34;  ">
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-07-19
+                    2022-09-07
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-07-19
+                    2022-07-21
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    163
+                    1.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    7 分
                 </div>
                 
 
@@ -361,7 +376,8 @@ HEX_CDN=&#34;https://...&#34;  ">
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Rebar3 支持一些会影响工具批发行为的选项。这些被定义为操作系统环境变量，如下所示：</p>
+                <h1 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h1><p>下面列举一些常见的配置项，如果对所有配置项感兴趣可以去看官网</p>
+<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>Rebar3 支持一些会影响工具批发行为的选项。这些被定义为操作系统环境变量，如下所示：</p>
 <pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token variable">REBAR_PROFILE</span><span class="token operator">=</span><span class="token string">"term"</span>         <span class="token punctuation">#</span> <span class="token atom">force</span> <span class="token atom">a</span> <span class="token atom">base</span> <span class="token atom">profile</span>
 <span class="token variable">HEX_CDN</span><span class="token operator">=</span><span class="token string">"https://..."</span>        <span class="token punctuation">#</span> <span class="token atom">change</span> <span class="token atom">the</span> <span class="token variable">Hex</span> <span class="token atom">endpoint</span> <span class="token atom">for</span> <span class="token atom">a</span> <span class="token atom">private</span> <span class="token atom">one</span>
 <span class="token variable">QUIET</span><span class="token operator">=</span><span class="token number">1</span>                      <span class="token punctuation">#</span> <span class="token atom">only</span> <span class="token atom">display</span> <span class="token atom">errors</span>
@@ -379,6 +395,152 @@ HEX_CDN=&#34;https://...&#34;  ">
 <span class="token atom">http_proxy</span>                   <span class="token punctuation">#</span> <span class="token atom">standard</span> <span class="token atom">proxy</span> <span class="token variable">ENV</span> <span class="token atom">variable</span> <span class="token atom">is</span> <span class="token atom">respected</span>
 <span class="token atom">https_proxy</span>                  <span class="token punctuation">#</span> <span class="token atom">standard</span> <span class="token atom">proxy</span> <span class="token variable">ENV</span> <span class="token atom">variable</span> <span class="token atom">is</span> <span class="token atom">respected</span>
 <span class="token variable">TERM</span>                         <span class="token punctuation">#</span> <span class="token atom">standard</span> <span class="token atom">terminal</span> <span class="token atom">definition</span> <span class="token atom">value</span><span class="token punctuation">.</span> <span class="token variable">TERM</span><span class="token operator">=</span><span class="token atom">dumb</span> <span class="token atom">disables</span> <span class="token atom">color</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h2 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h2><p>别名允许从现有命令中创建新命令，就好像它们一个接一个地运行一样：</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token punctuation">{</span><span class="token atom">alias</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token atom">check</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token atom">eunit</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">ct</span><span class="token punctuation">,</span> <span class="token string">"--sys_config=config/app.config"</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<h2 id="依赖项"><a href="#依赖项" class="headerlink" title="依赖项"></a>依赖项</h2><p>依赖关系可以在顶级rebar.config文件中声明，并使用rebar3 tree命令进行检查。</p>
+<p>一般来说，Rebar3 支持两种类型的依赖：</p>
+<ul>
+<li>源依赖项（Git、Mercurial）</li>
+<li>包依赖</li>
+</ul>
+<p>两种类型的依赖项的工作方式大致相同。Rebar3 使用hex.pm来提供一组托管包及其依赖项。它们通常会更快（在 CDN 之后），可以镜像，并且会在本地缓存在  ~/.cache/rebar3/.</p>
+<p>所有依赖项都是项目本地的。这通常是一个不错的选择，可以避免全局库存在版本冲突的常见问题。它还有助于构建独立系统的Releases的通用 Erlang 机制。</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token punctuation">{</span><span class="token atom">deps</span><span class="token punctuation">,</span><span class="token punctuation">[</span>
+  <span class="token comment">%% Packages</span>
+  <span class="token atom">rebar</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span><span class="token string">"1.0.0"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">pkg</span><span class="token punctuation">,</span> <span class="token atom">rebar_fork</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token comment">% rebar app under a different pkg name</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token string">"1.0.0"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">pkg</span><span class="token punctuation">,</span> <span class="token atom">rebar_fork</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token comment">%% Source Dependencies</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">git</span><span class="token punctuation">,</span> <span class="token string">"git://github.com/erlang/rebar3.git"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">git</span><span class="token punctuation">,</span> <span class="token string">"http://github.com/erlang/rebar3.git"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">git</span><span class="token punctuation">,</span> <span class="token string">"https://github.com/erlang/rebar3.git"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">git</span><span class="token punctuation">,</span> <span class="token string">"git@github.com:erlang/rebar3.git"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">hg</span><span class="token punctuation">,</span> <span class="token string">"https://othersite.com/erlang/rebar3"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">git</span><span class="token punctuation">,</span> <span class="token string">"git://github.com/erlang/rebar3.git"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">ref</span><span class="token punctuation">,</span> <span class="token string">"aef728"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">git</span><span class="token punctuation">,</span> <span class="token string">"git://github.com/erlang/rebar3.git"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">branch</span><span class="token punctuation">,</span> <span class="token string">"master"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">git</span><span class="token punctuation">,</span> <span class="token string">"git://github.com/erlang/rebar3.git"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">tag</span><span class="token punctuation">,</span> <span class="token string">"3.0.0"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token comment">%% Source dependencies (git only) in subdirectories, from version 3.14 onwards</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">git_subdir</span><span class="token punctuation">,</span> <span class="token string">"git://github.com/erlang/rebar3.git"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">branch</span><span class="token punctuation">,</span> <span class="token string">"main"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">"subdir"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">git_subdir</span><span class="token punctuation">,</span> <span class="token string">"git://github.com/erlang/rebar3.git"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">tag</span><span class="token punctuation">,</span> <span class="token string">"3.14"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">"sub/dir"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">rebar</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">git_subdir</span><span class="token punctuation">,</span> <span class="token string">"git://github.com/erlang/rebar3.git"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">ref</span><span class="token punctuation">,</span> <span class="token string">"aeaefd"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">"dir"</span><span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">.</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如上例所示，对于当前版本，仅支持包、git 源和 mercurial 源。可以通过实现资源行为并像插件一样包含它来添加自定义依赖源。</p>
+<p>为了处理您希望在本地处理而不必不断发布新版本的依赖关系的情况，有该_checkouts目录。只需创建一个符号链接或将您的依赖项复制到_checkouts项目的顶层：</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token variable">_checkouts</span>
+└── <span class="token atom">depA</span>
+    └── <span class="token atom">src</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+<p>依赖树检查：<br>rebar3 tree</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token number">$ </span><span class="token atom">rebar3</span> <span class="token atom">tree</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+├─ <span class="token atom">bootstrap</span><span class="token operator">-</span><span class="token number">0.0</span><span class="token number">.2</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+├─ <span class="token atom">dirmon</span><span class="token operator">-</span><span class="token number">0.1</span><span class="token number">.0</span> <span class="token punctuation">(</span><span class="token atom">project</span> <span class="token atom">app</span><span class="token punctuation">)</span>
+├─ <span class="token atom">file_monitor</span><span class="token operator">-</span><span class="token number">0.1</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+├─ <span class="token atom">peeranha</span><span class="token operator">-</span><span class="token number">0.1</span><span class="token number">.0</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+│  ├─ <span class="token atom">gproc</span><span class="token operator">-</span><span class="token atom">git</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+│  ├─ <span class="token atom">interclock</span><span class="token operator">-</span><span class="token number">0.1</span><span class="token number">.2</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+│  │  ├─ <span class="token atom">bitcask</span><span class="token operator">-</span><span class="token number">1.7</span><span class="token number">.0</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+│  │  │  └─ <span class="token atom">lager</span><span class="token operator">-</span><span class="token number">2.1</span><span class="token number">.1</span> <span class="token punctuation">(</span><span class="token atom">hex</span> <span class="token atom">package</span><span class="token punctuation">)</span>
+│  │  │     └─ <span class="token atom">goldrush</span><span class="token operator">-</span><span class="token number">0.1</span><span class="token number">.6</span> <span class="token punctuation">(</span><span class="token atom">hex</span> <span class="token atom">package</span><span class="token punctuation">)</span>
+│  │  └─ <span class="token atom">itc</span><span class="token operator">-</span><span class="token number">1.0</span><span class="token number">.0</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+│  └─ <span class="token atom">merklet</span><span class="token operator">-</span><span class="token number">1.0</span><span class="token number">.0</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+├─ <span class="token atom">recon</span><span class="token operator">-</span><span class="token number">2.2</span><span class="token number">.2</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+└─ <span class="token atom">uuid</span><span class="token operator">-</span><span class="token number">1.5</span><span class="token number">.0</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+   └─ <span class="token atom">quickrand</span><span class="token operator">-</span><span class="token number">1.5</span><span class="token number">.0</span> <span class="token punctuation">(</span><span class="token atom">git</span> <span class="token atom">repo</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h2 id="profile"><a href="#profile" class="headerlink" title="profile"></a>profile</h2><p>可以多环境指定配置文件<br>可以通过三种不同的方式指定运行的配置文件：</p>
+<ul>
+<li>rebar3 as <profile> <command> or rebar3 as <profile1>,<profile2> <command></command></profile2></profile1></command></profile></li>
+<li>通过给定的 Rebar3 命令。例如，eunitandct命令总是将test配置文件添加到运行中。</li>
+<li>环境REBAR_PROFILE变量</li>
+</ul>
+<p>这些形式中的任何一种（甚至一次）都会让 Rebar3 知道它应该作为特殊配置文件之一运行并相应地修改其配置。</p>
+<p>可以在主rebar.config文件中指定配置文件配置格式如下：</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token punctuation">{</span><span class="token atom">profiles</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token variable">ProfileName1</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Options</span><span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token punctuation">{</span><span class="token variable">ProfileName2</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Options</span><span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">.</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+<p>例子如下：</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token punctuation">{</span><span class="token atom">deps</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">.</span>
+<span class="token punctuation">{</span><span class="token atom">relx</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">.</span>
+
+<span class="token punctuation">{</span><span class="token atom">profiles</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span><span class="token atom">prod</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span><span class="token atom">erl_opts</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token atom">no_debug_info</span><span class="token punctuation">,</span> <span class="token atom">warnings_as_errors</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span><span class="token atom">relx</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token atom">dev_mode</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token atom">native</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span><span class="token atom">erl_opts</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token atom">native</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">hipe</span><span class="token punctuation">,</span> <span class="token atom">o3</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token atom">test</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span><span class="token atom">deps</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token atom">meck</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span><span class="token atom">erl_opts</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token atom">debug_info</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">.</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>因此，这样的项目有四个不同的概况：</p>
+<ul>
+<li><p>default，所有运行的实际配置文件，对应于整个rebar.config文件</p>
+</li>
+<li><p>prod，在这种情况下，可能用于生成没有符号链接的完整版本，并且具有更严格的编译器选项</p>
+</li>
+<li><p>native, 强制使用HiPE编译, 以获得更快的数学代码</p>
+</li>
+<li><p>test，它加载模拟库并使调试信息在测试运行期间保存在文件中。</p>
+</li>
+</ul>
+<p>这些可能以多种方式结合在一起。以下是示例运行：</p>
+<ul>
+<li><p>rebar3 ct：将运行项目的通用测试套件。按顺序，应用的配置文件将是default，然后是test，因为ct要求使用test配置文件。</p>
+</li>
+<li><p>rebar3 as test ct: 将像以前一样运行。配置文件仅应用一次。</p>
+</li>
+<li><p>rebar3 as native ct: 将以本机模式运行测试。配置文件的顺序将是default，然后native，最后test（最后由命令 run 指定）。</p>
+</li>
+<li><p>rebar3 as test,native ct: 将与上述类似，略有不同。应用配置文件时，Rebar3 首先将它们全部展开，并以正确的顺序应用它们。所以这里的顺序是default，然后test，然后native。最后一个test配置文件（由于该ct命令）被省略，因为它已经被应用。这并不完全等同于调用rebar3 as native ct，因为如果 thetest和nativeprofile 都设置了冲突的选项，那么 profile 的顺序就变得很重要。</p>
+</li>
+<li><p>rebar3 release将仅作为default配置文件构建版本。</p>
+</li>
+<li><p>rebar3 as prod release将在没有开发模式的情况下构建版本，并使用一组更严格的编译器选项。</p>
+</li>
+<li><p>rebar3 as prod, native release将像最后一个命令一样构建版本，但同时也将模块编译为本地模式。</p>
+</li>
+<li><p>rebar3 as prod releasewith REBAR_PROFILE=native, 在环境中，将像最后一个命令一样构建版本，但native将在之前 prod应用.</p>
+</li>
+</ul>
+<p>因此，配置文件的应用顺序是：</p>
+<ul>
+<li>default</li>
+<li>值（REBAR_PROFILE如果有）</li>
+<li>as在命令行部分指定的配置文件</li>
+<li>每个单独命令指定的配置文件</li>
+</ul>
+<h2 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h2><p>插件可以本地安装、项目安装和/或全局安装。要在本地安装插件，plugins请在项目的rebar.config. ~/.config/rebar3/rebar.config当您在项目中使用 Rebar3 命令时，将配置全局安装的插件并自动安装。</p>
+<p>自动编译和加载插件<br>对于auto插件，建议将条目放在全局rebar3配置中，该条目应设置为~/.config/rebar3/rebar.config.</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token punctuation">{</span><span class="token atom">plugins</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token atom">rebar3_auto</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>Running rebar3 auto将像 running 一样启动 shell，rebar3 shell但会监听项目应用程序源目录中的文件更改。当文件更改时，它将向 Rebar3 代理发送消息以运行编译和重新加载模块。</p>
+<p>自动测试<br>对于autotest插件，建议将条目放在全局rebar3配置中，该条目应设置为~/.config/rebar3/rebar.config.</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token punctuation">{</span><span class="token atom">plugins</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token atom">rebar3_autotest</span><span class="token punctuation">,</span> <span class="token string">"0.1.1"</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>运行rebar3 as test autotest将开始eunit一次并为您的源文件、头文件和测试文件设置监视，以便eunit在其中一个文件发生更改时重新运行。</p>
+<p>更多推荐插件可以查阅官网。</p>
+
                 
             </div>
             <hr/>
@@ -404,7 +566,7 @@ HEX_CDN=&#34;https://...&#34;  ">
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blog.elastic.link/2022/07/19/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/">https://blog.elastic.link/2022/07/19/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</a>
+                    <a href="https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/">https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -441,7 +603,15 @@ HEX_CDN=&#34;https://...&#34;  ">
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/Erlang/">
+                                    <span class="chip bg-color">Erlang</span>
+                                </a>
+                            
+                                <a href="/tags/Rebar3/">
+                                    <span class="chip bg-color">Rebar3</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -937,30 +1107,31 @@ HEX_CDN=&#34;https://...&#34;  ">
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/07/10/dubbo/1-cong-yi-ge-demo-shuo-qi/">
+                <a href="/2022/09/07/rebar3/3-rebar3-ming-ling-xing/">
                     <div class="card-image">
                         
-                        <img src="https://img-blog.csdnimg.cn/5f7e544069184da3b5eedbce85c8b1de.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5a6L5bCP55SfLeS4remXtOS7tg==,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center" class="responsive-img" alt="01-【Dubbo3.0.8源码解析系列】从一个服务提供者的Demo说起">
                         
-                        <span class="card-title">01-【Dubbo3.0.8源码解析系列】从一个服务提供者的Demo说起</span>
+                        <img src="https://pic.imgdb.cn/item/62d80be1f54cd3f93757f451.jpg" class="responsive-img" alt="3-Rebar3 命令">
+                        
+                        <span class="card-title">3-Rebar3 命令</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            【Dubbo3.0.8源码解析系列】-1-从一个服务提供者的Demo说起
+                            1-Rebar3 基本配置
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-09-07
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
-                                    Dubbo3源码
+                            <a href="/categories/Rebar3/" class="post-category">
+                                    Rebar3
                                 </a>
                             
                             
@@ -970,16 +1141,12 @@ HEX_CDN=&#34;https://...&#34;  ">
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Dubbo/">
-                        <span class="chip bg-color">Dubbo</span>
+                    <a href="/tags/Erlang/">
+                        <span class="chip bg-color">Erlang</span>
                     </a>
                     
-                    <a href="/tags/Dubbo3/">
-                        <span class="chip bg-color">Dubbo3</span>
-                    </a>
-                    
-                    <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
-                        <span class="chip bg-color">Dubbo3源码解析</span>
+                    <a href="/tags/Rebar3/">
+                        <span class="chip bg-color">Rebar3</span>
                     </a>
                     
                 </div>
@@ -1122,7 +1289,7 @@ HEX_CDN=&#34;https://...&#34;  ">
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">74.8k</span>
+                        class="white-color">80k</span>
             
             
             
