@@ -348,7 +348,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-07-21
+                    2022-07-23
                 </div>
                 
 
@@ -380,7 +380,8 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="4-Dubbo的扩展机制"><a href="#4-Dubbo的扩展机制" class="headerlink" title="4-Dubbo的扩展机制"></a>4-Dubbo的扩展机制</h1><h2 id="4-1-回顾我们前面使用到扩展场景"><a href="#4-1-回顾我们前面使用到扩展场景" class="headerlink" title="4.1 回顾我们前面使用到扩展场景"></a>4.1 回顾我们前面使用到扩展场景</h2><p>在上一章中我们初始化应用模型对象的时候,了解到有几个地方用到了扩展机制来创建对象,这一章我们会详细来讲一下这个扩展对象的加载过程,这里我们先来回顾下哪些地方用到了扩展机制:</p>
+                <p>@<a href="%E7%9B%AE%E5%BD%95">TOC</a></p>
+<h1 id="4-Dubbo的扩展机制"><a href="#4-Dubbo的扩展机制" class="headerlink" title="4-Dubbo的扩展机制"></a>4-Dubbo的扩展机制</h1><h2 id="4-1-回顾我们前面使用到扩展场景"><a href="#4-1-回顾我们前面使用到扩展场景" class="headerlink" title="4.1 回顾我们前面使用到扩展场景"></a>4.1 回顾我们前面使用到扩展场景</h2><p>在上一章中我们初始化应用模型对象的时候,了解到有几个地方用到了扩展机制来创建对象,这一章我们会详细来讲一下这个扩展对象的加载过程,这里我们先来回顾下哪些地方用到了扩展机制:</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// 使用扩展机制获取TypeBuilder</span>
 <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">TypeBuilder</span><span class="token punctuation">&gt;</span></span> tbs <span class="token operator">=</span> model<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">TypeBuilder</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSupportedExtensionInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
       

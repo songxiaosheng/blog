@@ -344,7 +344,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-07-21
+                    2022-07-23
                 </div>
                 
 
@@ -376,7 +376,8 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="2-Zookeeper的实现"><a href="#2-Zookeeper的实现" class="headerlink" title="2 Zookeeper的实现"></a>2 Zookeeper的实现</h1><h2 id="2-1-主要组成"><a href="#2-1-主要组成" class="headerlink" title="2.1 主要组成"></a>2.1 主要组成</h2><p>Zookeeper服务主要由几大部分组成，请求处理器，原子广播，可复制的数据库等组件组成主要的请求处理如下图所示<br>可复制的数据库<br>可复制的数据库是一个包含整个数据树的内存数据库，更新被记录到磁盘上以保证可恢复性，写操作在更新内存数据库之前会先将数据序列化到磁盘来做持久化。</p>
+                <p>@<a href="%E7%9B%AE%E5%BD%95">TOC</a></p>
+<h1 id="2-Zookeeper的实现"><a href="#2-Zookeeper的实现" class="headerlink" title="2 Zookeeper的实现"></a>2 Zookeeper的实现</h1><h2 id="2-1-主要组成"><a href="#2-1-主要组成" class="headerlink" title="2.1 主要组成"></a>2.1 主要组成</h2><p>Zookeeper服务主要由几大部分组成，请求处理器，原子广播，可复制的数据库等组件组成主要的请求处理如下图所示<br>可复制的数据库<br>可复制的数据库是一个包含整个数据树的内存数据库，更新被记录到磁盘上以保证可恢复性，写操作在更新内存数据库之前会先将数据序列化到磁盘来做持久化。</p>
 <p>读请求处理<br>客户端只连接到一个服务器来提交请求。读取请求由每个服务器数据库本地副本提供服务。</p>
 <p>写请求处理<br>作为协议的一部分，所有来自客户端的写请求都被转发到一个名为leader的服务器上,Zookeeper上的其他服务器角色，被称为Follower或者Observer,Follower参与投票并与Leader脸色同步，Observer是不参与投票的。</p>
 <p>自定义的原子消息协议</p>

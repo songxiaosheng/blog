@@ -348,7 +348,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-07-21
+                    2022-07-23
                 </div>
                 
 
@@ -380,7 +380,8 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="8-使用Quartz为每个作业创建单机执行的调度器对象"><a href="#8-使用Quartz为每个作业创建单机执行的调度器对象" class="headerlink" title="8 - 使用Quartz为每个作业创建单机执行的调度器对象"></a>8 - 使用Quartz为每个作业创建单机执行的调度器对象</h1><h2 id="8-1-JobScheduleController简介"><a href="#8-1-JobScheduleController简介" class="headerlink" title="8.1 JobScheduleController简介"></a>8.1 JobScheduleController简介</h2><p>作业调度控制器类型为JobScheduleController，这个类型的主要功能是承接调度系统针对Quartz框架Scheduler对象的管理，Quartz的Scheduler对象主要作用是来控制一个作业的绑定，触发，暂停，关闭等操作，JobScheduleController主要实现的操作如下UML图所示：</p>
+                <p>@<a href="%E7%9B%AE%E5%BD%95">TOC</a></p>
+<h1 id="8-使用Quartz为每个作业创建单机执行的调度器对象"><a href="#8-使用Quartz为每个作业创建单机执行的调度器对象" class="headerlink" title="8 - 使用Quartz为每个作业创建单机执行的调度器对象"></a>8 - 使用Quartz为每个作业创建单机执行的调度器对象</h1><h2 id="8-1-JobScheduleController简介"><a href="#8-1-JobScheduleController简介" class="headerlink" title="8.1 JobScheduleController简介"></a>8.1 JobScheduleController简介</h2><p>作业调度控制器类型为JobScheduleController，这个类型的主要功能是承接调度系统针对Quartz框架Scheduler对象的管理，Quartz的Scheduler对象主要作用是来控制一个作业的绑定，触发，暂停，关闭等操作，JobScheduleController主要实现的操作如下UML图所示：</p>
 <p><img src="https://img-blog.csdnimg.cn/img_convert/c550507a4b09c412e6974f07c098196d.png" alt="图片"></p>
 <p>图6.1 作业调度控制器UML</p>
 <p>通过UML图我们可以看到这个类里面主要的方法都是与作业有关系的比如调度作业，暂停作业，启动作业，触发作业，关闭作业等等。</p>
