@@ -1,0 +1,1863 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="18-【Dubbo3.0.8源码解析系列】Dubbo3元数据服务MetadataService的导出, 中间件源码">
+    <meta name="description" content="18-Dubbo3元数据服务MetadataService的导出">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    
+
+    <title>18-【Dubbo3.0.8源码解析系列】Dubbo3元数据服务MetadataService的导出 | 中间件源码</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://pic.imgdb.cn/item/62d8139ff54cd3f937847ef8.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">中间件源码</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  <li class="hide-on-med-and-down nav-item">
+    <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </li>
+    <li class="hide-on-med-and-down nav-item">
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <span><input type="text" placeholder="搜索"></span>
+    </a>
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>导航</span>
+    </a>
+    
+  </li>
+  
+
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://pic.imgdb.cn/item/62d8139ff54cd3f937847ef8.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">中间件源码</div>
+        <div class="logo-desc">
+            
+            中间件源码评测，分析
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			导航
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://img-blog.csdnimg.cn/4d230ee194064cd09081e784736817df.png')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">18-【Dubbo3.0.8源码解析系列】Dubbo3元数据服务MetadataService的导出</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Dubbo/">
+                                <span class="chip bg-color">Dubbo</span>
+                            </a>
+                        
+                            <a href="/tags/Dubbo3/">
+                                <span class="chip bg-color">Dubbo3</span>
+                            </a>
+                        
+                            <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                <span class="chip bg-color">Dubbo3源码解析</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                Dubbo3源码
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-07-10
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2022-07-23
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    4.4k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    18 分
+                </div>
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="18-Dubbo3元数据服务MetadataService的导出"><a href="#18-Dubbo3元数据服务MetadataService的导出" class="headerlink" title="18-Dubbo3元数据服务MetadataService的导出"></a>18-Dubbo3元数据服务MetadataService的导出</h1><h2 id="18-1-简介"><a href="#18-1-简介" class="headerlink" title="18.1 简介"></a>18.1 简介</h2><p>MetadataService<br>此服务用于公开Dubbo进程内的元数据信息。典型用途包括：</p>
+<ul>
+<li>使用者查询提供者的元数据信息，以列出接口和每个接口的配置</li>
+<li>控制台（dubbo admin）查询特定进程的元数据，或聚合所有进程的数据。在Dubbo2.x的时候，所有的服务数据都是以接口的形式注册在注册中心.</li>
+</ul>
+<p>Dubbo3将部分数据抽象为元数据的形式来将数据存放在元数据中心，然后元数据由服务提供者提供给消费者而不是再由注册中心进行推送，如下图所示：</p>
+<p><img src="https://img-blog.csdnimg.cn/f7b3bc1f44f74859b2dfb419b9945d41.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/4d230ee194064cd09081e784736817df.png" alt="在这里插入图片描述"><br>引入 MetadataService 元数据服务服务的好处<br>• 由中心化推送转向点对点拉取（Consumer - Proroder）<br>• 易于扩展更多的参数<br>• 更多的数据量<br>• 对外暴露更多的治理数据</p>
+<h2 id="18-2-MetadataService的导出过程"><a href="#18-2-MetadataService的导出过程" class="headerlink" title="18.2 MetadataService的导出过程"></a>18.2 MetadataService的导出过程</h2><p>了解元数据的到处过程，这个就要继续前面博客往后的代码了前面博客说了一个服务发布之后的服务信息的双注册数据，这里继续看下导出服务之后的代码：<br>先来简单回顾下模块发布的启动生命周期方法：</p>
+<p>DefaultModuleDeployer类型的start方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token class-name">Future</span> <span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IllegalStateException</span> <span class="token punctuation">{</span>
+      <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+       <span class="token keyword">try</span> <span class="token punctuation">{</span>
+          <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+           <span class="token function">onModuleStarting</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+           <span class="token comment">// initialize</span>
+           applicationDeployer<span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+           <span class="token comment">// export services</span>
+           <span class="token function">exportServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+           <span class="token comment">// prepare application instance</span>
+           <span class="token comment">// exclude internal module to avoid wait itself</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span>moduleModel <span class="token operator">!=</span> moduleModel<span class="token punctuation">.</span><span class="token function">getApplicationModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getInternalModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               applicationDeployer<span class="token punctuation">.</span><span class="token function">prepareInternalModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+
+           <span class="token comment">// refer services</span>
+           <span class="token function">referServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+           <span class="token comment">// if no async export/refer services, just set started</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span>asyncExportingFutures<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> asyncReferringFutures<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token function">onModuleStarted</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+       <span class="token keyword">return</span> startFuture<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>前面的博客我们已经说了服务提供者导出服务的方法如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// export services</span>
+<span class="token function">exportServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>在导出服务之后如果代码中配置了引用服务的代码将会执行引用服务的功能，调用代码如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token function">referServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>不过我们样例代码并没有介绍引用服务的功能，这里先不说，等服务提供者完全启动成功之后我们再来看消费者的逻辑。</p>
+<p>接下来我们要看的是模块启动成功之后的方法 onModuleStarted();，在这个方法中会去发布服务元数据信息。</p>
+<h2 id="18-3-模块启动成功时候的逻辑-onModuleStarted"><a href="#18-3-模块启动成功时候的逻辑-onModuleStarted" class="headerlink" title="18.3 模块启动成功时候的逻辑 onModuleStarted();"></a>18.3 模块启动成功时候的逻辑 onModuleStarted();</h2><p>这里我们直接先看代码再来分析下逻辑：</p>
+<p>DefaultModuleDeployer类型的onModuleStarted方法如下所示：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">onModuleStarted</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">try</span> <span class="token punctuation">{</span>
+       	<span class="token comment">//状态判断是否为启动中如果是则将状态设置为STARTED</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isStarting</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+             <span class="token comment">//先修改状态</span>
+               <span class="token function">setStarted</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token function">getIdentifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" has started."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token comment">//状态修改成功之后开始通知应用程序发布器模块发布器启动成功了</span>
+               applicationDeployer<span class="token punctuation">.</span><span class="token function">notifyModuleChanged</span><span class="token punctuation">(</span>moduleModel<span class="token punctuation">,</span> <span class="token class-name">DeployState</span><span class="token punctuation">.</span>STARTED<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+           <span class="token comment">// complete module start future after application state changed</span>
+           <span class="token function">completeStartFuture</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>应用程序发布器处理启动成功的逻辑：<br>DefaultApplicationDeployer类型的notifyModuleChanged方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">notifyModuleChanged</span><span class="token punctuation">(</span><span class="token class-name">ModuleModel</span> moduleModel<span class="token punctuation">,</span> <span class="token class-name">DeployState</span> state<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">//根据所有模块的状态来判断应用发布器的状态</span>
+       <span class="token function">checkState</span><span class="token punctuation">(</span>moduleModel<span class="token punctuation">,</span> state<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">// notify module state changed or module changed</span>
+       <span class="token comment">//通知所有模块状态更新</span>
+       <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>stateLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           stateLock<span class="token punctuation">.</span><span class="token function">notifyAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>应用发布器模型DefaultApplicationDeployer检查状态方法checkState代码如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">checkState</span><span class="token punctuation">(</span><span class="token class-name">ModuleModel</span> moduleModel<span class="token punctuation">,</span> <span class="token class-name">DeployState</span> moduleState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//存在写操作 先加个锁</span>
+       <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>stateLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       	<span class="token comment">//非内部模块，并且模块的状态是发布成功了</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>moduleModel<span class="token punctuation">.</span><span class="token function">isInternal</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> moduleState <span class="token operator">==</span> <span class="token class-name">DeployState</span><span class="token punctuation">.</span>STARTED<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               
+               <span class="token function">prepareApplicationInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+           <span class="token comment">//应用下所有模块状态进行汇总计算</span>
+           <span class="token class-name">DeployState</span> newState <span class="token operator">=</span> <span class="token function">calculateState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token keyword">switch</span> <span class="token punctuation">(</span>newState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token keyword">case</span> STARTED<span class="token operator">:</span>
+                   <span class="token function">onStarted</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token keyword">break</span><span class="token punctuation">;</span>
+               <span class="token keyword">case</span> STARTING<span class="token operator">:</span>
+                   <span class="token function">onStarting</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token keyword">break</span><span class="token punctuation">;</span>
+               <span class="token keyword">case</span> STOPPING<span class="token operator">:</span>
+                   <span class="token function">onStopping</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token keyword">break</span><span class="token punctuation">;</span>
+               <span class="token keyword">case</span> STOPPED<span class="token operator">:</span>
+                   <span class="token function">onStopped</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token keyword">break</span><span class="token punctuation">;</span>
+               <span class="token keyword">case</span> FAILED<span class="token operator">:</span>
+                   <span class="token class-name">Throwable</span> error <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+                   <span class="token class-name">ModuleModel</span> errorModule <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+                   <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ModuleModel</span> <span class="token keyword">module</span> <span class="token operator">:</span> applicationModel<span class="token punctuation">.</span><span class="token function">getModuleModels</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                       <span class="token class-name">ModuleDeployer</span> deployer <span class="token operator">=</span> <span class="token keyword">module</span><span class="token punctuation">.</span><span class="token function">getDeployer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                       <span class="token keyword">if</span> <span class="token punctuation">(</span>deployer<span class="token punctuation">.</span><span class="token function">isFailed</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> deployer<span class="token punctuation">.</span><span class="token function">getError</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                           error <span class="token operator">=</span> deployer<span class="token punctuation">.</span><span class="token function">getError</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                           errorModule <span class="token operator">=</span> <span class="token keyword">module</span><span class="token punctuation">;</span>
+                           <span class="token keyword">break</span><span class="token punctuation">;</span>
+                       <span class="token punctuation">}</span>
+                   <span class="token punctuation">}</span>
+                   <span class="token function">onFailed</span><span class="token punctuation">(</span><span class="token function">getIdentifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" found failed module: "</span> <span class="token operator">+</span> errorModule<span class="token punctuation">.</span><span class="token function">getDesc</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> error<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token keyword">break</span><span class="token punctuation">;</span>
+               <span class="token keyword">case</span> PENDING<span class="token operator">:</span>
+                   <span class="token comment">// cannot change to pending from other state</span>
+                   <span class="token comment">// setPending();</span>
+                   <span class="token keyword">break</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="18-4-准备发布元数据信息和应用实例信息"><a href="#18-4-准备发布元数据信息和应用实例信息" class="headerlink" title="18.4 准备发布元数据信息和应用实例信息"></a>18.4 准备发布元数据信息和应用实例信息</h2><p>前面有个代码调用比较重要：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token function">prepareApplicationInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>DefaultApplicationDeployer类型的prepareApplicationInstance方法如下所示</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">prepareApplicationInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//已经注册过应用实例数据了 直接返回 （下面CAS逻辑判断了）</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>hasPreparedApplicationInstance<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+	<span class="token comment">//注册开关控制默认为true</span>
+	<span class="token comment">//通过将registerConsumer默认设置为“false”来关闭纯使用者进程实例的注册。</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isRegisterConsumerInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token function">exportMetadataService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span>hasPreparedApplicationInstance<span class="token punctuation">.</span><span class="token function">compareAndSet</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token comment">// register the local ServiceInstance if required</span>
+               <span class="token function">registerServiceInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="18-4-1-导出元数据服务方法exportMetadataService"><a href="#18-4-1-导出元数据服务方法exportMetadataService" class="headerlink" title="18.4.1 导出元数据服务方法exportMetadataService"></a>18.4.1 导出元数据服务方法exportMetadataService</h3><p> 这里我们就先直接来贴一下代码：</p>
+<p>DefaultApplicationDeployer类型的exportMetadataService方法如下所示：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">exportMetadataService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isStarting</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token comment">//这里监听器我们主要关注的类型是ExporterDeployListener类型</span>
+       <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">DeployListener</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ApplicationModel</span><span class="token punctuation">&gt;</span></span> listener <span class="token operator">:</span> listeners<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">try</span> <span class="token punctuation">{</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span>listener <span class="token keyword">instanceof</span> <span class="token class-name">ApplicationDeployListener</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token comment">// 回调监听器的模块启动成功方法</span>
+                   <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">ApplicationDeployListener</span><span class="token punctuation">)</span> listener<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">onModuleStarted</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token punctuation">}</span>
+           <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token function">getIdentifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" an exception occurred when handle starting event"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>前面我们主要关注ExporterDeployListener类型的监听器的回调方法，这里我贴一下代码：<br>ExporterDeployListener类型的onModuleStarted方法如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">onModuleStarted</span><span class="token punctuation">(</span><span class="token class-name">ApplicationModel</span> applicationModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">// start metadata service exporter</span>
+     <span class="token comment">//MetadataServiceDelegation类型为实现提供远程RPC服务以方便元数据信息的查询功能的类型。</span>
+       <span class="token class-name">MetadataServiceDelegation</span> metadataService <span class="token operator">=</span> applicationModel<span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getOrRegisterBean</span><span class="token punctuation">(</span><span class="token class-name">MetadataServiceDelegation</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>metadataServiceExporter <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           metadataServiceExporter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConfigurableMetadataServiceExporter</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">,</span> metadataService<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">// fixme, let's disable local metadata service export at this moment</span>
+           <span class="token comment">//默认我们是没有配置这个元数据类型的这里元数据类型默认为local 条件是不是remote则开始导出，在前面的博客&lt;&lt;Dubbo启动器DubboBootstrap添加应用程序的配置信息ApplicationConfig&gt;&gt; 中有提到这个配置下面我再说下</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>REMOTE_METADATA_STORAGE_TYPE<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token function">getMetadataType</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               metadataServiceExporter<span class="token punctuation">.</span><span class="token function">export</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在前面的博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/songjunyan/article/details/124524350">&lt;&lt;Dubbo启动器DubboBootstrap添加应用程序的配置信息ApplicationConfig&gt;&gt;</a> 中有提到这个配置下面我再说下</p>
+<p>metadata-type</p>
+<p>metadata 传递方式，是以 Provider 视角而言的，Consumer 侧配置无效，可选值有： </p>
+<ul>
+<li>remote - Provider 把 metadata 放到远端<strong>注册中心</strong>，Consumer 从<strong>注册中心获取</strong>。</li>
+<li>local - Provider <strong>把 metadata 放在本地</strong>，<strong>Consumer 从 Provider 处直接获取</strong>  。</li>
+</ul>
+<p>可以看到默认的local配置元数据信息的获取是由消费者从提供者拉的，那提供者怎么拉取对应服务的元数据信息那就要要用到这个博客说到的MetadataService服务，传递方式为remote的方式其实就要依赖注册中心了相对来说增加了注册中心的压力。</p>
+<h3 id="18-4-2-可配置元数据服务的导出ConfigurableMetadataServiceExporter的export"><a href="#18-4-2-可配置元数据服务的导出ConfigurableMetadataServiceExporter的export" class="headerlink" title="18.4.2 可配置元数据服务的导出ConfigurableMetadataServiceExporter的export"></a>18.4.2 可配置元数据服务的导出ConfigurableMetadataServiceExporter的export</h3><p>前面了解了导出服务的调用链路，这里详细看下ConfigurableMetadataServiceExporter的export过程源码如下所示：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token class-name">ConfigurableMetadataServiceExporter</span> <span class="token function">export</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+ 		<span class="token comment">//元数据服务配置已经存在或者已经导出或者不可导出情况下是无需导出的</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>serviceConfig <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> <span class="token operator">!</span><span class="token function">isExported</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         	<span class="token comment">//创建服务配置</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>serviceConfig <span class="token operator">=</span> <span class="token function">buildServiceConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// export</span>
+            <span class="token comment">//导出服务 ,导出服务的具体过程这里就不再说了可以看上一个博客，这个导出服务的过程会绑定端口</span>
+            serviceConfig<span class="token punctuation">.</span><span class="token function">export</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            metadataService<span class="token punctuation">.</span><span class="token function">setMetadataURL</span><span class="token punctuation">(</span>serviceConfig<span class="token punctuation">.</span><span class="token function">getExportedUrls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"The MetadataService exports urls : "</span> <span class="token operator">+</span> serviceConfig<span class="token punctuation">.</span><span class="token function">getExportedUrls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isWarnEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"The MetadataService has been exported : "</span> <span class="token operator">+</span> serviceConfig<span class="token punctuation">.</span><span class="token function">getExportedUrls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="18-4-3-元数据服务配置对象的创建"><a href="#18-4-3-元数据服务配置对象的创建" class="headerlink" title="18.4.3 元数据服务配置对象的创建"></a>18.4.3 元数据服务配置对象的创建</h3><p>前面我们看到了构建元数据服务对象的代码调用ServiceConfig<metadataservice>，接下来我们详细看下构建源码如下所示：<br>ConfigurableMetadataServiceExporter类型的buildServiceConfig构建元数据服务配置对象方法如下：</metadataservice></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">ServiceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">MetadataService</span><span class="token punctuation">&gt;</span></span> <span class="token function">buildServiceConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token comment">//1 获取当前的应用配置 然后初始化应用配置</span>
+       <span class="token class-name">ApplicationConfig</span> applicationConfig <span class="token operator">=</span> <span class="token function">getApplicationConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//创建服务配置对象</span>
+       <span class="token class-name">ServiceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">MetadataService</span><span class="token punctuation">&gt;</span></span> serviceConfig <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServiceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//设置域模型</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setScopeModel</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">.</span><span class="token function">getInternalModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setApplication</span><span class="token punctuation">(</span>applicationConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      
+      <span class="token comment">//2 创建注册中心配置对象 然后并初始化</span>
+       <span class="token class-name">RegistryConfig</span> registryConfig <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RegistryConfig</span><span class="token punctuation">(</span><span class="token string">"N/A"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       registryConfig<span class="token punctuation">.</span><span class="token function">setId</span><span class="token punctuation">(</span><span class="token string">"internal-metadata-registry"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">//3 创建服务配置对象，并初始化</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setRegistry</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setRegister</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//4 生成协议配置 ，这里会配置一下元数据使用的服务端口号默认使用其他服务的端口20880</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setProtocol</span><span class="token punctuation">(</span><span class="token function">generateMetadataProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setInterface</span><span class="token punctuation">(</span><span class="token class-name">MetadataService</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setDelay</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//这里也是需要注意的地方服务引用的类型为MetadataServiceDelegation</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setRef</span><span class="token punctuation">(</span>metadataService<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setGroup</span><span class="token punctuation">(</span>applicationConfig<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setVersion</span><span class="token punctuation">(</span><span class="token class-name">MetadataService</span><span class="token punctuation">.</span>VERSION<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//5 生成方法配置 这里目前提供的服务方法为getAndListenInstanceMetadata方法 后续可以看下这个方法的视线</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setMethods</span><span class="token punctuation">(</span><span class="token function">generateMethodConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setConnections</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// separate connection</span>
+       serviceConfig<span class="token punctuation">.</span><span class="token function">setExecutes</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// max tasks running at the same time</span>
+
+       <span class="token keyword">return</span> serviceConfig<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>这个服务配置对象的创建非常像我们第一个博客提到的服务配置过程，不过这个元数据服务对象有几个比较特殊的配置</p>
+<ul>
+<li>注册中心的配置register设置为了false 则为不向注册中心注册具体的服务配置信息</li>
+<li>对每个提供者的最大连接数connections为1</li>
+<li>服务提供者每服务每方法最大可并行执行请求数executes为100</li>
+</ul>
+<p>在使用过程中可以知道上面这几个配置值</p>
+<h2 id="18-5-应用级数据注册-registerServiceInstance"><a href="#18-5-应用级数据注册-registerServiceInstance" class="headerlink" title="18.5 应用级数据注册   registerServiceInstance()"></a>18.5 应用级数据注册   registerServiceInstance()</h2><p>在前面导出元数据服务之后也会调用一行代码来注册应用级数据来保证应用上线</p>
+<p>主要涉及到的代码为DefaultApplicationDeployer类型中的registerServiceInstance方法如下所示</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">registerServiceInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token comment">//标记变量设置为true</span>
+           registered <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+           <span class="token class-name">ServiceInstanceMetadataUtils</span><span class="token punctuation">.</span><span class="token function">registerMetadataAndInstance</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Register instance error"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>registered<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token comment">// scheduled task for updating Metadata and ServiceInstance</span>
+           asyncMetadataFuture <span class="token operator">=</span> frameworkExecutorRepository<span class="token punctuation">.</span><span class="token function">getSharedScheduledExecutor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">scheduleWithFixedDelay</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+
+               <span class="token comment">// ignore refresh metadata on stopping</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span>applicationModel<span class="token punctuation">.</span><span class="token function">isDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   <span class="token keyword">return</span><span class="token punctuation">;</span>
+               <span class="token punctuation">}</span>
+               <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>applicationModel<span class="token punctuation">.</span><span class="token function">isDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> registered<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                       <span class="token class-name">ServiceInstanceMetadataUtils</span><span class="token punctuation">.</span><span class="token function">refreshMetadataAndInstance</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token punctuation">}</span>
+               <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>applicationModel<span class="token punctuation">.</span><span class="token function">isDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                       logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Refresh instance and metadata error"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token punctuation">}</span>
+               <span class="token punctuation">}</span>
+           <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token class-name">ConfigurationUtils</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">,</span> METADATA_PUBLISH_DELAY_KEY<span class="token punctuation">,</span> DEFAULT_METADATA_PUBLISH_DELAY<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这个方法先将应用元数据注册到注册中心，然后开始开启定时器每隔30秒同步一次元数据向注册中心。</p>
+<h3 id="18-5-1-服务实例元数据工具类注册服务发现的元数据信息"><a href="#18-5-1-服务实例元数据工具类注册服务发现的元数据信息" class="headerlink" title="18.5.1 服务实例元数据工具类注册服务发现的元数据信息"></a>18.5.1 服务实例元数据工具类注册服务发现的元数据信息</h3><p>前面通过调用类型ServiceInstanceMetadataUtils工具类的registerMetadataAndInstance方法来进行服务实例数据和元数据的注册这里我们详细看下代码如下所示：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">registerMetadataAndInstance</span><span class="token punctuation">(</span><span class="token class-name">ApplicationModel</span> applicationModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOGGER<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Start registering instance address to registry."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">RegistryManager</span> registryManager <span class="token operator">=</span> applicationModel<span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token class-name">RegistryManager</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// register service instance</span>
+<span class="token comment">//注意这里服务发现的类型只有ServiceDiscoveryRegistry类型的注册协议才满足        registryManager.getServiceDiscoveries().forEach(ServiceDiscovery::register);</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="18-5-2-AbstractServiceDiscovery中的服务发现数据注册的模版方法"><a href="#18-5-2-AbstractServiceDiscovery中的服务发现数据注册的模版方法" class="headerlink" title="18.5.2 AbstractServiceDiscovery中的服务发现数据注册的模版方法"></a>18.5.2 AbstractServiceDiscovery中的服务发现数据注册的模版方法</h3><p>AbstractServiceDiscovery类型的注册方法register()方法这个是一个模版方法，真正执行的注册逻辑封装在了doRegister方法中由扩展的服务发现子类来完成</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+  <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">register</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">RuntimeException</span> <span class="token punctuation">{</span>
+     <span class="token comment">//第一步创建应用的实例信息等待下面注册到注册中心</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>serviceInstance <span class="token operator">=</span> <span class="token function">createServiceInstance</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>metadataInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isValidInstance</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>serviceInstance<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"No valid instance found, stop registering instance address to registry."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token keyword">return</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+
+<span class="token comment">//是否需要更新</span>
+      <span class="token keyword">boolean</span> revisionUpdated <span class="token operator">=</span> <span class="token function">calOrUpdateInstanceRevision</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>serviceInstance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>revisionUpdated<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token function">reportMetadata</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>metadataInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token comment">//应用的实例信息注册到注册中心之上 ，这个</span>
+          <span class="token function">doRegister</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>serviceInstance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="18-5-3-应用级实例对象创建"><a href="#18-5-3-应用级实例对象创建" class="headerlink" title="18.5.3 应用级实例对象创建"></a>18.5.3 应用级实例对象创建</h3><p>可以看到在AbstractServiceDiscovery服务发现的第一步创建应用的实例信息等待下面注册到注册中心</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">this</span><span class="token punctuation">.</span>serviceInstance <span class="token operator">=</span> <span class="token function">createServiceInstance</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>metadataInfo<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>最终创建的serviceInstance类型为ServiceInstance 这个是Dubbo封装的一个接口，具体实现类型为DefaultServiceInstance，我们可以看下应用级的元数据有哪些</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token class-name">ServiceInstance</span> <span class="token function">createServiceInstance</span><span class="token punctuation">(</span><span class="token class-name">MetadataInfo</span> metadataInfo<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token comment">//这里的服务名字为：dubbo-demo-api-provider</span>
+    <span class="token class-name">DefaultServiceInstance</span> instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DefaultServiceInstance</span><span class="token punctuation">(</span>serviceName<span class="token punctuation">,</span> applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//应用服务的元数据 ，可以看下面debug的数据信息</span>
+    instance<span class="token punctuation">.</span><span class="token function">setServiceMetadata</span><span class="token punctuation">(</span>metadataInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//metadataType的值为local 这个方法是将元数据类型存储到英勇的元数据对象中 对应内容为dubbo.metadata.storage-type:local</span>
+    <span class="token function">setMetadataStorageType</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> metadataType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 这个是自定义元数据数据 我们也可以通过实现扩展ServiceInstanceCustomizer来自定义一些元数据</span>
+    <span class="token class-name">ServiceInstanceMetadataUtils</span><span class="token punctuation">.</span><span class="token function">customizeInstance</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这个方法的主要目的就是将应用的元数据信息都封装到ServiceInstance类型中，不过额外提供了一个扩展性比较好的方法可以自定义元数据信息</p>
+<p>前面的metadataInfo对象的信息如下图所示：<br><img src="https://img-blog.csdnimg.cn/d64c207637ed497786401e7af4a564e2.png" alt="在这里插入图片描述"></p>
+<p>自定义元数据类型Dubbo官方提供了一个默认的实现类型为：ServiceInstanceMetadataCustomizer</p>
+<p>最终封装好的元数据信息如下所示：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">DefaultServiceInstance</span><span class="token punctuation">{</span>
+serviceName<span class="token operator">=</span>'dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider'<span class="token punctuation">,</span> 
+host<span class="token operator">=</span>'<span class="token number">192.168</span><span class="token number">.1</span><span class="token number">.169</span>'<span class="token punctuation">,</span> 
+port<span class="token operator">=</span><span class="token number">20880</span><span class="token punctuation">,</span> 
+enabled<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">,</span> 
+healthy<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">,</span>
+ metadata<span class="token operator">=</span><span class="token punctuation">{</span>
+ 	dubbo<span class="token punctuation">.</span>metadata<span class="token operator">-</span>service<span class="token punctuation">.</span>url<span class="token operator">-</span>params<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">"connections"</span><span class="token operator">:</span><span class="token string">"1"</span><span class="token punctuation">,</span>
+ 	<span class="token string">"version"</span><span class="token operator">:</span><span class="token string">"1.0.0"</span><span class="token punctuation">,</span>
+ 	<span class="token string">"dubbo"</span><span class="token operator">:</span><span class="token string">"2.0.2"</span><span class="token punctuation">,</span>
+ 	<span class="token string">"release"</span><span class="token operator">:</span><span class="token string">"3.0.9"</span><span class="token punctuation">,</span>
+ 	<span class="token string">"side"</span><span class="token operator">:</span><span class="token string">"provider"</span><span class="token punctuation">,</span>
+ 	<span class="token string">"port"</span><span class="token operator">:</span><span class="token string">"20880"</span><span class="token punctuation">,</span>
+ 	<span class="token string">"protocol"</span><span class="token operator">:</span><span class="token string">"dubbo"</span>
+ 	<span class="token punctuation">}</span><span class="token punctuation">,</span> 
+ 	dubbo<span class="token punctuation">.</span>endpoints<span class="token operator">=</span><span class="token punctuation">[</span>
+ 	<span class="token punctuation">{</span><span class="token string">"port"</span><span class="token operator">:</span><span class="token number">20880</span><span class="token punctuation">,</span><span class="token string">"protocol"</span><span class="token operator">:</span><span class="token string">"dubbo"</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span> 
+ 	dubbo<span class="token punctuation">.</span>metadata<span class="token punctuation">.</span>storage<span class="token operator">-</span>type<span class="token operator">=</span>local<span class="token punctuation">,</span> 
+ 	timestamp<span class="token operator">=</span><span class="token number">1656227493387</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="18-5-4-应用级实例数据配置变更的的版本号获取"><a href="#18-5-4-应用级实例数据配置变更的的版本号获取" class="headerlink" title="18.5.4 应用级实例数据配置变更的的版本号获取"></a>18.5.4 应用级实例数据配置变更的的版本号获取</h3><p>前面创建元应用的实例信息后开始创建版本号来判断是否需要更新，对应AbstractServiceDiscovery类型的calOrUpdateInstanceRevision</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">boolean</span> <span class="token function">calOrUpdateInstanceRevision</span><span class="token punctuation">(</span><span class="token class-name">ServiceInstance</span> instance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  	<span class="token comment">//获取元数据版本号对应字段dubbo.metadata.revision</span>
+      <span class="token class-name">String</span> existingInstanceRevision <span class="token operator">=</span> <span class="token function">getExportedServicesRevision</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//获取实例的服务元数据信息：metadata{app='dubbo-demo-api-provider',revision='null',size=1,services=[link.elastic.dubbo.entity.DemoService:dubbo]}</span>
+      <span class="token class-name">MetadataInfo</span> metadataInfo <span class="token operator">=</span> instance<span class="token punctuation">.</span><span class="token function">getServiceMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//必须在不同线程之间同步计算此实例的状态，如同一实例的修订和修改。此方法的使用仅限于某些点，例如在注册期间。始终尝试使用此选项。改为getRevision（）。</span>
+      <span class="token class-name">String</span> newRevision <span class="token operator">=</span> metadataInfo<span class="token punctuation">.</span><span class="token function">calAndGetRevision</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//版本号发生了变更（元数据发生了变更）版本号是md5元数据信息计算出来HASH验证</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>newRevision<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>existingInstanceRevision<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token comment">//版本号添加到dubbo.metadata.revision字段中</span>
+          instance<span class="token punctuation">.</span><span class="token function">getMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>EXPORTED_SERVICES_REVISION_PROPERTY_NAME<span class="token punctuation">,</span> metadataInfo<span class="token punctuation">.</span><span class="token function">getRevision</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+<h4 id="18-5-4-1-元数据版本号的计算与HASH校验-calAndGetRevision"><a href="#18-5-4-1-元数据版本号的计算与HASH校验-calAndGetRevision" class="headerlink" title="18.5.4.1 元数据版本号的计算与HASH校验 calAndGetRevision"></a>18.5.4.1 元数据版本号的计算与HASH校验 calAndGetRevision</h4><p>这个方法其实比较重要，决定了什么时候会更新元数据，Dubbo使用了一种Hash验证的方式将元数据转MD5值与之前的存在的版本号（也是元数据转MD5得到的） 如果数据发生了变更则MD5值会发生变化 以此来更新元数据，不过发生了MD5冲突的话就会导致配置不更新这个冲突的概率非常小。<br>好了直接来看代码吧：<br>MetadataInfo类型的calAndGetRevision方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token class-name">String</span> <span class="token function">calAndGetRevision</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>revision <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>updated<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> revision<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        updated <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+		<span class="token comment">//应用下没有服务则使用一个空的版本号</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmptyMap</span><span class="token punctuation">(</span>services<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>revision <span class="token operator">=</span> EMPTY_REVISION<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token class-name">StringBuilder</span> sb <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//app是应用名</span>
+            sb<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>app<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">ServiceInfo</span><span class="token punctuation">&gt;</span></span> entry <span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">TreeMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>services<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                sb<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toDescString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token class-name">String</span> tempRevision <span class="token operator">=</span> <span class="token class-name">RevisionResolver</span><span class="token punctuation">.</span><span class="token function">calRevision</span><span class="token punctuation">(</span>sb<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEquals</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>revision<span class="token punctuation">,</span> tempRevision<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              <span class="token comment">//元数据重新注册的话我们可以看看这个日志metadata revision change</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"metadata revision changed: %s -&gt; %s, app: %s, services: %d"</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>revision<span class="token punctuation">,</span> tempRevision<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>app<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>services<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>revision <span class="token operator">=</span> tempRevision<span class="token punctuation">;</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>rawMetadataInfo <span class="token operator">=</span> <span class="token class-name">JsonUtils</span><span class="token punctuation">.</span><span class="token function">getJson</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toJson</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> revision<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>RevisionResolver类型的Md5运算计算版本号</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">md5Utils<span class="token punctuation">.</span><span class="token function">getMd5</span><span class="token punctuation">(</span>metadata<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="18-5-5-reportMetadata"><a href="#18-5-5-reportMetadata" class="headerlink" title="18.5.5 reportMetadata"></a>18.5.5 reportMetadata</h3><p>回到18.5.2 AbstractServiceDiscovery中的模版方法register，这里我们来看下reportMetadata方法，不过这个方法目前并不会走到，因为我们默认的配置元数据是local不会直接把应用的元数据注册在元数据中心</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">reportMetadata</span><span class="token punctuation">(</span><span class="token class-name">MetadataInfo</span> metadataInfo<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>metadataReport <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//订阅元数据的标识符</span>
+          <span class="token class-name">SubscriberMetadataIdentifier</span> identifier <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SubscriberMetadataIdentifier</span><span class="token punctuation">(</span>serviceName<span class="token punctuation">,</span> metadataInfo<span class="token punctuation">.</span><span class="token function">getRevision</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token comment">//是否远程发布元数据，这里我们是本地注册这个就不会在元数据中心发布这个元数据信息</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>DEFAULT_METADATA_STORAGE_TYPE<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>metadataType<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> metadataReport<span class="token punctuation">.</span><span class="token function">shouldReportMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span> REMOTE_METADATA_STORAGE_TYPE<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>metadataType<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              metadataReport<span class="token punctuation">.</span><span class="token function">publishAppMetadata</span><span class="token punctuation">(</span>identifier<span class="token punctuation">,</span> metadataInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="18-5-6-扩展的注册中心来注册应用级服务发现数据doRegister方法"><a href="#18-5-6-扩展的注册中心来注册应用级服务发现数据doRegister方法" class="headerlink" title="18.5.6 扩展的注册中心来注册应用级服务发现数据doRegister方法"></a>18.5.6 扩展的注册中心来注册应用级服务发现数据doRegister方法</h3><p>前面我们说了AbstractServiceDiscovery中的模版方法register，在register会调用一个doRegister方法来注册应用级数据，这个方法是需要扩展注册中心的服务发现来自行实现的，我们这里以官方实现的Zookeeper服务发现模型为例:</p>
+<p>ZookeeperServiceDiscovery中的doRegister方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">doRegister</span><span class="token punctuation">(</span><span class="token class-name">ServiceInstance</span> serviceInstance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">try</span> <span class="token punctuation">{</span>
+       <span class="token comment">//Dubbo实现的ServiceInstance类型对象转 Curator的ServiceInstance</span>
+           serviceDiscovery<span class="token punctuation">.</span><span class="token function">registerService</span><span class="token punctuation">(</span><span class="token function">build</span><span class="token punctuation">(</span>serviceInstance<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RpcException</span><span class="token punctuation">(</span>REGISTRY_EXCEPTION<span class="token punctuation">,</span> <span class="token string">"Failed register instance "</span> <span class="token operator">+</span> serviceInstance<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>前面我们介绍了ZookeeperServiceDiscovery发现的构造器连接注册中心，这里来看下服务注册，<br>应用级实例数据注册一共分为两步<br>第一步是：Dubbo实现的ServiceInstance类型对象转 Curator的ServiceInstance<br>第二步是：执行registerService方法将数据注册到注册中心</p>
+<p>先来看第一步：Dubbo实现的ServiceInstance类型对象转 Curator的ServiceInstance<br>关于Curator的服务发现原理可以参考官网的文章博客<a target="_blank" rel="noopener" href="https://curator.apache.org/curator-x-discovery/index.html">curator-x-discovery</a></p>
+<p><strong>什么是发现服务？</strong><br>在 SOA/分布式系统中，服务需要找到彼此。即，Web 服务可能需要找到缓存服务等。DNS 可以用于此，但对于不断变化的服务来说，它远不够灵活。服务发现系统提供了一种机制：</p>
+<ul>
+<li>注册其可用性的服务</li>
+<li>定位特定服务的单个实例</li>
+<li>在服务实例更改时通知</li>
+</ul>
+<p>服务实例由类表示：ServiceInstance。ServiceInstances 具有名称、id、地址、端口和/或 ssl 端口，以及可选的有效负载（用户定义）。ServiceInstances 通过以下方式序列化并存储在 ZooKeeper 中：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">base path
+       <span class="token operator">|</span>_______ service <span class="token class-name">A</span> name
+                    <span class="token operator">|</span>__________ instance <span class="token number">1</span> id <span class="token operator">--</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span>serialized <span class="token class-name">ServiceInstance</span><span class="token punctuation">)</span>
+                    <span class="token operator">|</span>__________ instance <span class="token number">2</span> id <span class="token operator">--</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span>serialized <span class="token class-name">ServiceInstance</span><span class="token punctuation">)</span>
+                    <span class="token operator">|</span>__________ <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+       <span class="token operator">|</span>_______ service <span class="token class-name">B</span> name
+                    <span class="token operator">|</span>__________ instance <span class="token number">1</span> id <span class="token operator">--</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span>serialized <span class="token class-name">ServiceInstance</span><span class="token punctuation">)</span>
+                    <span class="token operator">|</span>__________ instance <span class="token number">2</span> id <span class="token operator">--</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span>serialized <span class="token class-name">ServiceInstance</span><span class="token punctuation">)</span>
+                    <span class="token operator">|</span>__________ <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+       <span class="token operator">|</span>_______ <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这个应用最终注册应用级服务数据如下：<br><img src="https://img-blog.csdnimg.cn/78ccb08965e140339bf528451d7b3c7c.png" alt="在这里插入图片描述"><br>这里需要注意的是这个 应用的IP+端口的服务元数据信息是临时节点<br>build方法内容对应着上图的JSON数据 可以看菜build方法封装的过程：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>curator<span class="token punctuation">.</span>x<span class="token punctuation">.</span>discovery<span class="token punctuation">.</span></span>ServiceInstance</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ZookeeperInstance</span><span class="token punctuation">&gt;</span></span> <span class="token function">build</span><span class="token punctuation">(</span><span class="token class-name">ServiceInstance</span> serviceInstance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">ServiceInstanceBuilder</span> builder<span class="token punctuation">;</span>
+        
+        <span class="token class-name">String</span> serviceName <span class="token operator">=</span> serviceInstance<span class="token punctuation">.</span><span class="token function">getServiceName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> host <span class="token operator">=</span> serviceInstance<span class="token punctuation">.</span><span class="token function">getHost</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> port <span class="token operator">=</span> serviceInstance<span class="token punctuation">.</span><span class="token function">getPort</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> metadata <span class="token operator">=</span> serviceInstance<span class="token punctuation">.</span><span class="token function">getSortedMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> id <span class="token operator">=</span> <span class="token function">generateId</span><span class="token punctuation">(</span>host<span class="token punctuation">,</span> port<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//ZookeeperInstance是Dubbo封装的用于存放payload数据 包含服务id，服务名字和元数据</span>
+        <span class="token class-name">ZookeeperInstance</span> zookeeperInstance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZookeeperInstance</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> serviceName<span class="token punctuation">,</span> metadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            builder <span class="token operator">=</span> <span class="token function">builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">id</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">name</span><span class="token punctuation">(</span>serviceName<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">address</span><span class="token punctuation">(</span>host<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">port</span><span class="token punctuation">(</span>port<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">payload</span><span class="token punctuation">(</span>zookeeperInstance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> builder<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在《18.5 应用级数据注册   registerServiceInstance() 》 小节中介绍了应用元数据信息的注册调用代码，其实后面还有个update的逻辑定期30秒同步元数据到元数据中心，这里就不详细介绍了。</p>
+<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">songxiaosheng</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://blog.elastic.link/2022/07/10/dubbo/18-dubbo3-yuan-shu-ju-fu-wu-metadataservice-de-dao-chu/">https://blog.elastic.link/2022/07/10/dubbo/18-dubbo3-yuan-shu-ju-fu-wu-metadataservice-de-dao-chu/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">songxiaosheng</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Dubbo/">
+                                    <span class="chip bg-color">Dubbo</span>
+                                </a>
+                            
+                                <a href="/tags/Dubbo3/">
+                                    <span class="chip bg-color">Dubbo3</span>
+                                </a>
+                            
+                                <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                    <span class="chip bg-color">Dubbo3源码解析</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/weixin.jpeg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/weixin.jpeg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments textarea {
+        box-sizing: border-box;
+        background: url("/medias/comment_bg.png") 100% 100% no-repeat;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #4cbf30;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="vcomments" class="card-content" style="display: grid">
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/valine/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/valine/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN',
+        serverURLs: 'https://orwf9gex.lc-cn-e1-shared.com',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: 'just go go'
+    });
+</script>
+
+<!--酷Q推送-->
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2022/07/10/dubbo/17-dubbo3-ying-yong-ji-zhu-ce-zhi-fu-wu-ti-gong-zhe-de-shuang-zhu-ce-yuan-li/">
+                    <div class="card-image">
+                        
+                        <img src="https://img-blog.csdnimg.cn/421cb1471cb8470c826b67cbd2c92533.png" class="responsive-img" alt="17-【Dubbo3.0.8源码解析系列】Dubbo服务提供者的双注册原理">
+                        
+                        <span class="card-title">17-【Dubbo3.0.8源码解析系列】Dubbo服务提供者的双注册原理</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Dubbo服务提供者的双注册原理
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                    Dubbo3源码
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Dubbo/">
+                        <span class="chip bg-color">Dubbo</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3/">
+                        <span class="chip bg-color">Dubbo3</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                        <span class="chip bg-color">Dubbo3源码解析</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/07/10/dubbo/19-chong-xin-lai-guo-cong-yi-ge-fu-wu-xiao-fei-zhe-de-demo-shuo-qi/">
+                    <div class="card-image">
+                        
+                        <img src="https://img-blog.csdnimg.cn/b8cc101c51c54d7aaabe9032500ab0d3.png" class="responsive-img" alt="19-【Dubbo3.0.8源码解析系列】重新来过从一个服务消费者的Demo说起">
+                        
+                        <span class="card-title">19-【Dubbo3.0.8源码解析系列】重新来过从一个服务消费者的Demo说起</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            重新来过从一个服务消费者的Demo说起
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                    Dubbo3源码
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Dubbo/">
+                        <span class="chip bg-color">Dubbo</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3/">
+                        <span class="chip bg-color">Dubbo3</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                        <span class="chip bg-color">Dubbo3源码解析</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2022</span>
+            
+            <a href="/about" target="_blank">songxiaosheng</a>
+            |&nbsp;Powered by&nbsp;<a href="#" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="#" target="_blank">Matery</a>
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">124.3k</span>
+            
+            
+            
+            
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+
+    <a href="mailto:songxiaosheng@elastic.link" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/js/matery.js"></script>
+   
+
+    
+
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+    
+
+    <!-- Baidu Analytics -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/others/clicklove.js" async="async"></script>
+    
+    
+
+    
+    
+
+    <!--腾讯兔小巢-->
+    
+        <div style="position:fixed;bottom:125px;right:16px;cursor: pointer;">
+            <a title="兔小巢" target="_blank" rel="noopener" href="https://support.qq.com/products/416824"><i class="fa fa-comments fa-3x"  aria-hidden="true"></i></a>
+        </div>
+    
+    
+
+    
+
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

@@ -1,0 +1,1665 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="20-【Dubbo3.0.8源码解析系列】Dubbo3服务引用配置ReferenceConfig, 中间件源码">
+    <meta name="description" content="Dubbo3服务引用配置ReferenceConfig">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    
+
+    <title>20-【Dubbo3.0.8源码解析系列】Dubbo3服务引用配置ReferenceConfig | 中间件源码</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://pic.imgdb.cn/item/62d8139ff54cd3f937847ef8.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">中间件源码</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  <li class="hide-on-med-and-down nav-item">
+    <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </li>
+    <li class="hide-on-med-and-down nav-item">
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <span><input type="text" placeholder="搜索"></span>
+    </a>
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>导航</span>
+    </a>
+    
+  </li>
+  
+
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://pic.imgdb.cn/item/62d8139ff54cd3f937847ef8.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">中间件源码</div>
+        <div class="logo-desc">
+            
+            中间件源码评测，分析
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			导航
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://img-blog.csdnimg.cn/ba738f7d0044411ab8d37212a28371cc.png#pic_center')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">20-【Dubbo3.0.8源码解析系列】Dubbo3服务引用配置ReferenceConfig</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Dubbo/">
+                                <span class="chip bg-color">Dubbo</span>
+                            </a>
+                        
+                            <a href="/tags/Dubbo3/">
+                                <span class="chip bg-color">Dubbo3</span>
+                            </a>
+                        
+                            <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                <span class="chip bg-color">Dubbo3源码解析</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                Dubbo3源码
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-07-10
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2022-07-23
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.5k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    5 分
+                </div>
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="20-Dubbo3服务引用配置ReferenceConfig"><a href="#20-Dubbo3服务引用配置ReferenceConfig" class="headerlink" title="20-Dubbo3服务引用配置ReferenceConfig"></a>20-Dubbo3服务引用配置ReferenceConfig</h1><h2 id="20-1-简介"><a href="#20-1-简介" class="headerlink" title="20.1 简介"></a>20.1 简介</h2><p>前面简单介绍了一下消费者的例子，消费者创建的第一步就是先进行消费者信息的配置对应类型为ReferenceConfig，这里详细来看ReferenceConfig包含哪些信息？先简单了解下消费者配置的类型关系如下图所示：引用配置与服务配置类型都是通过继承接口配置来扩展的，在分析生产者的时候详细介绍过服务相关的配置，这里来详细看消费者引用者的相关配置信息.<br><img src="https://img-blog.csdnimg.cn/ba738f7d0044411ab8d37212a28371cc.png#pic_center" alt="在这里插入图片描述"></p>
+<p>前面例子说了消费者配置对象的创建主要是通过如下代码：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">ReferenceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">DemoService</span><span class="token punctuation">&gt;</span></span> reference <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReferenceConfig</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个配置类型的对象创建过程并没有太多的逻辑这里主要来说下各种配置信息：<br>服务消费者引用服务配置。对应的配置类： <code>org.apache.dubbo.config.ReferenceConfig</code></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>对应URL参数</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>缺省值</th>
+<th>作用</th>
+<th>描述</th>
+<th>兼容性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td></td>
+<td>string</td>
+<td><strong>必填</strong></td>
+<td></td>
+<td>配置关联</td>
+<td>服务引用BeanId</td>
+<td>1.0.0以上版本</td>
+</tr>
+<tr>
+<td>interface</td>
+<td></td>
+<td>class</td>
+<td><strong>必填</strong></td>
+<td></td>
+<td>服务发现</td>
+<td>服务接口名</td>
+<td>1.0.0以上版本</td>
+</tr>
+<tr>
+<td>version</td>
+<td>version</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务发现</td>
+<td>服务版本，与服务提供者的版本一致</td>
+<td>1.0.0以上版本</td>
+</tr>
+<tr>
+<td>group</td>
+<td>group</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务发现</td>
+<td>服务分组，当一个接口有多个实现，可以用分组区分，必需和服务提供方一致</td>
+<td>1.0.7以上版本</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>timeout</td>
+<td>long</td>
+<td>可选</td>
+<td>缺省使用<a href="dubbo:consumer">dubbo:consumer</a>的timeout</td>
+<td>性能调优</td>
+<td>服务方法调用超时时间(毫秒)</td>
+<td>1.0.5以上版本</td>
+</tr>
+<tr>
+<td>retries</td>
+<td>retries</td>
+<td>int</td>
+<td>可选</td>
+<td>缺省使用<a href="dubbo:consumer">dubbo:consumer</a>的retries</td>
+<td>性能调优</td>
+<td>远程服务调用重试次数，不包括第一次调用，不需要重试请设为0</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>connections</td>
+<td>connections</td>
+<td>int</td>
+<td>可选</td>
+<td>缺省使用<a href="dubbo:consumer">dubbo:consumer</a>的connections</td>
+<td>性能调优</td>
+<td>对每个提供者的最大连接数，rmi、http、hessian等短连接协议表示限制连接数，dubbo等长连接协表示建立的长连接个数</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>loadbalance</td>
+<td>loadbalance</td>
+<td>string</td>
+<td>可选</td>
+<td>缺省使用<a href="dubbo:consumer">dubbo:consumer</a>的loadbalance</td>
+<td>性能调优</td>
+<td>负载均衡策略，可选值：random,roundrobin,leastactive，分别表示：随机，轮询，最少活跃调用</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>async</td>
+<td>async</td>
+<td>boolean</td>
+<td>可选</td>
+<td>缺省使用<a href="dubbo:consumer">dubbo:consumer</a>的async</td>
+<td>性能调优</td>
+<td>是否异步执行，不可靠异步，只是忽略返回值，不阻塞执行线程</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>generic</td>
+<td>generic</td>
+<td>boolean</td>
+<td>可选</td>
+<td>缺省使用<a href="dubbo:consumer">dubbo:consumer</a>的generic</td>
+<td>服务治理</td>
+<td>是否缺省泛化接口，如果为泛化接口，将返回GenericService</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>check</td>
+<td>check</td>
+<td>boolean</td>
+<td>可选</td>
+<td>缺省使用<a href="dubbo:consumer">dubbo:consumer</a>的check</td>
+<td>服务治理</td>
+<td>启动时检查提供者是否存在，true报错，false忽略</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>url</td>
+<td>url</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>点对点直连服务提供者地址，将绕过注册中心</td>
+<td>1.0.6以上版本</td>
+</tr>
+<tr>
+<td>stub</td>
+<td>stub</td>
+<td>class/boolean</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>服务接口客户端本地代理类名，用于在客户端执行本地逻辑，如本地缓存等，该本地代理类的构造函数必须允许传入远程代理对象，构造函数如：public XxxServiceLocal(XxxService xxxService)</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>mock</td>
+<td>mock</td>
+<td>class/boolean</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>服务接口调用失败Mock实现类名，该Mock类必须有一个无参构造函数，与Local的区别在于，Local总是被执行，而Mock只在出现非业务异常(比如超时，网络异常等)时执行，Local在远程调用之前执行，Mock在远程调用后执行。</td>
+<td>Dubbo1.0.13及其以上版本支持</td>
+</tr>
+<tr>
+<td>cache</td>
+<td>cache</td>
+<td>string/boolean</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>以调用参数为key，缓存返回结果，可选：lru, threadlocal, jcache等</td>
+<td>Dubbo2.1.0及其以上版本支持</td>
+</tr>
+<tr>
+<td>validation</td>
+<td>validation</td>
+<td>boolean</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>是否启用JSR303标准注解验证，如果启用，将对方法参数上的注解进行校验</td>
+<td>Dubbo2.1.0及其以上版本支持</td>
+</tr>
+<tr>
+<td>proxy</td>
+<td>proxy</td>
+<td>boolean</td>
+<td>可选</td>
+<td>javassist</td>
+<td>性能调优</td>
+<td>选择动态代理实现策略，可选：javassist, jdk</td>
+<td>2.0.2以上版本</td>
+</tr>
+<tr>
+<td>client</td>
+<td>client</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>性能调优</td>
+<td>客户端传输类型设置，如Dubbo协议的netty或mina。</td>
+<td>Dubbo2.0.0以上版本支持</td>
+</tr>
+<tr>
+<td>registry</td>
+<td></td>
+<td>string</td>
+<td>可选</td>
+<td>缺省将从所有注册中心获服务列表后合并结果</td>
+<td>配置关联</td>
+<td>从指定注册中心注册获取服务列表，在多个注册中心时使用，值为<a href="dubbo:registry">dubbo:registry</a>的id属性，多个注册中心ID用逗号分隔</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>owner</td>
+<td>owner</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>调用服务负责人，用于服务治理，请填写负责人公司邮箱前缀</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>actives</td>
+<td>actives</td>
+<td>int</td>
+<td>可选</td>
+<td>0</td>
+<td>性能调优</td>
+<td>每服务消费者每服务每方法最大并发调用数</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>cluster</td>
+<td>cluster</td>
+<td>string</td>
+<td>可选</td>
+<td>failover</td>
+<td>性能调优</td>
+<td>集群方式，可选：failover/failfast/failsafe/failback/forking</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>filter</td>
+<td>reference.filter</td>
+<td>string</td>
+<td>可选</td>
+<td>default</td>
+<td>性能调优</td>
+<td>服务消费方远程调用过程拦截器名称，多个名称用逗号分隔</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>listener</td>
+<td>invoker.listener</td>
+<td>string</td>
+<td>可选</td>
+<td>default</td>
+<td>性能调优</td>
+<td>服务消费方引用服务监听器名称，多个名称用逗号分隔</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>layer</td>
+<td>layer</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>服务调用者所在的分层。如：biz、dao、intl:web、china:acton。</td>
+<td>2.0.7以上版本</td>
+</tr>
+<tr>
+<td>init</td>
+<td>init</td>
+<td>boolean</td>
+<td>可选</td>
+<td>false</td>
+<td>性能调优</td>
+<td>是否在afterPropertiesSet()时饥饿初始化引用，否则等到有人注入或引用该实例时再初始化。</td>
+<td>2.0.10以上版本</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>protocol</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>只调用指定协议的服务提供方，其它协议忽略。</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<p><strong>更多也可关注原文 <a href="https://blog.elastic.link/categories/">https://blog.elastic.link/categories/</a></strong></p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">songxiaosheng</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://blog.elastic.link/2022/07/10/dubbo/20-dubbo3-fu-wu-yin-yong-pei-zhi-referenceconfig/">https://blog.elastic.link/2022/07/10/dubbo/20-dubbo3-fu-wu-yin-yong-pei-zhi-referenceconfig/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">songxiaosheng</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Dubbo/">
+                                    <span class="chip bg-color">Dubbo</span>
+                                </a>
+                            
+                                <a href="/tags/Dubbo3/">
+                                    <span class="chip bg-color">Dubbo3</span>
+                                </a>
+                            
+                                <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                    <span class="chip bg-color">Dubbo3源码解析</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/weixin.jpeg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/weixin.jpeg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments textarea {
+        box-sizing: border-box;
+        background: url("/medias/comment_bg.png") 100% 100% no-repeat;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #4cbf30;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="vcomments" class="card-content" style="display: grid">
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/valine/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/valine/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN',
+        serverURLs: 'https://orwf9gex.lc-cn-e1-shared.com',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: 'just go go'
+    });
+</script>
+
+<!--酷Q推送-->
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2022/07/10/dubbo/2-qi-dong-fu-wu-qian-fu-wu-pei-zhi-serviceconfig-lei-xing-shi-ru-he-chu-shi-hua-de/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://pic.imgdb.cn/item/62d80d10f54cd3f9375eb792.jpg" class="responsive-img" alt="02-【Dubbo3.0.8源码解析系列】ServiceConfig对象的建模">
+                        
+                        <span class="card-title">02-【Dubbo3.0.8源码解析系列】ServiceConfig对象的建模</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            ServiceConfig对象的建模
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                    Dubbo3源码
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Dubbo/">
+                        <span class="chip bg-color">Dubbo</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3/">
+                        <span class="chip bg-color">Dubbo3</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                        <span class="chip bg-color">Dubbo3源码解析</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://pic.imgdb.cn/item/62d80b72f54cd3f9375583e1.jpg" class="responsive-img" alt="21-【Dubbo3.0.8源码解析系列】Dubbo3消费者引用服务入口">
+                        
+                        <span class="card-title">21-【Dubbo3.0.8源码解析系列】Dubbo3消费者引用服务入口</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Dubbo3消费者引用服务入口
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                    Dubbo3源码
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Dubbo/">
+                        <span class="chip bg-color">Dubbo</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3/">
+                        <span class="chip bg-color">Dubbo3</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                        <span class="chip bg-color">Dubbo3源码解析</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2022</span>
+            
+            <a href="/about" target="_blank">songxiaosheng</a>
+            |&nbsp;Powered by&nbsp;<a href="#" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="#" target="_blank">Matery</a>
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">124.3k</span>
+            
+            
+            
+            
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+
+    <a href="mailto:songxiaosheng@elastic.link" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/js/matery.js"></script>
+   
+
+    
+
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+    
+
+    <!-- Baidu Analytics -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/others/clicklove.js" async="async"></script>
+    
+    
+
+    
+    
+
+    <!--腾讯兔小巢-->
+    
+        <div style="position:fixed;bottom:125px;right:16px;cursor: pointer;">
+            <a title="兔小巢" target="_blank" rel="noopener" href="https://support.qq.com/products/416824"><i class="fa fa-comments fa-3x"  aria-hidden="true"></i></a>
+        </div>
+    
+    
+
+    
+
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

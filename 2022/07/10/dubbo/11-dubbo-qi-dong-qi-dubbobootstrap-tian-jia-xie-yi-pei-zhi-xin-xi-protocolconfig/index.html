@@ -1,0 +1,1712 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="11-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig, 中间件源码">
+    <meta name="description" content="Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    
+
+    <title>11-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig | 中间件源码</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://pic.imgdb.cn/item/62d8139ff54cd3f937847ef8.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">中间件源码</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  <li class="hide-on-med-and-down nav-item">
+    <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </li>
+    <li class="hide-on-med-and-down nav-item">
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <span><input type="text" placeholder="搜索"></span>
+    </a>
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>导航</span>
+    </a>
+    
+  </li>
+  
+
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://pic.imgdb.cn/item/62d8139ff54cd3f937847ef8.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">中间件源码</div>
+        <div class="logo-desc">
+            
+            中间件源码评测，分析
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			导航
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://pic.imgdb.cn/item/62d80bbaf54cd3f937571590.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">11-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Dubbo/">
+                                <span class="chip bg-color">Dubbo</span>
+                            </a>
+                        
+                            <a href="/tags/Dubbo3/">
+                                <span class="chip bg-color">Dubbo3</span>
+                            </a>
+                        
+                            <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                <span class="chip bg-color">Dubbo3源码解析</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                Dubbo3源码
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-07-10
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2022-07-23
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.6k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    6 分
+                </div>
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig"><a href="#11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig" class="headerlink" title="11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig"></a>11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig</h1><h2 id="11-1-简介"><a href="#11-1-简介" class="headerlink" title="11.1 简介"></a>11.1 简介</h2><p>先贴个代码用来参考:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">DubboBootstrap</span> bootstrap <span class="token operator">=</span> <span class="token class-name">DubboBootstrap</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+bootstrap<span class="token punctuation">.</span><span class="token function">application</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ApplicationConfig</span><span class="token punctuation">(</span><span class="token string">"dubbo-demo-api-provider"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">registry</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegistryConfig</span><span class="token punctuation">(</span><span class="token string">"zookeeper://127.0.0.1:2181"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">protocol</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProtocolConfig</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">service</span><span class="token punctuation">(</span>service<span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上个博客我们说了 RegistryConfig对象的创建,启动器对象在启动之前是要初始化一些配置信息的,这里我们来看这一行代码协议配置信息:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token punctuation">.</span><span class="token function">protocol</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProtocolConfig</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<h2 id="11-2-协议的配置相关"><a href="#11-2-协议的配置相关" class="headerlink" title="11.2  协议的配置相关"></a>11.2  协议的配置相关</h2><p>下面的配置来源于官网</p>
+<p>服务提供者协议配置。对应的配置类： org.apache.dubbo.config.ProtocolConfig。同时，如果需要支持多协议，可以声明多个 <a href="dubbo:protocol">dubbo:protocol</a> 标签，并在 <a href="dubbo:service">dubbo:service</a> 中通过 protocol 属性指定使用的协议。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>对应URL参数</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>缺省值</th>
+<th>作用</th>
+<th>描述</th>
+<th>兼容性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td></td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo</td>
+<td>配置关联</td>
+<td>协议BeanId，可以在&lt;dubbo:service protocol=””&gt;中引用此ID，如果ID不填，缺省和name属性值一样，重复则在name后加序号。</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>name</td>
+<td><protocol></protocol></td>
+<td>string</td>
+<td><strong>必填</strong></td>
+<td>dubbo</td>
+<td>性能调优</td>
+<td>协议名称</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>port</td>
+<td><port></port></td>
+<td>int</td>
+<td>可选</td>
+<td>dubbo协议缺省端口为20880，rmi协议缺省端口为1099，http和hessian协议缺省端口为80；如果<strong>没有</strong>配置port，则自动采用默认端口，如果配置为**-1**，则会分配一个没有被占用的端口。Dubbo 2.4.0+，分配的端口在协议缺省端口的基础上增长，确保端口段可控。</td>
+<td>服务发现</td>
+<td>服务端口</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>host</td>
+<td><host></host></td>
+<td>string</td>
+<td>可选</td>
+<td>自动查找本机IP</td>
+<td>服务发现</td>
+<td>-服务主机名，多网卡选择或指定VIP及域名时使用，为空则自动查找本机IP，-建议不要配置，让Dubbo自动获取本机IP</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>threadpool</td>
+<td>threadpool</td>
+<td>string</td>
+<td>可选</td>
+<td>fixed</td>
+<td>性能调优</td>
+<td>线程池类型，可选：fixed/cached</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>threads</td>
+<td>threads</td>
+<td>int</td>
+<td>可选</td>
+<td>200</td>
+<td>性能调优</td>
+<td>服务线程池大小(固定大小)</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>iothreads</td>
+<td>threads</td>
+<td>int</td>
+<td>可选</td>
+<td>cpu个数+1</td>
+<td>性能调优</td>
+<td>io线程池大小(固定大小)</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>accepts</td>
+<td>accepts</td>
+<td>int</td>
+<td>可选</td>
+<td>0</td>
+<td>性能调优</td>
+<td>服务提供方最大可接受连接数</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>payload</td>
+<td>payload</td>
+<td>int</td>
+<td>可选</td>
+<td>8388608(=8M)</td>
+<td>性能调优</td>
+<td>请求及响应数据包大小限制，单位：字节</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>codec</td>
+<td>codec</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo</td>
+<td>性能调优</td>
+<td>协议编码方式</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>serialization</td>
+<td>serialization</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo协议缺省为hessian2，rmi协议缺省为java，http协议缺省为json</td>
+<td>性能调优</td>
+<td>协议序列化方式，当协议支持多种序列化方式时使用，比如：dubbo协议的dubbo,hessian2,java,compactedjava，以及http协议的json等</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>accesslog</td>
+<td>accesslog</td>
+<td>string/boolean</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>设为true，将向logger中输出访问日志，也可填写访问日志文件路径，直接把访问日志输出到指定文件</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>path</td>
+<td><path></path></td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务发现</td>
+<td>提供者上下文路径，为服务path的前缀</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>transporter</td>
+<td>transporter</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo协议缺省为netty</td>
+<td>性能调优</td>
+<td>协议的服务端和客户端实现类型，比如：dubbo协议的mina,netty等，可以分拆为server和client配置</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>server</td>
+<td>server</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo协议缺省为netty，http协议缺省为servlet</td>
+<td>性能调优</td>
+<td>协议的服务器端实现类型，比如：dubbo协议的mina,netty等，http协议的jetty,servlet等</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>client</td>
+<td>client</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo协议缺省为netty</td>
+<td>性能调优</td>
+<td>协议的客户端实现类型，比如：dubbo协议的mina,netty等</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>dispatcher</td>
+<td>dispatcher</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo协议缺省为all</td>
+<td>性能调优</td>
+<td>协议的消息派发方式，用于指定线程模型，比如：dubbo协议的all, direct, message, execution, connection等</td>
+<td>2.1.0以上版本</td>
+</tr>
+<tr>
+<td>queues</td>
+<td>queues</td>
+<td>int</td>
+<td>可选</td>
+<td>0</td>
+<td>性能调优</td>
+<td>线程池队列大小，当线程池满时，排队等待执行的队列大小，建议不要设置，当线程池满时应立即失败，重试其它服务提供机器，而不是排队，除非有特殊需求。</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>charset</td>
+<td>charset</td>
+<td>string</td>
+<td>可选</td>
+<td>UTF-8</td>
+<td>性能调优</td>
+<td>序列化编码</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>buffer</td>
+<td>buffer</td>
+<td>int</td>
+<td>可选</td>
+<td>8192</td>
+<td>性能调优</td>
+<td>网络读写缓冲区大小</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>heartbeat</td>
+<td>heartbeat</td>
+<td>int</td>
+<td>可选</td>
+<td>0</td>
+<td>性能调优</td>
+<td>心跳间隔，对于长连接，当物理层断开时，比如拔网线，TCP的FIN消息来不及发送，对方收不到断开事件，此时需要心跳来帮助检查连接是否已断开</td>
+<td>2.0.10以上版本</td>
+</tr>
+<tr>
+<td>telnet</td>
+<td>telnet</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>所支持的telnet命令，多个命令用逗号分隔</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>register</td>
+<td>register</td>
+<td>boolean</td>
+<td>可选</td>
+<td>true</td>
+<td>服务治理</td>
+<td>该协议的服务是否注册到注册中心</td>
+<td>2.0.8以上版本</td>
+</tr>
+<tr>
+<td>contextpath</td>
+<td>contextpath</td>
+<td>String</td>
+<td>可选</td>
+<td>缺省为空串</td>
+<td>服务治理</td>
+<td></td>
+<td>2.0.6以上版本</td>
+</tr>
+</tbody></table>
+<p> 同样官网提供的参数里面并未包含所有的属性 下面我就将其余的属性列举一下方便学习参考:</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>threadname</td>
+<td>String</td>
+<td>线程池名称</td>
+</tr>
+<tr>
+<td>corethreads</td>
+<td>Integer</td>
+<td>线程池核心线程大小</td>
+</tr>
+<tr>
+<td>alive</td>
+<td>Integer</td>
+<td>线程池keepAliveTime，默认单位时间单位。毫秒</td>
+</tr>
+<tr>
+<td>exchanger</td>
+<td>String</td>
+<td>交换器配置信息如何交换</td>
+</tr>
+<tr>
+<td>prompt</td>
+<td>String</td>
+<td>命令行提示符</td>
+</tr>
+<tr>
+<td>status</td>
+<td>String</td>
+<td>状态检查</td>
+</tr>
+<tr>
+<td>sslEnabled</td>
+<td>Boolean</td>
+<td>ssl是否启用</td>
+</tr>
+</tbody></table>
+<h2 id="11-3-协议配置对象创建与添加"><a href="#11-3-协议配置对象创建与添加" class="headerlink" title="11.3 协议配置对象创建与添加"></a>11.3 协议配置对象创建与添加</h2><p>前面例子中调用的代码</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token punctuation">.</span><span class="token function">protocol</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProtocolConfig</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这里我们配置了协议类型为dubbo 端口为-1则会分配一个没有被占用的端口</p>
+<p>继续看下DubboBootstrap的protocol方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">DubboBootstrap</span> <span class="token function">protocol</span><span class="token punctuation">(</span><span class="token class-name">ProtocolConfig</span> protocolConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//配置信息转List</span>
+        <span class="token keyword">return</span> <span class="token function">protocols</span><span class="token punctuation">(</span><span class="token function">singletonList</span><span class="token punctuation">(</span>protocolConfig<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>继续看protocols方法 ,这个代码与前面两个博客中看到的向配置管理器添加配置对象的逻辑是一样的<br>这里就不说了可以看前面的博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/songjunyan/article/details/124524350">《9-Dubbo启动器DubboBootstrap添加应用程序的配置信息ApplicationConfig》</a></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">DubboBootstrap</span> <span class="token function">protocols</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProtocolConfig</span><span class="token punctuation">&gt;</span></span> protocolConfigs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>protocolConfigs<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ProtocolConfig</span> protocolConfig <span class="token operator">:</span> protocolConfigs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         protocolConfig<span class="token punctuation">.</span><span class="token function">setScopeModel</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+         configManager<span class="token punctuation">.</span><span class="token function">addProtocol</span><span class="token punctuation">(</span>protocolConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+     <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+ <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">songxiaosheng</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://blog.elastic.link/2022/07/10/dubbo/11-dubbo-qi-dong-qi-dubbobootstrap-tian-jia-xie-yi-pei-zhi-xin-xi-protocolconfig/">https://blog.elastic.link/2022/07/10/dubbo/11-dubbo-qi-dong-qi-dubbobootstrap-tian-jia-xie-yi-pei-zhi-xin-xi-protocolconfig/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">songxiaosheng</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Dubbo/">
+                                    <span class="chip bg-color">Dubbo</span>
+                                </a>
+                            
+                                <a href="/tags/Dubbo3/">
+                                    <span class="chip bg-color">Dubbo3</span>
+                                </a>
+                            
+                                <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                                    <span class="chip bg-color">Dubbo3源码解析</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/weixin.jpeg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/weixin.jpeg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments textarea {
+        box-sizing: border-box;
+        background: url("/medias/comment_bg.png") 100% 100% no-repeat;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #4cbf30;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="vcomments" class="card-content" style="display: grid">
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/valine/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/valine/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN',
+        serverURLs: 'https://orwf9gex.lc-cn-e1-shared.com',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: 'just go go'
+    });
+</script>
+
+<!--酷Q推送-->
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2022/07/10/dubbo/10-dubbo-qi-dong-qi-dubbobootstrap-tian-jia-zhu-ce-zhong-xin-pei-zhi-xin-xi-registryconfig/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://pic.imgdb.cn/item/62d80d44f54cd3f9375fe8be.jpg" class="responsive-img" alt="10-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加注册中心配置信息RegistryConfig">
+                        
+                        <span class="card-title">10-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加注册中心配置信息RegistryConfig</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Dubbo启动器DubboBootstrap添加注册中心配置信息RegistryConfig
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                    Dubbo3源码
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Dubbo/">
+                        <span class="chip bg-color">Dubbo</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3/">
+                        <span class="chip bg-color">Dubbo3</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                        <span class="chip bg-color">Dubbo3源码解析</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/07/10/dubbo/12-quan-ju-shi-ye-lai-kan-dubbo3.0.8-de-fu-wu-qi-dong-sheng-ming-zhou-qi/">
+                    <div class="card-image">
+                        
+                        <img src="https://img-blog.csdnimg.cn/37e7c05796ab4b38aa7658377e16c0aa.png" class="responsive-img" alt="11-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig">
+                        
+                        <span class="card-title">11-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-10
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Dubbo3%E6%BA%90%E7%A0%81/" class="post-category">
+                                    Dubbo3源码
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Dubbo/">
+                        <span class="chip bg-color">Dubbo</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3/">
+                        <span class="chip bg-color">Dubbo3</span>
+                    </a>
+                    
+                    <a href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                        <span class="chip bg-color">Dubbo3源码解析</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2022</span>
+            
+            <a href="/about" target="_blank">songxiaosheng</a>
+            |&nbsp;Powered by&nbsp;<a href="#" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="#" target="_blank">Matery</a>
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">124.3k</span>
+            
+            
+            
+            
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+
+    <a href="mailto:songxiaosheng@elastic.link" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/js/matery.js"></script>
+   
+
+    
+
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+    
+
+    <!-- Baidu Analytics -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/others/clicklove.js" async="async"></script>
+    
+    
+
+    
+    
+
+    <!--腾讯兔小巢-->
+    
+        <div style="position:fixed;bottom:125px;right:16px;cursor: pointer;">
+            <a title="兔小巢" target="_blank" rel="noopener" href="https://support.qq.com/products/416824"><i class="fa fa-comments fa-3x"  aria-hidden="true"></i></a>
+        </div>
+    
+    
+
+    
+
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/songxiaosheng/blog@gh-pages/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
