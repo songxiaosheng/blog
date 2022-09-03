@@ -255,19 +255,18 @@
   </entry>
   
   <entry>
-    <title>2-Rebar3 基本配置</title>
-    <link href="https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/"/>
-    <id>https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</id>
+    <title>1-Rebar3 从一个例子入门</title>
+    <link href="https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/"/>
+    <id>https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-21T14:05:37.247Z</updated>
+    <updated>2022-07-19T14:43:13.982Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;基本配置&quot;&gt;&lt;a href=&quot;#基本配置&quot; class=&quot;headerlink&quot; title=&quot;基本配置&quot;&gt;&lt;/a&gt;基本配置&lt;/h1&gt;&lt;p&gt;下面列举一些常见的配置项，如果对所有配置项感兴趣可以去看官网&lt;/p&gt;
-&lt;h2 id=&quot;环境配置&quot;&gt;&lt;a</summary>
+    <summary type="html">&lt;h1 id=&quot;1-Rebar3-从一个例子入门&quot;&gt;&lt;a href=&quot;#1-Rebar3-从一个例子入门&quot; class=&quot;headerlink&quot; title=&quot;1-Rebar3 从一个例子入门&quot;&gt;&lt;/a&gt;1-Rebar3 从一个例子入门&lt;/h1&gt;&lt;h2</summary>
         
       
     
@@ -283,18 +282,19 @@
   </entry>
   
   <entry>
-    <title>1-Rebar3 从一个例子入门</title>
-    <link href="https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/"/>
-    <id>https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</id>
+    <title>2-Rebar3 基本配置</title>
+    <link href="https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/"/>
+    <id>https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-19T14:43:13.982Z</updated>
+    <updated>2022-07-21T14:05:37.247Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;1-Rebar3-从一个例子入门&quot;&gt;&lt;a href=&quot;#1-Rebar3-从一个例子入门&quot; class=&quot;headerlink&quot; title=&quot;1-Rebar3 从一个例子入门&quot;&gt;&lt;/a&gt;1-Rebar3 从一个例子入门&lt;/h1&gt;&lt;h2</summary>
+    <summary type="html">&lt;h1 id=&quot;基本配置&quot;&gt;&lt;a href=&quot;#基本配置&quot; class=&quot;headerlink&quot; title=&quot;基本配置&quot;&gt;&lt;/a&gt;基本配置&lt;/h1&gt;&lt;p&gt;下面列举一些常见的配置项，如果对所有配置项感兴趣可以去看官网&lt;/p&gt;
+&lt;h2 id=&quot;环境配置&quot;&gt;&lt;a</summary>
         
       
     
