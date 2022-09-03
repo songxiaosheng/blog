@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176109">
+<link rel="stylesheet" href="/css/style.css?v=1662168254578">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176109"></script>
+<script src="/js/core.js?v=1662168254578"></script>
 
 
 
@@ -48,362 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>【Linux】-1-CPU问题排查常用命令</h1>
-			<div class="info"><span class="date">2016年9月7日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Linux/">Linux</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/linux/problem/1-CPU命令笔记.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<p>uptime</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@iZ8lgm9icspkthZ ~<span class="token punctuation">]</span><span class="token comment"># uptime</span>
- 08:00:23 up <span class="token number">206</span> days, <span class="token number">23</span>:17,  <span class="token number">1</span> user,  load average: <span class="token number">0.07</span>, <span class="token number">0.06</span>, <span class="token number">0.08</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-<p> 08:00:23  当前时间</p>
-<p>up 206 days, 23:17, 系统运行时间</p>
-<p>1 user当前登录用户数量</p>
-<p>load average: 0.07, （1分钟平均负载） 0.06,（5分钟平均负载） 0.08（15分钟平均负载）</p>
-<p>平均负载：单位时间内，系统处于可运行或者不可中断的平均进程数，也就是平均活跃进程数</p>
-<p>下面是通过man命令查询的uptime </p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@iZ8lgm9icspkthZ ~<span class="token punctuation">]</span><span class="token comment"># man uptime</span>
-
-SYNOPSIS
-       <span class="token function">uptime</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span>
-
-DESCRIPTION
-       <span class="token function">uptime</span>  gives  a one line display of the following information.  The current time, how long the system has been running, how many <span class="token function">users</span>
-       are currently logged on, and the system load averages <span class="token keyword">for</span> the past <span class="token number">1</span>, <span class="token number">5</span>, and <span class="token number">15</span> minutes.
-
-       This is the same information contained <span class="token keyword">in</span> the header line displayed by w<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>.
-
-       System load averages is the average number of processes that are either <span class="token keyword">in</span> a  runnable  or  uninterruptable  state.   A  process  <span class="token keyword">in</span>  a
-       runnable  state  is either using the CPU or waiting to use the CPU.  A process <span class="token keyword">in</span> uninterruptable state is waiting <span class="token keyword">for</span> some I/O access,
-       eg waiting <span class="token keyword">for</span> disk.  The averages are taken over the three <span class="token function">time</span> intervals.  Load averages are not normalized <span class="token keyword">for</span> the number of CPUs <span class="token keyword">in</span>
-       a  system,  so a load average of <span class="token number">1</span> means a single CPU system is loaded all the <span class="token function">time</span> <span class="token keyword">while</span> on a <span class="token number">4</span> CPU system it means it was idle <span class="token number">75</span>% of
-       the time.
-
-OPTIONS
-       -p, --pretty
-              show <span class="token function">uptime</span> <span class="token keyword">in</span> pretty <span class="token function">format</span>
-
-       -h, --help
-              display this <span class="token builtin class-name">help</span> text
-
-       -s, --since
-              system up since, <span class="token keyword">in</span> yyyy-mm-dd HH:MM:SS <span class="token function">format</span>
-
-       -V, --version
-              display version information and <span class="token builtin class-name">exit</span>
-
-FILES
-       /var/run/utmp
-              information about <span class="token function">who</span> is currently logged on
-
-       /proc  process information
-
-AUTHORS
-       <span class="token function">uptime</span> was written by Larry Greenfield ⟨greenfie@gauss.rutgers.edu⟩ and Michael K. Johnson ⟨johnsonm@sunsite.unc.edu⟩
-
-SEE ALSO
-       ps<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>, top<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>, utmp<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>, w<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
-
-REPORTING BUGS
-       Please send bug reports to ⟨procps@freelists.org⟩
-
-procps-ng                                                        December <span class="token number">2012</span>                                                       UPTIME<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-
-
-<p>stress Linux系统性能压测工具</p>
-<h2 id="CPU问题分析"><a href="#CPU问题分析" class="headerlink" title="CPU问题分析"></a>CPU问题分析</h2><p>模拟CPU使用率100%的命令：</p>
-<p>stress –cpu 1 –timeout 600</p>
-<p>查看负载情况命令：</p>
-<p>watch -d uptime</p>
-<p>CPU使用率变化命令：</p>
-<p>mpstat  -P ALL 5</p>
-<p>ALL参数是所有的CPU，5是间隔5秒输出</p>
-<p>平均负载上升，CPU使用率上升，iowait为0或者很小那负载问题是由CPU使用率上升导致，可以分析CPU使用率上升的问题</p>
-<p>平均负载上升，CPU使用率上升，iowait也上升很多问题可能是由io使用上升导致，可以分析io使用问题</p>
-<p>CPU使用率上升分析：</p>
-<p>pidstat -u  5 1 </p>
-<p>间隔5秒输出进程统计信息，然后可以找到问题进程</p>
-<h2 id="io问题分析"><a href="#io问题分析" class="headerlink" title="io问题分析"></a>io问题分析</h2><p>模拟io异常，持续执行sync </p>
-<p>stress -i 1  –timeout  600</p>
-<p>查看负载：</p>
-<p>watch -d uptime</p>
-<p>cpu使用率查看</p>
-<p>mpstat -P ALL 5 1 </p>
-<p>平均负载上升，CPU使用率上升，iowait为0或者很小那负载问题是由CPU使用率上升导致，可以分析CPU使用率上升的问题</p>
-<p>平均负载上升，CPU使用率上升，iowait也上升很多问题可能是由io使用上升导致，可以分析io使用问题</p>
-<p>分析IO上升问题</p>
-<p>pidstat -u  5 1 </p>
-<p>找到使用率上升的进程</p>
-<p>上下文切换分为：</p>
-<ul>
-<li><p>进程上下文</p>
-</li>
-<li><p>线程上下文</p>
-</li>
-<li><p>中断上下文切换</p>
-</li>
-</ul>
-<p>vmstat 命令</p>
-<p>内存使用情况和CPU上下文切换和中断次数分析</p>
-<p>如下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># vmstat 5</span>
-procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
- r  b   swpd   <span class="token function">free</span>   buff  cache   si   so    bi    bo   <span class="token keyword">in</span>   cs us sy <span class="token function">id</span> wa st
- <span class="token number">6</span>  <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">4991428</span> <span class="token number">189240</span> <span class="token number">1574904</span>    <span class="token number">0</span>    <span class="token number">0</span>     <span class="token number">6</span>    <span class="token number">16</span>  <span class="token number">131</span>  <span class="token number">218</span>  <span class="token number">8</span>  <span class="token number">3</span> <span class="token number">88</span>  <span class="token number">0</span>  <span class="token number">0</span>
- <span class="token number">3</span>  <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">4992688</span> <span class="token number">189240</span> <span class="token number">1574912</span>    <span class="token number">0</span>    <span class="token number">0</span>     <span class="token number">0</span>    <span class="token number">22</span> <span class="token number">2024</span> <span class="token number">3951</span>  <span class="token number">6</span>  <span class="token number">4</span> <span class="token number">90</span>  <span class="token number">0</span>  <span class="token number">0</span>
- <span class="token number">1</span>  <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">4992436</span> <span class="token number">189248</span> <span class="token number">1574908</span>    <span class="token number">0</span>    <span class="token number">0</span>     <span class="token number">0</span>    <span class="token number">25</span> <span class="token number">1719</span> <span class="token number">3418</span>  <span class="token number">5</span>  <span class="token number">3</span> <span class="token number">92</span>  <span class="token number">0</span>  <span class="token number">0</span>
- <span class="token number">0</span>  <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">4990672</span> <span class="token number">189252</span> <span class="token number">1574916</span>    <span class="token number">0</span>    <span class="token number">0</span>     <span class="token number">0</span>    <span class="token number">34</span> <span class="token number">1976</span> <span class="token number">3933</span>  <span class="token number">7</span>  <span class="token number">3</span> <span class="token number">90</span>  <span class="token number">0</span>  <span class="token number">0</span>
-
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-
-
-<p> cs(Context Switch)  每秒上下文切换次数</p>
-<p>in(interrupt) 每秒中断次数</p>
-<p>r(running or runnable) 就绪队列的长度</p>
-<p>b(blocked) 处于不可中断睡眠状态的进程数</p>
-<p>每个进程上下文切换的查询命令</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># pidstat -w 5</span>
-Linux <span class="token number">5.10</span>.104-linuxkit <span class="token punctuation">(</span>481b468ee053<span class="token punctuation">)</span> 	06/27/22 	_x86_64_	<span class="token punctuation">(</span><span class="token number">2</span> CPU<span class="token punctuation">)</span>
-
-
-00:21:24      <span class="token environment constant">UID</span>       PID   cswch/s nvcswch/s  Command
-00:21:29        <span class="token number">0</span>        <span class="token number">24</span>      <span class="token number">0.00</span>    <span class="token number">298.60</span>  stress
-00:21:29        <span class="token number">0</span>        <span class="token number">25</span>      <span class="token number">0.20</span>      <span class="token number">0.00</span>  pidstat
-
-
-
-
-00:21:29      <span class="token environment constant">UID</span>       PID   cswch/s nvcswch/s  Command
-00:21:34        <span class="token number">0</span>        <span class="token number">24</span>      <span class="token number">0.00</span>     <span class="token number">59.60</span>  stress
-00:21:34        <span class="token number">0</span>        <span class="token number">25</span>      <span class="token number">0.20</span>      <span class="token number">0.00</span>  pidstat<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>cswch/s 每秒自愿上下文切换次数 ： 进程无法获取资源，导致的上下文切换属于正常现象</p>
-<p>nvcswch/s 每秒非自愿上下文切换次数： 由于时间片已到等原因，被系统强制调度，发生的上下文切换，比如大量CPU的抢占</p>
-<p>10个线程持续运行5分钟</p>
-<p>sysbench –threads=10 –max-time=300 threads run</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># sysbench --threads=10 --max-time=300 threads run</span>
-WARNING: --max-time is deprecated, use --time instead
-sysbench <span class="token number">1.0</span>.20 <span class="token punctuation">(</span>using system LuaJIT <span class="token number">2.1</span>.0-beta3<span class="token punctuation">)</span>
-
-Running the <span class="token builtin class-name">test</span> with following options:
-Number of threads: <span class="token number">10</span>
-Initializing random number generator from current <span class="token function">time</span>
-
-
-Initializing worker threads<span class="token punctuation">..</span>.
-
-Threads started<span class="token operator">!</span>
-
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>每隔1秒输出1组数据</p>
-<p>vmstat 1</p>
-<p>每隔1秒输出1组进程数据</p>
-<p>pidstat -w -u 1 </p>
-<p>每隔1秒输出1组进程+线程的数据</p>
-<p>pidstat -wt  1</p>
-<p>中断数据查看</p>
-<p>watch -d cat /proc/interrupts</p>
-<p>中断是系统用来响应硬件设备请求的一种机制，它会打断进程的正常调度和执行，然后调用内<br>核中的中断处理程序来响应设备的请求。</p>
-<p>Linux 将中断处理过程分成了两个阶段，也就 是上半部和下半部:</p>
-<p>上半部直接处理硬件请求，也就是我们常说的硬中断，特点是快速执行; 比如响应网卡<br> 而下半部则是由内核触发，也就是我们常说的软中断，特点是延迟执行。比如接收到网卡传递过来的数据</p>
-<p>中断信息查询</p>
-<p>/proc/softirqs 提供了软中断的运行情况; </p>
-<p>/proc/interrupts 提供了硬中断的运行情况</p>
-<p>如下图所示</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># tail /proc/softirqs</span>
-          HI:          <span class="token number">0</span>          <span class="token number">0</span>
-       TIMER:     <span class="token number">112173</span>     <span class="token number">109993</span>
-      NET_TX:        <span class="token number">122</span>        <span class="token number">128</span>
-      NET_RX:     <span class="token number">260343</span>     <span class="token number">260278</span>
-       BLOCK:      <span class="token number">36680</span>      <span class="token number">36453</span>
-    IRQ_POLL:          <span class="token number">0</span>          <span class="token number">0</span>
-     TASKLET:          <span class="token number">2</span>          <span class="token number">5</span>
-       SCHED:     <span class="token number">199036</span>     <span class="token number">206830</span>
-     HRTIMER:          <span class="token number">0</span>          <span class="token number">0</span>
-         RCU:     <span class="token number">287404</span>     <span class="token number">285279</span>
-<span class="token comment"># </span>
-<span class="token comment"># </span>
-<span class="token comment"># tail /proc/interrupts</span>
-IWI:          <span class="token number">0</span>         <span class="token number">30</span>   IRQ work interrupts
-RTR:          <span class="token number">0</span>          <span class="token number">0</span>   APIC ICR <span class="token builtin class-name">read</span> retries
-RES:      <span class="token number">25477</span>      <span class="token number">26021</span>   Rescheduling interrupts
-CAL:     <span class="token number">650516</span>     <span class="token number">606681</span>   Function call interrupts
-TLB:      <span class="token number">74973</span>      <span class="token number">73394</span>   TLB shootdowns
-ERR:          <span class="token number">0</span>
-MIS:          <span class="token number">0</span>
-PIN:          <span class="token number">0</span>          <span class="token number">0</span>   Posted-interrupt notification event
-NPI:          <span class="token number">0</span>          <span class="token number">0</span>   Nested posted-interrupt event
-PIW:          <span class="token number">0</span>          <span class="token number">0</span>   Posted-interrupt wakeup event
-<span class="token comment"># </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>TIMER(定时中断)、 </p>
-<p>NET_RX(网络接收)、</p>
-<p>SCHED(内核调度)、</p>
-<p>RCU(RCU 锁)</p>
-<p>一般上面这4个软中断会频繁发生，但是找到最频繁发生变更那个可能就是有问题的软中断</p>
-<p><img src="/Users/mac/Downloads/%E4%B8%8B%E8%BD%BD.png" alt="下载">  </p>
-<p>![image-20220728080446167](/Users/mac/Library/Application Support/typora-user-images/image-20220728080446167.png)</p>
-<p>![image-20220704081011989](/Users/mac/Library/Application Support/typora-user-images/image-20220704081011989.png)</p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/CPU/" rel="tag">CPU<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/CPU%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="tag">CPU问题排查常用命令<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/Linux%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" rel="tag">Linux问题排查<span class="tag-unordered list-count">4</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2016/09/07/linux/problem/2-linux-nei-cun-xiang-guan-ming-ling/"> 【Linux】-2-内存问题排查常用命令</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

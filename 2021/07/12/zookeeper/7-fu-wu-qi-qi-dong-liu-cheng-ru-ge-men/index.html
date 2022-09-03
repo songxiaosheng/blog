@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176093">
+<link rel="stylesheet" href="/css/style.css?v=1662168254555">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176093"></script>
+<script src="/js/core.js?v=1662168254555"></script>
 
 
 
@@ -48,354 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>07-服务器启动流程入个门</h1>
-			<div class="info"><span class="date">2021年7月12日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">Zookeeper版本3.6.2源码系列</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/zookeeper/7-服务器启动流程入个门.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="7-服务器启动流程入个门"><a href="#7-服务器启动流程入个门" class="headerlink" title="7-服务器启动流程入个门"></a>7-服务器启动流程入个门</h1><h2 id="7-1-程序入口"><a href="#7-1-程序入口" class="headerlink" title="7.1 程序入口"></a>7.1 程序入口</h2><p>默认情况下我们会执行命令bin/zkServer.sh start<br>启动zookeeper服务端程序，打开zkServer.sh可以看到有这样配置主类</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">ZOOMAIN<span class="token operator">=</span><span class="token string">"org.apache.zookeeper.server.quorum.QuorumPeerMain"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>和启动命令</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">nohup <span class="token string">"$JAVA"</span> <span class="token string">"-Dzookeeper.log.dir=${ZOO_LOG_DIR}"</span> <span class="token string">"-Dzookeeper.root.logger=${ZOO_LOG4J_PROP}"</span> \
-<span class="token operator">-</span>cp <span class="token string">"$CLASSPATH"</span> $JVMFLAGS $ZOOMAIN <span class="token string">"$ZOOCFG"</span> <span class="token operator">&gt;</span> <span class="token string">"$_ZOO_DAEMON_OUT"</span> <span class="token number">2</span><span class="token operator">&gt;</span><span class="token operator">&amp;</span><span class="token number">1</span> <span class="token operator">&lt;</span> <span class="token operator">/</span>dev<span class="token operator">/</span><span class="token keyword">null</span> <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-
-
-<p>系统默认的启动类为QuorumPeerMain<br>启动方法如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token class-name">QuorumPeerMain</span> main <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">QuorumPeerMain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">try</span> <span class="token punctuation">{</span>
-        main<span class="token punctuation">.</span><span class="token function">initializeAndRun</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IllegalArgumentException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Invalid arguments, exiting abnormally"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>USAGE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">System</span><span class="token punctuation">.</span>err<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>USAGE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">ZKAuditProvider</span><span class="token punctuation">.</span><span class="token function">addServerStartFailureAuditLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">ServiceUtils</span><span class="token punctuation">.</span><span class="token function">requestSystemExit</span><span class="token punctuation">(</span><span class="token class-name">ExitCode</span><span class="token punctuation">.</span>INVALID_INVOCATION<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ConfigException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Invalid config, exiting abnormally"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">System</span><span class="token punctuation">.</span>err<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Invalid config, exiting abnormally"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">ZKAuditProvider</span><span class="token punctuation">.</span><span class="token function">addServerStartFailureAuditLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">ServiceUtils</span><span class="token punctuation">.</span><span class="token function">requestSystemExit</span><span class="token punctuation">(</span><span class="token class-name">ExitCode</span><span class="token punctuation">.</span>INVALID_INVOCATION<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">DatadirException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Unable to access datadir, exiting abnormally"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">System</span><span class="token punctuation">.</span>err<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Unable to access datadir, exiting abnormally"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">ZKAuditProvider</span><span class="token punctuation">.</span><span class="token function">addServerStartFailureAuditLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">ServiceUtils</span><span class="token punctuation">.</span><span class="token function">requestSystemExit</span><span class="token punctuation">(</span><span class="token class-name">ExitCode</span><span class="token punctuation">.</span>UNABLE_TO_ACCESS_DATADIR<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">AdminServerException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Unable to start AdminServer, exiting abnormally"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">System</span><span class="token punctuation">.</span>err<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Unable to start AdminServer, exiting abnormally"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">ZKAuditProvider</span><span class="token punctuation">.</span><span class="token function">addServerStartFailureAuditLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">ServiceUtils</span><span class="token punctuation">.</span><span class="token function">requestSystemExit</span><span class="token punctuation">(</span><span class="token class-name">ExitCode</span><span class="token punctuation">.</span>ERROR_STARTING_ADMIN_SERVER<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Unexpected exception, exiting abnormally"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">ZKAuditProvider</span><span class="token punctuation">.</span><span class="token function">addServerStartFailureAuditLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">ServiceUtils</span><span class="token punctuation">.</span><span class="token function">requestSystemExit</span><span class="token punctuation">(</span><span class="token class-name">ExitCode</span><span class="token punctuation">.</span>UNEXPECTED_ERROR<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Exiting normally"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token class-name">ServiceUtils</span><span class="token punctuation">.</span><span class="token function">requestSystemExit</span><span class="token punctuation">(</span><span class="token class-name">ExitCode</span><span class="token punctuation">.</span>EXECUTION_FINISHED<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>程序启动后进行初始化和运行如果出现异常则非正常终止进程，如果程序执行完毕则正常终止程序。</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initializeAndRun</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">ConfigException</span><span class="token punctuation">,</span> <span class="token class-name">IOException</span><span class="token punctuation">,</span> <span class="token class-name">AdminServerException</span> <span class="token punctuation">{</span>
-    <span class="token class-name">QuorumPeerConfig</span> config <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">QuorumPeerConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token comment">//指定了conf配置文件则开始解析配置文件</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>args<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        config<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token comment">// Start and schedule the the purge task</span>
-	<span class="token comment">//日志清理定时器</span>
-    <span class="token class-name">DatadirCleanupManager</span> purgeMgr <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DatadirCleanupManager</span><span class="token punctuation">(</span>
-        config<span class="token punctuation">.</span><span class="token function">getDataDir</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        config<span class="token punctuation">.</span><span class="token function">getDataLogDir</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        config<span class="token punctuation">.</span><span class="token function">getSnapRetainCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        config<span class="token punctuation">.</span><span class="token function">getPurgeInterval</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    purgeMgr<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-	<span class="token comment">//配置文件存在，并且是分布式运行则使用配置启动</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>args<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">1</span> <span class="token operator">&amp;&amp;</span> config<span class="token punctuation">.</span><span class="token function">isDistributed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">runFromConfig</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-	   <span class="token comment">//没有配置文件或者不是分布式运行的则以单机模式运行</span>
-        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Either no config or no quorum defined in config, running in standalone mode"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">// there is only server in the quorum -- run as standalone</span>
-        <span class="token class-name">ZooKeeperServerMain</span><span class="token punctuation">.</span><span class="token function">main</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper<span class="tag-unordered list-count">16</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="tag">Zookeeper安装配置<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Zookeeper源码解析<span class="tag-unordered list-count">16</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2021/07/12/zookeeper/8-pei-zhi-xin-xi-shi-ru-he-jia-zai-dao-nei-cun-kong-jian-de/"> 08-配置信息是如何加载到内存空间的</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2021/07/12/zookeeper/6-watch-jian-ting-tong-zhi-ji-zhi-jian-jie/"> 06-Watch监听通知机制简介</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

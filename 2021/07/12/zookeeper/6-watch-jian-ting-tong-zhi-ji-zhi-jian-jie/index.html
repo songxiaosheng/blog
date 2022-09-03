@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176093">
+<link rel="stylesheet" href="/css/style.css?v=1662168254556">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176093"></script>
+<script src="/js/core.js?v=1662168254556"></script>
 
 
 
@@ -48,500 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>06-Watch监听通知机制简介</h1>
-			<div class="info"><span class="date">2021年7月12日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">Zookeeper版本3.6.2源码系列</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/zookeeper/6-Watch监听通知机制简介.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="6-Watch监听通知机制简介"><a href="#6-Watch监听通知机制简介" class="headerlink" title="6-Watch监听通知机制简介"></a>6-Watch监听通知机制简介</h1><h2 id="6-1-Watcher接口"><a href="#6-1-Watcher接口" class="headerlink" title="6.1 Watcher接口"></a>6.1 Watcher接口</h2><p>此接口指定事件处理程序类必须具有的公共接口实施。ZooKeeper客户端将从ZooKeeper获取各种事件它所连接的服务器。使用这种客户机的应用程序处理这些通过向客户机注册回调对象。回调对象应为实现观察者接口的类的实例。</p>
-<h2 id="6-2-IWatchManager-接口"><a href="#6-2-IWatchManager-接口" class="headerlink" title="6.2 IWatchManager 接口"></a>6.2 IWatchManager 接口</h2><p>在DataTree中有两个IWatchManager类型的对象，一个是dataWatches，一个是childWatches，其中dataWatches是保存节点层面的watcher对象，childWatches是保存子节点层面的watcher对象，使用这两个监听器可以分别为节点路径添加监听器在合适的场景下来触发监听，当然也可以移除已添加路径的监听器。接下来我们可以看下IWatchManager接口监听管理器接口对外提供了哪些操作：</p>
-<table>
-<thead>
-<tr>
-<th>方法名</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>boolean addWatch(String path, Watcher watcher)</td>
-<td>为匹配的路径添加监听器，true代表首次添加并成功添加</td>
-</tr>
-<tr>
-<td>default boolean addWatch(String path, Watcher watcher, WatcherMode watcherMode)</td>
-<td>为匹配的路径添加监听器并指定监听节点，true代表首次添加并成功添加</td>
-</tr>
-<tr>
-<td>boolean containsWatcher(String path, Watcher watcher)</td>
-<td>检查给定路径下指定的监听器是否存在</td>
-</tr>
-<tr>
-<td>boolean removeWatcher(String path, Watcher watcher)</td>
-<td>移除指定路径下的指定监听器，返回true代表移除成功</td>
-</tr>
-<tr>
-<td>void removeWatcher(Watcher watcher)</td>
-<td>一般用在连接关闭的时候，移除此连接监听器下所有的监听</td>
-</tr>
-<tr>
-<td>WatcherOrBitSet triggerWatch(String path, EventType type)</td>
-<td>触发指定路径下的指定事件类型，返回值为已经触发的监听</td>
-</tr>
-<tr>
-<td>WatcherOrBitSet triggerWatch(String path, EventType type, WatcherOrBitSet suppress);</td>
-<td>触发指定路径下的指定事件类型，其中suppress参数为需要过滤的事件不能被触发，返回值为已经触发的监听</td>
-</tr>
-<tr>
-<td>int size();</td>
-<td>监听器数量</td>
-</tr>
-<tr>
-<td>void shutdown()</td>
-<td>清除监听器</td>
-</tr>
-<tr>
-<td>WatchesSummary getWatchesSummary()</td>
-<td>返回监听器摘要信息，主要是几个监听器的统计数据</td>
-</tr>
-<tr>
-<td>WatchesReport getWatches()</td>
-<td>主要返回监听器的session id与路径映射关系</td>
-</tr>
-<tr>
-<td>WatchesPathReport getWatchesByPath();</td>
-<td>主要返回路径与session id的映射关系</td>
-</tr>
-<tr>
-<td>void dumpWatches(PrintWriter pwriter, boolean byPath);</td>
-<td>将watch信息输出到pwriter流中</td>
-</tr>
-<tr>
-<td>default int getRecursiveWatchQty()</td>
-<td>返回递归观察器当前的数目</td>
-</tr>
-</tbody></table>
-<p>通过以上方法我们可以了解到主要的监听方法是添加，移除，触发监听器，和查询信息等方法，那接下来先看下默认情况下的监听器实现类型WatchManager</p>
-<h3 id="6-3-WatchManager"><a href="#6-3-WatchManager" class="headerlink" title="6.3 WatchManager"></a>6.3 WatchManager</h3><p> dataWatches和childWatches分别是如何创建呢我们可以看下在DataTree类型的构造器中初始化监听管理器对象是通过WatchManagerFactory工厂类型提供的工厂方法创建的如下代码：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">dataWatches <span class="token operator">=</span> <span class="token class-name">WatchManagerFactory</span><span class="token punctuation">.</span><span class="token function">createWatchManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-childWatches <span class="token operator">=</span> <span class="token class-name">WatchManagerFactory</span><span class="token punctuation">.</span><span class="token function">createWatchManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-<p>在WatchManagerFactory工厂类型中createWatchManager工厂方法如下：</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">public</span> <span class="token keyword">static</span> IWatchManager <span class="token function">createWatchManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span> throws IOException <span class="token punctuation">{</span>
-  String watchManagerName <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span>ZOOKEEPER_WATCH_MANAGER_NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span>watchManagerName <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    watchManagerName <span class="token operator">=</span> WatchManager<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">try</span> <span class="token punctuation">{</span>
-    IWatchManager watchManager <span class="token operator">=</span>
-
- <span class="token punctuation">(</span>IWatchManager<span class="token punctuation">)</span> Class<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>watchManagerName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getConstructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Using {} as watch manager"</span><span class="token punctuation">,</span> watchManagerName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> watchManager<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>Exception e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    IOException ioe <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">IOException</span><span class="token punctuation">(</span><span class="token string">"Couldn't instantiate "</span> <span class="token operator">+</span> watchManagerName<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">throw</span> ioe<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>主要逻辑为：</p>
-<p>获取JVM参数配置中的zookeeper.watchManagerName监听管理器类型，如果已指定则使用此类型创建监听管理器</p>
-<p>如果JVM参数未指定类型则使用WatchManager监听管理器来使用反射创建对象。</p>
-<p>WatchManager类型主要实现了IWatchManager接口针对监听管理器做具体的实现，在前面我们已经了解了IWatchManager类型的主要方法的作用，接下来我们可以看下WatchManager是如何实现的</p>
-<p>WatchManager类型主要有3个成员变量：</p>
-<table>
-<thead>
-<tr>
-<th>变量名</th>
-<th>类型</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>watchTable</td>
-<td>Map&lt;String, Set<watcher>&gt;</watcher></td>
-<td>路径监听器映射，KEY为路径，VALUE为监听器集合</td>
-</tr>
-<tr>
-<td>watch2Paths</td>
-<td>Map&lt;Watcher, Set<string>&gt;</string></td>
-<td>监听器-路径映射，KEY为监听器，VALUE为路径集合</td>
-</tr>
-<tr>
-<td>watcherModeManager</td>
-<td>WatcherModeManager</td>
-<td>递归节点管理</td>
-</tr>
-</tbody></table>
-<p>WatchManager重写了IWatchManager接口针对监听管理的通用方法比如添加监听器，移除监听器，触发监听器等等</p>
-<p>其中添加和移除监听器操作分别会将监听器在watchTable，watch2Paths，watcherModeManager 对象中放入或者移除，而触发监听器方法则会执行通知操作</p>
-<p>那什么时候会触发监听操作呢，这个就需要我们先来了解一个类型Watcher.EventType</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">enum</span> <span class="token class-name">EventType</span> <span class="token punctuation">{</span>
-    <span class="token function">None</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">NodeCreated</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">NodeDeleted</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">NodeDataChanged</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">NodeChildrenChanged</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">DataWatchRemoved</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">ChildWatchRemoved</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">PersistentWatchRemoved</span> <span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p> <img src="https://img-blog.csdnimg.cn/d7279cbf920e49f587c5cdc4b547e6ef.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5a6L5bCP55Sf55qE5Y2a5a6i,size_16,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
-<p>EventType是一个枚举类型用来列举Zookeeper可能发生的事件，可以看到监听事件的触发主要发生在节点状态的变更与节点数据的变更时触发</p>
-<p>接下来我们可以详细看下Zookeeper监听通知的触发方法，如何通知所有订阅者</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
-<span class="token keyword">public</span> <span class="token class-name">WatcherOrBitSet</span> <span class="token function">triggerWatch</span><span class="token punctuation">(</span><span class="token class-name">String</span> path<span class="token punctuation">,</span> <span class="token class-name">EventType</span> type<span class="token punctuation">,</span> <span class="token class-name">WatcherOrBitSet</span> supress<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token class-name">WatchedEvent</span> e <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WatchedEvent</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> <span class="token class-name">KeeperState<span class="token punctuation">.</span>SyncConnected</span><span class="token punctuation">,</span> path<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Watcher</span><span class="token punctuation">&gt;</span></span> watchers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">//拿到当前path的各层父path进行递归</span>
-    <span class="token class-name">PathParentIterator</span> pathParentIterator <span class="token operator">=</span> <span class="token function">getPathParentIterator</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-<span class="token comment">//遍历所有路径</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> localPath <span class="token operator">:</span> pathParentIterator<span class="token punctuation">.</span><span class="token function">asIterable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-<span class="token comment">//获取当前路径的所有注册的监听器对象</span>
-            <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Watcher</span><span class="token punctuation">&gt;</span></span> thisWatchers <span class="token operator">=</span> watchTable<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>localPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>thisWatchers <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> thisWatchers<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">continue</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token class-name">Iterator</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Watcher</span><span class="token punctuation">&gt;</span></span> iterator <span class="token operator">=</span> thisWatchers<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">while</span> <span class="token punctuation">(</span>iterator<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token class-name">Watcher</span> watcher <span class="token operator">=</span> iterator<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">//获取当前监听器和路径对应的当前Zookeeper节点对象</span>
-                <span class="token class-name">WatcherMode</span> watcherMode <span class="token operator">=</span> watcherModeManager<span class="token punctuation">.</span><span class="token function">getWatcherMode</span><span class="token punctuation">(</span>watcher<span class="token punctuation">,</span> localPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">//监听节点是递归的</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>watcherMode<span class="token punctuation">.</span><span class="token function">isRecursive</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>type <span class="token operator">!=</span> <span class="token class-name">EventType<span class="token punctuation">.</span>NodeChildrenChanged</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        watchers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>watcher<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>pathParentIterator<span class="token punctuation">.</span><span class="token function">atParentPath</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-<span class="token comment">//当前不是父路径</span>
-                    watchers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>watcher<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>watcherMode<span class="token punctuation">.</span><span class="token function">isPersistent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-<span class="token comment">//当前节点不是持久的</span>
-                        iterator<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> paths <span class="token operator">=</span> watch2Paths<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>watcher<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span>paths <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-<span class="token comment">//从监听路径映射中移除当前路径</span>
-                            paths<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>localPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>thisWatchers<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                watchTable<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>localPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>watchers<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>LOG<span class="token punctuation">.</span><span class="token function">isTraceEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token class-name">ZooTrace</span><span class="token punctuation">.</span><span class="token function">logTraceMessage</span><span class="token punctuation">(</span>LOG<span class="token punctuation">,</span> <span class="token class-name">ZooTrace</span><span class="token punctuation">.</span>EVENT_DELIVERY_TRACE_MASK<span class="token punctuation">,</span> <span class="token string">"No watchers for "</span> <span class="token operator">+</span> path<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token comment">//这里supress是用来去重的</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Watcher</span> w <span class="token operator">:</span> watchers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>supress <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> supress<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>w<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">continue</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        w<span class="token punctuation">.</span><span class="token function">process</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">switch</span> <span class="token punctuation">(</span>type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">case</span> <span class="token class-name">NodeCreated</span><span class="token operator">:</span>
-            <span class="token class-name">ServerMetrics</span><span class="token punctuation">.</span><span class="token function">getMetrics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>NODE_CREATED_WATCHER<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>watchers<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">case</span> <span class="token class-name">NodeDeleted</span><span class="token operator">:</span>
-            <span class="token class-name">ServerMetrics</span><span class="token punctuation">.</span><span class="token function">getMetrics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>NODE_DELETED_WATCHER<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>watchers<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">case</span> <span class="token class-name">NodeDataChanged</span><span class="token operator">:</span>
-            <span class="token class-name">ServerMetrics</span><span class="token punctuation">.</span><span class="token function">getMetrics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>NODE_CHANGED_WATCHER<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>watchers<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">case</span> <span class="token class-name">NodeChildrenChanged</span><span class="token operator">:</span>
-            <span class="token class-name">ServerMetrics</span><span class="token punctuation">.</span><span class="token function">getMetrics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>NODE_CHILDREN_WATCHER<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>watchers<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-        <span class="token keyword">default</span><span class="token operator">:</span>
-            <span class="token comment">// Other types not logged.</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token comment">//最后将触发过的监听器对象放入去重Set对象中</span>
-    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">WatcherOrBitSet</span><span class="token punctuation">(</span>watchers<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper<span class="tag-unordered list-count">16</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="tag">Zookeeper安装配置<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Zookeeper源码解析<span class="tag-unordered list-count">16</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2021/07/12/zookeeper/7-fu-wu-qi-qi-dong-liu-cheng-ru-ge-men/"> 07-服务器启动流程入个门</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2021/07/12/zookeeper/5-jiao-ni-ru-he-yong-zookeeper-kai-fa-suo-yu-sheng-chan-zhe-xiao-fei-zhe/"> 05-教你如何用Zookeeper开发锁与生产者消费者?</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

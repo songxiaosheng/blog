@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176098">
+<link rel="stylesheet" href="/css/style.css?v=1662168254562">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176098"></script>
+<script src="/js/core.js?v=1662168254562"></script>
 
 
 
@@ -48,299 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>05-调度作业模版类型设计</h1>
-			<div class="info"><span class="date">2021年7月4日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">Elastic-Job2.1.5源码</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/elasticjob/5-调度作业模版类型设计.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<p>@<a href="%E7%9B%AE%E5%BD%95">TOC</a></p>
-<h1 id="5-调度作业模版类型设计"><a href="#5-调度作业模版类型设计" class="headerlink" title="5 调度作业模版类型设计"></a>5 调度作业模版类型设计</h1><h2 id="5-1-调度作业的类型"><a href="#5-1-调度作业的类型" class="headerlink" title="5.1 调度作业的类型"></a>5.1 调度作业的类型</h2><p>调度作业是定时调度的核心，调度程序整个生命周期主要是围绕调度作业来说的，从一开始的调度作业配置初始化，调度作业触发，调度作业治理，调度作业监控等等，调度程序都是围绕调度作业来说的，在我们开发的业务场景中可能会有很多相似的场景，可以通过定制作业模版来简化相同类型作业的开发工作，Elastic-Job系统中提供了作业类型JobType枚举来标记作业的类型，目前一共有三种作业枚举类型，分别是：</p>
-<ul>
-<li><p>SIMPLE（简单作业）</p>
-</li>
-<li><p>DATAFLOW（数据流）</p>
-</li>
-<li><p>SCRIPT（脚本）</p>
-</li>
-</ul>
-<p>这三种作业类型分别对应了前面提到的三种作业配置SimpleJobConfiguration，DataflowJobConfiguration和ScriptJobConfiguration。每种作业配置中都会有一个jobClass属性用来标示作业的执行类，三种作业类型分别对应了三种弹性作业ElasticJob接口的子接口：</p>
-<ul>
-<li><p>SimpleJob</p>
-</li>
-<li><p>DataflowJob</p>
-</li>
-<li><p>ScriptJob</p>
-</li>
-</ul>
-<p>使用不同的作业类型可以实现不同的功能，当然我们也可以根据需求来实现接口类型ElasticJob，来根据业务定制化开发不同的作业模版，来实现具体的作业，现在我们开始看下系统是怎么设计作业相关结构的。<br><img src="https://img-blog.csdnimg.cn/c2570f36db76464c8ed76ff9938c87c4.png" alt="图片"></p>
-<p>图5.1 作业类型</p>
-<p>可以看到所有作业的设计顶层接口都为弹性作业接口ElasticJob，系统为我们提供的SimpleJob，DataflowJob，ScriptJob均为接口类型，我们可以实现不同作业接口灵活配置使用。</p>
-<p>有了不同类型的作业，那不同类型的作业的执行过程是封装在哪里呢，在Elastic-Job中将作业的执行过程封装在AbstractElasticJobExecutor模版类中，而我们不同的作业则分别对应不同的作业执行器</p>
-<ul>
-<li><p>SimpleJobExecutor</p>
-</li>
-<li><p>DataflowJobExecutor</p>
-</li>
-<li><p>ScriptJobExecutor</p>
-</li>
-</ul>
-<p>作业执行器是根据业务逻辑来高度定制化的，当然我们也可以根据需求通过继承AbstractElasticJobExecutor模版来将需要的业务逻辑封装在作业执行器中，来定制化作业。</p>
-<p><img src="https://img-blog.csdnimg.cn/9ff3c3ff64df4792815b162caa11b0fd.png" alt="在这里插入图片描述"><br> 图5.2 作业执行器类型</p>
-<p>这里可以看到顶层的作业执行器为抽象类型，在调度触发过程中，作业的执行核心逻辑都会被封装到这个AbstractElasticJobExecutor类型的抽象模版中，后面我们会详细介绍，这里可以了解下我们不同种类型的作业都对应着一个作业执行器来帮我们封装定制化的业务执行。</p>
-<h2 id="5-2-ElasticJob弹性作业接口"><a href="#5-2-ElasticJob弹性作业接口" class="headerlink" title="5.2 ElasticJob弹性作业接口"></a>5.2 ElasticJob弹性作业接口</h2><p>本接口为顶层作业接口，未实现具体的方法主要用来标示弹性分布式作业。</p>
-<h2 id="5-3-SimpleJob简单类型作业接口"><a href="#5-3-SimpleJob简单类型作业接口" class="headerlink" title="5.3 SimpleJob简单类型作业接口"></a>5.3 SimpleJob简单类型作业接口</h2><p>这个接口只有一个执行方法，参数为分片上下文，如果只需要调用方法执行作业则只实现本接口，使用执行方法即可。调用过程为SimpleJobExecutor执行器来触发。</p>
-<table>
-<thead>
-<tr>
-<th>方法名</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>execute(shardingContext:ShardingContext):void</td>
-<td>作业执行方法，参数为分片上下文。</td>
-</tr>
-</tbody></table>
-<h2 id="5-4-DataflowJob数据流类型作业接口"><a href="#5-4-DataflowJob数据流类型作业接口" class="headerlink" title="5.4 DataflowJob数据流类型作业接口"></a>5.4 DataflowJob数据流类型作业接口</h2><p>这个接口为数据流处理使用，一共提供了两个方法，fetchData用来获取数据，processData用来处理数据， 具体配置对应DataflowJobConfiguration，在DataflowJobConfiguration中属性streamingProcess为是否流式处理数据配置.如果流式处理数据为true，则fetchData不返回空结果将持续执行作业，如果非流式处理数据即配置为false，则处理数据完成后作业结束.后面我们会通过介绍DataflowJobExecutor来详细介绍调用实现。</p>
-<table>
-<thead>
-<tr>
-<th>方法名</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>fetchData(shardingContext:ShardingContext):List<t></t></td>
-<td>获取待处理数据</td>
-</tr>
-<tr>
-<td>processData(shardingContext:ShardingContext,data:List<t>):void</t></td>
-<td>处理数据</td>
-</tr>
-</tbody></table>
-<h2 id="5-5-ScriptJob脚本类型作业接口"><a href="#5-5-ScriptJob脚本类型作业接口" class="headerlink" title="5.5 ScriptJob脚本类型作业接口"></a>5.5 ScriptJob脚本类型作业接口</h2><p>本接口无任何扩展方法，在前面我们看到的ScriptJobConfiguration中作业类型jobType 属性值为 JobType.SCRIPT，这个类中的作业执行类jobClass对应ScriptJob.class.getCanonicalName()，也就是说脚本作业的触发类型已经确定了，另外还有个属性为作业执行脚本scriptCommandLine，当我们使用脚本执行的时候可以将命令行脚本配置到这个变量来保存即可，真正在脚本作业执行是由ScriptJobExecutor脚本作业执行器来执行的，在触发作业的时候会直接调用scriptCommandLine字符串脚本来执行对应脚本。</p>
-<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/ElasticJob/" rel="tag">ElasticJob<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">ElasticJob源码解析<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/%E4%BD%9C%E4%B8%9A%E6%A8%A1%E7%89%88%E7%B1%BB%E5%9E%8B%E8%AE%BE%E8%AE%A1/" rel="tag">作业模版类型设计<span class="tag-unordered list-count">1</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2021/07/05/elasticjob/6-diao-du-zuo-ye-de-pei-zhi-shi-ru-he-zai-fen-bu-shi-chang-jing-xia-cun-chu-de/"> 06-调度作业的配置是如何在分布式场景下存储的？</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2021/07/03/elasticjob/4-builder-jian-zao-zhe-she-ji-mo-shi-gou-zao-fu-za-de-zuo-ye-pei-zhi/"> 04-Builder建造者设计模式构造复杂的作业配置</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

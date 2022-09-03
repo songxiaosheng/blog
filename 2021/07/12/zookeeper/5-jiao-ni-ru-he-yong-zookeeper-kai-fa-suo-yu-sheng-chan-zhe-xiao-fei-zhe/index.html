@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176093">
+<link rel="stylesheet" href="/css/style.css?v=1662168254556">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176093"></script>
+<script src="/js/core.js?v=1662168254556"></script>
 
 
 
@@ -48,724 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>05-教你如何用Zookeeper开发锁与生产者消费者?</h1>
-			<div class="info"><span class="date">2021年7月12日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">Zookeeper版本3.6.2源码系列</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/zookeeper/5-教你如何用Zookeeper开发锁与生产者消费者?.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="5-教你如何用Zookeeper开发锁与生产者消费者"><a href="#5-教你如何用Zookeeper开发锁与生产者消费者" class="headerlink" title="5-教你如何用Zookeeper开发锁与生产者消费者?"></a>5-教你如何用Zookeeper开发锁与生产者消费者?</h1><h2 id="5-1-源码下载"><a href="#5-1-源码下载" class="headerlink" title="5.1 源码下载"></a>5.1 源码下载</h2><p>首先我们访问github官方仓库来拉取最新代码 <a target="_blank" rel="noopener" href="https://github.com/apache/zookeeper">https://github.com/apache/zookeeper</a></p>
-<p>克隆代码：</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">git clone https<span class="token operator">:</span><span class="token comment">//github.com/apache/zookeeper.git</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>或者git clone <a href="mailto:git@github.com:apache/zookeeper.git">git@github.com:apache/zookeeper.git</a></p>
-<p>查看版本列表</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">git tag<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>切换到3.6.2版本：</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">git checkout release<span class="token operator">-</span><span class="token number">3.6</span><span class="token punctuation">.</span><span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>然后使用idea或者eclipse导入项目，配置好maven即可</p>
-<h2 id="5-2-源码目录说明"><a href="#5-2-源码目录说明" class="headerlink" title="5.2 源码目录说明"></a>5.2 源码目录说明</h2><p> 先来给大家截个图:<br><img src="https://img-blog.csdnimg.cn/cd9644c0e38d4e859d809eead96be330.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5a6L5bCP55Sf55qE5Y2a5a6i,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
-<p> 然后针对各个目录这里我来解释一下,先了解下 为下一章了解源码做个准备:</p>
-<table>
-<thead>
-<tr>
-<th>文件</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>bin</td>
-<td>包含访问zookeeper服务器和命令行客户端的脚本</td>
-</tr>
-<tr>
-<td>conf</td>
-<td>启动zookeeper默认的配置文件目录</td>
-</tr>
-<tr>
-<td>zookeeper-assembly</td>
-<td>基础服务打包目录</td>
-</tr>
-<tr>
-<td>zookeeper-client</td>
-<td>客户端，目前只支持c</td>
-</tr>
-<tr>
-<td>zookeeper-compatibility-tests</td>
-<td>兼容性测试目录</td>
-</tr>
-<tr>
-<td>zookeeper-contrib</td>
-<td>附加的功能,比如zookeeper可视化客户端工具</td>
-</tr>
-<tr>
-<td>zookeeper-doc</td>
-<td>zookeeper文档</td>
-</tr>
-<tr>
-<td>zookeeper-it</td>
-<td>供fatjar使用，进行系统测试依赖的类</td>
-</tr>
-<tr>
-<td>zookeeper-jute</td>
-<td>zookeeper序列化组件</td>
-</tr>
-<tr>
-<td>zookeeper-metrics-providers</td>
-<td>监控相关，目前支持普罗米修斯 prometheus</td>
-</tr>
-<tr>
-<td>zookeeper-recipes</td>
-<td>zookeeper提供的一些功能例子，包括选举election，lock和queue</td>
-</tr>
-<tr>
-<td>zookeeper-server</td>
-<td>zookeeper服务端</td>
-</tr>
-</tbody></table>
-<h2 id="5-3-使用Java和Zookeeper开发一个生产者消费者队列例子"><a href="#5-3-使用Java和Zookeeper开发一个生产者消费者队列例子" class="headerlink" title="5.3 使用Java和Zookeeper开发一个生产者消费者队列例子"></a>5.3 使用Java和Zookeeper开发一个生产者消费者队列例子</h2><p>所谓的生产者消费者模型，是通过一个<strong>容器</strong>来<strong>解决生产者和消费者的强耦合问题</strong>。通俗的讲，就是生产者在不断的生产，消费者也在不断的消费，可是消费者消费的产品是生产者生产的，这就<strong>必然存在一个中间容器</strong>，我们可以把这个容器想象成是一个货架，当<strong>货架空</strong>的时候，生产者要生产产品，此时消费者在等待生产者往货架上生产产品，而当<strong>货架满</strong>的时候，消费者可以从货架上拿走商品，生产者此时等待货架的空位，这样不断的循环。那么在这个过程中，生产者和消费者是不直接接触的，所谓的‘货架’其实就是一个阻塞队列，生产者生产的产品不直接给消费者消费，而是仍给阻塞队列，这个阻塞队列就是来解决生产者消费者的强耦合的。就是生产者消费者模型。</p>
-<p>总结一下:生产者消费者能够解决的问题如下：</p>
-<ul>
-<li>生产与消费的速度不匹配</li>
-<li>软件开发过程中解耦</li>
-</ul>
-<p>如果要使用Zookeeper来实现生产者消费者,那么 Zookeeper需要有数据模型来充当中间容器，在这里我们可以使用<strong>顺序节点来实现有序的队列</strong>，<strong>生产数据的话就创建节点</strong>，<strong>消费数据的话就读取节点数据然后删除节点</strong>。</p>
-<p>使用Zookeeper来实现生产者消费者模型，需要使用zookeeper实现有序的队列，<strong>有序的队列</strong>我们就可以用<strong>Zookeeper的顺序节点</strong>，假如我们创建的是无界队列，那么生产者生产消息放入队列即可，消费者消费消息的时候需要先判断队列是否为空如果为空则等待，<strong>通过监听机制来监听队列节点的变化</strong>，如果有消息进入创建了节点则开始消费消息。</p>
-<ul>
-<li><p>首先来说<strong>生产者生产消息的过程</strong>，<br>生产消息的时候<strong>创建临时顺序节点来代表队列的节点</strong>，将数据放到节点下面。</p>
-</li>
-<li><p>再看消<strong>费者消费消息的过程</strong>，<br><strong>消费者消费消息先判断临时顺序节点是否存在</strong>：</p>
-<ul>
-<li>如果<strong>临时节点不存在则说明没有消息可以消费则wait等待</strong>，</li>
-<li>当有<strong>新节点的加入</strong>的时候则节<strong>点监听器可以监听到节点的变化唤醒wait等待</strong>的消费。</li>
-<li>如果<strong>临时节点存在</strong>，则消息不为空开始消费消息，消费消息的过程先读取节点序号最小的节点的数据，然后删除读取到数据的节点，删除成功则说明成功读取消息，如果读取失败则重新进入读取消息过程。</li>
-</ul>
-</li>
-</ul>
-<h1 id="5-4-分布式锁"><a href="#5-4-分布式锁" class="headerlink" title="5.4 分布式锁"></a>5.4 分布式锁</h1><p><strong>完全分布式锁是全局同步的</strong>，这意味着在<strong>任何时间点</strong>上，没有两个客户机认为它们持有相同的锁。这些可以用Zookeeper来实现。与优先队列一样，首先定义一个锁节点。</p>
-<p>在ZooKeeper源码目录中在项目目录zookeeper-recipes/zookeeper-recipes-lock中存在锁实现的例子。</p>
-<p>接下来我们看下<strong>锁的实现思路</strong>:</p>
-<ol>
-<li><p><strong>调用create()<strong>，路径名“locknode/guide-lock-”，并</strong>设置序列和临时标志</strong>来创建节点。</p>
-</li>
-<li><p>在<strong>不设置监视标志的情况下</strong>在锁节点上<strong>调用getChildren()</strong>(这对于<strong>避免群集效应</strong>非常重要,防止一个节点释放锁之后所有触发所有节点工作)。</p>
-</li>
-<li><p>如果在<strong>步骤1中创建的路径名具有最低的序列号后缀</strong>，则<strong>客户端拥有锁</strong>，并且客户端退出协议。</p>
-</li>
-<li><p>客户端<strong>调用exists()<strong>，在锁定目录的路径上</strong>设置</strong>了下一个最低序列号的<strong>监视标志</strong>。</p>
-</li>
-<li><p>如果<strong>exists()返回null</strong>，请转<strong>步骤2</strong>。否则，在转到步骤2之前，等待来自上一个步骤的路径名通知。</p>
-</li>
-</ol>
-<p><strong>释放锁</strong>:客户端希望释放锁，只需删除在步骤1中创建的节点即可。</p>
-<p>避免了<strong>群体效应</strong>：</p>
-<p>删除一个节点只会导致一个客户端被唤醒，因为每个节点都下一个客户端监视。这样就避免了群体效应。</p>
-<h2 id="5-5-共享锁："><a href="#5-5-共享锁：" class="headerlink" title="5.5 共享锁："></a>5.5 共享锁：</h2><p><strong>获取读锁</strong>:</p>
-<ol>
-<li><p>调用 <strong>create()</strong> 创建路径名为”guid-/read-“的节点。这是稍后在协议中使用的锁节点。确保同时设置了序列标志和临时标志。</p>
-</li>
-<li><p>在不<strong>设置监视标志的情况下</strong>在锁节点上<strong>调用getChildren()<strong>——这很重要，因为它可以</strong>避免羊群效应</strong>。</p>
-</li>
-<li><p>如果<strong>没有子节点的路径名</strong>以 <strong>“write-”</strong> 开头，且序号小于步骤1中创建的节点，则<strong>客户机拥有锁</strong>，可以退出协议。</p>
-</li>
-<li><p><strong>否则</strong>，**调用exists()**，它带有监视标志，设置在锁目录中的节点上，路径名以“write-”开头，序号次之。</p>
-</li>
-<li><p>If <strong>exists()返回false</strong>，<strong>转到步骤2</strong>。</p>
-</li>
-<li><p><strong>否则</strong>，在转到<strong>步骤2之前</strong>，等待来自<strong>上一个步骤的路径名通知</strong></p>
-</li>
-</ol>
-<p><strong>获取写锁:</strong></p>
-<ol>
-<li><p>**调用create()**创建路径名为”guid-/write-“的节点。这是协议后面提到的锁节点。确保同时设置了序列标志和临时标志。</p>
-</li>
-<li><p>在<strong>不设置监视标志的情况下</strong>在锁节点上<strong>调用getChildren()<strong>——这很重要，因为它可以</strong>避免羊群效应</strong>。</p>
-</li>
-<li><p>如果<strong>没有子节点的序列号低于步骤1中创建的节点</strong>，则<strong>客户端拥有锁</strong>，并退出协议。</p>
-</li>
-<li><p>在<strong>具有下一个最低序列号</strong>的路径名的节点上<strong>调用exists()<strong>，并</strong>设置监视标志</strong>。</p>
-</li>
-<li><p>If <strong>exists()返回false</strong>，<strong>转到步骤2</strong>。否则，在转到步骤2之前，等待来自上一个步骤的路径名通知。</p>
-</li>
-</ol>
-<p><strong>注:</strong></p>
-<p>这种方法可能会产生一种<strong>群体效应</strong>:当有<strong>一大群客户端</strong>在等待一个<strong>读锁</strong>，并且当具有最低序列号的 <strong>“写”节点被删除时</strong>，<strong>所有客户端</strong>或多或少地<strong>同时得到通知</strong>。事实上。这是有效的行为:因为<strong>所有等待的读取器</strong>客户机<strong>都应该被释放</strong>，因为它们拥有锁。<strong>群体效应指的是释放一个“群体”</strong>，而实际上只有一个或少量的机器可以进行。</p>
-<h2 id="5-6-使用锁来进行主节点选举"><a href="#5-6-使用锁来进行主节点选举" class="headerlink" title="5.6 使用锁来进行主节点选举"></a>5.6 使用锁来进行主节点选举</h2><p><strong>选主节点：</strong><br>选主节点是针对我们业务来说，选主的时候可以通过分布式锁让多个节点同时获取锁，优<strong>先获取锁的节点执行选主逻辑</strong>，写入主节点标示，然后释放锁，让后面的节点开始执行，当前节点拿到锁后可以判断主节点是否存在，不存在则执行选主逻辑，<strong>如果存在主节点则跳过</strong>。</p>
-<h2 id="5-7-Java客户端使用Java和Zookeeper开发一个屏障例子"><a href="#5-7-Java客户端使用Java和Zookeeper开发一个屏障例子" class="headerlink" title="5.7 Java客户端使用Java和Zookeeper开发一个屏障例子"></a>5.7 Java客户端使用Java和Zookeeper开发一个屏障例子</h2><p><strong>barrier是一种原语</strong>，允许<strong>一组线程/进程</strong>在到达<strong>某个栅栏点</strong>(common barrier point)<strong>互相等待</strong>，直到<strong>最后一个线程/进程</strong>到达栅栏点，栅栏才会打开，处于阻塞状态的线程恢复继续执行。<br>举个例子来说:**比如我们在打王者荣耀游戏的的时候，十个人必须全部加载到100%**，才可以开局。如果想要了解Java线程级的屏障实现可以参考CyclicBarrier类型</p>
-<p>在这里我们主要介绍基于<strong>Zookeeper进程级屏障</strong>的实现，这里屏障<strong>实现使一组进程能够同步计算的开始和结束</strong>。这个实现的基本思想是<strong>有一个barrier节点</strong>，用于作为<strong>各个流程节点的父节点</strong>。假设我们称屏障节点为“/b1”。然后，每个进程“p”创建一个节点“/b1/p”。通过监听机制来监测其他节点的写入，<strong>一旦足够多的进程创建了它们对应的节点</strong>，连接的进程<strong>就可以开始计算</strong>了。</p>
-<p>接下来我们可以看下代码实现</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token class-name">IOException</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>net<span class="token punctuation">.</span></span><span class="token class-name">InetAddress</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>net<span class="token punctuation">.</span></span><span class="token class-name">UnknownHostException</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>nio<span class="token punctuation">.</span></span><span class="token class-name">ByteBuffer</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">List</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Random</span></span><span class="token punctuation">;</span>
-
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>zookeeper<span class="token punctuation">.</span></span><span class="token class-name">CreateMode</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>zookeeper<span class="token punctuation">.</span></span><span class="token class-name">KeeperException</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>zookeeper<span class="token punctuation">.</span></span><span class="token class-name">WatchedEvent</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>zookeeper<span class="token punctuation">.</span></span><span class="token class-name">Watcher</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>zookeeper<span class="token punctuation">.</span></span><span class="token class-name">ZooKeeper</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>zookeeper<span class="token punctuation">.</span></span><span class="token class-name">ZooDefs</span><span class="token punctuation">.</span><span class="token class-name">Ids</span></span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>zookeeper<span class="token punctuation">.</span>data<span class="token punctuation">.</span></span><span class="token class-name">Stat</span></span><span class="token punctuation">;</span>
-
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SyncPrimitive</span> <span class="token keyword">implements</span> <span class="token class-name">Watcher</span> <span class="token punctuation">{</span>
-
-    <span class="token keyword">static</span> <span class="token class-name">ZooKeeper</span> zk <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-    <span class="token keyword">static</span> <span class="token class-name">Integer</span> mutex<span class="token punctuation">;</span>
-    <span class="token class-name">String</span> root<span class="token punctuation">;</span>
-
-    <span class="token class-name">SyncPrimitive</span><span class="token punctuation">(</span><span class="token class-name">String</span> address<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>zk <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Starting ZK:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                zk <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZooKeeper</span><span class="token punctuation">(</span>address<span class="token punctuation">,</span> <span class="token number">3000</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                mutex <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Integer</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Finished starting ZK: "</span> <span class="token operator">+</span> zk<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                zk <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">//else mutex = new Integer(-1);</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">synchronized</span> <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">process</span><span class="token punctuation">(</span><span class="token class-name">WatchedEvent</span> event<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>mutex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment">//System.out.println("Process: " + event.getType());</span>
-            mutex<span class="token punctuation">.</span><span class="token function">notify</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token comment">/**
-     * Barrier
-     */</span>
-    <span class="token keyword">static</span> <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Barrier</span> <span class="token keyword">extends</span> <span class="token class-name">SyncPrimitive</span> <span class="token punctuation">{</span>
-        <span class="token keyword">int</span> size<span class="token punctuation">;</span>
-        <span class="token class-name">String</span> name<span class="token punctuation">;</span>
-
-        <span class="token comment">/**
-         * Barrier constructor
-         *
-         * @param address
-         * @param root
-         * @param size
-         */</span>
-        <span class="token class-name">Barrier</span><span class="token punctuation">(</span><span class="token class-name">String</span> address<span class="token punctuation">,</span> <span class="token class-name">String</span> root<span class="token punctuation">,</span> <span class="token keyword">int</span> size<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">super</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>root <span class="token operator">=</span> root<span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>size <span class="token operator">=</span> size<span class="token punctuation">;</span>
-
-            <span class="token comment">// Create barrier node</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>zk <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">Stat</span> s <span class="token operator">=</span> zk<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>s <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        zk<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token class-name">Ids</span><span class="token punctuation">.</span>OPEN_ACL_UNSAFE<span class="token punctuation">,</span>
-                                <span class="token class-name">CreateMode</span><span class="token punctuation">.</span>PERSISTENT<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">KeeperException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">System</span><span class="token punctuation">.</span>out
-                            <span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Keeper exception when instantiating queue: "</span>
-                                    <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Interrupted exception"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-
-            <span class="token comment">// My node name</span>
-            <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                name <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span><span class="token class-name">InetAddress</span><span class="token punctuation">.</span><span class="token function">getLocalHost</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getCanonicalHostName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">UnknownHostException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-
-        <span class="token punctuation">}</span>
-
-        <span class="token comment">/**
-         * Join barrier
-         *
-         * @return
-         * @throws KeeperException
-         * @throws InterruptedException
-         */</span>
-
-        <span class="token keyword">boolean</span> <span class="token function">enter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">KeeperException</span><span class="token punctuation">,</span> <span class="token class-name">InterruptedException</span><span class="token punctuation">{</span>
-            zk<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>root <span class="token operator">+</span> <span class="token string">"/"</span> <span class="token operator">+</span> name<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token class-name">Ids</span><span class="token punctuation">.</span>OPEN_ACL_UNSAFE<span class="token punctuation">,</span>
-                    <span class="token class-name">CreateMode</span><span class="token punctuation">.</span>EPHEMERAL_SEQUENTIAL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>mutex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> list <span class="token operator">=</span> zk<span class="token punctuation">.</span><span class="token function">getChildren</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>list<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> size<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        mutex<span class="token punctuation">.</span><span class="token function">wait</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment">/**
-         * Wait until all reach barrier
-         *
-         * @return
-         * @throws KeeperException
-         * @throws InterruptedException
-         */</span>
-        <span class="token keyword">boolean</span> <span class="token function">leave</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">KeeperException</span><span class="token punctuation">,</span> <span class="token class-name">InterruptedException</span><span class="token punctuation">{</span>
-            zk<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>root <span class="token operator">+</span> <span class="token string">"/"</span> <span class="token operator">+</span> name<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>mutex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> list <span class="token operator">=</span> zk<span class="token punctuation">.</span><span class="token function">getChildren</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span>list<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                            mutex<span class="token punctuation">.</span><span class="token function">wait</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-
-    <span class="token comment">/**
-     * Producer-Consumer queue
-     */</span>
-    <span class="token keyword">static</span> <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Queue</span> <span class="token keyword">extends</span> <span class="token class-name">SyncPrimitive</span> <span class="token punctuation">{</span>
-
-        <span class="token comment">/**
-         * Constructor of producer-consumer queue
-         *
-         * @param address
-         * @param name
-         */</span>
-        <span class="token class-name">Queue</span><span class="token punctuation">(</span><span class="token class-name">String</span> address<span class="token punctuation">,</span> <span class="token class-name">String</span> name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">super</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>root <span class="token operator">=</span> name<span class="token punctuation">;</span>
-            <span class="token comment">// Create ZK node name</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>zk <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">Stat</span> s <span class="token operator">=</span> zk<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>s <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        zk<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token class-name">Ids</span><span class="token punctuation">.</span>OPEN_ACL_UNSAFE<span class="token punctuation">,</span>
-                                <span class="token class-name">CreateMode</span><span class="token punctuation">.</span>PERSISTENT<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">KeeperException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">System</span><span class="token punctuation">.</span>out
-                            <span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Keeper exception when instantiating queue: "</span>
-                                    <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Interrupted exception"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment">/**
-         * Add element to the queue.
-         *
-         * @param i
-         * @return
-         */</span>
-
-        <span class="token keyword">boolean</span> <span class="token function">produce</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">KeeperException</span><span class="token punctuation">,</span> <span class="token class-name">InterruptedException</span><span class="token punctuation">{</span>
-            <span class="token class-name">ByteBuffer</span> b <span class="token operator">=</span> <span class="token class-name">ByteBuffer</span><span class="token punctuation">.</span><span class="token function">allocate</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> value<span class="token punctuation">;</span>
-
-            <span class="token comment">// Add child with value i</span>
-            b<span class="token punctuation">.</span><span class="token function">putInt</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            value <span class="token operator">=</span> b<span class="token punctuation">.</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            zk<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>root <span class="token operator">+</span> <span class="token string">"/element"</span><span class="token punctuation">,</span> value<span class="token punctuation">,</span> <span class="token class-name">Ids</span><span class="token punctuation">.</span>OPEN_ACL_UNSAFE<span class="token punctuation">,</span>
-                        <span class="token class-name">CreateMode</span><span class="token punctuation">.</span>PERSISTENT_SEQUENTIAL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment">/**
-         * Remove first element from the queue.
-         *
-         * @return
-         * @throws KeeperException
-         * @throws InterruptedException
-         */</span>
-        <span class="token keyword">int</span> <span class="token function">consume</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">KeeperException</span><span class="token punctuation">,</span> <span class="token class-name">InterruptedException</span><span class="token punctuation">{</span>
-            <span class="token keyword">int</span> retvalue <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-            <span class="token class-name">Stat</span> stat <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-
-            <span class="token comment">// Get the first element available</span>
-            <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>mutex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> list <span class="token operator">=</span> zk<span class="token punctuation">.</span><span class="token function">getChildren</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>list<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Going to wait"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        mutex<span class="token punctuation">.</span><span class="token function">wait</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                        <span class="token class-name">Integer</span> min <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Integer</span><span class="token punctuation">(</span>list<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token class-name">String</span> minNode <span class="token operator">=</span> list<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">String</span> s <span class="token operator">:</span> list<span class="token punctuation">)</span><span class="token punctuation">{</span>
-                            <span class="token class-name">Integer</span> tempValue <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Integer</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            <span class="token comment">//System.out.println("Temporary value: " + tempValue);</span>
-                            <span class="token keyword">if</span><span class="token punctuation">(</span>tempValue <span class="token operator">&lt;</span> min<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                                min <span class="token operator">=</span> tempValue<span class="token punctuation">;</span>
-                                minNode <span class="token operator">=</span> s<span class="token punctuation">;</span>
-                            <span class="token punctuation">}</span>
-                        <span class="token punctuation">}</span>
-                        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Temporary value: "</span> <span class="token operator">+</span> root <span class="token operator">+</span> <span class="token string">"/"</span> <span class="token operator">+</span> minNode<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> b <span class="token operator">=</span> zk<span class="token punctuation">.</span><span class="token function">getData</span><span class="token punctuation">(</span>root <span class="token operator">+</span> <span class="token string">"/"</span> <span class="token operator">+</span> minNode<span class="token punctuation">,</span>
-                        <span class="token boolean">false</span><span class="token punctuation">,</span> stat<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        zk<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>root <span class="token operator">+</span> <span class="token string">"/"</span> <span class="token operator">+</span> minNode<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token class-name">ByteBuffer</span> buffer <span class="token operator">=</span> <span class="token class-name">ByteBuffer</span><span class="token punctuation">.</span><span class="token function">wrap</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        retvalue <span class="token operator">=</span> buffer<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-                        <span class="token keyword">return</span> retvalue<span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span> args<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token string">"qTest"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-            <span class="token function">queueTest</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">else</span>
-            <span class="token function">barrierTest</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">queueTest</span><span class="token punctuation">(</span><span class="token class-name">String</span> args<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token class-name">Queue</span> q <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Queue</span><span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">"/app1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Input: "</span> <span class="token operator">+</span> args<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">int</span> i<span class="token punctuation">;</span>
-        <span class="token class-name">Integer</span> max <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Integer</span><span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token string">"p"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Producer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> max<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
-                <span class="token keyword">try</span><span class="token punctuation">{</span>
-                    q<span class="token punctuation">.</span><span class="token function">produce</span><span class="token punctuation">(</span><span class="token number">10</span> <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">KeeperException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
-
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
-
-                <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Consumer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-            <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> max<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">try</span><span class="token punctuation">{</span>
-                    <span class="token keyword">int</span> r <span class="token operator">=</span> q<span class="token punctuation">.</span><span class="token function">consume</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Item: "</span> <span class="token operator">+</span> r<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">KeeperException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
-                    i<span class="token operator">--</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">barrierTest</span><span class="token punctuation">(</span><span class="token class-name">String</span> args<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token class-name">Barrier</span> b <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Barrier</span><span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">"/b1"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Integer</span><span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">try</span><span class="token punctuation">{</span>
-            <span class="token keyword">boolean</span> flag <span class="token operator">=</span> b<span class="token punctuation">.</span><span class="token function">enter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Entered barrier: "</span> <span class="token operator">+</span> args<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>flag<span class="token punctuation">)</span> <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Error when entering the barrier"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">KeeperException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment">// Generate random integer</span>
-        <span class="token class-name">Random</span> rand <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Random</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">int</span> r <span class="token operator">=</span> rand<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">// Loop for rand iterations</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> r<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">try</span><span class="token punctuation">{</span>
-            b<span class="token punctuation">.</span><span class="token function">leave</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">KeeperException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
-
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
-
-        <span class="token punctuation">}</span>
-        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Left barrier"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper<span class="tag-unordered list-count">16</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="tag">Zookeeper安装配置<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Zookeeper源码解析<span class="tag-unordered list-count">16</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2021/07/12/zookeeper/6-watch-jian-ting-tong-zhi-ji-zhi-jian-jie/"> 06-Watch监听通知机制简介</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2021/07/12/zookeeper/4-zookeeper-ke-hu-duan-de-ru-men-shi-yong/"> 04-客户端的入门使用</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

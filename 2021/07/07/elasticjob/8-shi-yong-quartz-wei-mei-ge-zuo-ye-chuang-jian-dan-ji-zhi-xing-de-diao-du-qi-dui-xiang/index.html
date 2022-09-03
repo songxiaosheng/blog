@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176096">
+<link rel="stylesheet" href="/css/style.css?v=1662168254561">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176096"></script>
+<script src="/js/core.js?v=1662168254561"></script>
 
 
 
@@ -48,388 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>08 - 使用Quartz为每个作业创建单机执行的调度器对象</h1>
-			<div class="info"><span class="date">2021年7月7日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">Elastic-Job2.1.5源码</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/elasticjob/8- 使用Quartz为每个作业创建单机执行的调度器对象.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<p>@<a href="%E7%9B%AE%E5%BD%95">TOC</a></p>
-<h1 id="8-使用Quartz为每个作业创建单机执行的调度器对象"><a href="#8-使用Quartz为每个作业创建单机执行的调度器对象" class="headerlink" title="8 - 使用Quartz为每个作业创建单机执行的调度器对象"></a>8 - 使用Quartz为每个作业创建单机执行的调度器对象</h1><h2 id="8-1-JobScheduleController简介"><a href="#8-1-JobScheduleController简介" class="headerlink" title="8.1 JobScheduleController简介"></a>8.1 JobScheduleController简介</h2><p>作业调度控制器类型为JobScheduleController，这个类型的主要功能是承接调度系统针对Quartz框架Scheduler对象的管理，Quartz的Scheduler对象主要作用是来控制一个作业的绑定，触发，暂停，关闭等操作，JobScheduleController主要实现的操作如下UML图所示：</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/c550507a4b09c412e6974f07c098196d.png" alt="图片"></p>
-<p>图6.1 作业调度控制器UML</p>
-<p>通过UML图我们可以看到这个类里面主要的方法都是与作业有关系的比如调度作业，暂停作业，启动作业，触发作业，关闭作业等等。</p>
-<p>这个类包含了三个成员变量，scheduler，jobDetail和triggerIdentity。这三个成员变量都是与触发作业紧密相关的，</p>
-<ul>
-<li>其中Scheduler对象是与Quartz调度程序进行交互的主要API，可用来绑定定时任务作业对象与触发器对象</li>
-<li>JobDetail-用于定义Job的实例信息</li>
-<li>triggerIdentity用来标示作业触发器，后续可以使用此标示来获取触发器对象来进行作业的触发，暂停，重新调度，Trigger触发器-定义将在其上执行给定作业的时间表的组件，触发器类型有多种，在本系统中使用CRON类型的触发器，方便对CRON表达式的支持来进行作业执行时间的灵活配置。</li>
-</ul>
-<p>通过下表来了解下三个属性的具体作用：</p>
-<table>
-<thead>
-<tr>
-<th>属性名</th>
-<th>属性类型</th>
-<th>属性描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>scheduler</td>
-<td>Scheduler</td>
-<td>调度器，这个是来源org.quartz包下面的类型， Quartz Scheduler的主接口为调度器负责整个定时系统的调度内部提供了调度，启动，暂停，关闭恢复作业等方法，是我们使用Quartz操作作业的主接口。</td>
-</tr>
-<tr>
-<td>jobDetail</td>
-<td>JobDetail</td>
-<td>作业详情接口，也就是作业的元数据接口，主要存储作业的标示，作业描述，作业执行类，作业自定义参数等方法。后期调度器可以通过作业元数据获取到作业信息进行执行作业。</td>
-</tr>
-<tr>
-<td>triggerIdentity</td>
-<td>String</td>
-<td>作业触发器的唯一标示，后期可以使用这个标示来获取触发器对象进行判断作业执行状态，重新调度作业，本系统中使用作业名字来做为触发器的唯一标示。</td>
-</tr>
-</tbody></table>
-<h2 id="8-2-JobScheduleController对象的创建"><a href="#8-2-JobScheduleController对象的创建" class="headerlink" title="8.2 JobScheduleController对象的创建"></a>8.2 JobScheduleController对象的创建</h2><p>了解了JobScheduleController作业调度控制器的作用后我们来看下作业调度控制器的创建过程：</p>
-<pre class="line-numbers language-none"><code class="language-none">//创建作业调度控制器
-JobScheduleController jobScheduleController = new JobScheduleController(
-        //对应scheduler对象
-        createScheduler(),
-        //对应jobDetail对象 
-        createJobDetail(liteJobConfigFromRegCenter.getTypeConfig().getJobClass()),
-        //对应作业触发器标示对象
-        liteJobConfigFromRegCenter.getJobName());<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>作业调度控制器的创建比较简单，主要是初始化前面我们介绍过的三个成员变量，</p>
-<ul>
-<li>Scheduler对象的创建是通过 createScheduler()方法</li>
-<li>JobDetail对象的创建则是通过createJobDetail方法</li>
-<li>对应作业触发器的标示则使用作业名字来进行标示</li>
-</ul>
-<p>那我们比较重要的Scheduler对象和JobDetail对象如何创建呢，可以详细来看下。</p>
-<h2 id="8-3-Scheduler-调度对象的创建"><a href="#8-3-Scheduler-调度对象的创建" class="headerlink" title="8.3 Scheduler 调度对象的创建"></a>8.3 Scheduler 调度对象的创建</h2><p>看具体信息之前可以先来看下源码：</p>
-<pre class="line-numbers language-none"><code class="language-none">private Scheduler createScheduler() {
-    Scheduler result;
-    try {
-        StdSchedulerFactory factory = new StdSchedulerFactory();
-        factory.initialize(getBaseQuartzProperties());
-        //工厂创建调度器 这里调度器对象类型为StdScheduler
-        result = factory.getScheduler();
-        //添加触发监听器
-        result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
-    } catch (final SchedulerException ex) {
-        throw new JobSystemException(ex);
-    }
-    return result;
-}
-//调度器工厂的基本属性初始化
-private Properties getBaseQuartzProperties() {
-    Properties result = new Properties();
-    result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
-    result.put("org.quartz.threadPool.threadCount", "1");
-    result.put("org.quartz.scheduler.instanceName", liteJobConfig.getJobName());
-    result.put("org.quartz.jobStore.misfireThreshold", "1");
-    result.put("org.quartz.plugin.shutdownhook.class", JobShutdownHookPlugin.class.getName());
-    result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
-    return result;
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>Scheduler调度器的创建比较简单，这里主要经过了如下过程：</p>
-<ol>
-<li>先创建标准调度器工厂</li>
-<li>然后初始化调度程序的基本属性</li>
-<li>最后调用工厂方法获取调度器对象</li>
-<li>创建完Scheduler调度器对象后进行触发监听器的注册</li>
-</ol>
-<p>调度器工厂在加载基本属性配置的时候使用Properties类型来进行基本配置的参数传递，这里初始化的参数我们可以来了解下：</p>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>org.quartz.threadPool.class</td>
-<td>要使用的ThreadPool实现类型的名称。Quartz附带的线程池是“ org.quartz.simpl.SimpleThreadPool”，并且应该满足几乎每个用户的需求。它的行为非常简单，并且经过了很好的测试。它提供了一个固定大小的线程池，这些线程池在“调度程序”的生存期内“有效”.</td>
-</tr>
-<tr>
-<td>org.quartz.threadPool.threadCount</td>
-<td>可以是任何正整数，1到100之间的数字是非常实用的。这是可用于并发执行作业的线程数。如果每天只能执行少量工作，那么一个线程就足够了！如果有成千上万的工作，每分钟触发许多工作，那么可能希望线程数更像50或100（这在很大程度上取决于您工作执行的工作性质以及系统资源！）。本系统设置线程数量为1则在执行调度的时候如果上次的作业未结束下次调度是无法执行的。</td>
-</tr>
-<tr>
-<td>org.quartz.scheduler.instanceName</td>
-<td>可以是任何字符串，并且该值对调度程序本身没有意义,而是当同一程序中使用多个实例时，它用作客户端代码区分调度程序的机制。如果使用的是集群功能，则必须为集群中的每个实例使用“在逻辑上”相同的Scheduler的相同名称。</td>
-</tr>
-<tr>
-<td>org.quartz.jobStore.misfireThreshold</td>
-<td>调度程序在被认为是“误触发”之前，将“容忍”触发器经过下一次触发时间的毫秒数。默认值（如果未在配置中输入此属性）为60000（60秒）。misfire产生需要有2个前置条件，一个是job到达触发时间时没有被执行，二是被执行的延迟时间超过了Quartz配置的misfireThreshold阀值。如果延迟执行的时间小于阀值，则Quartz不认为发生了misfire，立即执行job；如果延迟执行的时间大于或者等于阀值，则被判断为misfire，然后会按照指定的策略来执行。本程序设置的为1毫秒如果当前作业因为上次错过了执行时间触发,则会触发错过执行监听器，然后在Zookeeper写入错过执行的标示来执行作业，具体的实现可以在后面章节详细来看。</td>
-</tr>
-<tr>
-<td>org.quartz.plugin.shutdownhook.class</td>
-<td>此插件捕获JVM终止的事件（例如在CRTL-C上）并告诉调度程序关闭</td>
-</tr>
-<tr>
-<td>org.quartz.plugin.shutdownhook.cleanShutdown</td>
-<td>如果设置为true，则等待当前正在运行的作业完成。</td>
-</tr>
-</tbody></table>
-<h2 id="8-4-JobDetail-作业信息对象的创建"><a href="#8-4-JobDetail-作业信息对象的创建" class="headerlink" title="8.4 JobDetail 作业信息对象的创建"></a>8.4 JobDetail 作业信息对象的创建</h2><p>JobDetail作业详情接口，也就是作业的元数据接口，记录着作业的基本信息我们看下他是如何创建的初始化了哪些属性。</p>
-<pre class="line-numbers language-none"><code class="language-none">private JobDetail createJobDetail(final String jobClass) {
-    JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
-    result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
-    Optional&lt;ElasticJob&gt; elasticJobInstance = createElasticJobInstance();
-    if (elasticJobInstance.isPresent()) {
-        result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJobInstance.get());
-    } else if (!jobClass.equals(ScriptJob.class.getCanonicalName())) {
-        try {
-            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobClass).newInstance());
-        } catch (final ReflectiveOperationException ex) {
-            throw new JobConfigurationException("Elastic-Job: Job class '%s' can not initialize.", jobClass);
-        }
-    }
-    return result;
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>本方法为创建Quartz调度需要的作业元数据对象JobDetail，主要经历如下过程：</p>
-<ul>
-<li>使用作业建造器JobBuilder来构建作业元数据对象JobDetail，其中作业类型为LiteJob类型 ，作业标识为作业名字</li>
-<li>通过元数据对象的JobDataMap类型来传递参数给作业</li>
-<li>向LiteJob作业对象传递jobFacade 对象 </li>
-<li>向LiteJob作业传递定制化ElasticJob弹性作业对象</li>
-</ul>
-<p>下面我们先介绍下新遇到的几个类型</p>
-<ul>
-<li><p>LiteJob类型实现了Quartz的Job接口，在Quartz触发调度的时候将调用LiteJob类型重写的execute方法，LiteJob再来调用我们定制化的ElasticJob类型的弹性作业执行方法。</p>
-</li>
-<li><p>JobFacade见名知意为作业门面类型，主要对外提供一些作业相关的操作比如,在触发作业的时候可以使用作业门面来执行一些常规作业操作。JobFacade类型实现方法如下：</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/c64c180f2a3318d8c8543e73ebe3c319.png" alt="图片"></p>
-</li>
-<li><p>ElasticJob类型在前面我们已经了解过,这是调度作业的顶层类型,系统中主要提供了三种作业类型：简单作业，流式作业，和脚本作业，在这里可以看到代码有判断是不是脚本类型, 如果不是脚本类型则会在运行时创建作业对象,那脚本类型没有脚本对象实例如何执行作业呢，到后面我们会将会说到作业执行器，由于脚本执行方法比较通用，脚本作业会在执行器中直接执行脚本，无需我们来实现执行脚本作业的方法，而其他作业类型的话执行器一般会调用我们定制化ElasticJob类型作业的execute执行方法。</p>
-</li>
-</ul>
-<p>Elastic-Job使用Quartz来实现单机环境下单个作业的执行，每个作业在同一个进程下均有有一个独立的Scheduler调度器对象来进行作业的触发，在后面初始化作业完毕的时候调度器Scheduler对象会将作业详情和带有CRON表达式的Quartz触发器绑定起来让调度作业生效，在这里我们仔细观察可以得知的是在系统初始化每个作业的时候都会为当前作业创建独立的Quartz调度器对象来执行各自的作业，互不影响，进行作业线程隔离，并且执行当前作业的线程只有一个，面对耗时较长的作业也只能单线程来执行作业，容易出现错过作业执行的场景。在这里与Quartz交互的调度控制器就创建完成了，想要了解Quartz怎么去执行作业的可以深入研究一下源码。</p>
-<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/ElasticJob/" rel="tag">ElasticJob<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">ElasticJob源码解析<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/Quartz/" rel="tag">Quartz<span class="tag-unordered list-count">1</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2021/07/09/elasticjob/9-diao-du-zuo-ye-qi-dong-shi-de-sheng-ming-zhou-qi/"> 09- 调度作业启动时的生命周期</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2021/07/06/elasticjob/7-xian-cheng-an-quan-de-dan-li-mo-shi-she-ji-quan-ju-zuo-ye-zhu-ce-biao-jobregistry/"> 07-线程安全的单例模式设计全局作业注册表JobRegistry</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

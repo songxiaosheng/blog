@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176099">
+<link rel="stylesheet" href="/css/style.css?v=1662168254568">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176099"></script>
+<script src="/js/core.js?v=1662168254568"></script>
 
 
 
@@ -48,332 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>03-Elastic-Job 注册中心的设计原理</h1>
-			<div class="info"><span class="date">2021年7月2日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">Elastic-Job2.1.5源码</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/elasticjob/3-注册中心的设计.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="3-注册中心的设计原理"><a href="#3-注册中心的设计原理" class="headerlink" title="3  注册中心的设计原理"></a>3  注册中心的设计原理</h1><h2 id="3-1-调度系统使用Zookeeper做什么"><a href="#3-1-调度系统使用Zookeeper做什么" class="headerlink" title="3.1 调度系统使用Zookeeper做什么"></a>3.1 调度系统使用Zookeeper做什么</h2><p>ZooKeeper 是 Apache 软件基金会的一个软件项目，它是一个针对大型分布式系统的可靠协调系统，为大型分布式计算提供开源的分布式配置服务、同步服务和命名注册。调度系统使用Zookeeper进行分布式环境下作业配置信息注册，监听更新，使用Zookeeper实现分布式锁进行主节点选举，使用临时节点实现作业实例上下线等操作。</p>
-<h2 id="3-2-调度系统注册中心设计"><a href="#3-2-调度系统注册中心设计" class="headerlink" title="3.2 调度系统注册中心设计"></a>3.2 调度系统注册中心设计</h2><p>在上篇文章中通过Java启动作业调度的Demo我们可以看到Zookeeper初始化过程有如下操作：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">  <span class="token comment">//1-创建zookeeper配置对象</span>
-  <span class="token class-name">ZookeeperConfiguration</span> zookeeperConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZookeeperConfiguration</span><span class="token punctuation">(</span>serverList<span class="token punctuation">,</span> namespace<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">//2-通过Zookeeper配置对象创建注册中心对象</span>
-  <span class="token class-name">CoordinatorRegistryCenter</span> zookeeperRegistryCenter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZookeeperRegistryCenter</span><span class="token punctuation">(</span>zookeeperConfiguration<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">//3-初始化注册中心</span>
-  zookeeperRegistryCenter<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-完成<span class="token class-name">Zookeeper</span>的初始化连接主要流程如下：<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><img src="https://img-blog.csdnimg.cn/0d98f972324944f3a46b4d21f649d1e1.png" alt="图片"></p>
-<p>图3.1 注册流程</p>
-<p>在调度系统中完成Zookeeper的初始化流程主要分为3步先创建一个用来封装Zookeeper配置信息的ZookeeperConfiguration类型 ，然后再根据配置信息创建Zookeeper注册中心对象，最后初始化注册中心。</p>
-<p>接下来我们先整体看一下注册中心这一块的类型包含来哪些：</p>
-<p><img src="https://img-blog.csdnimg.cn/f2518a4091284b708f36a2ccc27542a3.png" alt="图片"></p>
-<p>图3.2 注册中心包和类结构 </p>
-<p>注册中心接口层：最顶层的设计就是注册中心接口RegistryCenter 未来各种类型的注册中心都要继承或实现此接口，然后就是往下的用于协调分布式服务的注册中心的CoordinatorRegistryCenter接口，用于封装一些协调式分布式服务的注册中心共同行为。然后独立提供了一个用于注册中心选举候选人用的选举接口ElectionCandidate。</p>
-<p>注册中心实现层：这里目前提供了用于协调式分布式服务典型的注册中心组件Zookeeper的封装，基于Zookeeper封装的注册中心类ZookeeperRegistryCenter。包含了配置实体类ZookeeperConfiguration，另外还提供了ZookeeperElectionService选举服务类。</p>
-<p>异常类型：这里提供了一个自定义异常类型RegException来表示注册中心相关的异常，RegExceptionHandler注册中心异常处理类处理注册中心相关的异常信息。</p>
-<p>3.3 Zookeeper配置详解</p>
-<p>Zookeepeer客户端配置信息主要使用ZookeeperConfiguration类型封装主要配置信息如下：</p>
-<table>
-<thead>
-<tr>
-<th>属性名</th>
-<th>属性类型</th>
-<th>属性描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>serverLists</td>
-<td>String</td>
-<td>连接Zookeeper服务器的列表， 包括IP地址和端口号. 多个地址用逗号分隔. 如: host1:2181,host2:2181</td>
-</tr>
-<tr>
-<td>namespace</td>
-<td>String</td>
-<td>调度节点的命名空间</td>
-</tr>
-<tr>
-<td>baseSleepTimeMilliseconds</td>
-<td>int</td>
-<td>等待重试的间隔时间的初始值.单位毫秒.</td>
-</tr>
-<tr>
-<td>maxSleepTimeMilliseconds</td>
-<td>int</td>
-<td>等待重试的间隔时间的最大值. 单位毫秒.</td>
-</tr>
-<tr>
-<td>maxRetries	int</td>
-<td>最大重试次数.</td>
-<td></td>
-</tr>
-<tr>
-<td>sessionTimeoutMilliseconds</td>
-<td>int</td>
-<td>会话超时时间. 单位毫秒.</td>
-</tr>
-<tr>
-<td>connectionTimeoutMilliseconds</td>
-<td>int</td>
-<td>连接超时时间. 单位毫秒.</td>
-</tr>
-<tr>
-<td>digest</td>
-<td>String</td>
-<td>连接Zookeeper的权限令牌. 缺省为不需要权限验证.</td>
-</tr>
-</tbody></table>
-<p>3.4 ZookeeperRegistryCenter原理解析<br>ZookeeperRegistryCenter是实现了协调注册中心的实现类用于和Zookeeper分布式协调组件进行交互的建模,接下来我们先看下他的类继承关系：</p>
-<p><img src="https://img-blog.csdnimg.cn/5bf4c7851c8940069e102e8d4d15faea.png" alt="图片"></p>
-<p>图3.3 注册中心类结构</p>
-<p>可以看到协调注册中心类型ZookeeperRegistryCenter是针对协调注册中心类型的实现。</p>
-<p>再来看下主要的成员变量：</p>
-<p><img src="https://img-blog.csdnimg.cn/606f4d156ead4a2db611869fdf78f21a.png" alt="图片"></p>
-<p>图3.4 ZookeeperRegistryCenter类成员变量</p>
-<p>主要的成员变量我们来看下：</p>
-<ul>
-<li><p>ZookeeperConfiguration类型的zkConfig变量，这个ZookeeperConfiguration类型用来封装了Zookeeper的相关配置信息，具体配置信息可以参考3.3章节中我们描述的配置信息表格。</p>
-</li>
-<li><p>Map&lt;String, TreeCache&gt;类型的caches对象，用来保存Zookeeper路径下节点数据的缓存对象,用来实现对Zookeeper节点的监听操作。</p>
-</li>
-<li><p>CuratorFramework类型的client，Curator是Netflix公司开发的强大的Zookeeper客户端工具,CuratorFramework框架是ZooKeeper Client更高的抽象API，这里可以了解下ZooKeeperRegistryCenter底层的实现原理,针对Zookeeper的操作主要是基于CuratorFramework来实现对Zookeeper的操作的，CuratorFramework具有哪些特征呢：更清晰的API: 简化了ZooKeeper原生的方法, 事件等, 提供流式fluent的接口，提供Recipes实现 : 选举，共享锁， 路径cache， 分布式队列，分布式优先队列等。 </p>
-</li>
-<li><p>slf4j包下的Logger类型的log对象，主要用来标准化打印日志。</p>
-</li>
-</ul>
-<p>3.5 注册中心常用操作方法</p>
-<p>注册中心设计中相关的父接口一共有两个类型：</p>
-<ul>
-<li><p>RegistryCenter</p>
-</li>
-<li><p>CoordinatorRegistryCenter</p>
-</li>
-</ul>
-<p>在这里协调注册中心类型继承RegistryCenter注册中心类型，未来注册中心类型还可以扩展为其他注册中心类型，我们看一下设计中主要的提供的操作方法：</p>
-<p><img src="https://img-blog.csdnimg.cn/1e92ee473a5649f485758f8ce2f29ca8.png" alt="图片"></p>
-<p>可以看到注册中心客户端对于注册中心的操作主要是连接，关闭方法和常见的增加，修改，删除，查询节点等类型的基本操作。后面我们主要使用作业节点操作类型JobNodeStorage类型来调用注册中心接口为我们开放的操作方法。</p>
-<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/ElasticJob/" rel="tag">ElasticJob<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">ElasticJob源码解析<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" rel="tag">注册中心<span class="tag-unordered list-count">1</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2021/07/03/elasticjob/4-builder-jian-zao-zhe-she-ji-mo-shi-gou-zao-fu-za-de-zuo-ye-pei-zhi/"> 04-Builder建造者设计模式构造复杂的作业配置</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2021/07/01/elasticjob/1-elasticjob-jian-jie/"> 01-Elastic-Job 分布式定时任务调度系统的简介</a>
-                            </div>
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

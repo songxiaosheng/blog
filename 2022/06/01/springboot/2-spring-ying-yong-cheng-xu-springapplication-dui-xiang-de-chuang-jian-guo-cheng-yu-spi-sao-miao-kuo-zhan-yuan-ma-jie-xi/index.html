@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176077">
+<link rel="stylesheet" href="/css/style.css?v=1662168254550">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176077"></script>
+<script src="/js/core.js?v=1662168254550"></script>
 
 
 
@@ -48,550 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>2-SpringApplication的run方法启动应用程序源码初探</h1>
-			<div class="info"><span class="date">2022年6月1日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">SpringBoot2源码</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/springboot/2-Spring应用程序SpringApplication对象的创建过程与SPI扫描扩展源码解析.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="2-SpringApplication的run方法启动应用程序源码初探"><a href="#2-SpringApplication的run方法启动应用程序源码初探" class="headerlink" title="2-SpringApplication的run方法启动应用程序源码初探"></a>2-SpringApplication的run方法启动应用程序源码初探</h1><h2 id="2-1-SpringApplication简介"><a href="#2-1-SpringApplication简介" class="headerlink" title="2.1 SpringApplication简介"></a>2.1 SpringApplication简介</h2><p>该类可<strong>用于从Java主服务器引导</strong>和<strong>启动Spring应用程序方法</strong>。默认情况下，类将执行以下<strong>步骤</strong>来启动应用程序：</p>
-<ul>
-<li><strong>创建</strong>一个适当的<strong>ApplicationContext实例</strong>（取决于您的类路径）。 </li>
-<li>注册CommandLinePropertySource以将命令行参数传递给 Spring属性 。</li>
-<li><strong>刷新应用程序上下文</strong>，加载所有单例bean 。</li>
-<li>触发任何 CommandLineRunner Bean 。</li>
-</ul>
-<p><strong>如何使用SpringApplication类型呢：</strong><br>在大多数情况下，可以调用静态run方法启动应用程序</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
-<span class="token annotation punctuation">@EnableAutoConfiguration</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyApplication</span> <span class="token punctuation">{</span>
-<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token class-name">SpringApplication</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token class-name">MyApplication</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>在这种情况下在SpringApplication类中run方法的实现如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">ConfigurableApplicationContext</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">[</span><span class="token punctuation">]</span> primarySources<span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	<span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">SpringApplication</span><span class="token punctuation">(</span>primarySources<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>当前我们也可以不使用静态方法来帮助我们创建SpringApplication 对象，手动创建对象启动如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
-<span class="token annotation punctuation">@EnableAutoConfiguration</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyApplication</span> <span class="token punctuation">{</span>
-<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token class-name">SpringApplication</span> application <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SpringApplication</span><span class="token punctuation">(</span><span class="token class-name">MyApplication</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-application<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span>
-	<span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<h2 id="2-2-SpringApplication对象的创建与运行方法调用"><a href="#2-2-SpringApplication对象的创建与运行方法调用" class="headerlink" title="2.2 SpringApplication对象的创建与运行方法调用"></a>2.2 SpringApplication对象的创建与运行方法调用</h2><p>上一个博客中我们使用官网的代码生成器为我们生成了一个</p>
-<p>简单应用程序如下代码所示:</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@SpringBootApplication</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DemoApplication</span> <span class="token punctuation">{</span>
-
-	<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token class-name">SpringApplication</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token class-name">DemoApplication</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token punctuation">}</span>
-
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>接下来我们来看,如果代码是如何来启动应用程序的:</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">SpringApplication</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token class-name">DemoApplication</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>打开SpringApplication类型的的run方法的源码如下所示:<br>这个方法是个<strong>静态辅助方法</strong>，为了<strong>方便我们启动程序</strong>提供的,帮助我们<strong>转换下参数</strong>,可用于使用默认设置从指定源运行SpringApplication。</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">ConfigurableApplicationContext</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> primarySource<span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token keyword">return</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Class</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span>primarySource<span class="token punctuation">}</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>继续看SpringApplication类型中重载的run方法:<br>这个方法也是个<strong>静态辅助方法</strong>，用于<strong>帮助创建一个SpringApplication对象</strong>来启动应用</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">ConfigurableApplicationContext</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">[</span><span class="token punctuation">]</span> primarySources<span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">SpringApplication</span><span class="token punctuation">(</span>primarySources<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>这里创建了一个SpringApplication对象然后不再调用这个类方法(静态方法)run,转而创建对象之后调用实例方法(非静态方法)run,不过在看这个run之前我们先看下SpringApplication对象的创建:</p>
-<p> 应用程序上下文将从指定的主源加载Bean。实例（可以在运行调用之前自定义字符串…）。</p>
-<p>SpringApplication的构造器:</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">SpringApplication</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> primarySources<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token keyword">this</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">ResourceLoader</span><span class="token punctuation">)</span><span class="token keyword">null</span><span class="token punctuation">,</span> primarySources<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-
-<p>继续看SpringApplication重载的构造器 ,一共有两个参数一个是资源加载器,一个是主要资源类型参数,第一个参数为空,第二个参数是我们的启动类型DemoApplication.class,这个构造器的具体作用就写在描述里面吧:</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token string">"unchecked"</span><span class="token punctuation">,</span> <span class="token string">"rawtypes"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-	<span class="token keyword">public</span> <span class="token class-name">SpringApplication</span><span class="token punctuation">(</span><span class="token class-name">ResourceLoader</span> resourceLoader<span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> primarySources<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//为资源加载器赋值 ,我们这个Demo参数为空</span>
-		<span class="token keyword">this</span><span class="token punctuation">.</span>resourceLoader <span class="token operator">=</span> resourceLoader<span class="token punctuation">;</span>
-		<span class="token comment">//主配置资源为空则报错 我们这个参数为DemoApplication.class</span>
-		<span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>primarySources<span class="token punctuation">,</span> <span class="token string">"PrimarySources must not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token comment">//赋值给成员变量primarySources</span>
-		<span class="token keyword">this</span><span class="token punctuation">.</span>primarySources <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedHashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">asList</span><span class="token punctuation">(</span>primarySources<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token comment">//检查应用程序类型</span>
-		<span class="token keyword">this</span><span class="token punctuation">.</span>webApplicationType <span class="token operator">=</span> <span class="token class-name">WebApplicationType</span><span class="token punctuation">.</span><span class="token function">deduceFromClasspath</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token comment">//应用程序启动初始化器</span>
-		<span class="token keyword">this</span><span class="token punctuation">.</span>bootstrapRegistryInitializers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>
-			<span class="token function">getSpringFactoriesInstances</span><span class="token punctuation">(</span><span class="token class-name">BootstrapRegistryInitializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token function">setInitializers</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">Collection</span><span class="token punctuation">)</span> <span class="token function">getSpringFactoriesInstances</span><span class="token punctuation">(</span><span class="token class-name">ApplicationContextInitializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token function">setListeners</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">Collection</span><span class="token punctuation">)</span> <span class="token function">getSpringFactoriesInstances</span><span class="token punctuation">(</span><span class="token class-name">ApplicationListener</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token comment">//检查主应用程序</span>
-		<span class="token keyword">this</span><span class="token punctuation">.</span>mainApplicationClass <span class="token operator">=</span> <span class="token function">deduceMainApplicationClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<h3 id="2-2-1-推断当前WEB应用类型"><a href="#2-2-1-推断当前WEB应用类型" class="headerlink" title="2.2.1 推断当前WEB应用类型"></a>2.2.1 推断当前WEB应用类型</h3><p>在了解Web类型推断之前我们先来看下Spring为我们提供来哪些Web类型，系统使用WebApplicationType 枚举类型来表示，目前一共提供了三种Web程序类型如下：</p>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>NONE</td>
-<td>应用程序不应作为web应用程序运行，也不应启动嵌入式web服务器。</td>
-</tr>
-<tr>
-<td>SERVLET</td>
-<td>应用程序应作为基于servlet的web应用程序运行，并应启动嵌入式servlet web服务器。</td>
-</tr>
-<tr>
-<td>REACTIVE</td>
-<td>应用程序应该作为反应式web应用程序运行，并且应该启动嵌入式反应式web服务器。</td>
-</tr>
-</tbody></table>
-<p>目前版本的SpringBoot应用程序只支持3种默认的Web类型，在我们项目开发中并不会去明确配置当我们的Web程序类型，那SpringBoot是如何推断呢，解析来我们就来看下推断Web程序应用类型的实现原理。</p>
-<p>WebApplicationType枚举类型中的推断方法deduceFromClasspath</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">static</span> <span class="token class-name">WebApplicationType</span> <span class="token function">deduceFromClasspath</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//REACTIVE项目推断依据:</span>
-		<span class="token comment">//类型存在:org.springframework.web.reactive.DispatcherHandler</span>
-		<span class="token comment">//并且不存在类型:org.springframework.web.servlet.DispatcherServlet</span>
-		<span class="token comment">//并且不存在类型:org.glassfish.jersey.servlet.ServletContainer</span>
-		<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">ClassUtils</span><span class="token punctuation">.</span><span class="token function">isPresent</span><span class="token punctuation">(</span>WEBFLUX_INDICATOR_CLASS<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token class-name">ClassUtils</span><span class="token punctuation">.</span><span class="token function">isPresent</span><span class="token punctuation">(</span>WEBMVC_INDICATOR_CLASS<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
-				<span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token class-name">ClassUtils</span><span class="token punctuation">.</span><span class="token function">isPresent</span><span class="token punctuation">(</span>JERSEY_INDICATOR_CLASS<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-			<span class="token keyword">return</span> <span class="token class-name">WebApplicationType</span><span class="token punctuation">.</span>REACTIVE<span class="token punctuation">;</span>
-		<span class="token punctuation">}</span>
-		<span class="token comment">//非WEB程序推断依据:</span>
-		<span class="token comment">//遍历所有的web相关类型如果都不存在则为非WEB项目</span>
-		<span class="token comment">//类型包含:javax.servlet.Servlet</span>
-		<span class="token comment">//org.springframework.web.context.ConfigurableWebApplicationContext</span>
-		<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> className <span class="token operator">:</span> SERVLET_INDICATOR_CLASSES<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-			<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token class-name">ClassUtils</span><span class="token punctuation">.</span><span class="token function">isPresent</span><span class="token punctuation">(</span>className<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-				<span class="token keyword">return</span> <span class="token class-name">WebApplicationType</span><span class="token punctuation">.</span>NONE<span class="token punctuation">;</span>
-			<span class="token punctuation">}</span>
-		<span class="token punctuation">}</span>
-		<span class="token comment">//如果不是REACTIVE类型 也不是非WEB环境那就是SERVLET的WEB项目</span>
-		<span class="token keyword">return</span> <span class="token class-name">WebApplicationType</span><span class="token punctuation">.</span>SERVLET<span class="token punctuation">;</span>
-	<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>通过源码我们可以了解到推断方法主要使用ClassUtils.isPresent来判断Web应用程序类型， 推断过程中优先判断是否为反应式应用程序，然后根据Servlet判断是否为非Web应用类型，最后则默认为Servlet应用类型</p>
-<h3 id="2-2-2-SpringBoot中的类SPI扩展配置文件扫描"><a href="#2-2-2-SpringBoot中的类SPI扩展配置文件扫描" class="headerlink" title="2.2.2 SpringBoot中的类SPI扩展配置文件扫描"></a>2.2.2 SpringBoot中的类SPI扩展配置文件扫描</h3><p>前面构造器中我们看到了这么一行代码,这个代码相对复杂一些,用于加载Spring扩展配置的</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token function">getSpringFactoriesInstances</span><span class="token punctuation">(</span>ApplicationContextInitializer<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>在Spring中也有一种类似与Java SPI的<strong>加载机制</strong>。它在<strong>META-INF/spring.factories</strong>文件中配置接口的实现类名称，然后在<strong>程序中读取这些配置文件并实例化</strong>。这种自定义的SPI机制<strong>是Spring Boot Starter实现的基础</strong>。<br>在SpringBoot的自动装配过程中，最终会加载META-INF/spring.factories文件，而<strong>加载的过程</strong>是由<strong>SpringFactoriesLoader加载</strong>的。从<strong>CLASSPATH下的每个Jar包中</strong>搜寻<strong>所有META-INF/spring.factories配置文件</strong>，然后将解析properties文件，找到指定名称的配置后返回。需要注意的是，其实这里不仅仅是会去classpath路径下查找，会扫描所有路径下的Jar包，只不过这个文件只会在classpath下的jar包中。</p>
-<p>根据Bootstrapper，ApplicationContextInitializer，ApplicationListener获取对应类型的工厂实现类并初始化给成员变量：</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">//初始器注册表初始化 BootstrapRegistryInitializer</span>
-<span class="token keyword">this</span><span class="token punctuation">.</span>bootstrapRegistryInitializers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">ArrayList</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
-				<span class="token function">getSpringFactoriesInstances</span><span class="token punctuation">(</span>BootstrapRegistryInitializer<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<div class="category">
+			
 				
-				<span class="token comment">//应用程序上下文初始化器 初始化 ApplicationContextInitializer</span>
-		<span class="token function">setInitializers</span><span class="token punctuation">(</span><span class="token punctuation">(</span>Collection<span class="token punctuation">)</span> <span class="token function">getSpringFactoriesInstances</span><span class="token punctuation">(</span>ApplicationContextInitializer<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token comment">//应用程序监听器 初始化 ApplicationListener</span>
-		<span class="token function">setListeners</span><span class="token punctuation">(</span><span class="token punctuation">(</span>Collection<span class="token punctuation">)</span> <span class="token function">getSpringFactoriesInstances</span><span class="token punctuation">(</span>ApplicationListener<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>上面代码一共有3个对象的初始化<br>先来了解这三个类型的作用:<br><strong>BootstrapRegistryInitializer</strong><br>在Spring Boot 中有两种上下文，一种是 bootstrap，另一种是 application。是 bootstrap用于应用程序上下文的引导阶段bootstrap 是应用程序的父上下文，加载优先于 application。<br>bootstrap 主要用于从额外的资源来加载配置信息，还可以在本地外部配置文件中解密属性。</p>
-<p><strong>ApplicationContextInitializer</strong><br>ApplicationContextInitializer 是在spring容器刷新之前执行的一个回调函数。它的作用是向springboot容器中注册属性</p>
-<p><strong>ApplicationListener</strong><br>ApplicationContext事件机制是观察者设计模式的实现，通过ApplicationEvent类和ApplicationListener接口，可以实现ApplicationContext事件处理。<br> 如果容器中有一个ApplicationListener Bean，每当ApplicationContext发布ApplicationEvent时，ApplicationListener Bean将自动被触发。这种事件机制都必须需要程序显示的触发。</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> <span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> Collection<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> <span class="token function">getSpringFactoriesInstances</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token keyword">return</span> <span class="token function">getSpringFactoriesInstances</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> <span class="token keyword">new</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> <span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> Collection<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> <span class="token function">getSpringFactoriesInstances</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> type<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token punctuation">]</span> parameterTypes<span class="token punctuation">,</span> Object<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//获取类加载器,优先使用resourceLoader对象的类加载器,如果resourceLoader前面没有赋值则使用当前线程的类加载器</span>
-		ClassLoader classLoader <span class="token operator">=</span> <span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token comment">// Use names and ensure unique to protect against duplicates</span>
-		<span class="token comment">//使用Spring工厂加载器SpringFactoriesLoader加载指定类型比如BootstrapRegistryInitializer.class的所有工厂名字</span>
-		Set<span class="token operator">&lt;</span>String<span class="token operator">&gt;</span> names <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">LinkedHashSet</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>SpringFactoriesLoader<span class="token punctuation">.</span><span class="token function">loadFactoryNames</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> classLoader<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token comment">//根据扫描到的工厂类型,这个names集合里面存储的是一个扩展类型的全路径 包名+类名,  这一步先通过Class.forName加载类型 再通过反射newInstance创建工厂实例对象</span>
-		List<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> instances <span class="token operator">=</span> <span class="token function">createSpringFactoriesInstances</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> parameterTypes<span class="token punctuation">,</span> classLoader<span class="token punctuation">,</span> args<span class="token punctuation">,</span> names<span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token comment">//工厂对象根据order属性排序</span>
-		<span class="token comment">//了解过Spring的Order ,javax.annotation.Priority,PriorityOrdered就会了解这个代码,这个代码就是对这些扩展实例进行排序我们控制扩展的执行顺序,Order值越低优先级越高</span>
-		AnnotationAwareOrderComparator<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span>instances<span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token keyword">return</span> instances<span class="token punctuation">;</span>
-	<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>SpringFactoriesLoader的loadFactoryNames</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">public</span> <span class="token keyword">static</span> List<span class="token operator">&lt;</span>String<span class="token operator">&gt;</span> <span class="token function">loadFactoryNames</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> factoryType<span class="token punctuation">,</span> @Nullable ClassLoader classLoader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//如果类加载器为空则用当前类型SpringFactoriesLoader的类加载器</span>
-		ClassLoader classLoaderToUse <span class="token operator">=</span> classLoader<span class="token punctuation">;</span>
-		<span class="token keyword">if</span> <span class="token punctuation">(</span>classLoaderToUse <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-			classLoaderToUse <span class="token operator">=</span> SpringFactoriesLoader<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token punctuation">}</span>
-		String factoryTypeName <span class="token operator">=</span> factoryType<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token comment">//开始加载所有的扩展文件,然后找到当前工厂类型的所有扩展文件名字</span>
-		<span class="token keyword">return</span> <span class="token function">loadSpringFactories</span><span class="token punctuation">(</span>classLoaderToUse<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getOrDefault</span><span class="token punctuation">(</span>factoryTypeName<span class="token punctuation">,</span> Collections<span class="token punctuation">.</span><span class="token function">emptyList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>SpringFactoriesLoader的loadSpringFactories<br>扫描所有的依赖文件</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> <span class="token keyword">static</span> Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">&gt;&gt;</span> <span class="token function">loadSpringFactories</span><span class="token punctuation">(</span>ClassLoader classLoader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//缓存中存在则直接返回</span>
-		Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">&gt;&gt;</span> result <span class="token operator">=</span> cache<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>classLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token keyword">if</span> <span class="token punctuation">(</span>result <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-			<span class="token keyword">return</span> result<span class="token punctuation">;</span>
-		<span class="token punctuation">}</span>
-
-		result <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">HashMap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token keyword">try</span> <span class="token punctuation">{</span>
-			<span class="token comment">//扫描所有的spring工厂文件,文件名字:META-INF/spring.factories,文件内容可以参考后面贴出来的样例</span>
-			Enumeration<span class="token operator">&lt;</span>URL<span class="token operator">&gt;</span> urls <span class="token operator">=</span> classLoader<span class="token punctuation">.</span><span class="token function">getResources</span><span class="token punctuation">(</span>FACTORIES_RESOURCE_LOCATION<span class="token punctuation">)</span><span class="token punctuation">;</span>
-			<span class="token comment">//遍历这些拉取到的文件 可能存在在每个jar中</span>
-			<span class="token keyword">while</span> <span class="token punctuation">(</span>urls<span class="token punctuation">.</span><span class="token function">hasMoreElements</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-				<span class="token comment">//url对象转UrlResource对象</span>
-				URL url <span class="token operator">=</span> urls<span class="token punctuation">.</span><span class="token function">nextElement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-				UrlResource resource <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">UrlResource</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-				<span class="token comment">//借助Spring的属性加载工具PropertiesLoaderUtils加载资源文件转换为Properties类型对象</span>
-				Properties properties <span class="token operator">=</span> PropertiesLoaderUtils<span class="token punctuation">.</span><span class="token function">loadProperties</span><span class="token punctuation">(</span>resource<span class="token punctuation">)</span><span class="token punctuation">;</span>
-				<span class="token comment">//遍历文件内容,将文件中的key value存入result中</span>
-				<span class="token keyword">for</span> <span class="token punctuation">(</span>Map<span class="token punctuation">.</span>Entry<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token punctuation">,</span> <span class="token operator">?</span><span class="token operator">&gt;</span> entry <span class="token operator">:</span> properties<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-				<span class="token comment">//工厂类型名字就是META-INF/spring.factories文件中等号前面的类型名字比如:后面贴的样例文件中等号前面的org.springframework.boot.logging.LoggingSystemFactory</span>
-					String factoryTypeName <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>String<span class="token punctuation">)</span> entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-					<span class="token comment">//同一个工厂类型可以有多个工厂实现,工厂实现的话可以用逗号隔开</span>
-					String<span class="token punctuation">[</span><span class="token punctuation">]</span> factoryImplementationNames <span class="token operator">=</span>
-							StringUtils<span class="token punctuation">.</span><span class="token function">commaDelimitedListToStringArray</span><span class="token punctuation">(</span><span class="token punctuation">(</span>String<span class="token punctuation">)</span> entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-							<span class="token comment">//遍历这些工厂实现,key为工厂类型,value为实现集合列表存入result集合中</span>
-					<span class="token keyword">for</span> <span class="token punctuation">(</span>String factoryImplementationName <span class="token operator">:</span> factoryImplementationNames<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-						result<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span>factoryTypeName<span class="token punctuation">,</span> key <span class="token operator">-&gt;</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">ArrayList</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-								<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>factoryImplementationName<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-					<span class="token punctuation">}</span>
-				<span class="token punctuation">}</span>
-			<span class="token punctuation">}</span>
-
-			<span class="token comment">// 用包含唯一元素的不可修改列表替换所有列表</span>
-			result<span class="token punctuation">.</span><span class="token function">replaceAll</span><span class="token punctuation">(</span><span class="token punctuation">(</span>factoryType<span class="token punctuation">,</span> implementations<span class="token punctuation">)</span> <span class="token operator">-&gt;</span> implementations<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">distinct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-					<span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">collectingAndThen</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> Collections<span class="token double-colon punctuation">::</span>unmodifiableList<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-			 <span class="token comment">//存入缓存</span>
-			cache<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>classLoader<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>spring-boot 子模块提供的META-INF/spring.factories工厂文件参考</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">Logging Systems</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>logging<span class="token punctuation">.</span>LoggingSystemFactory<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>logging<span class="token punctuation">.</span>logback<span class="token punctuation">.</span>LogbackLoggingSystem<span class="token punctuation">.</span>Factory<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>logging<span class="token punctuation">.</span>log4j2<span class="token punctuation">.</span>Log4J2LoggingSystem<span class="token punctuation">.</span>Factory<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>logging<span class="token punctuation">.</span>java<span class="token punctuation">.</span>JavaLoggingSystem<span class="token punctuation">.</span>Factory
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">PropertySource Loaders</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>env<span class="token punctuation">.</span>PropertySourceLoader<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>env<span class="token punctuation">.</span>PropertiesPropertySourceLoader<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>env<span class="token punctuation">.</span>YamlPropertySourceLoader
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">ConfigData Location Resolvers</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>ConfigDataLocationResolver<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>ConfigTreeConfigDataLocationResolver<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>StandardConfigDataLocationResolver
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">ConfigData Loaders</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>ConfigDataLoader<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>ConfigTreeConfigDataLoader<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>StandardConfigDataLoader
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">Run Listeners</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>SpringApplicationRunListener<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>event<span class="token punctuation">.</span>EventPublishingRunListener
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">Error Reporters</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>SpringBootExceptionReporter<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>FailureAnalyzers
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">Application Context Initializers</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>context<span class="token punctuation">.</span>ApplicationContextInitializer<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>ConfigurationWarningsApplicationContextInitializer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>ContextIdApplicationContextInitializer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>DelegatingApplicationContextInitializer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>rsocket<span class="token punctuation">.</span>context<span class="token punctuation">.</span>RSocketPortInfoApplicationContextInitializer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>web<span class="token punctuation">.</span>context<span class="token punctuation">.</span>ServerPortInfoApplicationContextInitializer
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">Application Listeners</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>context<span class="token punctuation">.</span>ApplicationListener<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>ClearCachesApplicationListener<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>builder<span class="token punctuation">.</span>ParentContextCloserApplicationListener<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>FileEncodingApplicationListener<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>AnsiOutputApplicationListener<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>DelegatingApplicationListener<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>logging<span class="token punctuation">.</span>LoggingApplicationListener<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>env<span class="token punctuation">.</span>EnvironmentPostProcessorApplicationListener
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">Environment Post Processors</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>env<span class="token punctuation">.</span>EnvironmentPostProcessor<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>cloud<span class="token punctuation">.</span>CloudFoundryVcapEnvironmentPostProcessor<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>ConfigDataEnvironmentPostProcessor<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>env<span class="token punctuation">.</span>RandomValuePropertySourceEnvironmentPostProcessor<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>env<span class="token punctuation">.</span>SpringApplicationJsonEnvironmentPostProcessor<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>env<span class="token punctuation">.</span>SystemEnvironmentPropertySourceEnvironmentPostProcessor<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>reactor<span class="token punctuation">.</span>DebugAgentEnvironmentPostProcessor
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">Failure Analyzers</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>FailureAnalyzer<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>ConfigDataNotFoundFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>properties<span class="token punctuation">.</span>IncompatibleConfigurationFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>properties<span class="token punctuation">.</span>NotConstructorBoundInjectionFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>BeanCurrentlyInCreationFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>BeanDefinitionOverrideFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>BeanNotOfRequiredTypeFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>BindFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>BindValidationFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>UnboundConfigurationPropertyFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>MutuallyExclusiveConfigurationPropertiesFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>NoSuchMethodFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>NoUniqueBeanDefinitionFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>PortInUseFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>ValidationExceptionFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>InvalidConfigurationPropertyNameFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>InvalidConfigurationPropertyValueFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>analyzer<span class="token punctuation">.</span>PatternParseFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>liquibase<span class="token punctuation">.</span>LiquibaseChangelogMissingFailureAnalyzer<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>web<span class="token punctuation">.</span>embedded<span class="token punctuation">.</span>tomcat<span class="token punctuation">.</span>ConnectorStartFailureAnalyzer
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">Failure Analysis Reporters</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>FailureAnalysisReporter<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>diagnostics<span class="token punctuation">.</span>LoggingFailureAnalysisReporter
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">Database Initializer Detectors</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>init<span class="token punctuation">.</span>dependency<span class="token punctuation">.</span>DatabaseInitializerDetector<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>flyway<span class="token punctuation">.</span>FlywayDatabaseInitializerDetector<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>jdbc<span class="token punctuation">.</span>AbstractDataSourceInitializerDatabaseInitializerDetector<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>jdbc<span class="token punctuation">.</span>init<span class="token punctuation">.</span>DataSourceScriptDatabaseInitializerDetector<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>liquibase<span class="token punctuation">.</span>LiquibaseDatabaseInitializerDetector<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>orm<span class="token punctuation">.</span>jpa<span class="token punctuation">.</span>JpaDatabaseInitializerDetector<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>r2dbc<span class="token punctuation">.</span>init<span class="token punctuation">.</span>R2dbcScriptDatabaseInitializerDetector
-
-<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">Depends On Database Initialization Detectors</span></span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>init<span class="token punctuation">.</span>dependency<span class="token punctuation">.</span>DependsOnDatabaseInitializationDetector<span class="token operator">=</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>init<span class="token punctuation">.</span>dependency<span class="token punctuation">.</span>AnnotationDependsOnDatabaseInitializationDetector<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>jdbc<span class="token punctuation">.</span>SpringJdbcDependsOnDatabaseInitializationDetector<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>jooq<span class="token punctuation">.</span>JooqDependsOnDatabaseInitializationDetector<span class="token punctuation">,</span>\
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>orm<span class="token punctuation">.</span>jpa<span class="token punctuation">.</span>JpaDependsOnDatabaseInitializationDetector
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<h3 id="2-2-3-检查主类型"><a href="#2-2-3-检查主类型" class="headerlink" title="2.2.3 检查主类型"></a>2.2.3 检查主类型</h3><p>deduceMainApplicationClass<br>这个代码非常有意思,通过我们的处理异常时候的异常堆栈类型来获取方法调用栈,然后遍历这个栈中元素,获取到方法名字如果存在main方法的则为main方法所在应用启动类,然后去加载这个类型</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> <span class="token function">deduceMainApplicationClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token keyword">try</span> <span class="token punctuation">{</span>
-			<span class="token comment">//是获取运行时堆栈信息</span>
-			StackTraceElement<span class="token punctuation">[</span><span class="token punctuation">]</span> stackTrace <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">RuntimeException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-			<span class="token comment">//遍历集合如果这个方法名字是main方法则加载这个类型</span>
-			<span class="token keyword">for</span> <span class="token punctuation">(</span>StackTraceElement stackTraceElement <span class="token operator">:</span> stackTrace<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-				<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"main"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>stackTraceElement<span class="token punctuation">.</span><span class="token function">getMethodName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-					<span class="token keyword">return</span> Class<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>stackTraceElement<span class="token punctuation">.</span><span class="token function">getClassName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-				<span class="token punctuation">}</span>
-			<span class="token punctuation">}</span>
-		<span class="token punctuation">}</span>
-		<span class="token keyword">catch</span> <span class="token punctuation">(</span>ClassNotFoundException ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-			<span class="token comment">// Swallow and continue</span>
-		<span class="token punctuation">}</span>
-		<span class="token keyword">return</span> null<span class="token punctuation">;</span>
-	<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>根据刚刚的扩展类型这里我来列举下ApplicationContextInitializer类型的当前版本默认的所有扩展类型:</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">//将委托给上下文中指定的其他初始值设定项的ApplicationContextInitializer。初始化器。类环境属性。</span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>DelegatingApplicationContextInitializer
-
-<span class="token comment">//ApplicationContextInitializer，用于在ConfigurationClassPostProcessor和Spring Boot之间创建共享的CachingMetadataReaderFactory。</span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>autoconfigure<span class="token punctuation">.</span>SharedMetadataReaderFactoryContextInitializer
-
-<span class="token comment">//ApplicationContextInitializer，用于设置Spring应用上下文ID。应用name属性用于创建ID。如果未设置该属性，则使用应用程序。</span>
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>ContextIdApplicationContextInitializer
-
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>ConfigurationWarningsApplicationContextInitializer
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>rsocket<span class="token punctuation">.</span>context<span class="token punctuation">.</span>RSocketPortInfoApplicationContextInitializer
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>web<span class="token punctuation">.</span>context<span class="token punctuation">.</span>ServerPortInfoApplicationContextInitializer
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>autoconfigure<span class="token punctuation">.</span>logging<span class="token punctuation">.</span>ConditionEvaluationReportLoggingListener<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>ApplicationListener类型的所有扩展如下:</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>env<span class="token punctuation">.</span>EnvironmentPostProcessorApplicationListener
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>AnsiOutputApplicationListener
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>logging<span class="token punctuation">.</span>LoggingApplicationListener
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>autoconfigure<span class="token punctuation">.</span>BackgroundPreinitializer
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>config<span class="token punctuation">.</span>DelegatingApplicationListener
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>builder<span class="token punctuation">.</span>ParentContextCloserApplicationListener
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>ClearCachesApplicationListener
-org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>context<span class="token punctuation">.</span>FileEncodingApplicationListener<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/SprigBoot%E6%BA%90%E7%A0%81/" rel="tag">SprigBoot源码<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/Spring/" rel="tag">Spring<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot<span class="tag-unordered list-count">6</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2022/06/01/springboot/3-springapplication-de-run-qi-dong-fang-fa-de-quan-sheng-ming-zhou-qi-han-shu-yuan-ma/"> 3-SpringApplication的run启动方法的全生命周期函数源码</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2022/06/01/springboot/1-cong-yi-ge-springboot-de-demo-ru-shou/"> 1-从一个SpringBoot的Demo入手</a>
-                            </div>
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

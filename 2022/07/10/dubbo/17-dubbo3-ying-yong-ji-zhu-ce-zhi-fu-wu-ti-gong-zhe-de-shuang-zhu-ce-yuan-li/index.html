@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168175993">
+<link rel="stylesheet" href="/css/style.css?v=1662168254534">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168175993"></script>
+<script src="/js/core.js?v=1662168254534"></script>
 
 
 
@@ -48,1102 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>17-【Dubbo3.0.8源码解析系列】Dubbo服务提供者的双注册原理</h1>
-			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">Dubbo3源码</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/17-Dubbo3应用级注册之服务提供者的双注册原理.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="17-Dubbo服务提供者的双注册原理"><a href="#17-Dubbo服务提供者的双注册原理" class="headerlink" title="17-Dubbo服务提供者的双注册原理"></a>17-Dubbo服务提供者的双注册原理</h1><h2 id="17-1-简介"><a href="#17-1-简介" class="headerlink" title="17.1 简介"></a>17.1 简介</h2><p>上个博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/songjunyan/article/details/124896418">《15-Dubbo的三大中心之元数据中心源码解析》</a>导出服务端的时候多次提到了元数据中心，注册信息的注册。<br>Dubbo3出来时间不太长，对于现在的用户来说大部分使用的仍旧是Dubbo2.x，<br>Dubbo3 比较有特色也是会直接使用到的功能就是<strong>应用级服务发现</strong>：</p>
-<ul>
-<li>应用级服务发现<br><em>从服务/接口粒度到应用粒度的升级，使得 Dubbo 在集群可伸缩性、连接异构微服务体系上更具优势。应用粒度能以更低的资源消耗支持超百万实例规模集群程； 实现与 Spring Cloud、Kubernetes Service 等异构微服务体系的互联互通。</em></li>
-</ul>
-<p>对于直接使用Dubbo3的用户还好，可以仅仅开启应用级注册，但是对于Dubbo2.x的用户升级到Dubbo3的用户来说前期都是要开启双注册来慢慢迁移的，既注册传统的接口信息到注册中心，又注册应用信息到注册中心，同时注册应用与接口关系的元数据信息。<br>关于双注册与服务迁移的过程的使用可以参考官网：<br><a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docs/migration/migration-service-discovery/">应用级地址发现迁移指南</a></p>
-<p>关于官网提供者双注册的图我这里贴一下，方便了解：<br><img src="https://img-blog.csdnimg.cn/421cb1471cb8470c826b67cbd2c92533.png" alt="在这里插入图片描述"></p>
-<h2 id="17-2-双注册配置的读取"><a href="#17-2-双注册配置的读取" class="headerlink" title="17.2 双注册配置的读取"></a>17.2 双注册配置的读取</h2><h3 id="17-2-1-注册中心地址作为元数据中心"><a href="#17-2-1-注册中心地址作为元数据中心" class="headerlink" title="17.2.1 注册中心地址作为元数据中心"></a>17.2.1 注册中心地址作为元数据中心</h3><p>这个配置的解析过程在前面的博客介绍元数据中心的时候很详细的说了相关链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/songjunyan/article/details/124779102">15-Dubbo的三大中心之元数据中心源码解析</a></p>
-<p>对应代码位于：DefaultApplicationDeployer类型的startMetadataCenter()方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">startMetadataCenter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//如果未配置元数据中心的地址等配置则使用注册中心的地址等配置做为元数据中心的配置</span>
-        <span class="token function">useRegistryAsMetadataCenterIfNecessary</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//...省略掉其他代码防止受到干扰</span>
-    <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>具体逻辑是这个方法：<br>useRegistryAsMetadataCenterIfNecessary</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">useRegistryAsMetadataCenterIfNecessary</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//配置缓存中查询元数据配置</span>
-        <span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">MetadataReportConfig</span><span class="token punctuation">&gt;</span></span> metadataConfigs <span class="token operator">=</span> configManager<span class="token punctuation">.</span><span class="token function">getMetadataConfigs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		
-        <span class="token comment">//...省略掉空判断</span>
-		<span class="token comment">//查询是否有注册中心设置了默认配置isDefault 设置为true的注册中心则为默认注册中心列表,如果没有注册中心设置为默认注册中心,则获取所有未设置默认配置的注册中心列表</span>
-        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RegistryConfig</span><span class="token punctuation">&gt;</span></span> defaultRegistries <span class="token operator">=</span> configManager<span class="token punctuation">.</span><span class="token function">getDefaultRegistries</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>defaultRegistries<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//多注册中心遍历</span>
-            defaultRegistries
-                <span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token comment">//筛选符合条件的注册中心 (筛选逻辑就是查看是否有对应协议的扩展支持)</span>
-                <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">::</span><span class="token function">isUsedRegistryAsMetadataCenter</span><span class="token punctuation">)</span>
-                <span class="token comment">//注册中心配置映射为元数据中心  映射就是获取需要的配置</span>
-                <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">::</span><span class="token function">registryAsMetadataCenter</span><span class="token punctuation">)</span>
-                <span class="token comment">//将元数据中心配置存储在配置缓存中方便后续使用</span>
-                <span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>metadataReportConfig <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
-                  <span class="token comment">//...省略掉具体的逻辑</span>
-                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>关于元数据中心地址的获取，主要经过如下逻辑：</p>
-<ul>
-<li><strong>查询：</strong> 所有可用的默认注册中心列表</li>
-<li><strong>遍历：</strong> 多注册中心遍历</li>
-<li><strong>筛选：</strong> 选符合条件的注册中心 (筛选逻辑就是查看是否有对应协议的扩展支持)</li>
-<li><strong>转化：</strong> 注册中心配置RegistryConfig映射转换为元数据中心配置类型MetadataReportConfig</li>
-</ul>
-<p>MetadataReportConfig 映射就是获取需要的配置。</p>
-<p>最后会把查询到的元数据中心配置存储在配置缓存中方便后续使用。</p>
-<h3 id="17-2-2-双注册模式配置"><a href="#17-2-2-双注册模式配置" class="headerlink" title="17.2.2 双注册模式配置"></a>17.2.2 双注册模式配置</h3><p>双注册配置类型是这个</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">dubbo<span class="token punctuation">.</span>application<span class="token punctuation">.</span>register<span class="token operator">-</span>mode<span class="token operator">=</span>all<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>默认值为all代表应用级注册和接口级注册，当前在完全迁移到应用级注册之后可以将服务直接迁移到应用级配置上去。<br>配置值解释：</p>
-<ul>
-<li>all 双注册</li>
-<li>instance 应用级注册</li>
-<li>interface 接口级注册</li>
-</ul>
-<p>后面的代码如果想要看更详细的代码可以看博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/songjunyan/article/details/124896418">《16-模块发布器发布服务全过程》</a><br>关于这个配置的使用我们详细来看下，在Dubbo服务注册时候会先通过此配置查询需要注册服务地址，具体代码位于ServiceConfig的doExportUrls()方法中：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">doExportUrls</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token comment">//省略掉前面的代码...</span>
-        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> registryURLs <span class="token operator">=</span> <span class="token class-name">ConfigValidationUtils</span><span class="token punctuation">.</span><span class="token function">loadRegistries</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//省略掉后面的代码...</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>然后就是具体注册中心地址的获取过程我们看下：<br>ConfigValidationUtils的加载注册中心地址方法loadRegistries</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> <span class="token function">loadRegistries</span><span class="token punctuation">(</span><span class="token class-name">AbstractInterfaceConfig</span> interfaceConfig<span class="token punctuation">,</span> <span class="token keyword">boolean</span> provider<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token comment">// check &amp;&amp; override if necessary</span>
-          <span class="token comment">//省略掉前面的代码...</span>
-          <span class="token comment">//这里会获取到一个接口配置注册地址例如：registry://127.0.0.1:2181/org.apache.dubbo.registry.RegistryService?application=dubbo-demo-api-provider&amp;dubbo=2.0.2&amp;pid=9008&amp;registry=zookeeper&amp;release=3.0.8&amp;timestamp=1653703292768</span>
-      <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RegistryConfig</span><span class="token punctuation">&gt;</span></span> registries <span class="token operator">=</span> interfaceConfig<span class="token punctuation">.</span><span class="token function">getRegistries</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-          <span class="token comment">//省略掉中间的的代码...</span>
-       <span class="token keyword">return</span> <span class="token function">genCompatibleRegistries</span><span class="token punctuation">(</span>interfaceConfig<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> registryList<span class="token punctuation">,</span> provider<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>ConfigValidationUtils的双注册地址的获取genCompatibleRegistries方法.<br>前面代码获取到了一个注册中心地址列表例如：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">registry<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">2181</span><span class="token operator">/</span><span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>registry<span class="token punctuation">.</span></span>RegistryService</span><span class="token operator">?</span>application<span class="token operator">=</span>dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider<span class="token operator">&amp;</span>dubbo<span class="token operator">=</span><span class="token number">2.0</span><span class="token number">.2</span><span class="token operator">&amp;</span>pid<span class="token operator">=</span><span class="token number">9008</span><span class="token operator">&amp;</span>registry<span class="token operator">=</span>zookeeper<span class="token operator">&amp;</span>release<span class="token operator">=</span><span class="token number">3.0</span><span class="token number">.8</span><span class="token operator">&amp;</span>timestamp<span class="token operator">=</span><span class="token number">1653703292768</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>下面可以看下如果根据配置来转换为应用级注册地址+接口级注册地址</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> <span class="token function">genCompatibleRegistries</span><span class="token punctuation">(</span><span class="token class-name">ScopeModel</span> scopeModel<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> registryList<span class="token punctuation">,</span> <span class="token keyword">boolean</span> provider<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> result <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>registryList<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        registryList<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>registryURL <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>provider<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment">// for registries enabled service discovery, automatically register interface compatible addresses.</span>
-                <span class="token class-name">String</span> registerMode<span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>SERVICE_REGISTRY_PROTOCOL<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                   <span class="token comment">//为了更好理解这里简化掉服务发现注册地址配置的逻辑判断过程仅仅看当前例子提供的值走的逻辑</span>
-                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                   <span class="token comment">//双注册模式配置查询 对应参数为dubbo.application.register-mode 默认值为all</span>
-                    registerMode <span class="token operator">=</span> registryURL<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>REGISTER_MODE_KEY<span class="token punctuation">,</span> <span class="token class-name">ConfigurationUtils</span><span class="token punctuation">.</span><span class="token function">getCachedDynamicProperty</span><span class="token punctuation">(</span>scopeModel<span class="token punctuation">,</span> DUBBO_REGISTER_MODE_DEFAULT_KEY<span class="token punctuation">,</span> DEFAULT_REGISTER_MODE_ALL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token comment">//如果用户配置了一个错误的注册模式配置则只走接口级配置 这里默认值为interface</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isValidRegisterMode</span><span class="token punctuation">(</span>registerMode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        registerMode <span class="token operator">=</span> DEFAULT_REGISTER_MODE_INTERFACE<span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                    <span class="token comment">//这个逻辑是满足应用级注册就添加一个应用级注册的地址</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>DEFAULT_REGISTER_MODE_INSTANCE<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span>registerMode<span class="token punctuation">)</span> <span class="token operator">||</span> DEFAULT_REGISTER_MODE_ALL<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span>registerMode<span class="token punctuation">)</span><span class="token punctuation">)</span>
-                        <span class="token operator">&amp;&amp;</span> <span class="token function">registryNotExists</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">,</span> registryList<span class="token punctuation">,</span> SERVICE_REGISTRY_PROTOCOL<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token class-name">URL</span> serviceDiscoveryRegistryURL <span class="token operator">=</span> <span class="token class-name">URLBuilder</span><span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span>
-                            <span class="token punctuation">.</span><span class="token function">setProtocol</span><span class="token punctuation">(</span>SERVICE_REGISTRY_PROTOCOL<span class="token punctuation">)</span>
-                            <span class="token punctuation">.</span><span class="token function">removeParameter</span><span class="token punctuation">(</span>REGISTRY_TYPE_KEY<span class="token punctuation">)</span>
-                            <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        result<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>serviceDiscoveryRegistryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-					<span class="token comment">//这个逻辑是满足接口级注册配置就添加一个接口级注册地址</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>DEFAULT_REGISTER_MODE_INTERFACE<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span>registerMode<span class="token punctuation">)</span> <span class="token operator">||</span> DEFAULT_REGISTER_MODE_ALL<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span>registerMode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        result<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
- 		<span class="token comment">//省略掉若干代码和括号</span>
-
-        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到这里简化的配置比较容易理解了</p>
-<ul>
-<li>双注册模式配置查询 对应参数为dubbo.application.register-mode ，默认值为all</li>
-<li>如果用户配置了一个错误的注册模式配置则只走接口级配置 这里默认值为interface</li>
-<li>满足应用级注册就添加一个应用级注册的地址</li>
-<li>满足接口级注册配置就添加一个接口级注册地址</li>
-</ul>
-<p>这个方法是根据服务注册模式来判断使用接口级注册地址还是应用级注册地址分别如下所示：<br>配置信息：<br>dubbo.application.register-mode<br>配置值：</p>
-<ul>
-<li>interface<ul>
-<li>接口级注册</li>
-</ul>
-</li>
-<li>instance<ul>
-<li>应用级注册</li>
-</ul>
-</li>
-<li>all <ul>
-<li>接口级别和应用级都注册</li>
-</ul>
-</li>
-</ul>
-<p>最终的注册地址配置如下：<br>接口级注册地址：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">registry<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">2181</span><span class="token operator">/</span><span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>registry<span class="token punctuation">.</span></span>RegistryService</span><span class="token operator">?</span>application<span class="token operator">=</span>dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider<span class="token operator">&amp;</span>dubbo<span class="token operator">=</span><span class="token number">2.0</span><span class="token number">.2</span><span class="token operator">&amp;</span>pid<span class="token operator">=</span><span class="token number">9008</span><span class="token operator">&amp;</span>registry<span class="token operator">=</span>zookeeper<span class="token operator">&amp;</span>release<span class="token operator">=</span><span class="token number">3.0</span><span class="token number">.8</span><span class="token operator">&amp;</span>timestamp<span class="token operator">=</span><span class="token number">1653703292768</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>应用级注册地址：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">service<span class="token operator">-</span>discovery<span class="token operator">-</span>registry<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">2181</span><span class="token operator">/</span><span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>registry<span class="token punctuation">.</span></span>RegistryService</span><span class="token operator">?</span>application<span class="token operator">=</span>dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider<span class="token operator">&amp;</span>dubbo<span class="token operator">=</span><span class="token number">2.0</span><span class="token number">.2</span><span class="token operator">&amp;</span>pid<span class="token operator">=</span><span class="token number">10275</span><span class="token operator">&amp;</span>registry<span class="token operator">=</span>zookeeper<span class="token operator">&amp;</span>release<span class="token operator">=</span><span class="token number">3.0</span><span class="token number">.8</span><span class="token operator">&amp;</span>timestamp<span class="token operator">=</span><span class="token number">1653704425920</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-
-<h2 id="17-3-双注册服务数据的注册"><a href="#17-3-双注册服务数据的注册" class="headerlink" title="17.3 双注册服务数据的注册"></a>17.3 双注册服务数据的注册</h2><h3 id="17-3-1-双注册代码逻辑调用简介"><a href="#17-3-1-双注册代码逻辑调用简介" class="headerlink" title="17.3.1 双注册代码逻辑调用简介"></a>17.3.1 双注册代码逻辑调用简介</h3><p>前面说了这个注册服务的配置地址会由Dubbo内部进行判断如果判断是all的话会自动将一个配置的注册地址转变为两个一个是传统的接口级注册，一个是应用级注册使用的配置地址</p>
-<p>然后我们先看注册中心，注册服务数据的源码<br>如果想要查看源码细节可以在RegistryProtocol类型的export(final Invoker<t> originInvoker) 方法的如下代码位置打断点：</t></p>
-<p>RegistryProtocol的export方法的注册中心注册数据代码如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">	<span class="token comment">// url to registry 注册服务对外的接口</span>
-	<span class="token comment">//如果url为service-discovery-registry发现则这个实现类型为ServiceDiscoveryRegistry</span>
-      <span class="token keyword">final</span> <span class="token class-name">Registry</span> registry <span class="token operator">=</span> <span class="token function">getRegistry</span><span class="token punctuation">(</span>registryUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">//服务发现的提供者url: dubbo://192.168.1.9:20880/link.elastic.dubbo.entity.DemoService?anyhost=true&amp;application=dubbo-demo-api-provider&amp;background=false&amp;deprecated=false&amp;dubbo=2.0.2&amp;dynamic=true&amp;generic=false&amp;interface=link.elastic.dubbo.entity.DemoService&amp;methods=sayHello,sayHelloAsync&amp;pid=19559&amp;release=3.0.8&amp;service-name-mapping=true&amp;side=provider&amp;timestamp=1654938441023</span>
-      <span class="token keyword">final</span> <span class="token class-name">URL</span> registeredProviderUrl <span class="token operator">=</span> <span class="token function">getUrlToRegistry</span><span class="token punctuation">(</span>providerUrl<span class="token punctuation">,</span> registryUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-      <span class="token comment">// decide if we need to delay publish (provider itself and registry should both need to register)</span>
-      <span class="token comment">//register参数是否 注册数据到注册中心</span>
-      <span class="token keyword">boolean</span> register <span class="token operator">=</span> providerUrl<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>REGISTER_KEY<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> registryUrl<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>REGISTER_KEY<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>register<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-     			<span class="token comment">//这里有两种情况 接口级注册会将接口级服务提供者数据直接注册到Zookeper上面，服务发现（应用级注册）这里仅仅会将注册数据转换为服务元数据等后面来发布元数据</span>
-          <span class="token function">register</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> registeredProviderUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-
-      <span class="token comment">// register stated url on provider model</span>
-      <span class="token comment">//向提供者模型注册提供者配置ProviderModel</span>
-      <span class="token function">registerStatedUrl</span><span class="token punctuation">(</span>registryUrl<span class="token punctuation">,</span> registeredProviderUrl<span class="token punctuation">,</span> register<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-
-      exporter<span class="token punctuation">.</span><span class="token function">setRegisterUrl</span><span class="token punctuation">(</span>registeredProviderUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      exporter<span class="token punctuation">.</span><span class="token function">setSubscribeUrl</span><span class="token punctuation">(</span>overrideSubscribeUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>registry<span class="token punctuation">.</span><span class="token function">isServiceDiscovery</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token comment">// Deprecated! Subscribe to override rules in 2.6.x or before.</span>
-          registry<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>overrideSubscribeUrl<span class="token punctuation">,</span> overrideSubscribeListener<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>在上个博客中我们整体说了下服务注册时候的一个流程，关于数据向注册中心的注册细节这里可以详细看下</p>
-<h3 id="17-3-2-注册中心领域对象的初始化"><a href="#17-3-2-注册中心领域对象的初始化" class="headerlink" title="17.3.2  注册中心领域对象的初始化"></a>17.3.2  注册中心领域对象的初始化</h3><p>前面的代码使用url来获取注册中心操作对象如下调用代码：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// url to registry 注册服务对外的接口</span>
-<span class="token keyword">final</span> <span class="token class-name">Registry</span> registry <span class="token operator">=</span> <span class="token function">getRegistry</span><span class="token punctuation">(</span>registryUrl<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-<p>对应代码如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token class-name">Registry</span> <span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">URL</span> registryUrl<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token comment">//这里分为两步先获取注册中心工厂对象</span>
-       <span class="token class-name">RegistryFactory</span> registryFactory <span class="token operator">=</span> <span class="token class-name">ScopeModelUtil</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">RegistryFactory</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> registryUrl<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAdaptiveExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-       <span class="token comment">//使用注册中心工厂对象获取注册中心操作对象</span>
-       <span class="token keyword">return</span> registryFactory<span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span>registryUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>关于参数URL有两个在前面已经说过，url信息如下：</p>
-<p>接口级注册地址：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">registry<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">2181</span><span class="token operator">/</span><span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>registry<span class="token punctuation">.</span></span>RegistryService</span><span class="token operator">?</span>application<span class="token operator">=</span>dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider<span class="token operator">&amp;</span>dubbo<span class="token operator">=</span><span class="token number">2.0</span><span class="token number">.2</span><span class="token operator">&amp;</span>pid<span class="token operator">=</span><span class="token number">9008</span><span class="token operator">&amp;</span>registry<span class="token operator">=</span>zookeeper<span class="token operator">&amp;</span>release<span class="token operator">=</span><span class="token number">3.0</span><span class="token number">.8</span><span class="token operator">&amp;</span>timestamp<span class="token operator">=</span><span class="token number">1653703292768</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>应用级注册地址：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">service<span class="token operator">-</span>discovery<span class="token operator">-</span>registry<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">2181</span><span class="token operator">/</span><span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>registry<span class="token punctuation">.</span></span>RegistryService</span><span class="token operator">?</span>application<span class="token operator">=</span>dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider<span class="token operator">&amp;</span>dubbo<span class="token operator">=</span><span class="token number">2.0</span><span class="token number">.2</span><span class="token operator">&amp;</span>pid<span class="token operator">=</span><span class="token number">10275</span><span class="token operator">&amp;</span>registry<span class="token operator">=</span>zookeeper<span class="token operator">&amp;</span>release<span class="token operator">=</span><span class="token number">3.0</span><span class="token number">.8</span><span class="token operator">&amp;</span>timestamp<span class="token operator">=</span><span class="token number">1653704425920</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>注册中心工厂对象与注册中心操作对象的获取与执行我们通过Debug来看比较麻烦，这里涉及到很多扩展机制动态生成的代码我们无法看到，这里我直接来贴一下比较关键的一些类型，以Zookeeper注册中心来举例子： </p>
-<p>   先来看下注册工厂相关的类型：<br><img src="https://img-blog.csdnimg.cn/be50d6b30d74451fb57e839bd45aed0c.png" alt="在这里插入图片描述"> </p>
-<ul>
-<li>RegistryFactory 注册中心对象获取</li>
-<li>AbstractRegistryFactory	 模板类型封装注册中心对象获取的基本逻辑，比如缓存和基本的逻辑判断</li>
-<li>ServiceDiscoveryRegistryFactory 用于创建服务发现注册中心工厂对象 用于创建ServiceDiscoveryRegistry对象</li>
-<li>ZookeeperRegistryFactory 用于创建ZookeeperRegistry类型对象</li>
-<li>NacosRegistryFactory Nacos注册中心工厂对象 用于创建NacosRegistry</li>
-</ul>
-<p>接下来看封装了注册中心操作逻辑的注册中心领域对象：</p>
-<p><img src="https://img-blog.csdnimg.cn/848c753de1d94c1f85317a7032bea03e.png" alt="在这里插入图片描述"></p>
-<ul>
-<li>Node 节点信息开放接口 比如节点 url的获取 ，销毁</li>
-<li>RegistryService 注册服务接口，比如注册，订阅，查询等操作</li>
-<li>Registry 注册中心接口，是否服务发现查询，注册，取消注册方法</li>
-<li>AbstractRegistry 注册中心逻辑抽象模板类型，封装了注册，订阅，通知的基本逻辑，和本地缓存注册中心信息的基本逻辑</li>
-<li>FailbackRegistry 封装了失败重试的逻辑 </li>
-<li>NacosRegistry  封装了以nacos作为注册中心的基本逻辑</li>
-<li>ServiceDiscoveryRegistry 应用级服务发现注册中心逻辑，现在不需要这种网桥实现，协议可以直接与服务发现交互。ServiceDiscoveryRegistry是一种非常特殊的注册表实现，用于以兼容的方式将旧的接口级服务发现模型与3.0中引入的新服务发现模型连接起来。<br>它完全符合注册表SPI的扩展规范，但与zookeeper和Nacos的具体实现不同，因为它不与任何真正的第三方注册表交互，而只与过程中ServiceDiscovery的相关组件交互。简而言之，它架起了旧接口模型和新服务发现模型之间的桥梁：register()方法主要通过与MetadataService交互，将接口级数据聚合到MetadataInfo中subscribe() 触发应用程序级服务发现模型的整个订阅过程。-根据ServiceNameMapping将接口映射到应用程序。-启动新的服务发现侦听器（InstanceListener），并使NotifierListener成为InstanceListener的一部分。</li>
-<li>CacheableFailbackRegistry 提供了一些本地内存缓存的逻辑 对注册中心有用，注册中心的sdk将原始字符串作为提供程序实例返回，例如zookeeper和etcd </li>
-<li>ZookeeperRegistry Zookeeper作为注册中心的基本操作逻辑封装</li>
-</ul>
-<p>了解了这几个领域对象这里我们回到代码逻辑，这里直接看将会执行的一些核心逻辑：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token class-name">Registry</span> <span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">URL</span> registryUrl<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token comment">//这里分为两步先获取注册中心工厂对象</span>
-       <span class="token class-name">RegistryFactory</span> registryFactory <span class="token operator">=</span> <span class="token class-name">ScopeModelUtil</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">RegistryFactory</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> registryUrl<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAdaptiveExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-       <span class="token comment">//使用注册中心工厂对象获取注册中心操作对象</span>
-       <span class="token keyword">return</span> registryFactory<span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span>registryUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>前面注册中心工厂不论那种协议的地址信息获取到的都是一个RegistryFactory$Adaptive类型（由扩展机制的字节码工具自动生成的代码）</p>
-<p>如果getRegistry参数为应用级注册地址。如下所示将获取到的类型为ServiceDiscoveryRegistryFactory逻辑来获取注册中心：<br>（这个逻辑是@Adaptive注解产生的了逻辑具体原理可以看扩展机制中@Adaptive的实现）</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">service<span class="token operator">-</span>discovery<span class="token operator">-</span>registry<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">2181</span><span class="token operator">/</span><span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>registry<span class="token punctuation">.</span></span>RegistryService</span><span class="token operator">?</span>application<span class="token operator">=</span>dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider<span class="token operator">&amp;</span>dubbo<span class="token operator">=</span><span class="token number">2.0</span><span class="token number">.2</span><span class="token operator">&amp;</span>pid<span class="token operator">=</span><span class="token number">10275</span><span class="token operator">&amp;</span>registry<span class="token operator">=</span>zookeeper<span class="token operator">&amp;</span>release<span class="token operator">=</span><span class="token number">3.0</span><span class="token number">.8</span><span class="token operator">&amp;</span>timestamp<span class="token operator">=</span><span class="token number">1653704425920</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>getRegistry方法优先走的逻辑是这里：AbstractRegistryFactory模板类型中的getRegistry方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token class-name">Registry</span> <span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>registryManager <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Unable to fetch RegistryManager from ApplicationModel BeanFactory. "</span> <span class="token operator">+</span>
-                <span class="token string">"Please check if `setApplicationModel` has been override."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-		<span class="token comment">//销毁状态直接返回</span>
-        <span class="token class-name">Registry</span> defaultNopRegistry <span class="token operator">=</span> registryManager<span class="token punctuation">.</span><span class="token function">getDefaultNopRegistryIfDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">null</span> <span class="token operator">!=</span> defaultNopRegistry<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> defaultNopRegistry<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        url <span class="token operator">=</span> <span class="token class-name">URLBuilder</span><span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">setPath</span><span class="token punctuation">(</span><span class="token class-name">RegistryService</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">addParameter</span><span class="token punctuation">(</span>INTERFACE_KEY<span class="token punctuation">,</span> <span class="token class-name">RegistryService</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">removeParameter</span><span class="token punctuation">(</span>TIMESTAMP_KEY<span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">removeAttribute</span><span class="token punctuation">(</span>EXPORT_KEY<span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">removeAttribute</span><span class="token punctuation">(</span>REFER_KEY<span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-          <span class="token comment">//这个key为 service-discovery-registry://127.0.0.1:2181/org.apache.dubbo.registry.RegistryService</span>
-        <span class="token class-name">String</span> key <span class="token operator">=</span> <span class="token function">createRegistryCacheKey</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">Registry</span> registry <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-        <span class="token comment">//check配置 是否检查注册中心连通 默认为true</span>
-        <span class="token keyword">boolean</span> check <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>CHECK_KEY<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> url<span class="token punctuation">.</span><span class="token function">getPort</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-        <span class="token comment">// Lock the registry access process to ensure a single instance of the registry</span>
-        <span class="token comment">//给写操作加锁方式并发写问题</span>
-        registryManager<span class="token punctuation">.</span><span class="token function">getRegistryLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-             <span class="token comment">//锁内检查是否销毁的逻辑</span>
-            <span class="token comment">// double check</span>
-            <span class="token comment">// fix https://github.com/apache/dubbo/issues/7265.</span>
-            defaultNopRegistry <span class="token operator">=</span> registryManager<span class="token punctuation">.</span><span class="token function">getDefaultNopRegistryIfDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">null</span> <span class="token operator">!=</span> defaultNopRegistry<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">return</span> defaultNopRegistry<span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment">//锁内检查是否缓存中存在存在则直接返回</span>
-            registry <span class="token operator">=</span> registryManager<span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>registry <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">return</span> registry<span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment">//create registry by spi/ioc</span>
-            <span class="token comment">//使用url创建注册中心操作的逻辑</span>
-            registry <span class="token operator">=</span> <span class="token function">createRegistry</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-           <span class="token comment">//check配置检查</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>check<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"Can not create registry "</span> <span class="token operator">+</span> url<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                LOGGER<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Failed to obtain or create registry "</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-            <span class="token comment">// Release the lock</span>
-            registryManager<span class="token punctuation">.</span><span class="token function">getRegistryLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>check <span class="token operator">&amp;&amp;</span> registry <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Can not create registry "</span> <span class="token operator">+</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-		<span class="token comment">//缓存逻辑</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>registry <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            registryManager<span class="token punctuation">.</span><span class="token function">putRegistry</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> registry<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>逻辑其实吧比较简单，概括下上面的逻辑：</p>
-<ul>
-<li>销毁逻辑判断</li>
-<li>缓存获取，存在则直接返回</li>
-<li>根据注册中心url配置，创建注册中心操作对象</li>
-<li>注册中心连接失败的check配置逻辑处理</li>
-<li>将注册中心操作对象存入缓存</li>
-</ul>
-<p>上面比较重要的逻辑是createRegistry这个<br>整个调用过程我给大家看下Debug的详情，这里很多逻辑由扩展机制产生的这里直接看下逻辑调用栈，有几个需要关注的地方我圈了起来：<br><img src="https://img-blog.csdnimg.cn/e6cb779284c84f19b0e5d694464959cd.png" alt="在这里插入图片描述"><br>我们继续看服务发现的注册中心工厂对象的获取，代码如下：<br>ServiceDiscoveryRegistryFactory类型的createRegistry方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
-   <span class="token keyword">protected</span> <span class="token class-name">Registry</span> <span class="token function">createRegistry</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token comment">//判断url是否是这个前缀：service-discovery-registry</span>
-       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">UrlUtils</span><span class="token punctuation">.</span><span class="token function">hasServiceDiscoveryRegistryProtocol</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token comment">//切换下协议：将服务发现协议切换为配置的注册中心协议这里是Zookeeper如下：</span>
-          <span class="token comment">//zookeeper://127.0.0.1:2181/org.apache.dubbo.registry.RegistryService?application=dubbo-demo-api-provider&amp;dubbo=2.0.2&amp;interface=org.apache.dubbo.registry.RegistryService&amp;pid=39884&amp;release=3.0.8</span>
-           <span class="token class-name">String</span> protocol <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>REGISTRY_KEY<span class="token punctuation">,</span> DEFAULT_REGISTRY<span class="token punctuation">)</span><span class="token punctuation">;</span>
-           url <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">setProtocol</span><span class="token punctuation">(</span>protocol<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">removeParameter</span><span class="token punctuation">(</span>REGISTRY_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
-       <span class="token punctuation">}</span>
-       <span class="token comment">//创建服务发现注册中心对象对象</span>
-       <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ServiceDiscoveryRegistry</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>通过以上代码可以看到其实最终创建的是一个ServiceDiscoveryRegistry注册中心对象，这个url协议被转换为了对应注册中心的协议，也就是说双注册会有两个协议一个是原先的接口级注册注册中心对象（这个还未说到）和这里对应注册中心协议的服务发现注册中心对象ServiceDiscoveryRegistry</p>
-<h3 id="17-3-3-ServiceDiscoveryRegistry"><a href="#17-3-3-ServiceDiscoveryRegistry" class="headerlink" title="17.3.3 ServiceDiscoveryRegistry"></a>17.3.3 ServiceDiscoveryRegistry</h3><p>ServiceDiscoveryRegistry服务发现注册中心对象的初始化过程：</p>
-<h4 id="17-3-3-1-ServiceDiscoveryRegistry的构造器："><a href="#17-3-3-1-ServiceDiscoveryRegistry的构造器：" class="headerlink" title="17.3.3.1 ServiceDiscoveryRegistry的构造器："></a>17.3.3.1 ServiceDiscoveryRegistry的构造器：</h4><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">ServiceDiscoveryRegistry</span><span class="token punctuation">(</span><span class="token class-name">URL</span> registryURL<span class="token punctuation">,</span> <span class="token class-name">ApplicationModel</span> applicationModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-     <span class="token keyword">super</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-     <span class="token comment">//根据url创建一个服务发现对象类型为ServiceDiscovery</span>
-     <span class="token keyword">this</span><span class="token punctuation">.</span>serviceDiscovery <span class="token operator">=</span> <span class="token function">createServiceDiscovery</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-     <span class="token comment">//这个类型为是serviceNameMapping类型是MetadataServiceNameMapping类型</span>
-     <span class="token keyword">this</span><span class="token punctuation">.</span>serviceNameMapping <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">AbstractServiceNameMapping</span><span class="token punctuation">)</span> <span class="token class-name">ServiceNameMapping</span><span class="token punctuation">.</span><span class="token function">getDefaultExtension</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-     <span class="token keyword">super</span><span class="token punctuation">.</span>applicationModel <span class="token operator">=</span> applicationModel<span class="token punctuation">;</span>
- <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p> ServiceDiscoveryRegistry中创建服务发现对象createServiceDiscovery方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token class-name">ServiceDiscovery</span> <span class="token function">createServiceDiscovery</span><span class="token punctuation">(</span><span class="token class-name">URL</span> registryURL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token function">getServiceDiscovery</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">.</span><span class="token function">addParameter</span><span class="token punctuation">(</span>INTERFACE_KEY<span class="token punctuation">,</span> <span class="token class-name">ServiceDiscovery</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">removeParameter</span><span class="token punctuation">(</span>REGISTRY_TYPE_KEY<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p> ServiceDiscoveryRegistry中创建服务发现对象getServiceDiscovery方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">ServiceDiscovery</span> <span class="token function">getServiceDiscovery</span><span class="token punctuation">(</span><span class="token class-name">URL</span> registryURL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-<span class="token comment">//服务发现工厂对象的获取这里是ServiceDiscoveryFactory类型，</span>
-        <span class="token class-name">ServiceDiscoveryFactory</span> factory <span class="token operator">=</span> <span class="token function">getExtension</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//服务发现工厂对象获取服务发现对象</span>
-        <span class="token keyword">return</span> factory<span class="token punctuation">.</span><span class="token function">getServiceDiscovery</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>ServiceDiscoveryFactory和ServiceDiscovery类型可以往后看</p>
-<h4 id="17-3-3-2-父类型FailbackRegistry的构造器"><a href="#17-3-3-2-父类型FailbackRegistry的构造器" class="headerlink" title="17.3.3.2 父类型FailbackRegistry的构造器"></a>17.3.3.2 父类型FailbackRegistry的构造器</h4><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">FailbackRegistry</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-     <span class="token keyword">super</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//重试间隔配置retry.period ，默认为5秒</span>
-     <span class="token keyword">this</span><span class="token punctuation">.</span>retryPeriod <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>REGISTRY_RETRY_PERIOD_KEY<span class="token punctuation">,</span> DEFAULT_REGISTRY_RETRY_PERIOD<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-     <span class="token comment">// since the retry task will not be very much. 128 ticks is enough.</span>
-     <span class="token comment">//因为重试任务不会太多。128个刻度就足够了。Dubbo封装的时间轮用于高效率的重试，这个在Kafka也自定义实现了后续可以单独来看看</span>
-     retryTimer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashedWheelTimer</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">NamedThreadFactory</span><span class="token punctuation">(</span><span class="token string">"DubboRegistryRetryTimer"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">,</span> retryPeriod<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">,</span> <span class="token number">128</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
- <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="17-3-3-3-AbstractRegistry的构造器"><a href="#17-3-3-3-AbstractRegistry的构造器" class="headerlink" title="17.3.3.3 AbstractRegistry的构造器"></a>17.3.3.3 AbstractRegistry的构造器</h4><p>参数url如下所示：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">zookeeper<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">2181</span><span class="token operator">/</span><span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>registry<span class="token punctuation">.</span></span>RegistryService</span><span class="token operator">?</span>application<span class="token operator">=</span>dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider<span class="token operator">&amp;</span>dubbo<span class="token operator">=</span><span class="token number">2.0</span><span class="token number">.2</span><span class="token operator">&amp;</span><span class="token keyword">interface</span><span class="token operator">=</span><span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>registry<span class="token punctuation">.</span></span>RegistryService</span><span class="token operator">&amp;</span>pid<span class="token operator">=</span><span class="token number">39884</span><span class="token operator">&amp;</span>release<span class="token operator">=</span><span class="token number">3.0</span><span class="token number">.8</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">   
-<span class="token keyword">public</span> <span class="token class-name">AbstractRegistry</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token function">setUrl</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    registryManager <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getOrDefaultApplicationModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token class-name">RegistryManager</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-     <span class="token comment">//是否本地缓存默认为true</span>
-    localCacheEnabled <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>REGISTRY_LOCAL_FILE_CACHE_ENABLED<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    registryCacheExecutor <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getOrDefaultFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token class-name">FrameworkExecutorRepository</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSharedExecutor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>localCacheEnabled<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">// Start file save timer 是否同步缓存默认为false</span>
-        syncSaveFile <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>REGISTRY_FILESAVE_SYNC_KEY<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-         <span class="token comment">//默认缓存的文件路径与文件名字为：/Users/song/.dubbo/dubbo-registry-dubbo-demo-api-provider-127.0.0.1-2181.cache</span>
-        <span class="token class-name">String</span> defaultFilename <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span>USER_HOME<span class="token punctuation">)</span> <span class="token operator">+</span> DUBBO_REGISTRY <span class="token operator">+</span>
-            url<span class="token punctuation">.</span><span class="token function">getApplication</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"-"</span> <span class="token operator">+</span> url<span class="token punctuation">.</span><span class="token function">getAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replaceAll</span><span class="token punctuation">(</span><span class="token string">":"</span><span class="token punctuation">,</span> <span class="token string">"-"</span><span class="token punctuation">)</span> <span class="token operator">+</span> CACHE<span class="token punctuation">;</span>
-           <span class="token comment">//未指定缓存的文件名字则用默认的文件名字</span>
-        <span class="token class-name">String</span> filename <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>FILE_KEY<span class="token punctuation">,</span> defaultFilename<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">File</span> file <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-        <span class="token comment">//父目录创建，保证目录存在</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">ConfigUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            file <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>file<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> file<span class="token punctuation">.</span><span class="token function">getParentFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>file<span class="token punctuation">.</span><span class="token function">getParentFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>file<span class="token punctuation">.</span><span class="token function">getParentFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mkdirs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Invalid registry cache file "</span> <span class="token operator">+</span> file <span class="token operator">+</span> <span class="token string">", cause: Failed to create directory "</span> <span class="token operator">+</span> file<span class="token punctuation">.</span><span class="token function">getParentFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>file <span class="token operator">=</span> file<span class="token punctuation">;</span>
-        <span class="token comment">// When starting the subscription center,</span>
-        <span class="token comment">// we need to read the local cache file for future Registry fault tolerance processing.</span>
-        <span class="token comment">//加载本地磁盘文件</span>
-        <span class="token function">loadProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//变更推送</span>
-        <span class="token function">notify</span><span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">getBackupUrls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<h3 id="17-3-4-将服务提供者数据转换到本地内存的元数据信息中"><a href="#17-3-4-将服务提供者数据转换到本地内存的元数据信息中" class="headerlink" title="17.3.4 将服务提供者数据转换到本地内存的元数据信息中"></a>17.3.4 将服务提供者数据转换到本地内存的元数据信息中</h3><p>在前面我们看到了RegistryProtocol中调用register来注册服务提供者的数据到注册的中心，接下来详细看下实现原理：<br>下面参数为ServiceDiscoveryRegistry为情况下举例子：ServiceDiscoveryRegistry类型的register方法与ZookeeperRegister注册不一样传统的接口级注册在这个方法里面就将服务数据注册到注册中心了，服务发现的数据注册分为了两步，这里仅仅将数据封装到内存中如下：<br>url例子为：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">dubbo<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">192.168</span><span class="token number">.1</span><span class="token number">.9</span><span class="token operator">:</span><span class="token number">20880</span><span class="token operator">/</span><span class="token class-name"><span class="token namespace">link<span class="token punctuation">.</span>elastic<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>entity<span class="token punctuation">.</span></span>DemoService</span><span class="token operator">?</span>anyhost<span class="token operator">=</span><span class="token boolean">true</span><span class="token operator">&amp;</span>application<span class="token operator">=</span>dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider<span class="token operator">&amp;</span>background<span class="token operator">=</span><span class="token boolean">false</span><span class="token operator">&amp;</span>deprecated<span class="token operator">=</span><span class="token boolean">false</span><span class="token operator">&amp;</span>dubbo<span class="token operator">=</span><span class="token number">2.0</span><span class="token number">.2</span><span class="token operator">&amp;</span>dynamic<span class="token operator">=</span><span class="token boolean">true</span><span class="token operator">&amp;</span>generic<span class="token operator">=</span><span class="token boolean">false</span><span class="token operator">&amp;</span><span class="token keyword">interface</span><span class="token operator">=</span><span class="token class-name"><span class="token namespace">link<span class="token punctuation">.</span>elastic<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>entity<span class="token punctuation">.</span></span>DemoService</span><span class="token operator">&amp;</span>methods<span class="token operator">=</span>sayHello<span class="token punctuation">,</span>sayHelloAsync<span class="token operator">&amp;</span>pid<span class="token operator">=</span><span class="token number">19559</span><span class="token operator">&amp;</span>release<span class="token operator">=</span><span class="token number">3.0</span><span class="token number">.8</span><span class="token operator">&amp;</span>service<span class="token operator">-</span>name<span class="token operator">-</span>mapping<span class="token operator">=</span><span class="token boolean">true</span><span class="token operator">&amp;</span>side<span class="token operator">=</span>provider<span class="token operator">&amp;</span>timestamp<span class="token operator">=</span><span class="token number">1654938441023</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>RegistryProtocol中的register方法：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">register</span><span class="token punctuation">(</span><span class="token class-name">Registry</span> registry<span class="token punctuation">,</span> <span class="token class-name">URL</span> registeredProviderUrl<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       registry<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span>registeredProviderUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>上面这个代码会优先走ListenerRegistryWrapper的一些逻辑来执行register方法来触发一些监听器的逻辑，我们直接跳到ServiceDiscoveryRegistry中的register方法来看</p>
-<p>ServiceDiscoveryRegistry的register方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">register</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token comment">//逻辑判断比如只有side为提供者时候才能注册</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">shouldRegister</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// Should Not Register</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token function">doRegister</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>ServiceDiscoveryRegistry的doRegister方法：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
- <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">doRegister</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-     <span class="token comment">// fixme, add registry-cluster is not necessary anymore</span>
-     url <span class="token operator">=</span> <span class="token function">addRegistryClusterKey</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-     serviceDiscovery<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
- <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>AbstractServiceDiscovery的register方法：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">register</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token comment">//metadaInfo类型为MetadataInfo类型，用来操作元数据的</span>
-        metadataInfo<span class="token punctuation">.</span><span class="token function">addService</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>MetadataInfo 类型的addService方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">addService</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">// fixme, pass in application mode context during initialization of MetadataInfo.</span>
-        <span class="token comment">//元数据参数过滤器扩展获取:MetadataParamsFilter</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>loader <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>loader <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getOrDefaultApplicationModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">MetadataParamsFilter</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">//元数据参数过滤器获取</span>
-        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">MetadataParamsFilter</span><span class="token punctuation">&gt;</span></span> filters <span class="token operator">=</span> loader<span class="token punctuation">.</span><span class="token function">getActivateExtension</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> <span class="token string">"params-filter"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">// generate service level metadata</span>
-        <span class="token comment">//生成服务级别的元数据</span>
-        <span class="token class-name">ServiceInfo</span> serviceInfo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServiceInfo</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> filters<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>services<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>serviceInfo<span class="token punctuation">.</span><span class="token function">getMatchKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> serviceInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">// extract common instance level params</span>
-        <span class="token function">extractInstanceParams</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> filters<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>exportedServiceURLs <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            exportedServiceURLs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentSkipListMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token function">addURL</span><span class="token punctuation">(</span>exportedServiceURLs<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        updated <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="17-3-5-接口级服务提供者配置的注册"><a href="#17-3-5-接口级服务提供者配置的注册" class="headerlink" title="17.3.5 接口级服务提供者配置的注册"></a>17.3.5 接口级服务提供者配置的注册</h3><p>前面我们通过服务发现的的url进行了举例子，其实在RegistryProtocol协议的export方法中还会注册接口级信息：<br>例如如下关键代码：<br>当registryUrl参数不是服务发现协议service-discovery-registry配置而是zookeeper如下时候获取到的扩展类型将是与Zookeeper相关的扩展对象</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">zookeeper<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">8.131</span><span class="token number">.79</span><span class="token number">.126</span><span class="token operator">:</span><span class="token number">2181</span><span class="token operator">/</span><span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>registry<span class="token punctuation">.</span></span>RegistryService</span><span class="token operator">?</span>application<span class="token operator">=</span>dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider<span class="token operator">&amp;</span>dubbo<span class="token operator">=</span><span class="token number">2.0</span><span class="token number">.2</span><span class="token operator">&amp;</span>pid<span class="token operator">=</span><span class="token number">29386</span><span class="token operator">&amp;</span>release<span class="token operator">=</span><span class="token number">3.0</span><span class="token number">.8</span><span class="token operator">&amp;</span>timestamp<span class="token operator">=</span><span class="token number">1655023329438</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>RegistryProtocol协议的export方法中接口级数据注册的核心代码如下：<br>如下代码的操作类型可以看注释</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// url to registry 这里registry对象的类型为ZookeeperRegistry</span>
-        <span class="token keyword">final</span> <span class="token class-name">Registry</span> registry <span class="token operator">=</span> <span class="token function">getRegistry</span><span class="token punctuation">(</span>registryUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        
-        <span class="token keyword">final</span> <span class="token class-name">URL</span> registeredProviderUrl <span class="token operator">=</span> <span class="token function">getUrlToRegistry</span><span class="token punctuation">(</span>providerUrl<span class="token punctuation">,</span> registryUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">// decide if we need to delay publish (provider itself and registry should both need to register)</span>
-        <span class="token keyword">boolean</span> register <span class="token operator">=</span> providerUrl<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>REGISTER_KEY<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> registryUrl<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>REGISTER_KEY<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//这一个方法里面会将提供者的url配置写入Zookeeper的provider节点下面</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>register<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">register</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> registeredProviderUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如上代码是获取Zookeeper操作对象和向Zookeeper中写入服务提供者信息的代码，关于与Zookeeper连接和注册数据本地缓存的代码可以看ZookeeperRegistry类型和它的几个父类型比如：CacheableFailbackRegistry类型，关于接口级数据的注册可以看register方法，这个就不详细说了，下面我贴一下接口级数据注册的Zookeeper信息可以了解下就行：<br><img src="https://img-blog.csdnimg.cn/be49dbf102864a62a9ff2d5511ab3d6d.png" alt="在这里插入图片描述"><br>接口信息如下，上面我们需要注意的是这个 url配置为临时节点，当与Zookeeper断开连接或者Session超时的时候这个信息会被移除：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token operator">/</span>dubbo<span class="token operator">/</span><span class="token class-name"><span class="token namespace">link<span class="token punctuation">.</span>elastic<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>entity<span class="token punctuation">.</span></span>DemoService</span><span class="token operator">/</span>providers<span class="token operator">/</span>dubbo<span class="token operator">%</span><span class="token number">3</span>A<span class="token operator">%</span><span class="token number">2F</span><span class="token operator">%</span><span class="token number">2F</span><span class="token number">192.168</span><span class="token number">.1</span><span class="token number">.9</span><span class="token operator">%</span><span class="token number">3</span>A20880<span class="token operator">%</span><span class="token number">2F</span>link<span class="token punctuation">.</span>elastic<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>entity<span class="token punctuation">.</span>DemoService<span class="token operator">%</span><span class="token number">3F</span>anyhost<span class="token operator">%</span><span class="token number">3D</span>true<span class="token operator">%</span><span class="token number">26</span>application<span class="token operator">%</span><span class="token number">3D</span>dubbo<span class="token operator">-</span>demo<span class="token operator">-</span>api<span class="token operator">-</span>provider<span class="token operator">%</span><span class="token number">26</span>background<span class="token operator">%</span><span class="token number">3D</span>false<span class="token operator">%</span><span class="token number">26d</span>eprecated<span class="token operator">%</span><span class="token number">3D</span>false<span class="token operator">%</span><span class="token number">26d</span>ubbo<span class="token operator">%</span><span class="token number">3D</span><span class="token number">2.0</span><span class="token number">.2</span><span class="token operator">%</span><span class="token number">26d</span>ynamic<span class="token operator">%</span><span class="token number">3D</span>true<span class="token operator">%</span><span class="token number">26</span>generic<span class="token operator">%</span><span class="token number">3D</span>false<span class="token operator">%</span><span class="token number">26</span>interface<span class="token operator">%</span><span class="token number">3D</span>link<span class="token punctuation">.</span>elastic<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>entity<span class="token punctuation">.</span>DemoService<span class="token operator">%</span><span class="token number">26</span>methods<span class="token operator">%</span><span class="token number">3D</span>sayHello<span class="token operator">%</span><span class="token number">2</span>CsayHelloAsync<span class="token operator">%</span><span class="token number">26</span>pid<span class="token operator">%</span><span class="token number">3D</span><span class="token number">29386</span><span class="token operator">%</span><span class="token number">26</span>release<span class="token operator">%</span><span class="token number">3D</span><span class="token number">3.0</span><span class="token number">.8</span><span class="token operator">%</span><span class="token number">26</span>service<span class="token operator">-</span>name<span class="token operator">-</span>mapping<span class="token operator">%</span><span class="token number">3D</span>true<span class="token operator">%</span><span class="token number">26</span>side<span class="token operator">%</span><span class="token number">3D</span>provider<span class="token operator">%</span><span class="token number">26</span>timestamp<span class="token operator">%</span><span class="token number">3D</span><span class="token number">1655023329514</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-
-<h2 id="17-4-应用级服务发现功能的实现ServiceDiscovery"><a href="#17-4-应用级服务发现功能的实现ServiceDiscovery" class="headerlink" title="17.4 应用级服务发现功能的实现ServiceDiscovery"></a>17.4 应用级服务发现功能的实现ServiceDiscovery</h2><p>在说这个实现之前我们先看看相关类型，这个服务发现相关的类型与注册中心相关的类型有点类似：</p>
-<p>服务发现工厂类型：<br><img src="https://img-blog.csdnimg.cn/c068b69b976d41deb380c9af326cc2ad.png" alt="在这里插入图片描述"><br>服务发现类型：<br><img src="https://img-blog.csdnimg.cn/9642732eb32740bb9bd631eb734f49a1.png" alt="在这里插入图片描述"></p>
-<p>刚刚在 ServiceDiscoveryRegistry中创建服务发现对象getServiceDiscovery方法看到了两个类型一个是服务发现工厂类型ServiceDiscoveryFactory，一个是服务发现类型ServiceDiscovery</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">ServiceDiscovery</span> <span class="token function">getServiceDiscovery</span><span class="token punctuation">(</span><span class="token class-name">URL</span> registryURL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-<span class="token comment">//服务发现工厂对象的获取这里是ServiceDiscoveryFactory类型，这里对应ZookeeperServiceDiscoveryFactory</span>
-        <span class="token class-name">ServiceDiscoveryFactory</span> factory <span class="token operator">=</span> <span class="token function">getExtension</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//服务发现工厂对象获取服务发现对象</span>
-        <span class="token keyword">return</span> factory<span class="token punctuation">.</span><span class="token function">getServiceDiscovery</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p> AbstractServiceDiscoveryFactory类型的getServiceDiscovery方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
- <span class="token keyword">public</span> <span class="token class-name">ServiceDiscovery</span> <span class="token function">getServiceDiscovery</span><span class="token punctuation">(</span><span class="token class-name">URL</span> registryURL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
- <span class="token comment">//这个key是 zookeeper://127.0.0.1:2181/org.apache.dubbo.registry.client.ServiceDiscovery</span>
-  <span class="token comment">//一个地址需要创建一个服务发现对象</span>
-     <span class="token class-name">String</span> key <span class="token operator">=</span> registryURL<span class="token punctuation">.</span><span class="token function">toServiceStringWithoutResolving</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-     <span class="token keyword">return</span> discoveries<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> k <span class="token operator">-&gt;</span> <span class="token function">createDiscovery</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
- <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>createDiscovery方法对应ZookeeperServiceDiscoveryFactory类型中的createDiscovery方法</p>
-<p>如下代码所示：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> <span class="token class-name">ServiceDiscovery</span> <span class="token function">createDiscovery</span><span class="token punctuation">(</span><span class="token class-name">URL</span> registryURL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ZookeeperServiceDiscovery</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">,</span> registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="17-4-1-ZookeeperServiceDiscovery"><a href="#17-4-1-ZookeeperServiceDiscovery" class="headerlink" title="17.4.1 ZookeeperServiceDiscovery"></a>17.4.1 ZookeeperServiceDiscovery</h3><p>ZookeeperServiceDiscovery的构造器</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">ZookeeperServiceDiscovery</span><span class="token punctuation">(</span><span class="token class-name">ApplicationModel</span> applicationModel<span class="token punctuation">,</span> <span class="token class-name">URL</span> registryURL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token comment">//先调用父类AbstractServiceDiscovery 模板类构造器</span>
-      <span class="token keyword">super</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">,</span> registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token keyword">try</span> <span class="token punctuation">{</span>
-       	<span class="token comment">//创建 创建CuratorFramework 类型对象用于操作Zookeeper</span>
-          <span class="token keyword">this</span><span class="token punctuation">.</span>curatorFramework <span class="token operator">=</span> <span class="token function">buildCuratorFramework</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-          <span class="token comment">//获取应用级服务发现的根路径 值为/services 这个可以在Zookeeper上面看到</span>
-          <span class="token keyword">this</span><span class="token punctuation">.</span>rootPath <span class="token operator">=</span> ROOT_PATH<span class="token punctuation">.</span><span class="token function">getParameterValue</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-           <span class="token comment">//创建服务发现对象 实现类型为ServiceDiscoveryImpl 这个实现来源于Curator框架中的discovery模块</span>
-          <span class="token keyword">this</span><span class="token punctuation">.</span>serviceDiscovery <span class="token operator">=</span> <span class="token function">buildServiceDiscovery</span><span class="token punctuation">(</span>curatorFramework<span class="token punctuation">,</span> rootPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
-          <span class="token comment">//启动服务发现</span>
-          <span class="token keyword">this</span><span class="token punctuation">.</span>serviceDiscovery<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Create zookeeper service discovery failed."</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这个方法比较重要是应用级服务发现的实现，这里主要关注下serviceDiscovery类型的创建与启动，这个应用级服务发现的实现其实是Dubbo使用了Curator来做的，Dubbo只是在这里封装了一些方法来进行调用Curator的实现：<br>关于Curator的官方文档可以看<a target="_blank" rel="noopener" href="https://curator.apache.org/">curator官网</a></p>
-<p>关于Zookeeper上面注册服务应用级服务注册信息可以看如下图所示(后面会具体讲到数据注册时的调用）：<br><img src="https://img-blog.csdnimg.cn/c6fd06c06d5947b8889e24f7f9c827b4.png" alt="在这里插入图片描述"><br>我这个服务提供者注册的应用数据如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token punctuation">{</span>
-  <span class="token string">"name"</span> <span class="token operator">:</span> <span class="token string">"dubbo-demo-api-provider"</span><span class="token punctuation">,</span>
-  <span class="token string">"id"</span> <span class="token operator">:</span> <span class="token string">"192.168.1.9:20880"</span><span class="token punctuation">,</span>
-  <span class="token string">"address"</span> <span class="token operator">:</span> <span class="token string">"192.168.1.9"</span><span class="token punctuation">,</span>
-  <span class="token string">"port"</span> <span class="token operator">:</span> <span class="token number">20880</span><span class="token punctuation">,</span>
-  <span class="token string">"sslPort"</span> <span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
-  <span class="token string">"payload"</span> <span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token string">"@class"</span> <span class="token operator">:</span> <span class="token string">"org.apache.dubbo.registry.zookeeper.ZookeeperInstance"</span><span class="token punctuation">,</span>
-    <span class="token string">"id"</span> <span class="token operator">:</span> <span class="token string">"192.168.1.9:20880"</span><span class="token punctuation">,</span>
-    <span class="token string">"name"</span> <span class="token operator">:</span> <span class="token string">"dubbo-demo-api-provider"</span><span class="token punctuation">,</span>
-    <span class="token string">"metadata"</span> <span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token string">"dubbo.endpoints"</span> <span class="token operator">:</span> <span class="token string">"[{\"port\":20880,\"protocol\":\"dubbo\"}]"</span><span class="token punctuation">,</span>
-      <span class="token string">"dubbo.metadata-service.url-params"</span> <span class="token operator">:</span> <span class="token string">"{\"connections\":\"1\",\"version\":\"1.0.0\",\"dubbo\":\"2.0.2\",\"release\":\"3.0.8\",\"side\":\"provider\",\"port\":\"20880\",\"protocol\":\"dubbo\"}"</span><span class="token punctuation">,</span>
-      <span class="token string">"dubbo.metadata.revision"</span> <span class="token operator">:</span> <span class="token string">"a662fd2213a8a49dc6ff43a4c2ae7b9e"</span><span class="token punctuation">,</span>
-      <span class="token string">"dubbo.metadata.storage-type"</span> <span class="token operator">:</span> <span class="token string">"local"</span><span class="token punctuation">,</span>
-      <span class="token string">"timestamp"</span> <span class="token operator">:</span> <span class="token string">"1654916298616"</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token string">"registrationTimeUTC"</span> <span class="token operator">:</span> <span class="token number">1654917265499</span><span class="token punctuation">,</span>
-  <span class="token string">"serviceType"</span> <span class="token operator">:</span> <span class="token string">"DYNAMIC"</span><span class="token punctuation">,</span>
-  <span class="token string">"uriSpec"</span> <span class="token operator">:</span> <span class="token keyword">null</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>如果感兴趣的话可以看更详细的curator服务发现文档<a target="_blank" rel="noopener" href="https://curator.apache.org/curator-x-discovery/index.html">curator-x-discovery</a></p>
-<h3 id="17-4-2-AbstractServiceDiscovery的构造器"><a href="#17-4-2-AbstractServiceDiscovery的构造器" class="headerlink" title="17.4.2 AbstractServiceDiscovery的构造器"></a>17.4.2 AbstractServiceDiscovery的构造器</h3><pre class="line-numbers language-java" data-language="java"><code class="language-java">  <span class="token keyword">public</span> <span class="token class-name">AbstractServiceDiscovery</span><span class="token punctuation">(</span><span class="token class-name">ApplicationModel</span> applicationModel<span class="token punctuation">,</span> <span class="token class-name">URL</span> registryURL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//调用重载的构造器</span>
-        <span class="token keyword">this</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">.</span><span class="token function">getApplicationName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> registryURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>applicationModel <span class="token operator">=</span> applicationModel<span class="token punctuation">;</span>
-        <span class="token class-name">MetadataReportInstance</span> metadataReportInstance <span class="token operator">=</span> applicationModel<span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token class-name">MetadataReportInstance</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        metadataType <span class="token operator">=</span> metadataReportInstance<span class="token punctuation">.</span><span class="token function">getMetadataType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>metadataReport <span class="token operator">=</span> metadataReportInstance<span class="token punctuation">.</span><span class="token function">getMetadataReport</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>REGISTRY_CLUSTER_KEY<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">//        if (REMOTE_METADATA_STORAGE_TYPE.equals(metadataReportInstance.getMetadataType())) {</span>
-<span class="token comment">//            this.metadataReport = metadataReportInstance.getMetadataReport(registryURL.getParameter(REGISTRY_CLUSTER_KEY));</span>
-<span class="token comment">//        } else {</span>
-<span class="token comment">//            this.metadataReport = metadataReportInstance.getNopMetadataReport();</span>
-<span class="token comment">//        }</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>重载的构造器</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">AbstractServiceDiscovery</span><span class="token punctuation">(</span><span class="token class-name">String</span> serviceName<span class="token punctuation">,</span> <span class="token class-name">URL</span> registryURL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>applicationModel <span class="token operator">=</span> <span class="token class-name">ApplicationModel</span><span class="token punctuation">.</span><span class="token function">defaultModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment">//这个url参考：zookeeper://127.0.0.1:2181/org.apache.dubbo.registry.RegistryService?application=dubbo-demo-api-provider&amp;dubbo=2.0.2&amp;interface=org.apache.dubbo.registry.client.ServiceDiscovery&amp;pid=4570&amp;release=3.0.8</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>registryURL <span class="token operator">=</span> registryURL<span class="token punctuation">;</span>
-    <span class="token comment">//这个serviceName参考dubbo-demo-api-provider</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>serviceName <span class="token operator">=</span> serviceName<span class="token punctuation">;</span>
-    <span class="token comment">//MetadataInfo 用来封装元数据信息</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>metadataInfo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MetadataInfo</span><span class="token punctuation">(</span>serviceName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment">//这个是元数据缓存信息管理的类型 缓存文件使用LRU策略  感兴趣的可以详细看看</span>
-    <span class="token comment">//对应缓存路径为：/Users/song/.dubbo/.metadata.zookeeper127.0.0.1%003a2181.dubbo.cache</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>metaCacheManager <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MetaCacheManager</span><span class="token punctuation">(</span><span class="token function">getCacheNameSuffix</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        applicationModel<span class="token punctuation">.</span><span class="token function">getFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token class-name">FrameworkExecutorRepository</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getCacheRefreshingScheduledExecutor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="17-5-服务映射类型AbstractServiceNameMapping"><a href="#17-5-服务映射类型AbstractServiceNameMapping" class="headerlink" title="17.5 服务映射类型AbstractServiceNameMapping"></a>17.5 服务映射类型AbstractServiceNameMapping</h2><p>服务映射主要是通过服务名字来反查应用信息的应用名字如下图所示<br><img src="https://img-blog.csdnimg.cn/8900f3757396495bb0bad2276cf55278.png" alt="在这里插入图片描述"><br>这里我们来看下服务映射相关的类型主要通过如下代码来获取扩展对象：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">this</span><span class="token punctuation">.</span>serviceNameMapping <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">AbstractServiceNameMapping</span><span class="token punctuation">)</span> <span class="token class-name">ServiceNameMapping</span><span class="token punctuation">.</span><span class="token function">getDefaultExtension</span><span class="token punctuation">(</span>registryURL<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>对应类型如下：<br><img src="https://img-blog.csdnimg.cn/45285f0c8e5c4a58a4d586a2293f4d73.png" alt="在这里插入图片描述"></p>
-<p>最终获取的扩展实现类型为：MetadataServiceNameMapping<br>构造器如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">MetadataServiceNameMapping</span><span class="token punctuation">(</span><span class="token class-name">ApplicationModel</span> applicationModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-     <span class="token keyword">super</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-     metadataReportInstance <span class="token operator">=</span> applicationModel<span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token class-name">MetadataReportInstance</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
- <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>服务映射元数据父类型AbstractServiceNameMapping如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">AbstractServiceNameMapping</span><span class="token punctuation">(</span><span class="token class-name">ApplicationModel</span> applicationModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token keyword">this</span><span class="token punctuation">.</span>applicationModel <span class="token operator">=</span> applicationModel<span class="token punctuation">;</span>
-       <span class="token comment">//LRU缓存保存服务映射数据</span>
-       <span class="token keyword">this</span><span class="token punctuation">.</span>mappingCacheManager <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MappingCacheManager</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">,</span>
-           applicationModel<span class="token punctuation">.</span><span class="token function">getFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-           <span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token class-name">FrameworkExecutorRepository</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getCacheRefreshingScheduledExecutor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="17-4-双注册元数据信息发布到注册中心"><a href="#17-4-双注册元数据信息发布到注册中心" class="headerlink" title="17.4 双注册元数据信息发布到注册中心"></a>17.4 双注册元数据信息发布到注册中心</h2><h3 id="17-4-1-回顾简介"><a href="#17-4-1-回顾简介" class="headerlink" title="17.4.1 回顾简介"></a>17.4.1 回顾简介</h3><p>前面注册数据的时候并没有把服务配置的元数据直接注册在注册中心而是需要在导出服务之后在ServiceConfig中来发布元数据，这个就需要我们回到ServiceConfig的exportUrl方法来看了如下所示：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">exportUrl</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> registryURLs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token class-name">String</span> scope <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>SCOPE_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">// don't export when none is configured</span>
-        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>省略到若干代码
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>SCOPE_LOCAL<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span>scope<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                url <span class="token operator">=</span> <span class="token function">exportRemote</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> registryURLs<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isGeneric</span><span class="token punctuation">(</span>generic<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isInternal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">MetadataUtils</span><span class="token punctuation">.</span><span class="token function">publishServiceDefinition</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> providerModel<span class="token punctuation">.</span><span class="token function">getServiceModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">getApplicationModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>urls<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="17-4-2-元数据服务定义数据的发布"><a href="#17-4-2-元数据服务定义数据的发布" class="headerlink" title="17.4.2 元数据服务定义数据的发布"></a>17.4.2 元数据服务定义数据的发布</h3><p>在exportRemote之后单独调用发布元数据的方法来发布，通过调用元数据工具类来发布元数据信息接下来我们详细看下:<br>MetadataUtils类型的publishServiceDefinition方法：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">publishServiceDefinition</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">ServiceDescriptor</span> serviceDescriptor<span class="token punctuation">,</span> <span class="token class-name">ApplicationModel</span> applicationModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//查询是否存在元数据存储对象 对应接口MetadataReport 这里对应实现类 ZookeeperMetadataReport</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">getMetadataReports</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token class-name">String</span> msg <span class="token operator">=</span> <span class="token string">"Remote Metadata Report Server is not provided or unavailable, will stop registering service definition to remote center!"</span><span class="token punctuation">;</span>
-            logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token class-name">String</span> side <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getSide</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-             <span class="token comment">//服务提供者走这个逻辑</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>PROVIDER_SIDE<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span>side<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token class-name">String</span> serviceKey <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getServiceKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment">//获取当前服务元数据信息</span>
-                <span class="token class-name">FullServiceDefinition</span> serviceDefinition <span class="token operator">=</span> serviceDescriptor<span class="token punctuation">.</span><span class="token function">getFullServiceDefinition</span><span class="token punctuation">(</span>serviceKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>serviceKey<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> serviceDefinition <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    serviceDefinition<span class="token punctuation">.</span><span class="token function">setParameters</span><span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">getParameters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">MetadataReport</span><span class="token punctuation">&gt;</span></span> entry <span class="token operator">:</span> <span class="token function">getMetadataReports</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token class-name">MetadataReport</span> metadataReport <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>metadataReport<span class="token punctuation">.</span><span class="token function">shouldReportDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Report of service definition is disabled for "</span> <span class="token operator">+</span> entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            <span class="token keyword">continue</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span>
-                        <span class="token comment">//存储服务提供者的元数据  metadataReport类型为ZookeeperMetadataReport 方法来源于父类模板方法： AbstractMetadataReport类型的storeProviderMetadata模板方法</span>
-                        metadataReport<span class="token punctuation">.</span><span class="token function">storeProviderMetadata</span><span class="token punctuation">(</span>
-                            <span class="token keyword">new</span> <span class="token class-name">MetadataIdentifier</span><span class="token punctuation">(</span>
-                                url<span class="token punctuation">.</span><span class="token function">getServiceInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                                url<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token string">""</span> <span class="token operator">:</span> url<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                                url<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token string">""</span> <span class="token operator">:</span> url<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                                PROVIDER_SIDE<span class="token punctuation">,</span>
-                                applicationModel<span class="token punctuation">.</span><span class="token function">getApplicationName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                            <span class="token punctuation">,</span> serviceDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-              <span class="token comment">//服务消费者走这个逻辑</span>
-                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">MetadataReport</span><span class="token punctuation">&gt;</span></span> entry <span class="token operator">:</span> <span class="token function">getMetadataReports</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">MetadataReport</span> metadataReport <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>metadataReport<span class="token punctuation">.</span><span class="token function">shouldReportDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Report of service definition is disabled for "</span> <span class="token operator">+</span> entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token keyword">continue</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                    metadataReport<span class="token punctuation">.</span><span class="token function">storeConsumerMetadata</span><span class="token punctuation">(</span>
-                        <span class="token keyword">new</span> <span class="token class-name">MetadataIdentifier</span><span class="token punctuation">(</span>
-                            url<span class="token punctuation">.</span><span class="token function">getServiceInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                            url<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token string">""</span> <span class="token operator">:</span> url<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                            url<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token string">""</span> <span class="token operator">:</span> url<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                            CONSUMER_SIDE<span class="token punctuation">,</span>
-                            applicationModel<span class="token punctuation">.</span><span class="token function">getApplicationName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                        url<span class="token punctuation">.</span><span class="token function">getParameters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment">//ignore error</span>
-            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"publish service definition metadata error."</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>AbstractMetadataReport的storeProviderMetadata方法如下所示：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
-<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">storeProviderMetadata</span><span class="token punctuation">(</span><span class="token class-name">MetadataIdentifier</span> providerMetadataIdentifier<span class="token punctuation">,</span> <span class="token class-name">ServiceDefinition</span> serviceDefinition<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token comment">//是否同步配置对应sync-report 默认为异步</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>syncReport<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">storeProviderMetadataTask</span><span class="token punctuation">(</span>providerMetadataIdentifier<span class="token punctuation">,</span> serviceDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-        reportCacheExecutor<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token function">storeProviderMetadataTask</span><span class="token punctuation">(</span>providerMetadataIdentifier<span class="token punctuation">,</span> serviceDefinition<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>AbstractMetadataReport的存储元数据方法storeProviderMetadataTask</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">storeProviderMetadataTask</span><span class="token punctuation">(</span><span class="token class-name">MetadataIdentifier</span> providerMetadataIdentifier<span class="token punctuation">,</span> <span class="token class-name">ServiceDefinition</span> serviceDefinition<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"store provider metadata. Identifier : "</span> <span class="token operator">+</span> providerMetadataIdentifier <span class="token operator">+</span> <span class="token string">"; definition: "</span> <span class="token operator">+</span> serviceDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            allMetadataReports<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>providerMetadataIdentifier<span class="token punctuation">,</span> serviceDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            failedReports<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>providerMetadataIdentifier<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token class-name">Gson</span> gson <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Gson</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token class-name">String</span> data <span class="token operator">=</span> gson<span class="token punctuation">.</span><span class="token function">toJson</span><span class="token punctuation">(</span>serviceDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">doStoreProviderMetadata</span><span class="token punctuation">(</span>providerMetadataIdentifier<span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">saveProperties</span><span class="token punctuation">(</span>providerMetadataIdentifier<span class="token punctuation">,</span> data<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token operator">!</span>syncReport<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment">// retry again. If failed again, throw exception.</span>
-            failedReports<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>providerMetadataIdentifier<span class="token punctuation">,</span> serviceDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            metadataReportRetry<span class="token punctuation">.</span><span class="token function">startRetryTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Failed to put provider metadata "</span> <span class="token operator">+</span> providerMetadataIdentifier <span class="token operator">+</span> <span class="token string">" in  "</span> <span class="token operator">+</span> serviceDefinition <span class="token operator">+</span> <span class="token string">", cause: "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><img src="https://img-blog.csdnimg.cn/8e264043577c4064890f3ca5ef8b4e8d.png" alt="在这里插入图片描述"></p>
-<p>元数据信息如下：可以分为两类 应用元数据，服务元数据</p>
-<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-	<span class="token property">"parameters"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-		<span class="token property">"side"</span><span class="token operator">:</span> <span class="token string">"provider"</span><span class="token punctuation">,</span>
-		<span class="token property">"interface"</span><span class="token operator">:</span> <span class="token string">"link.elastic.dubbo.entity.DemoService"</span><span class="token punctuation">,</span>
-		<span class="token property">"pid"</span><span class="token operator">:</span> <span class="token string">"22099"</span><span class="token punctuation">,</span>
-		<span class="token property">"application"</span><span class="token operator">:</span> <span class="token string">"dubbo-demo-api-provider"</span><span class="token punctuation">,</span>
-		<span class="token property">"dubbo"</span><span class="token operator">:</span> <span class="token string">"2.0.2"</span><span class="token punctuation">,</span>
-		<span class="token property">"release"</span><span class="token operator">:</span> <span class="token string">"3.0.8"</span><span class="token punctuation">,</span>
-		<span class="token property">"anyhost"</span><span class="token operator">:</span> <span class="token string">"true"</span><span class="token punctuation">,</span>
-		<span class="token property">"bind.ip"</span><span class="token operator">:</span> <span class="token string">"192.168.1.9"</span><span class="token punctuation">,</span>
-		<span class="token property">"methods"</span><span class="token operator">:</span> <span class="token string">"sayHello,sayHelloAsync"</span><span class="token punctuation">,</span>
-		<span class="token property">"background"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
-		<span class="token property">"deprecated"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
-		<span class="token property">"dynamic"</span><span class="token operator">:</span> <span class="token string">"true"</span><span class="token punctuation">,</span>
-		<span class="token property">"service-name-mapping"</span><span class="token operator">:</span> <span class="token string">"true"</span><span class="token punctuation">,</span>
-		<span class="token property">"generic"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
-		<span class="token property">"bind.port"</span><span class="token operator">:</span> <span class="token string">"20880"</span><span class="token punctuation">,</span>
-		<span class="token property">"timestamp"</span><span class="token operator">:</span> <span class="token string">"1654942353902"</span>
-	<span class="token punctuation">}</span><span class="token punctuation">,</span>
-	<span class="token property">"canonicalName"</span><span class="token operator">:</span> <span class="token string">"link.elastic.dubbo.entity.DemoService"</span><span class="token punctuation">,</span>
-	<span class="token property">"codeSource"</span><span class="token operator">:</span> <span class="token string">"file:/Users/song/Desktop/dubbo-test/target/classes/"</span><span class="token punctuation">,</span>
-	<span class="token property">"methods"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
-		<span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"sayHelloAsync"</span><span class="token punctuation">,</span>
-		<span class="token property">"parameterTypes"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.lang.String"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-		<span class="token property">"returnType"</span><span class="token operator">:</span> <span class="token string">"java.util.concurrent.CompletableFuture"</span><span class="token punctuation">,</span>
-		<span class="token property">"annotations"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-	<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-		<span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"sayHello"</span><span class="token punctuation">,</span>
-		<span class="token property">"parameterTypes"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.lang.String"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-		<span class="token property">"returnType"</span><span class="token operator">:</span> <span class="token string">"java.lang.String"</span><span class="token punctuation">,</span>
-		<span class="token property">"annotations"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-	<span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-	<span class="token property">"types"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
-		<span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"java.util.concurrent.CompletableFuture"</span><span class="token punctuation">,</span>
-		<span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-			<span class="token property">"result"</span><span class="token operator">:</span> <span class="token string">"java.lang.Object"</span><span class="token punctuation">,</span>
-			<span class="token property">"stack"</span><span class="token operator">:</span> <span class="token string">"java.util.concurrent.CompletableFuture.Completion"</span>
-		<span class="token punctuation">}</span>
-	<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-		<span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"java.lang.Object"</span>
-	<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-		<span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"java.lang.String"</span>
-	<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-		<span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"java.util.concurrent.CompletableFuture.Completion"</span><span class="token punctuation">,</span>
-		<span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-			<span class="token property">"next"</span><span class="token operator">:</span> <span class="token string">"java.util.concurrent.CompletableFuture.Completion"</span><span class="token punctuation">,</span>
-			<span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"int"</span>
-		<span class="token punctuation">}</span>
-	<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-		<span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"int"</span>
-	<span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-	<span class="token property">"annotations"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>Zookeeper扩展类型ZookeeperMetadataReport实现的存储方法如下所示doStoreProviderMetadata：</p>
-<p>如果我们自己实现一套元数据就可以重写这个方法来进行元数据的额存储</p>
-<p>ZookeeperMetadataReport的doStoreProviderMetadata</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
-<span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doStoreProviderMetadata</span><span class="token punctuation">(</span><span class="token class-name">MetadataIdentifier</span> providerMetadataIdentifier<span class="token punctuation">,</span> <span class="token class-name">String</span> serviceDefinitions<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token function">storeMetadata</span><span class="token punctuation">(</span>providerMetadataIdentifier<span class="token punctuation">,</span> serviceDefinitions<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>ZookeeperMetadataReport的storeMetadata</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">storeMetadata</span><span class="token punctuation">(</span><span class="token class-name">MetadataIdentifier</span> metadataIdentifier<span class="token punctuation">,</span> <span class="token class-name">String</span> v<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//参数false为非临时节点，这个元数据为持久节点，这个细节就暂时不看了就是将刚刚的json元数据存储到对应路径上面：路径为：/dubbo/metadata/link.elastic.dubbo.entity.DemoService/provider/dubbo-demo-api-provider</span>
-       zkClient<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token function">getNodePath</span><span class="token punctuation">(</span>metadataIdentifier<span class="token punctuation">)</span><span class="token punctuation">,</span> v<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-<p><strong>更多也可可关注原文 <a href="https://blog.elastic.link/categories/">https://blog.elastic.link/categories/</a></strong></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/Dubbo/" rel="tag">Dubbo<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3/" rel="tag">Dubbo3<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Dubbo3源码解析<span class="tag-unordered list-count">23</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2022/07/10/dubbo/18-dubbo3-yuan-shu-ju-fu-wu-metadataservice-de-dao-chu/"> 18-【Dubbo3.0.8源码解析系列】Dubbo3元数据服务MetadataService的导出</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2022/07/10/dubbo/16-mo-kuai-fa-bu-qi-fa-bu-fu-wu-quan-guo-cheng/"> 16-【Dubbo3.0.8源码解析系列】模块发布器发布服务全过程</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168175968">
+<link rel="stylesheet" href="/css/style.css?v=1662168254508">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168175968"></script>
+<script src="/js/core.js?v=1662168254508"></script>
 
 
 
@@ -48,221 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>5-Erlang KEY VALUE数据存储 ETS</h1>
-			<div class="info"><span class="date">2022年9月7日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Erlang/">Erlang</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/erlang/5-ETS和DETS存储数据.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="5-Erlang-KEY-VALUE数据存储-ETS"><a href="#5-Erlang-KEY-VALUE数据存储-ETS" class="headerlink" title="5-Erlang KEY VALUE数据存储 ETS"></a>5-Erlang KEY VALUE数据存储 ETS</h1><p>ets和dets是两个系统模块，可以用来高效存储海量的Erlang数据。ETS是Erlang Term Storage (Erlang数据存储)的缩写，DETS则是Disk ETS(磁盘ETS)的缩写。</p>
-<p>ETS和DETS执行的任务基本相同:它们提供大型的键值查询表。ETS常驻内存，DETS则 常驻磁盘。ETS是相当高效的:可以用它存储海量的数据(只要有足够的内存)，执行查找的时 间也是恒定的(在某些情况下是对数时间)。DETS提供了几乎和ETS一样的接口，但它会把表保 存在磁盘上。因为DETS使用磁盘存储，所以它远远慢于ETS，但是运行时的内存占用也会小很 多。另外，ETS和DETS表可以被多个进程共享，这就让跨进程的公共数据访问变得非常高效。</p>
-<p>ETS表里的数据保存在内存里，它们是易失的。当ETS表被丢弃或者控制它的Erlang进程终 止时，这些数据就会被删除。保存在DETS表里的数据是非易失的，即使整个系统崩溃也能留存 下来。DETS表在打开时会进行一致性检查，如果发现有损坏，系统就会尝试修复它(这可能会 花费很长时间，因为表里的所有数据都要检查)。</p>
-<p>ETS表看上去像是用Erlang实现的，但事实上它们是在底层的运行时系统里实现的，有着不 同于普通Erlang对象的性能特点。特别需要指出的是，ETS表没有垃圾收集机制，这就意味着即 使ETS表极其巨大也不会有垃圾收集的负担。不过，创建或访问ETS对象仍然会带来少许开销</p>
-<h1 id="表的类型"><a href="#表的类型" class="headerlink" title="表的类型"></a>表的类型</h1><p>ETS和DETS表保存的是元组</p>
-<p>一些表被称为异键表(set)，它们要求表里所有的键都是唯一的。另一些被称为同键表(bag)， 它们允许多个元素拥有相同的键。</p>
-<p>基本的表类型(异键表和同键表)各有两个变种，它们共同构成四种表类型:异键、有序异 键(ordered set)、同键和副本同键(duplicate bag)。</p>
-<ul>
-<li>在异键表里，各个元组里的键都必须是独一 无二的。</li>
-<li>在有序异键表里，元组会被排序。</li>
-<li>在同键表里可以有不止一个元组拥有相同的键，但是 2 不能有两个完全相同的元组。</li>
-<li>在副本同键表里可以有多个元组拥有相同的键，而且在同一张表里 可以存在多个相同的元组。</li>
-</ul>
-<p>ETS表在内部是用散列表表示的(除了有序异键表，它是用平衡二叉树表示的)。</p>
-<ul>
-<li>使用异键表会带来少许空间开销，，插入异键表所需的时间是恒定的，</li>
-<li>而使用有序异键表会带来时间开销。 而插入有序异键表所需的时间与表内条目数量的对数成比例</li>
-</ul>
-<h1 id="创建一个-ETS-表"><a href="#创建一个-ETS-表" class="headerlink" title="创建一个 ETS 表"></a>创建一个 ETS 表</h1><p>创建ETS表的方法是调用ets:new。创建表的进程被称为该表的主管。创建表时所设置的一 组选项在以后是无法更改的。如果主管进程挂了，表的空间就会被自动释放。你可以调用 ets:delete来删除表。<br>ets:new的参数如下。</p>
-<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token operator">-</span><span class="token atom">spec</span> <span class="token atom">ets</span><span class="token punctuation">:</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token variable">Name</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Opt</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token variable">TableId</span> 其中，<span class="token variable">Name</span>是一个原子。<span class="token punctuation">[</span><span class="token variable">Opt</span><span class="token punctuation">]</span>是一列选项，源于下面这些参数。 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<ul>
-<li>set | ordered_set | bag | duplicate_bag<br>  创建一个指定类型的ETS表(我们之前讨论过)。</li>
-<li>private<br>  创建一个私有表，只有主管进程才能读取和写入它</li>
-<li>public<br>  创建一个公共表，任何知道此表标识符的进程都能读取和写入它。</li>
-<li>protected<br>  创建一个受保护表，任何知道此表标识符的进程都能读取它，但只有主管进程才能写 入它。</li>
-<li>named_table<br>  如果设置了此选项，Name就可以被用于后续的表操作。</li>
-<li>{keypos, K}<br>  用K作为键的位置。通常键的位置是1。基本上唯一需要使用这个选项的场合是保存Erlang<br>记录(它其实是元组的另一种形式)，并且记录的第一个元素包含记录名的时候。</li>
-</ul>
-<p>注意 不使用任何选项打开一个ETS表就相当于用[set,protected,{keypos,1}]选项打开它</p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/Erlang/" rel="tag">Erlang<span class="tag-unordered list-count">10</span></a>, <a class="tag-unordered list-link" href="/tags/Erlangets/" rel="tag">Erlangets<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/Erlang%E8%AF%AD%E6%B3%95/" rel="tag">Erlang语法<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/ets/" rel="tag">ets<span class="tag-unordered list-count">1</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2022/09/07/erlang/4-tao-jie-zi-bian-cheng/"> 4-套接字编程</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/"> 6-Mnesia分布式数据库</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

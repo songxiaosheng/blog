@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168175983">
+<link rel="stylesheet" href="/css/style.css?v=1662168254524">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168175983"></script>
+<script src="/js/core.js?v=1662168254524"></script>
 
 
 
@@ -48,184 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1></h1>
-			<div class="info"><span class="date">2022年8月23日</span>•songxiaosheng 
-			
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/kafka/7-消费者和生产者处理IO结果.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<p>处理Poll的IO返回结果</p>
-<ul>
-<li><p>开始</p>
-</li>
-<li><p>handleCompletedSends处理完成的发送请求</p>
-<ul>
-<li>handleCompletedSends处理完成的请求遍历Selector的completedSends然后遍历</li>
-<li>根据完成发送的node信息查询对应飞行窗口inFlightRequests中最后一个请求InFlightRequest<ul>
-<li>如果最新的请求expectResponse为false则在*inFlightRequests中将最新请求从请求队列中移出</li>
-<li>封装响应数据ClientResponse到responses集合中List<clientresponse></clientresponse></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>handleCompletedReceives处理完成的接收请求</p>
-<ul>
-<li>循环遍历selector的completedReceives中的NetworkReceive列表</li>
-<li>获取飞行窗口中对应节点node的内存队列中最老的请求数据NetworkClient.InFlightRequest  </li>
-<li>解析响应数据parseStructMaybeUpdateThrottleTimeMetrics和parseResponse</li>
-<li>如果是内部请求并且是元数据请求则走内部处理逻辑</li>
-<li>如果是内部请求并且是ApiVersionsResponse类型则走api版本处理逻辑</li>
-<li>其他请求将响应加入List<clientresponse> responses集合中</clientresponse></li>
-</ul>
-</li>
-<li><p>handleDisconnections处理失去连接的请求</p>
-<ul>
-<li><p>遍历Selector的 Map&lt;String, ChannelState&gt; disconnected 集合</p>
-<ul>
-<li><p>processDisconnection处理失去连接的逻辑</p>
-</li>
-<li><p>updateReconnectBackoff 退避指数计算处理</p>
-</li>
-<li><p>从缓存apiVersions和nodesNeedingApiVersionsFetch中移除当前失去连接的节点 </p>
-</li>
-<li><p>根据失去连接的情况来处理：</p>
-<ul>
-<li><p>AUTHENTICATION_FAILED  更新异常结果打印日志</p>
-</li>
-<li><p>AUTHENTICATE  打印原因</p>
-</li>
-<li><p>NOT_CONNECTED 		打印原因	</p>
-</li>
-<li><p>清理当前节点对应飞行窗口InFlightRequests中的请求队列中的数据</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>如果失去连接数大于0则标记请求更新元数据变量needUpdate为true下次io时候请求新的元数据</p>
-</li>
-</ul>
-</li>
-<li><p>handleConnections 处理新连接</p>
-<ul>
-<li>遍历selector中的List<string> connected列表<ul>
-<li>切换节点连接状态为ConnectionState.READY</li>
-<li>重置异常authenticationException为null</li>
-<li>重置连接回退指数数据resetReconnectBackoff</li>
-</ul>
-</string></li>
-</ul>
-</li>
-<li><p>handleInitiateApiVersionRequests 处理API versions信息查询的请求</p>
-<ul>
-<li>遍历前面handleCompletedReceives的响应结果中nodesNeedingApiVersionsFetch集合数据（apiVersionsResponse.error() != Errors.NONE满足这个条件时候会产生）<ul>
-<li>生成ApiVersionsRequest请求将其放在请求队列中等待io执行请求服务端</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>handleTimedOutRequests 处理具有超时请求的节点</p>
-<ul>
-<li>遍历飞行窗口中，所有节点对应的队列中的所有请求<ul>
-<li><p>记录存在超时记录的节点id到List<string> nodeIds 超时判断条件为now - request.sendTimeMs  &gt; request.requestTimeoutMs</string></p>
-</li>
-<li><p>selector主动关闭与当前超时节点的连接</p>
-<ul>
-<li>获取当前节点的KafkaChannel主动调用关闭方法closed</li>
-</ul>
-</li>
-<li><p>本地执行处理失去连接的逻辑processDisconnection</p>
-</li>
-<li><p>如果失去连接数大于0则标记请求更新元数据变量needUpdate为true下次io时候请求新的元数据</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>completeResponses  完成响应结果的处理开始调用回调方法</p>
-<ul>
-<li>遍历本地处理逻辑处理的所有响应List<clientresponse> responses 前面已经将响应信息存放在了这里<ul>
-<li>调用每个response的response.onComplete();方法</li>
-<li>触发回调方法RequestCompletionHandler callback</li>
-</ul>
-</clientresponse></li>
-</ul>
-</li>
-</ul>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-
-			<br>
-			<!--  -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

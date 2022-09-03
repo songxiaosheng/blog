@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176086">
+<link rel="stylesheet" href="/css/style.css?v=1662168254554">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176086"></script>
+<script src="/js/core.js?v=1662168254554"></script>
 
 
 
@@ -48,343 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>11- ServerCnxnFactory 服务器连接工厂对象的创建与属性初始化</h1>
-			<div class="info"><span class="date">2021年7月12日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">Zookeeper版本3.6.2源码系列</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/zookeeper/11- ServerCnxnFactory 服务器连接工厂对象的创建与属性初始化.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="11-ServerCnxnFactory-服务器连接工厂对象的创建与属性初始化"><a href="#11-ServerCnxnFactory-服务器连接工厂对象的创建与属性初始化" class="headerlink" title="11- ServerCnxnFactory 服务器连接工厂对象的创建与属性初始化"></a>11- ServerCnxnFactory 服务器连接工厂对象的创建与属性初始化</h1><p>回顾QuorumPeerMain类型中根据配置来启动的代码runFromConfig方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">runFromConfig</span><span class="token punctuation">(</span><span class="token class-name">QuorumPeerConfig</span> config<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span><span class="token punctuation">,</span> <span class="token class-name">AdminServerException</span> <span class="token punctuation">{</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token class-name">ManagedUtil</span><span class="token punctuation">.</span><span class="token function">registerLog4jMBeans</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">JMException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Unable to register log4j JMX control"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Starting quorum peer, myid="</span> <span class="token operator">+</span> config<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> <span class="token class-name">MetricsProvider</span> metricsProvider<span class="token punctuation">;</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            metricsProvider <span class="token operator">=</span> <span class="token class-name">MetricsProviderBootstrap</span><span class="token punctuation">.</span><span class="token function">startMetricsProvider</span><span class="token punctuation">(</span>
-                config<span class="token punctuation">.</span><span class="token function">getMetricsProviderClassName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                config<span class="token punctuation">.</span><span class="token function">getMetricsProviderConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">MetricsProviderLifeCycleException</span> error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span><span class="token string">"Cannot boot MetricsProvider "</span> <span class="token operator">+</span> config<span class="token punctuation">.</span><span class="token function">getMetricsProviderClassName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> error<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token class-name">ServerMetrics</span><span class="token punctuation">.</span><span class="token function">metricsProviderInitialized</span><span class="token punctuation">(</span>metricsProvider<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token class-name">ProviderRegistry</span><span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token class-name">ServerCnxnFactory</span> cnxnFactory <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-            <span class="token class-name">ServerCnxnFactory</span> secureCnxnFactory <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                cnxnFactory <span class="token operator">=</span> <span class="token class-name">ServerCnxnFactory</span><span class="token punctuation">.</span><span class="token function">createFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                cnxnFactory<span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getMaxClientCnxns</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getClientPortListenBacklog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getSecureClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                secureCnxnFactory <span class="token operator">=</span> <span class="token class-name">ServerCnxnFactory</span><span class="token punctuation">.</span><span class="token function">createFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                secureCnxnFactory<span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getSecureClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getMaxClientCnxns</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getClientPortListenBacklog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-
-            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>中的runFromConfig方法有写到加载配置</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">ServerCnxnFactory</span> cnxnFactory <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-<span class="token class-name">ServerCnxnFactory</span> secureCnxnFactory <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-
-<span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    cnxnFactory <span class="token operator">=</span> <span class="token class-name">ServerCnxnFactory</span><span class="token punctuation">.</span><span class="token function">createFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    cnxnFactory<span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getMaxClientCnxns</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getClientPortListenBacklog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getSecureClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    secureCnxnFactory <span class="token operator">=</span> <span class="token class-name">ServerCnxnFactory</span><span class="token punctuation">.</span><span class="token function">createFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    secureCnxnFactory<span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getSecureClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getMaxClientCnxns</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getClientPortListenBacklog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>从系统属性zookeeper.serverCnxnFactory中获取连接工厂类型  默认使用NIOServerCnxnFactory类型工厂，默认的工厂类型是不支持ssl的如果要配置安全通道ssl连接可以指定工厂类型为NettyServerCnxnFactory类型。</p>
-<p>Zookeeper作为一个服务器,自然要与客户端进行网络通信,如何高效的与客户端进行通信,让网络IO不成为ZooKeeper的瓶颈是ZooKeeper急需解决的问题,ZooKeeper中使用ServerCnxnFactory管理与客户端的连接,其有两个实现,</p>
-<ul>
-<li>一个是NIOServerCnxnFactory,使用Java原生NIO实现;</li>
-<li><ul>
-<li>一个是NettyServerCnxnFactory,使用netty实现;使用ServerCnxn代表一个客户端与服务端的连接。</li>
-</ul>
-</li>
-</ul>
-<p>注:下文或注释中的连接就是客户端发起的TCP连接,也即SocketChannel类<br>ZooKeeper可以通过设置系统属性zookeeper.serverCnxnFactory配置ServerCnxnFactory的实现类,默认使用NIOServerCnxnFactory。</p>
-<p>查看原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper<span class="tag-unordered list-count">16</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="tag">Zookeeper安装配置<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Zookeeper源码解析<span class="tag-unordered list-count">16</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2021/07/12/zookeeper/12-guan-li-xie-yi-de-fa-ding-ren-dui-xiang-quorumpeer-chuang-jian-yu-chu-shi-hua/"> 12- 管理协议的法定人对象QuorumPeer创建与初始化</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2021/07/12/zookeeper/10-shi-yong-pei-zhi-xin-xi-qi-dong-yun-xing-ru-kou/"> 10-使用配置信息启动运行入口</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

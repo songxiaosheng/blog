@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176052">
+<link rel="stylesheet" href="/css/style.css?v=1662168254547">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176052"></script>
+<script src="/js/core.js?v=1662168254547"></script>
 
 
 
@@ -48,211 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>1-EMQX简介</h1>
-			<div class="info"><span class="date">2022年6月2日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Erlang/">Erlang</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/emqx/1-EMQX简介.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="1-EMQX简介"><a href="#1-EMQX简介" class="headerlink" title="1-EMQX简介"></a>1-EMQX简介</h1><h1 id="1-1-先来引用一下官网的介绍"><a href="#1-1-先来引用一下官网的介绍" class="headerlink" title="1.1 先来引用一下官网的介绍"></a>1.1 先来引用一下官网的介绍</h1><p><em>EMQX (Erlang/Enterprise/Elastic MQTT Broker) 是基于 Erlang/OTP 平台开发的开源物联网 MQTT 消息服务器。<br>Erlang/OTP是出色的软实时 (Soft-Realtime)、低延时 (Low-Latency)、分布式 (Distributed)的语言平台。<br>MQTT 是轻量的 (Lightweight)、发布订阅模式 (PubSub) 的物联网消息协议。<br>EMQX 设计目标是实现高可靠，并支持承载海量物联网终端的 MQTT 连接，支持在海量物联网设备间低延时消息路由:<br>稳定承载大规模的 MQTT 客户端连接，单服务器节点支持 200 万连接。<br>分布式节点集群，快速低延时的消息路由。<br>消息服务器内扩展，支持定制多种认证方式、高效存储消息到后端数据库。<br>完整物联网协议支持，MQTT、MQTT-SN、CoAP、LwM2M、WebSocket 或私有协议支持。</em></p>
-<p>EMQ - 杭州映云科技有限公司是面向 5G 和物联网市场的消息与流处理开源软件公司。</p>
-<p>2013年，EMQ 作为一个开源项目在 Github上发布，目前已成为全球市场广泛应用的开源 MQTT 消息服务器。</p>
-<p>2017年，在客户需求快速增长的驱动下， 创立公司并推出 EMQ X 企业版，以加快开源项目的产品化部署应用，并为大型企业客户提供专业技术支持与服务</p>
-<p>EMQ 公司成立于 2017 年，团队遍布全球 7 个国家。中国总部位于杭州，在北京、上海、深圳等 7 个城市设有分支机构；海外研发中心设在斯德哥尔摩，在德国、美国、日本等地设有分支机构或服务团队</p>
-<p>稳定承载大规模的 MQTT 客户端连接，单服务器节点支持50万到100万连接。<br>分布式节点集群，快速低延时的消息路由，单集群支持1000万规模的路由。<br>消息服务器内扩展，支持定制多种认证方式、高效存储消息到后端数据库。<br>完整物联网协议支持，MQTT、MQTT-SN、CoAP、LwM2M、WebSocket 或私有协议支持。</p>
-<p>EMQX适用于以下场景<br>连接：海量设备接入 移动：实时消息引擎 处理：消息规则引擎 分析：实时流式处理</p>
-<p>关于更多的使用说明和细节可以自行打开官网查看,官网说明已经很详细了<a target="_blank" rel="noopener" href="https://www.emqx.io/docs/zh/v4.4/getting-started/getting-started.html#%E7%89%88%E6%9C%AC%E9%80%89%E6%8B%A9">点击进入EMQX社区版文档</a></p>
-<p>关于MQTT可以参考：<a target="_blank" rel="noopener" href="https://mqtt.org/">https://mqtt.org/</a></p>
-<h1 id="1-2-研究源码前的一些准备"><a href="#1-2-研究源码前的一些准备" class="headerlink" title="1.2 研究源码前的一些准备"></a>1.2 研究源码前的一些准备</h1><p>这里的文章重点是分析EMQX的源码实现,EMQX是一个机遇Erlang实现的物联网平台:</p>
-<p>依赖管控打包工具Rebar3项目结构可以看如下链接:</p>
-<p><a target="_blank" rel="noopener" href="http://www.rebar3.org/">http://www.rebar3.org/</a></p>
-<p>关于erlang相关知识可以参考如下链接:</p>
-<p><a target="_blank" rel="noopener" href="https://erlang.org/">https://erlang.org/</a></p>
-<p>官网源码仓库位置,可以去官网拉取对应版本的源码:<br><a target="_blank" rel="noopener" href="https://github.com/emqx/emqx/tree/v5.0-beta.1">https://github.com/emqx/emqx/tree/v5.0-beta.1</a></p>
-<p>Rebar3 是 Erlang 社区中的标准构建工具。它本质上集成了 Erlang 附带的许多其他工具以及一些开源工具，并使它们都在统一的项目结构下工作。<br>依赖项列在rebar.config文件中的deps键下</p>
-<ul>
-<li>源码在src中</li>
-<li>include是一些头文件</li>
-<li>etc是一些配置文件</li>
-<li>test是一些测试脚本</li>
-<li></li>
-</ul>
-<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/Erlang/" rel="tag">Erlang<span class="tag-unordered list-count">10</span></a>, <a class="tag-unordered list-link" href="/tags/MQTT/" rel="tag">MQTT<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/%E7%89%A9%E8%81%94%E7%BD%91/" rel="tag">物联网<span class="tag-unordered list-count">1</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2022/09/07/erlang/1-erlang-yu-fa-ji-chu/"> 1-Erlang 语法基础</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176048">
+<link rel="stylesheet" href="/css/style.css?v=1662168254546">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176051"></script>
+<script src="/js/core.js?v=1662168254546"></script>
 
 
 
@@ -48,213 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>02-机器学习</h1>
-			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/AI/">AI</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/ai/02-机器学习.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h1><p> 机器学习比较<br>从大量现象中提取反复出现的规律与模式。这一过 程在人工智能中的实现就是机器学习。</p>
-<p>机器学习中，数据并非通常意义上的数量值，而是对于对象某些性质的描述。被描述的性 质叫作属性，属性的取值称为属性值，不同的属性值有序排列得到的向量就是数据，也叫实 例。</p>
-<p>根据线性代数的知识，数据的不同属性之间可以视为相互独立，因而每个属性都代表了一个 不同的维度，这些维度共同张成了特征空间</p>
-<p>每一组属性值的集合都是这个空间中的一个点，因而每个实例都可以视为特征空间中的一个 向量，即特征向量。</p>
-<p>在实际的机器学习任务中，输出的形式可能更加复杂。根据输入输出类 型的不同，预测问题可以分为以下三类。</p>
-<ul>
-<li>分类问题:输出变量为有限个离散变量，当个数为 2 时即为最简单的二分类问题;</li>
-<li>回归问题:输入变量和输出变量均为连续变量; </li>
-<li>标注问题:输入变量和输出变量均为变量序列</li>
-</ul>
-<p>一个算法既不可能和所有训练数据符合得分毫不差，也<br>不可能对所有测试数据预测得精确无误。因而误差性能就成为机器学习的重要指标之一。</p>
-<p>误差可以进一步分为训练误差和测试误差两类。</p>
-<ul>
-<li>训练误差指的是学习器在训练数据集上的误差，也称经验误差;</li>
-<li>测试误差指的是学习器在新样本上的误差，也称泛化误差。</li>
-</ul>
-<p>测试误差则反映了学习器对未知的测试数据集的预测能力，是机器学习中的重 要概念。实用的学习器都是测试误差较低，即在新样本上表现较好的学习器</p>
-<p>过拟合出现的原因通常是学习时模型包含的参数过多，从而导致训练误差较低但测试误差较 高。</p>
-<p>与过拟合对应的是欠拟合。如果说造成过拟合的原因是学习能力太强，造成欠拟合的原因就 是学习能力太弱，以致于训练数据的基本性质都没能学到。如果学习器的能力不足，甚至会 把黑猩猩的图像误认为人，这就是欠拟合的后果。</p>
-<p>在模型选择中，为了对测试误差做出更加精确的估计，一种广泛使用的方法是交叉验证。交 叉验证思想在于重复利用有限的训练样本，通过将数据切分成若干子集，让不同的子集分别 组成训练集与测试集，并在此基础上反复进行训练、测试和模型选择，达到最优效果。</p>
-<p>调参，也就是对算法参数进行设定，是机 器学习中重要的工程问题，这一点在今天的神经网络与深度学习中体现得尤为明显。</p>
-<p>在人类的学习中，有的人可能有高人指点，有的人则是无师自通。在机器学习中也有类似的<br>分类。根据训练数据是否具有标签信息，可以将机器学习的任务分成以下三类。</p>
-<ul>
-<li>监督学习:基于已知类别的训练数据进行学习; </li>
-<li>无监督学习:基于未知类别的训练数据进行学习; </li>
-<li>半监督学习:同时使用已知类别和未知类别的训练数据进行学习。</li>
-</ul>
-<p>根据学习方法的不同，监督学习可以分为生成方法与判别方法两类。</p>
-<h2 id="线性回归"><a href="#线性回归" class="headerlink" title="线性回归"></a>线性回归</h2><ul>
-<li>线性回归假设输出变量是若干输入变量的线性组合，并根据这一关系求解线性组合中的最优系数；</li>
-<li>最小二乘法可用于解决单变量线性回归问题当误差函数服从正态分布时，它与最大似然估计等价；</li>
-<li>多元线性回归问题也可以用最小二乘法求解，但极易出现过拟合现象；</li>
-<li>岭回归和LASSO回归分别通过引入二范数惩罚项和一范数惩罚项抑制过拟合。</li>
-</ul>
-<h2 id="朴素贝叶斯方法"><a href="#朴素贝叶斯方法" class="headerlink" title="朴素贝叶斯方法"></a>朴素贝叶斯方法</h2><ul>
-<li>朴素贝叶斯方法利用后验概率选择最佳分类，后验概率可以通过贝叶斯定理求解；</li>
-<li>朴素贝叶斯方法假定所有属性相互独立，基于这一假设将类条件概率转化为属性条件概率的乘积；</li>
-<li>朴素贝叶斯方法可以使期望风险最小化；</li>
-<li>影响朴素贝叶斯分类的是所有属性之间的依赖关系在不同类别上的分布。</li>
-</ul>
-<h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><ul>
-<li>逻辑回归模型是对线性回归的改进，用于解决分类问题；</li>
-<li>逻辑回归输出的是实例输入每个类别的似然概率，似然概率最大的类别就是分类结果；</li>
-<li>在一定条件下，逻辑回归模型与朴素贝叶斯分类器是等价的；</li>
-<li>多分类问题时可以通过多次使用二分类或者Softmax回归解决。</li>
-</ul>
-<h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><ul>
-<li>决策树是包含根节点、内部节点和叶节点的树结构，通过判定不同属性的特征来解决分类问题</li>
-<li>决策树的学习过程包括特征选择、决策树生成、决策树剪枝三个步骤；</li>
-<li>决策树生成的基础是特征选择，特征选择的指标包括信息增益、信息增益比和基尼系数；</li>
-<li>决策树的剪枝策略包括预剪枝和后剪枝。</li>
-</ul>
-<h2 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h2><ul>
-<li>线性可分支持向量机通过硬间隔最大化求出划分超平面，解决线性分类问题；</li>
-<li>线性支持向量机通过软间隔最大化求出划分超平面，解决线性分类问题</li>
-<li>非线性支持向量机利用核函数实现从低维原始空间到高维特征空间的转换，在高维空间上解决非线性分类问题</li>
-<li>支持向量机的学习是个凸二次规划问题，可以用SMO算法快速求解</li>
-</ul>
-<h2 id="集成学习"><a href="#集成学习" class="headerlink" title="集成学习"></a>集成学习</h2><ul>
-<li>集成学习使多个学习器来获得比每个单独学习器更好的预测性能，包括序列化方法和并行化方法两类；</li>
-<li>多样性要求集成学习中的不同个体学习器之间具有足够的差异性；</li>
-<li>序列化方法采用Boosting机制，通过重复使用概率分布不同的训练数据实现集成，可以降低泛化误差中的偏差；</li>
-<li>并行化方法采用Bagging机制，通过在训练数据中多次自助抽取不同的采样子集实现集成，可以降低泛化误差中的方差。</li>
-</ul>
-<h2 id="聚类分析"><a href="#聚类分析" class="headerlink" title="聚类分析"></a>聚类分析</h2><ul>
-<li>聚类分析是一种无监督学习方法，通过学习没有分类标记的训练样本发现数据的内在性质和规律；</li>
-<li>数据之间的相似性通常用距离度量，类内差异应尽可能小，类间差异应尽可能大；</li>
-<li>根据形成聚类方式的不同， 聚类算法可以分为层次聚类、原型聚类、分布聚类、密度聚类等几类；</li>
-<li>聚类分析的一个重要应用是对用户进行分组与归类。</li>
-</ul>
-<h2 id="降维分析"><a href="#降维分析" class="headerlink" title="降维分析"></a>降维分析</h2><ul>
-<li>主成分分析利用正交变换将可能存在相关性的原始属性转换成一组线性无关的新属性，并通过选择重要的新属性实现降维</li>
-<li>主成分分析的解满足最大方差和最小均方误差两类约束条件，因而具有最大可分性和最近重构性；</li>
-<li>特征选择则是选取原始特征中的一个子集用于学习任务，是另一种主要的降维技术；</li>
-<li>特征选择的关键问题是对特征子集的评价， 主要的特征选择算法包括包裹法、过滤法和嵌入法。</li>
-</ul>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习<span class="tag-unordered list-count">1</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2022/07/10/ai/01-xian-xing-dai-shu/"> 01-线性代数笔记</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

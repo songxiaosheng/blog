@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168175996">
+<link rel="stylesheet" href="/css/style.css?v=1662168254538">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168175996"></script>
+<script src="/js/core.js?v=1662168254538"></script>
 
 
 
@@ -48,836 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>13-【Dubbo3.0.8源码解析系列】Dubbo的三大中心之配置中心</h1>
-			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">Dubbo3源码</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/13-Dubbo的三大中心之配置中心源码解析.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="13-Dubbo的三大中心之配置中心"><a href="#13-Dubbo的三大中心之配置中心" class="headerlink" title="13-Dubbo的三大中心之配置中心"></a>13-Dubbo的三大中心之配置中心</h1><h2 id="13-1-配置中心简介"><a href="#13-1-配置中心简介" class="headerlink" title="13.1 配置中心简介"></a>13.1 配置中心简介</h2><p>百度了一段不错的文字来介绍配置中心，我看了下肯定比我写的好多了，那我就直接拷贝过来一起看：</p>
-<p><em>对于传统的单体应用而言，常使用配置文件来管理所有配置，比如SpringBoot的application.yml文件，但是在微服务架构中全部手动修改的话很麻烦而且不易维护。微服务的配置管理一般有以下需求：</em></p>
-<ul>
-<li><em><strong>集中配置管理</strong>，一个微服务架构中可能有成百上千个微服务，所以集中配置管理是很重要的。</em></li>
-<li><em><strong>不同环境不同配置</strong>，比如数据源配置在不同环境（开发，生产，测试）中是不同的。</em></li>
-<li><em><strong>运行期间可动态调整</strong>。例如，可根据各个微服务的负载情况，动态调整数据源连接池大小等。</em></li>
-<li><em><strong>配置修改后可自动更新</strong>。如配置内容发生变化，微服务可以自动更新配置。</em></li>
-</ul>
-<p>综上所述对于微服务架构而言，一套统一的，通用的管理配置机制是不可缺少的主要组成部分。常见的做法就是通过配置服务器进行管理。</p>
-<p>不过对于来看这个文章的小伙伴应该大部分对配置中心都会比较了解，分布式配置中心实现简单一点就是借助Zookeeper来协助存储，变更推送，不过为了实现各种不同的业务需求，市面上已经有很多很可靠的配置中心可用了，比如我从其他地方拷贝过来的图（虽然不是最新的但是可以供大家参考下）：</p>
-<p><img src="https://img-blog.csdnimg.cn/142a780f211249bcb73ab9eb2f2437ba.png" alt="在这里插入图片描述"></p>
-<p>每个配置中心都有自己的实现，如果对配置中心感兴趣的小伙伴可以自行去对应开源项目官网查看，我们这里来看Dubbo对配置中心的支持</p>
-<p><em><strong>多配置中心：</strong> Dubbo支持多配置中心，来 <strong>保证其中一个配置中心集群出现不可用时能够切换到另一个配置中心集群</strong> ，保证能够正常从配置中心获取全局的配置、路由规则等信息。这也能够满足配置中心在部署上适应各类高可用的部署架构模式。-来自官网</em></p>
-<p>做中间件可能考虑更多的的不仅仅是性能，还要过多的考虑高可用，高可用怎么做呢，其实就是失效转移，主备切换，降级，降级再降级这些理论的运用，多多考虑某一个服务挂了怎么办，Dubbo的多配置中心支持增加了复杂性，不过降低了服务不可用的风险，有一定的人手的公司还是值得做的。</p>
-<p>关于Dubbo的配置中心这里我来贴个官网的图:<br><img src="https://img-blog.csdnimg.cn/5c339ed9f9244469a64a2f5e5cebf741.png" alt="在这里插入图片描述"><br>关于官网的介绍可以自行去官网看详细内容: <a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docs/concepts/registry-configcenter-metadata/">部署架构(注册中心、配置中心、元数据中心</a></p>
-<h2 id="13-2-启动配置中心"><a href="#13-2-启动配置中心" class="headerlink" title="13.2 启动配置中心"></a>13.2 启动配置中心</h2><p>在上一个博客中说到了<a target="_blank" rel="noopener" href="https://blog.csdn.net/songjunyan/article/details/124550764">《12-全局视野来看Dubbo3.0.7的服务启动生命周期》</a>Dubbo应用的启动过程DefaultApplicationDeployer的initialize()方法的全生命周期，在初始化方法中通过调用startConfigCenter();方法来启动配置中心的加载。后面就来详细看下：</p>
-<p>DefaultApplicationDeployer类型的startConfigCenter()代码如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">startConfigCenter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-
-        <span class="token comment">// load application config</span>
-        <span class="token comment">//加载应用程序配置 （配置可能有多个地方可以配置需要遵循Dubbo约定的优先级进行设置，也可能是多应用，多注册中心这样的配置）</span>
-      configManager<span class="token punctuation">.</span><span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">ApplicationConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token comment">// try set model name</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isBlank</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">.</span><span class="token function">getModelName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//设置一下模块名字和模块描述（我们再Debug里面经常会看到这个描述信息 toString直接返回了Dubbo为我们改造的对象信息）</span>
-            applicationModel<span class="token punctuation">.</span><span class="token function">setModelName</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">.</span><span class="token function">tryGetApplicationName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment">// load config centers</span>
-        <span class="token comment">//加载配置中心配置</span>
-        <span class="token comment">//配置可能有多个地方可以配置需要遵循Dubbo约定的优先级进行设置，也可能是多应用，多注册中心这样的配置）</span>
-        configManager<span class="token punctuation">.</span><span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">ConfigCenterConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		<span class="token comment">//出于兼容性目的，如果没有明确指定配置中心，并且registryConfig的UseAConfigCenter为null或true，请使用registry作为默认配置中心</span>
-        <span class="token function">useRegistryAsConfigCenterIfNecessary</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token comment">// check Config Center</span>
-        <span class="token comment">//配置管理器中获取配置中心</span>
-        <span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ConfigCenterConfig</span><span class="token punctuation">&gt;</span></span> configCenters <span class="token operator">=</span> configManager<span class="token punctuation">.</span><span class="token function">getConfigCenters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//配置中心配置不为空则刷新配置中心配置将其放入配置管理器中</span>
-        <span class="token comment">//下面开始刷新配置中心配置,如果配置中心配置为空则执行空刷新</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>configCenters<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//配置中心不存在的配置刷新</span>
-            <span class="token class-name">ConfigCenterConfig</span> configCenterConfig <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConfigCenterConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            configCenterConfig<span class="token punctuation">.</span><span class="token function">setScopeModel</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            configCenterConfig<span class="token punctuation">.</span><span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment">//验证配置</span>
-            <span class="token class-name">ConfigValidationUtils</span><span class="token punctuation">.</span><span class="token function">validateConfigCenterConfig</span><span class="token punctuation">(</span>configCenterConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>configCenterConfig<span class="token punctuation">.</span><span class="token function">isValid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment">//配置合法则将配置放入配置管理器中</span>
-                configManager<span class="token punctuation">.</span><span class="token function">addConfigCenter</span><span class="token punctuation">(</span>configCenterConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                configCenters <span class="token operator">=</span> configManager<span class="token punctuation">.</span><span class="token function">getConfigCenters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-        <span class="token comment">//一个或者多个配置中心配置存在的情况下的配置刷新</span>
-            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ConfigCenterConfig</span> configCenterConfig <span class="token operator">:</span> configCenters<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                configCenterConfig<span class="token punctuation">.</span><span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment">//验证配置</span>
-                <span class="token class-name">ConfigValidationUtils</span><span class="token punctuation">.</span><span class="token function">validateConfigCenterConfig</span><span class="token punctuation">(</span>configCenterConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-
-		<span class="token comment">//配置中心配置不为空则将配置中心配置添加到environment中</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>configCenters<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//多配置中心本地动态配置对象创建CompositeDynamicConfiguration</span>
-            <span class="token class-name">CompositeDynamicConfiguration</span> compositeDynamicConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CompositeDynamicConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment">//获取配置中心的相关配置</span>
-            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ConfigCenterConfig</span> configCenter <span class="token operator">:</span> configCenters<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment">// Pass config from ConfigCenterBean to environment</span>
-                <span class="token comment">//将配置中心的外部化配置,更新到环境里面</span>
-                environment<span class="token punctuation">.</span><span class="token function">updateExternalConfigMap</span><span class="token punctuation">(</span>configCenter<span class="token punctuation">.</span><span class="token function">getExternalConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment">//将配置中心的应用配置,添加到环境里面</span>
-                environment<span class="token punctuation">.</span><span class="token function">updateAppExternalConfigMap</span><span class="token punctuation">(</span>configCenter<span class="token punctuation">.</span><span class="token function">getAppExternalConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-                <span class="token comment">// Fetch config from remote config center</span>
-                <span class="token comment">//从配置中心拉取配置添加到组合配置中</span>
-                compositeDynamicConfiguration<span class="token punctuation">.</span><span class="token function">addConfiguration</span><span class="token punctuation">(</span><span class="token function">prepareEnvironment</span><span class="token punctuation">(</span>configCenter<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment">//将配置中心中的动态配置信息 设置到environment的动态配置属性中</span>
-            environment<span class="token punctuation">.</span><span class="token function">setDynamicConfiguration</span><span class="token punctuation">(</span>compositeDynamicConfiguration<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="13-2-1-配置管理器加载配置"><a href="#13-2-1-配置管理器加载配置" class="headerlink" title="13.2.1 配置管理器加载配置"></a>13.2.1 配置管理器加载配置</h3><p>前面我们看到了配置管理器会从系统属性中加载配置这里我们来详细看下，配置往往是我们使用者比较关注的内容，</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">configManager<span class="token punctuation">.</span><span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">ApplicationConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>配置管理器加载配置代码:<br>来自ConfigManager的父类型AbstractConfigManager中</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractConfig</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> cls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> tmpConfigs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//获取属性配置 dubbo properties in classpath</span>
-        <span class="token comment">//这个配置信息回头说</span>
-        <span class="token class-name">PropertiesConfiguration</span> properties <span class="token operator">=</span> environment<span class="token punctuation">.</span><span class="token function">getPropertiesConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token comment">// load multiple configs with id</span>
-        <span class="token comment">//多注册中心配置id查询</span>
-       
-       <span class="token comment">/*
-       搜索属性并提取指定类型的配置ID。
-       例如如下配置
-       # 配置信息 properties
-       dubbo.registries.registry1.address=xxx
-       dubbo.registries.registry2.port=xxx
-      
-       # 提取配置的id extract  
-       Set configIds = getConfigIds(RegistryConfig.class)
-      
-       # 提取的配置id结果 result
-       configIds: ["registry1", "registry2"]
-       */</span>
-        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> configIds <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getConfigIdsFromProps</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        configIds<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>id <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
-        	<span class="token comment">//遍历这些配置id 判断配置缓存(configsCache成员变量)中是否已经存在当前配置</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getConfig</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> id<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isPresent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token class-name">T</span> config<span class="token punctuation">;</span>
-                <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                	<span class="token comment">//创建配置对象 为配置对象初始化配置id</span>
-                    config <span class="token operator">=</span> <span class="token function">createConfig</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> scopeModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    config<span class="token punctuation">.</span><span class="token function">setId</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"create config instance failed, id: "</span> <span class="token operator">+</span> id <span class="token operator">+</span> <span class="token string">", type:"</span> <span class="token operator">+</span> cls<span class="token punctuation">.</span><span class="token function">getSimpleName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-
-                <span class="token class-name">String</span> key <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-                <span class="token keyword">boolean</span> addDefaultNameConfig <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-                <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                    <span class="token comment">// add default name config (same as id), e.g. dubbo.protocols.rest.port=1234</span>
-                    key <span class="token operator">=</span> DUBBO <span class="token operator">+</span> <span class="token string">"."</span> <span class="token operator">+</span> <span class="token class-name">AbstractConfig</span><span class="token punctuation">.</span><span class="token function">getPluralTagName</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"."</span> <span class="token operator">+</span> id <span class="token operator">+</span> <span class="token string">".name"</span><span class="token punctuation">;</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>properties<span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        properties<span class="token punctuation">.</span><span class="token function">setProperty</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        addDefaultNameConfig <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-				<span class="token comment">//刷新配置信息 好理解点就是Dubbo配置属性重写 </span>
-                    config<span class="token punctuation">.</span><span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token comment">//将当前配置信息添加到配置缓存中configsCache成员变量</span>
-                    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">addConfig</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    tmpConfigs<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"load config failed, id: "</span> <span class="token operator">+</span> id <span class="token operator">+</span> <span class="token string">", type:"</span> <span class="token operator">+</span> cls<span class="token punctuation">.</span><span class="token function">getSimpleName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"load config failed, id: "</span> <span class="token operator">+</span> id <span class="token operator">+</span> <span class="token string">", type:"</span> <span class="token operator">+</span> cls<span class="token punctuation">.</span><span class="token function">getSimpleName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>addDefaultNameConfig <span class="token operator">&amp;&amp;</span> key <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        properties<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token comment">// If none config of the type, try load single config</span>
-        <span class="token comment">//如果没有该类型的配置，请尝试加载单个配置</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getConfigs</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment">// load single config</span>
-            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Map</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> configurationMaps <span class="token operator">=</span> environment<span class="token punctuation">.</span><span class="token function">getConfigurationMaps</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">ConfigurationUtils</span><span class="token punctuation">.</span><span class="token function">hasSubProperties</span><span class="token punctuation">(</span>configurationMaps<span class="token punctuation">,</span> <span class="token class-name">AbstractConfig</span><span class="token punctuation">.</span><span class="token function">getTypePrefix</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token class-name">T</span> config<span class="token punctuation">;</span>
-                <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                    config <span class="token operator">=</span> <span class="token function">createConfig</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> scopeModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    config<span class="token punctuation">.</span><span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"create default config instance failed, type:"</span> <span class="token operator">+</span> cls<span class="token punctuation">.</span><span class="token function">getSimpleName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-
-                <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">addConfig</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                tmpConfigs<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token keyword">return</span> tmpConfigs<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="13-2-2-默认使用注册中心地址为配置中心"><a href="#13-2-2-默认使用注册中心地址为配置中心" class="headerlink" title="13.2.2  默认使用注册中心地址为配置中心"></a>13.2.2  默认使用注册中心地址为配置中心</h2><p>出于兼容性目的，如果没有明确指定配置中心，并且registryConfig的UseAConfigCenter为null或true，请使用registry作为默认配置中心<br>调用方法useRegistryAsConfigCenterIfNecessary()来处理逻辑<br>我们来看下代码:</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">useRegistryAsConfigCenterIfNecessary</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">// we use the loading status of DynamicConfiguration to decide whether ConfigCenter has been initiated.</span>
-        <span class="token comment">//我们使用DynamicConfiguration的加载状态来决定是否已启动ConfigCenter。配置中心配置加载完成之后会初始化动态配置defaultDynamicConfiguration</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>environment<span class="token punctuation">.</span><span class="token function">getDynamicConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isPresent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-		<span class="token comment">//从配置缓存中查询是否存在config-center相关配置 ,如果已经存在配置了就无需使用注册中心的配置地址直接返回</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>configManager<span class="token punctuation">.</span><span class="token function">getConfigCenters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment">// load registry</span>
-        <span class="token comment">//加载注册中心相关配置</span>
-        configManager<span class="token punctuation">.</span><span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">RegistryConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-		<span class="token comment">//查询是否有注册中心设置了默认配置isDefault 设置为true的注册中心则为默认注册中心列表,如果没有注册中心设置为默认注册中心,则获取所有未设置默认配置的注册中心列表</span>
-        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RegistryConfig</span><span class="token punctuation">&gt;</span></span> defaultRegistries <span class="token operator">=</span> configManager<span class="token punctuation">.</span><span class="token function">getDefaultRegistries</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//存在注册中心</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>defaultRegistries<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            defaultRegistries
-                <span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token comment">//判断当前注册中心是否可以作为配置中心</span>
-                <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">::</span><span class="token function">isUsedRegistryAsConfigCenter</span><span class="token punctuation">)</span>
-                <span class="token comment">//将注册中心配置映射转换为配置中心</span>
-                <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">::</span><span class="token function">registryAsConfigCenter</span><span class="token punctuation">)</span>
-                <span class="token comment">//遍历配置中心流</span>
-                <span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>configCenter <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>configManager<span class="token punctuation">.</span><span class="token function">getConfigCenter</span><span class="token punctuation">(</span>configCenter<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isPresent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token keyword">return</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                    <span class="token comment">//配置管理器中添加配置中心,方便后去读取配置中心的配置信息</span>
-                    configManager<span class="token punctuation">.</span><span class="token function">addConfigCenter</span><span class="token punctuation">(</span>configCenter<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"use registry as config-center: "</span> <span class="token operator">+</span> configCenter<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="13-2-2-1-如何判断当前注册中心是否可以为配置中心"><a href="#13-2-2-1-如何判断当前注册中心是否可以为配置中心" class="headerlink" title="13.2.2.1 如何判断当前注册中心是否可以为配置中心"></a>13.2.2.1 如何判断当前注册中心是否可以为配置中心</h4><p>isUsedRegistryAsConfigCenter</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">isUsedRegistryAsCenter</span><span class="token punctuation">(</span><span class="token class-name">RegistryConfig</span> registryConfig<span class="token punctuation">,</span> <span class="token class-name">Supplier</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Boolean</span><span class="token punctuation">&gt;</span></span> usedRegistryAsCenter<span class="token punctuation">,</span>
-                                           <span class="token class-name">String</span> centerType<span class="token punctuation">,</span>
-                                           <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> extensionClass<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> <span class="token keyword">boolean</span> supported<span class="token punctuation">;</span>
-			<span class="token comment">//这个useAsConfigCenter参数是来自注册中心的配置 如果配置了这个值则以这个值为准,如果配置了false则这个注册中心不能做为配置中心</span>
-        <span class="token class-name">Boolean</span> configuredValue <span class="token operator">=</span> usedRegistryAsCenter<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>configuredValue <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// If configured, take its value.</span>
-            supported <span class="token operator">=</span> configuredValue<span class="token punctuation">.</span><span class="token function">booleanValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>                       <span class="token comment">// Or check the extension existence</span>
-        	<span class="token comment">//这个逻辑的话是判断下注册中心的协议是否满足要求,我们例子代码中使用的是zookeeper</span>
-            <span class="token class-name">String</span> protocol <span class="token operator">=</span> registryConfig<span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment">//这个扩展是否支持的逻辑判断是这样的扫描扩展类 看一下当前扩展类型是否有对应协议的扩展 比如在扩展文件里面这样配置过后是支持的 protocol=xxxImpl</span>
-            <span class="token comment">//动态配置的扩展类型为:interface org.apache.dubbo.common.config.configcenter.DynamicConfigurationFactory</span>
-            <span class="token comment">//zookeeper协议肯定是支持的因为zookeeper协议实现了这个动态配置工厂 ,这个扩展类型为ZookeeperDynamicConfigurationFactory</span>
-            <span class="token comment">//代码位置在dubbo-configcenter-zookeeper包中的org.apache.dubbo.common.config.configcenter.DynamicConfigurationFactory扩展配置中内容为zookeeper=org.apache.dubbo.configcenter.support.zookeeper.ZookeeperDynamicConfigurationFactory</span>
-            supported <span class="token operator">=</span> <span class="token function">supportsExtension</span><span class="token punctuation">(</span>extensionClass<span class="token punctuation">,</span> protocol<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment">//配置中心走注册中心会打印一条日志</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"No value is configured in the registry, the %s extension[name : %s] %s as the %s center"</span>
-                    <span class="token punctuation">,</span> extensionClass<span class="token punctuation">.</span><span class="token function">getSimpleName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> protocol<span class="token punctuation">,</span> supported <span class="token operator">?</span> <span class="token string">"supports"</span> <span class="token operator">:</span> <span class="token string">"does not support"</span><span class="token punctuation">,</span> centerType<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-
-		<span class="token comment">//配置中心走注册中心会打印一条日志</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"The registry[%s] will be %s as the %s center"</span><span class="token punctuation">,</span> registryConfig<span class="token punctuation">,</span>
-                supported <span class="token operator">?</span> <span class="token string">"used"</span> <span class="token operator">:</span> <span class="token string">"not used"</span><span class="token punctuation">,</span> centerType<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> supported<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这个扩展是否支持的逻辑判断是这样的扫描扩展类 看一下当前扩展类型是否有对应协议的扩展 比如在扩展文件里面这样配置过后是支持的 protocol=xxxImpl<br>配置中心的动态配置的扩展类型为 org.apache.dubbo.common.config.configcenter.DynamicConfigurationFactory</p>
-<p>zookeeper协议肯定是支持的因为zookeeper协议实现了这个动态配置工厂 ,这个扩展类型为ZookeeperDynamicConfigurationFactory代码位置在dubbo-configcenter-zookeeper包中的org.apache.dubbo.common.config.configcenter.DynamicConfigurationFactory扩展配置中内容为</p>
-<pre class="line-numbers language-none"><code class="language-none">zookeeper=org.apache.dubbo.configcenter.support.zookeeper.ZookeeperDynamicConfigurationFactory<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-
-
-<h4 id="13-2-2-2-注册中心配置转配置中心配置"><a href="#13-2-2-2-注册中心配置转配置中心配置" class="headerlink" title="13.2.2.2 注册中心配置转配置中心配置"></a>13.2.2.2 注册中心配置转配置中心配置</h4><p>这个逻辑是registryAsConfigCenter方法,我来贴一下代码:</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">ConfigCenterConfig</span> <span class="token function">registryAsConfigCenter</span><span class="token punctuation">(</span><span class="token class-name">RegistryConfig</span> registryConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//注册中心协议获取这里例子中的是zookeeper协议</span>
-        <span class="token class-name">String</span> protocol <span class="token operator">=</span> registryConfig<span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//注册中心端口 2181</span>
-        <span class="token class-name">Integer</span> port <span class="token operator">=</span> registryConfig<span class="token punctuation">.</span><span class="token function">getPort</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//在Dubbo中配置信息 很多情况下都以URL形式表示,这里转换后的地址为zookeeper://127.0.0.1:2181</span>
-        <span class="token class-name">URL</span> url <span class="token operator">=</span> URL<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">.</span><span class="token function">getAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> registryConfig<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//生成当前配置中心的id 封装之后的内容为:</span>
-        <span class="token comment">//config-center-zookeeper-127.0.0.1-2181</span>
-        <span class="token class-name">String</span> id <span class="token operator">=</span> <span class="token string">"config-center-"</span> <span class="token operator">+</span> protocol <span class="token operator">+</span> <span class="token string">"-"</span> <span class="token operator">+</span> url<span class="token punctuation">.</span><span class="token function">getHost</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"-"</span> <span class="token operator">+</span> port<span class="token punctuation">;</span>
-        <span class="token comment">//配置中心配置对象创建</span>
-        <span class="token class-name">ConfigCenterConfig</span> cc <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConfigCenterConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//config-center-zookeeper-127.0.0.1-2181</span>
-        cc<span class="token punctuation">.</span><span class="token function">setId</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        cc<span class="token punctuation">.</span><span class="token function">setScopeModel</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>cc<span class="token punctuation">.</span><span class="token function">getParameters</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            cc<span class="token punctuation">.</span><span class="token function">setParameters</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmptyMap</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">.</span><span class="token function">getParameters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            cc<span class="token punctuation">.</span><span class="token function">getParameters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">putAll</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">.</span><span class="token function">getParameters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// copy the parameters</span>
-        <span class="token punctuation">}</span>
-        cc<span class="token punctuation">.</span><span class="token function">getParameters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>CLIENT_KEY<span class="token punctuation">,</span> registryConfig<span class="token punctuation">.</span><span class="token function">getClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//zookeeper</span>
-        cc<span class="token punctuation">.</span><span class="token function">setProtocol</span><span class="token punctuation">(</span>protocol<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//2181</span>
-        cc<span class="token punctuation">.</span><span class="token function">setPort</span><span class="token punctuation">(</span>port<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            cc<span class="token punctuation">.</span><span class="token function">setGroup</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">//这个方法转换地址是修复bug用的可以看bug https://github.com/apache/dubbo/issues/6476</span>
-        cc<span class="token punctuation">.</span><span class="token function">setAddress</span><span class="token punctuation">(</span><span class="token function">getRegistryCompatibleAddress</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//注册中心分组做为配置中心命名空间 这里为null</span>
-        cc<span class="token punctuation">.</span><span class="token function">setNamespace</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//zk认证信息</span>
-        cc<span class="token punctuation">.</span><span class="token function">setUsername</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-         <span class="token comment">//zk认证信息</span>
-        cc<span class="token punctuation">.</span><span class="token function">setPassword</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">.</span><span class="token function">getPassword</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>registryConfig<span class="token punctuation">.</span><span class="token function">getTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            cc<span class="token punctuation">.</span><span class="token function">setTimeout</span><span class="token punctuation">(</span>registryConfig<span class="token punctuation">.</span><span class="token function">getTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">longValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">//这个属性注释中已经建议了已经弃用了默认就是false了</span>
-        <span class="token comment">//如果配置中心被赋予最高优先级，它将覆盖所有其他配置，</span>
-        cc<span class="token punctuation">.</span><span class="token function">setHighestPriority</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> cc<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<h2 id="13-3-配置刷新逻辑"><a href="#13-3-配置刷新逻辑" class="headerlink" title="13.3 配置刷新逻辑"></a>13.3 配置刷新逻辑</h2><p>来自AbstractConfig类型的refresh()方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        refreshed<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token comment">// check and init before do refresh</span>
-            <span class="token comment">//刷新之前执行的逻辑 这里并做什么逻辑</span>
-            <span class="token function">preProcessRefresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		
-			<span class="token comment">//获取当前域模型的环境信息对象</span>
-            <span class="token class-name">Environment</span> environment <span class="token operator">=</span> <span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getModelEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Map</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> configurationMaps <span class="token operator">=</span> environment<span class="token punctuation">.</span><span class="token function">getConfigurationMaps</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-            <span class="token comment">// Search props starts with PREFIX in order</span>
-            <span class="token class-name">String</span> preferredPrefix <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> prefix <span class="token operator">:</span> <span class="token function">getPrefixes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">ConfigurationUtils</span><span class="token punctuation">.</span><span class="token function">hasSubProperties</span><span class="token punctuation">(</span>configurationMaps<span class="token punctuation">,</span> prefix<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    preferredPrefix <span class="token operator">=</span> prefix<span class="token punctuation">;</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>preferredPrefix <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                preferredPrefix <span class="token operator">=</span> <span class="token function">getPrefixes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment">// Extract sub props (which key was starts with preferredPrefix)</span>
-            <span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Map</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> instanceConfigMaps <span class="token operator">=</span> environment<span class="token punctuation">.</span><span class="token function">getConfigurationMaps</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> preferredPrefix<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> subProperties <span class="token operator">=</span> <span class="token class-name">ConfigurationUtils</span><span class="token punctuation">.</span><span class="token function">getSubProperties</span><span class="token punctuation">(</span>instanceConfigMaps<span class="token punctuation">,</span> preferredPrefix<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token class-name">InmemoryConfiguration</span> subPropsConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InmemoryConfiguration</span><span class="token punctuation">(</span>subProperties<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token class-name">String</span> idOrName <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">hasText</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    idOrName <span class="token operator">=</span> <span class="token string">"[id="</span> <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"]"</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                    <span class="token class-name">String</span> name <span class="token operator">=</span> <span class="token class-name">ReflectUtils</span><span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token string">"getName"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">hasText</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        idOrName <span class="token operator">=</span> <span class="token string">"[name="</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">"]"</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-                logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Refreshing "</span> <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSimpleName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> idOrName <span class="token operator">+</span>
-                    <span class="token string">" with prefix ["</span> <span class="token operator">+</span> preferredPrefix <span class="token operator">+</span>
-                    <span class="token string">"], extracted props: "</span> <span class="token operator">+</span> subProperties<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-
-            <span class="token function">assignProperties</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> environment<span class="token punctuation">,</span> subProperties<span class="token punctuation">,</span> subPropsConfiguration<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-            <span class="token comment">// process extra refresh of subclass, e.g. refresh method configs</span>
-            <span class="token function">processExtraRefresh</span><span class="token punctuation">(</span>preferredPrefix<span class="token punctuation">,</span> subPropsConfiguration<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Failed to override field value of config bean: "</span> <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Failed to override field value of config bean: "</span> <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token function">postProcessRefresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><img src="https://img-blog.csdnimg.cn/03d19cf9ed14499d95f6245d08e07ec7.png" alt="在这里插入图片描述"></p>
-<p><img src="https://img-blog.csdnimg.cn/2f5a1f14e7164abb8f10b37851db094e.png" alt="在这里插入图片描述"></p>
-<h2 id="13-4-配置中心配置大全"><a href="#13-4-配置中心配置大全" class="headerlink" title="13.4 配置中心配置大全"></a>13.4 配置中心配置大全</h2><p>ConfigCenterConfig类型<br> 下面配置信息来自官网<br>dubbo:config-center 配置</p>
-<p>配置中心。对应的配置类：<code>org.apache.dubbo.config.ConfigCenterConfig</code></p>
-<table>
-<thead>
-<tr>
-<th>属性</th>
-<th>对应URL参数</th>
-<th>类型</th>
-<th>是否必填</th>
-<th>缺省值</th>
-<th>描述</th>
-<th>兼容性</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>protocol</td>
-<td>config.protocol</td>
-<td>string</td>
-<td>可选</td>
-<td>zookeeper</td>
-<td>使用哪个配置中心：apollo、zookeeper、nacos等。 以zookeeper为例 1. 指定protocol，则address可以简化为<code>127.0.0.1:2181</code>； 2. 不指定protocol，则address取值为<code>zookeeper://127.0.0.1:2181</code></td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>address</td>
-<td>config.address</td>
-<td>string</td>
-<td>必填</td>
-<td></td>
-<td>配置中心地址。 取值参见protocol说明</td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>highest-priority</td>
-<td>config.highestPriority</td>
-<td>boolean</td>
-<td>可选</td>
-<td>true</td>
-<td>来自配置中心的配置项具有最高优先级，即会覆盖本地配置项。</td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>namespace</td>
-<td>config.namespace</td>
-<td>string</td>
-<td>可选</td>
-<td>dubbo</td>
-<td>通常用于多租户隔离，实际含义视具体配置中心而不同。 如： zookeeper - 环境隔离，默认值<code>dubbo</code>； apollo - 区分不同领域的配置集合，默认使用<code>dubbo</code>和<code>application</code></td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>cluster</td>
-<td>config.cluster</td>
-<td>string</td>
-<td>可选</td>
-<td></td>
-<td>含义视所选定的配置中心而不同。 如Apollo中用来区分不同的配置集群</td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>group</td>
-<td>config.group</td>
-<td>string</td>
-<td>可选</td>
-<td>dubbo</td>
-<td>含义视所选定的配置中心而不同。 nacos - 隔离不同配置集 zookeeper - 隔离不同配置集</td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>check</td>
-<td>config.check</td>
-<td>boolean</td>
-<td>可选</td>
-<td>true</td>
-<td>当配置中心连接失败时，是否终止应用启动。</td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>config-file</td>
-<td>config.configFile</td>
-<td>string</td>
-<td>可选</td>
-<td>dubbo.properties</td>
-<td>全局级配置文件所映射到的key zookeeper - 默认路径/dubbo/config/dubbo/dubbo.properties apollo - dubbo namespace中的dubbo.properties键</td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>timeout</td>
-<td>config.timeout</td>
-<td>integer</td>
-<td></td>
-<td>3000ms</td>
-<td>获取配置的超时时间</td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>username</td>
-<td></td>
-<td>string</td>
-<td></td>
-<td></td>
-<td>如果配置中心需要做校验，用户名 Apollo暂未启用</td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>password</td>
-<td></td>
-<td>string</td>
-<td></td>
-<td></td>
-<td>如果配置中心需要做校验，密码 Apollo暂未启用</td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>parameters</td>
-<td></td>
-<td>Map&lt;string, string&gt;</td>
-<td></td>
-<td></td>
-<td>扩展参数，用来支持不同配置中心的定制化配置参数</td>
-<td>2.7.0+</td>
-</tr>
-<tr>
-<td>include-spring-env</td>
-<td></td>
-<td>boolean</td>
-<td>可选</td>
-<td>false</td>
-<td>使用Spring框架时支持，为true时，会自动从Spring Environment中读取配置。 默认依次读取 key为dubbo.properties的配置 key为dubbo.properties的PropertySource</td>
-<td>2.7.0+</td>
-</tr>
-</tbody></table>
-<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/Dubbo/" rel="tag">Dubbo<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3/" rel="tag">Dubbo3<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Dubbo3源码解析<span class="tag-unordered list-count">23</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2022/07/10/dubbo/14-dubbo-pei-zhi-jia-zai-quan-jie-xi/"> 14-【Dubbo3.0.8源码解析系列】Dubbo配置加载全解析</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2022/07/10/dubbo/12-quan-ju-shi-ye-lai-kan-dubbo3.0.8-de-fu-wu-qi-dong-sheng-ming-zhou-qi/"> 12-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

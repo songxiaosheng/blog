@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168175975">
+<link rel="stylesheet" href="/css/style.css?v=1662168254512">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168175975"></script>
+<script src="/js/core.js?v=1662168254512"></script>
 
 
 
@@ -48,226 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1></h1>
-			<div class="info"><span class="date">2022年8月27日</span>•songxiaosheng 
-			
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/25-为调用器对象增加容错和过滤器等功能.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<p>将思路拉回到RegistryProtocol的创建Invoker对象的doCreateInvoker代码</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">doCreateInvoker</span><span class="token punctuation">(</span><span class="token class-name">DynamicDirectory</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> directory<span class="token punctuation">,</span> <span class="token class-name">Cluster</span> cluster<span class="token punctuation">,</span> <span class="token class-name">Registry</span> registry<span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       directory<span class="token punctuation">.</span><span class="token function">setRegistry</span><span class="token punctuation">(</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
-       directory<span class="token punctuation">.</span><span class="token function">setProtocol</span><span class="token punctuation">(</span>protocol<span class="token punctuation">)</span><span class="token punctuation">;</span>
-       <span class="token comment">// all attributes of REFER_KEY</span>
-       <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> parameters <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>directory<span class="token punctuation">.</span><span class="token function">getConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getParameters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-       <span class="token class-name">URL</span> urlToRegistry <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServiceConfigURL</span><span class="token punctuation">(</span>
-           parameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>PROTOCOL_KEY<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> CONSUMER <span class="token operator">:</span> parameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>PROTOCOL_KEY<span class="token punctuation">)</span><span class="token punctuation">,</span>
-           parameters<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>REGISTER_IP_KEY<span class="token punctuation">)</span><span class="token punctuation">,</span>
-           <span class="token number">0</span><span class="token punctuation">,</span>
-           <span class="token function">getPath</span><span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">,</span>
-           parameters
-       <span class="token punctuation">)</span><span class="token punctuation">;</span>
-       urlToRegistry <span class="token operator">=</span> urlToRegistry<span class="token punctuation">.</span><span class="token function">setScopeModel</span><span class="token punctuation">(</span>directory<span class="token punctuation">.</span><span class="token function">getConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-       urlToRegistry <span class="token operator">=</span> urlToRegistry<span class="token punctuation">.</span><span class="token function">setServiceModel</span><span class="token punctuation">(</span>directory<span class="token punctuation">.</span><span class="token function">getConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getServiceModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-       <span class="token keyword">if</span> <span class="token punctuation">(</span>directory<span class="token punctuation">.</span><span class="token function">isShouldRegister</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-           directory<span class="token punctuation">.</span><span class="token function">setRegisteredConsumerUrl</span><span class="token punctuation">(</span>urlToRegistry<span class="token punctuation">)</span><span class="token punctuation">;</span>
-           registry<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span>directory<span class="token punctuation">.</span><span class="token function">getRegisteredConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-       <span class="token punctuation">}</span>
-       directory<span class="token punctuation">.</span><span class="token function">buildRouterChain</span><span class="token punctuation">(</span>urlToRegistry<span class="token punctuation">)</span><span class="token punctuation">;</span>
-       directory<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token function">toSubscribeUrl</span><span class="token punctuation">(</span>urlToRegistry<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-       <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> cluster<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>directory<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>不论是接口级还是应用级注册都会调用代码</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> cluster<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>directory<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>我们详细看下：<br>MockClusterWrapper类型的join方法</p>
-<p>buildFilterChain参数为true</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">Invoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">join</span><span class="token punctuation">(</span><span class="token class-name">Directory</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> directory<span class="token punctuation">,</span> <span class="token keyword">boolean</span> buildFilterChain<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">RpcException</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">MockClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>directory<span class="token punctuation">,</span>
-              <span class="token keyword">this</span><span class="token punctuation">.</span>cluster<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>directory<span class="token punctuation">,</span> buildFilterChain<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>默认的cluster类型为FailoverCluster<br>我们看FailoverCluster的join方法</p>
-<p>FailoverCluster没有实现join方法需要先调用它的父类型AbstractCluster的join方法如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">Invoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">join</span><span class="token punctuation">(</span><span class="token class-name">Directory</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> directory<span class="token punctuation">,</span> <span class="token keyword">boolean</span> buildFilterChain<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">RpcException</span> <span class="token punctuation">{</span>
-     <span class="token comment">//带有过滤器将走上面这个逻辑</span>
-     <span class="token keyword">if</span> <span class="token punctuation">(</span>buildFilterChain<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-         <span class="token keyword">return</span> <span class="token function">buildClusterInterceptors</span><span class="token punctuation">(</span><span class="token function">doJoin</span><span class="token punctuation">(</span>directory<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-     <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-         <span class="token keyword">return</span> <span class="token function">doJoin</span><span class="token punctuation">(</span>directory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-     <span class="token punctuation">}</span>
- <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p> //过滤器参数为true将走上面这个逻辑 先创建Invoker对象再创建过滤器<br> </p><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">if</span> <span class="token punctuation">(</span>buildFilterChain<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token function">buildClusterInterceptors</span><span class="token punctuation">(</span><span class="token function">doJoin</span><span class="token punctuation">(</span>directory<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><br>doJoin方法将有默认类AbstractCluster的doJoin抽象方法调用具体方法FailoverCluster的doJoin方法如下<br>FailoverCluster的doJoin方法<p></p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">AbstractClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">doJoin</span><span class="token punctuation">(</span><span class="token class-name">Directory</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> directory<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">RpcException</span> <span class="token punctuation">{</span>
-       <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">FailoverClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>directory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>可以看到这里调用链路创建了一个失效转移的Invoker对象FailoverClusterInvoker</p>
-<p>FailoverClusterInvoker的构造器</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">FailoverClusterInvoker</span><span class="token punctuation">(</span><span class="token class-name">Directory</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> directory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">super</span><span class="token punctuation">(</span>directory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>父调用器AbstractClusterInvoker的构造器</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"> <span class="token keyword">public</span> <span class="token class-name">AbstractClusterInvoker</span><span class="token punctuation">(</span><span class="token class-name">Directory</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> directory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">(</span>directory<span class="token punctuation">,</span> directory<span class="token punctuation">.</span><span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>重载的构造器如下：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">
-    <span class="token keyword">public</span> <span class="token class-name">AbstractClusterInvoker</span><span class="token punctuation">(</span><span class="token class-name">Directory</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> directory<span class="token punctuation">,</span> <span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>directory <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"service directory == null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token keyword">this</span><span class="token punctuation">.</span>directory <span class="token operator">=</span> directory<span class="token punctuation">;</span>
-        <span class="token comment">//sticky: invoker.isAvailable() should always be checked before using when availablecheck is true.</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>availableCheck <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>CLUSTER_AVAILABLE_CHECK_KEY<span class="token punctuation">,</span> DEFAULT_CLUSTER_AVAILABLE_CHECK<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">Configuration</span> configuration <span class="token operator">=</span> <span class="token class-name">ConfigurationUtils</span><span class="token punctuation">.</span><span class="token function">getGlobalConfiguration</span><span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">getOrDefaultModuleModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>reselectCount <span class="token operator">=</span> configuration<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span>RESELECT_COUNT<span class="token punctuation">,</span> DEFAULT_RESELECT_COUNT<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>enableConnectivityValidation <span class="token operator">=</span> configuration<span class="token punctuation">.</span><span class="token function">getBoolean</span><span class="token punctuation">(</span>ENABLE_CONNECTIVITY_VALIDATION<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-````
-
-
-初始化过滤器链路的代码<span class="token class-name">AbstractCluster</span>类型的buildClusterInterceptors方法如下：
-```java
-  <span class="token keyword">private</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">Invoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">buildClusterInterceptors</span><span class="token punctuation">(</span><span class="token class-name">AbstractClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> clusterInvoker<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-<span class="token comment">//        AbstractClusterInvoker&lt;T&gt; last = clusterInvoker;</span>
-        <span class="token class-name">AbstractClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> last <span class="token operator">=</span> <span class="token function">buildInterceptorInvoker</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ClusterFilterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>clusterInvoker<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">Boolean</span><span class="token punctuation">.</span><span class="token function">parseBoolean</span><span class="token punctuation">(</span><span class="token class-name">ConfigurationUtils</span><span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span>clusterInvoker<span class="token punctuation">.</span><span class="token function">getDirectory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> CLUSTER_INTERCEPTOR_COMPATIBLE_KEY<span class="token punctuation">,</span> <span class="token string">"false"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token function">build27xCompatibleClusterInterceptors</span><span class="token punctuation">(</span>clusterInvoker<span class="token punctuation">,</span> last<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> last<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>ClusterFilterInvoker构造器</p>
-<pre class="line-numbers language-none"><code class="language-none">public ClusterFilterInvoker(AbstractClusterInvoker&lt;T&gt; invoker) {
-          //过滤器构造链DefaultFilterChainBuilder
-          List&lt;FilterChainBuilder&gt; builders = ScopeModelUtil.getApplicationModel(invoker.getUrl().getScopeModel()).getExtensionLoader(FilterChainBuilder.class).getActivateExtensions();
-          if (CollectionUtils.isEmpty(builders)) {
-              filterInvoker = invoker;
-          } else {
-              ClusterInvoker&lt;T&gt; tmpInvoker = invoker;
-              for (FilterChainBuilder builder : builders) {
-                  tmpInvoker = builder.buildClusterInvokerChain(tmpInvoker, REFERENCE_FILTER_KEY, CommonConstants.CONSUMER);
-              }
-              filterInvoker = tmpInvoker;
-          }
-      }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<pre><code>DefaultFilterChainBuilder类型的buildClusterInvokerChain构造过滤器链路
-
-```java
-public &lt;T&gt; ClusterInvoker&lt;T&gt; buildClusterInvokerChain(final ClusterInvoker&lt;T&gt; originalInvoker, String key, String group) {
-    ClusterInvoker&lt;T&gt; last = originalInvoker;
-    URL url = originalInvoker.getUrl();
-    List&lt;ModuleModel&gt; moduleModels = getModuleModelsFromUrl(url);
-    List&lt;ClusterFilter&gt; filters;
-    if (moduleModels != null &amp;&amp; moduleModels.size() == 1) {
-        //通过扩展查询匹配的消费者过滤器列表这里可以查询4个
-        filters = ScopeModelUtil.getExtensionLoader(ClusterFilter.class, moduleModels.get(0)).getActivateExtension(url, key, group);
-    } else if (moduleModels != null &amp;&amp; moduleModels.size() &gt; 1) {
-        filters = new ArrayList&lt;&gt;();
-        List&lt;ExtensionDirector&gt; directors = new ArrayList&lt;&gt;();
-        for (ModuleModel moduleModel : moduleModels) {
-            List&lt;ClusterFilter&gt; tempFilters = ScopeModelUtil.getExtensionLoader(ClusterFilter.class, moduleModel).getActivateExtension(url, key, group);
-            filters.addAll(tempFilters);
-            directors.add(moduleModel.getExtensionDirector());
-        }
-        filters = sortingAndDeduplication(filters, directors);
-
-    } else {
-        filters = ScopeModelUtil.getExtensionLoader(ClusterFilter.class, null).getActivateExtension(url, key, group);
-    }
-    //过滤器不为空则拼接到调用链表之中
-    if (!CollectionUtils.isEmpty(filters)) {
-        for (int i = filters.size() - 1; i &gt;= 0; i--) {
-            final ClusterFilter filter = filters.get(i);
-            final Invoker&lt;T&gt; next = last;
-            last = new CopyOfClusterFilterChainNode&lt;&gt;(originalInvoker, next, filter);
-        }
-        return new ClusterCallbackRegistrationInvoker&lt;&gt;(originalInvoker, last, filters);
-    }
-
-    return last;
-}
-</code></pre>
-<pre class="line-numbers language-none"><code class="language-none">
-默认为4个过滤器：
-- ConsumerContextFilter
-- FutureFilter
-- MonitorClusterFilter
-- RouterSnapshotFilter<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-			<br>
-			<!--  -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

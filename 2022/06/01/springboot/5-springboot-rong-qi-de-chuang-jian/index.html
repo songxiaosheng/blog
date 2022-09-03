@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176058">
+<link rel="stylesheet" href="/css/style.css?v=1662168254548">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176058"></script>
+<script src="/js/core.js?v=1662168254548"></script>
 
 
 
@@ -48,517 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>5-SpringBoot容器的创建</h1>
-			<div class="info"><span class="date">2022年6月1日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">SpringBoot2源码</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/springboot/5-SpringBoot容器的创建.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="5-SpringBoot容器的创建"><a href="#5-SpringBoot容器的创建" class="headerlink" title="5-SpringBoot容器的创建"></a>5-SpringBoot容器的创建</h1><h2 id="5-1-简介"><a href="#5-1-简介" class="headerlink" title="5.1 简介"></a>5.1 简介</h2><p>回顾一下我们 前面介绍的SpringBoot应用程序SpringApplication对象的运行方法的生命周期:</p>
-<p>先直接贴代码,然后在代码上贴注释来看:</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">ConfigurableApplicationContext</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	<span class="token comment">//启动时间</span>
-   <span class="token keyword">long</span> startTime <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">nanoTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token comment">//创建启动上下文对象</span>
-   <span class="token class-name">DefaultBootstrapContext</span> bootstrapContext <span class="token operator">=</span> <span class="token function">createBootstrapContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token class-name">ConfigurableApplicationContext</span> context <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-   <span class="token comment">//配置无头属性</span>
-   <span class="token function">configureHeadlessProperty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token comment">//获取运行监听器</span>
-   <span class="token class-name">SpringApplicationRunListeners</span> listeners <span class="token operator">=</span> <span class="token function">getRunListeners</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token comment">//调用启动类型的启动方法(这个需要启动类型实现对应接口)</span>
-   listeners<span class="token punctuation">.</span><span class="token function">starting</span><span class="token punctuation">(</span>bootstrapContext<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>mainApplicationClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token keyword">try</span> <span class="token punctuation">{</span>
-   <span class="token comment">//创建应用程序参数对象</span>
-      <span class="token class-name">ApplicationArguments</span> applicationArguments <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DefaultApplicationArguments</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//准备启动环境</span>
-      <span class="token class-name">ConfigurableEnvironment</span> environment <span class="token operator">=</span> <span class="token function">prepareEnvironment</span><span class="token punctuation">(</span>listeners<span class="token punctuation">,</span> bootstrapContext<span class="token punctuation">,</span> applicationArguments<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//配置需要忽略的Bean信息</span>
-      <span class="token function">configureIgnoreBeanInfo</span><span class="token punctuation">(</span>environment<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//打印一个Banner提示下用户当前版本</span>
-      <span class="token class-name">Banner</span> printedBanner <span class="token operator">=</span> <span class="token function">printBanner</span><span class="token punctuation">(</span>environment<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//创建应用程序上下文对象</span>
-      context <span class="token operator">=</span> <span class="token function">createApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//设置下上下文对象的应用程序启动器</span>
-      context<span class="token punctuation">.</span><span class="token function">setApplicationStartup</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>applicationStartup<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//准备上下文</span>
-      <span class="token function">prepareContext</span><span class="token punctuation">(</span>bootstrapContext<span class="token punctuation">,</span> context<span class="token punctuation">,</span> environment<span class="token punctuation">,</span> listeners<span class="token punctuation">,</span> applicationArguments<span class="token punctuation">,</span> printedBanner<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//刷新上下文</span>
-     	<span class="token function">refreshContext</span><span class="token punctuation">(</span>context<span class="token punctuation">)</span><span class="token punctuation">;</span>
-     	<span class="token comment">//刷新上下文之后的逻辑</span>
-      <span class="token function">afterRefresh</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> applicationArguments<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//打印启动时间</span>
-      <span class="token class-name">Duration</span> timeTakenToStartup <span class="token operator">=</span> <span class="token class-name">Duration</span><span class="token punctuation">.</span><span class="token function">ofNanos</span><span class="token punctuation">(</span><span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">nanoTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> startTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>logStartupInfo<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-         <span class="token keyword">new</span> <span class="token class-name">StartupInfoLogger</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>mainApplicationClass<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">logStarted</span><span class="token punctuation">(</span><span class="token function">getApplicationLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> timeTakenToStartup<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token comment">//应用程序启动完成的start回调方法</span>
-      listeners<span class="token punctuation">.</span><span class="token function">started</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> timeTakenToStartup<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token comment">//获取所有的ApplicationRunner类型和CommandLineRunner类型对象,</span>
-      <span class="token comment">//先调用ApplicationRunner类型的启动方法run</span>
-      <span class="token comment">//再调用所有的CommandLineRunner的run方法</span>
-      <span class="token function">callRunners</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> applicationArguments<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span>
-   <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   	<span class="token comment">//失败则转换异常信息打印异常</span>
-      <span class="token function">handleRunFailure</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> ex<span class="token punctuation">,</span> listeners<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span>ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span>
-   <span class="token keyword">try</span> <span class="token punctuation">{</span>
-   	 <span class="token comment">//调用监听器的回调running方法</span>
-      <span class="token class-name">Duration</span> timeTakenToReady <span class="token operator">=</span> <span class="token class-name">Duration</span><span class="token punctuation">.</span><span class="token function">ofNanos</span><span class="token punctuation">(</span><span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">nanoTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> startTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      listeners<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> timeTakenToReady<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span>
-   <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token function">handleRunFailure</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> ex<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span>ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span>
-   <span class="token keyword">return</span> context<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-
-
-<p>前面我们了解了很多基本信息的初始化比如启动监听器的触发,JVM配置参数,环境变量配置参数,Random配置和应用profile,和应用配置的加载,然后就是给我们打印个Banner信息提示一下SpringBoot的版本号,</p>
-<p>接下来就要介绍核心的内容篇幅Spring容器的创建,Spring容器的类型在这里以ConfigurableApplicationContext类型来表示,很多人经常说Spring容器就是ApplicationContext, 为什么会这么说呢那就得看这个类型做了什么可以称为容器.</p>
-<h2 id="5-2-创建ApplicationContext对象"><a href="#5-2-创建ApplicationContext对象" class="headerlink" title="5.2 创建ApplicationContext对象"></a>5.2 创建ApplicationContext对象</h2><p>这里我们继续看run方法的代码 这里先看创建上下文的具体过程;</p>
-<p>SpringApplication类型的createApplicationContext方法</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//创建应用程序上下文对象</span>
-context <span class="token operator">=</span> <span class="token function">createApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token class-name">ConfigurableApplicationContext</span> <span class="token function">createApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>applicationContextFactory<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>webApplicationType<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="5-2-1-容器工厂创建容器对象"><a href="#5-2-1-容器工厂创建容器对象" class="headerlink" title="5.2.1 容器工厂创建容器对象"></a>5.2.1 容器工厂创建容器对象</h3><p>ApplicationContextFactory 的create方法的实现 </p>
-<p>这种函数式编程在Java中我还是第一次见 将函数实现赋值给了一个变量这样方法也可以做为一个参数来传递了,也是Java函数编程的一个跨越吧,这个在Erlang中fun函数是一种基本的类型,有了这个实现钩子函数会比较方便</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">ApplicationContextFactory</span> DEFAULT <span class="token operator">=</span> <span class="token punctuation">(</span>webApplicationType<span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
-   <span class="token keyword">try</span> <span class="token punctuation">{</span>
-      <span class="token comment">//判断当前应用程序类型,根据应用程序类型创建对应的上下文类型</span>
-      <span class="token keyword">switch</span> <span class="token punctuation">(</span>webApplicationType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">case</span> SERVLET<span class="token operator">:</span>
-         <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AnnotationConfigServletWebServerApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token keyword">case</span> REACTIVE<span class="token operator">:</span>
-         <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AnnotationConfigReactiveWebServerApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token keyword">default</span><span class="token operator">:</span>
-         <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AnnotationConfigApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-   <span class="token punctuation">}</span>
-   <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Unable create a default ApplicationContext instance, "</span>
-            <span class="token operator">+</span> <span class="token string">"you may need a custom ApplicationContextFactory"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
-
-	<span class="token comment">/**
-	 * Creates the {@link ConfigurableApplicationContext application context} for a
-	 * {@link SpringApplication}, respecting the given {@code webApplicationType}.
-	 * @param webApplicationType the web application type
-	 * @return the newly created application context
-	 */</span>
-	<span class="token class-name">ConfigurableApplicationContext</span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token class-name">WebApplicationType</span> webApplicationType<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>这里我们需要创建的是AnnotationConfigApplicationContext类型的上下文在了解上下文对象构造器初始化的过程之前,我们先来详细看下上文类型之间的继承关系 <img src="https://img-blog.csdnimg.cn/816981b8ebe9419facc40a1259f04972.png" alt="在这里插入图片描述"></p>
-<p>从下往上依次解释下每个类型的作用:</p>
-<ul>
-<li>AnnotationConfigApplicationContext</li>
-</ul>
-<p>注解配置上下文实现类型</p>
-<p>独立应用程序上下文，接受组件类作为输入-特别是@Configuration注解修饰的类，但也包括普通@Component类型以及使用 JSR-330 注释的符合JSR-330的类。</p>
-<ul>
-<li>AnnotationConfigRegistry</li>
-</ul>
-<p>配置应用程序上下文的通用接口，定义注册和扫描方法</p>
-<ul>
-<li>GenericApplicationContext</li>
-</ul>
-<p>通用上下文实现类型</p>
-<p>包含单个内部DefaultListableBeanFactory实例且不采用特定bean定义格式的通用ApplicationContext实现。实现BeanDefinitionRegistry接口，以便允许对其应用任何bean定义读取器。</p>
-<p>典型用法是通过BeanDefinitionRegistry接口注册各种bean定义，然后调用refresh() )以使用应用程序上下文语义初始化这些bean（处理org.springframework.context.ApplicationContextAware、自动检测BeanFactoryPostProcessors等）。</p>
-<p>与为每次刷新创建新的内部BeanFactory实例的其他ApplicationContext实现不同，此上下文的内部BeanFactory从一开始就可用，可以在其上注册bean定义。refresh() 只能调用一次。</p>
-<p>使用方式:</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">GenericApplicationContext</span> ctx <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GenericApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token class-name">XmlBeanDefinitionReader</span> xmlReader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XmlBeanDefinitionReader</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span class="token punctuation">;</span>
-xmlReader<span class="token punctuation">.</span><span class="token function">loadBeanDefinitions</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ClassPathResource</span><span class="token punctuation">(</span><span class="token string">"applicationContext.xml"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token class-name">PropertiesBeanDefinitionReader</span> propReader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PropertiesBeanDefinitionReader</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span class="token punctuation">;</span>
-propReader<span class="token punctuation">.</span><span class="token function">loadBeanDefinitions</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ClassPathResource</span><span class="token punctuation">(</span><span class="token string">"otherBeans.properties"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-ctx<span class="token punctuation">.</span><span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token class-name">MyBean</span> myBean <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">MyBean</span><span class="token punctuation">)</span> ctx<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token string">"myBean"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>对于XML bean定义的典型情况，只需使用ClassPathXmlApplicationContext或FileSystemXmlApplicationContext，它们更容易设置，但灵活性较差，因为您可以只使用XML Bean定义的标准资源位置，而不是混合任意Bean定义格式。在web环境中，等效的是org.springframework.web.context.support.XmlWebApplicationContext.。</p>
-<p>对于应该以可刷新的方式读取特殊bean定义格式的自定义应用程序上下文实现，请考虑从AbstractRefreshableApplicationContext基类派生。</p>
-<ul>
-<li>BeanDefinitionRegistry</li>
-</ul>
-<p>用于保存Bean定义的<strong>注册表</strong>的接口，例如RootBeanDefinition和ChildBeanDefinition实例。通常由内部使用AbstractBeanDefinition层次结构的BeanFactory实现。<br>这是Spring的Bean工厂包中封装Bean定义注册的<strong>唯一接口</strong>。标准BeanFactory接口仅包括对完全配置的factory实例的访问。</p>
-<p>Spring的Bean定义读者希望开发者能够实现这个接口。Spring核心中的已知实现者是DefaultListableBeanFactory和GenericApplicationContext。</p>
-<ul>
-<li><p>AliasRegistry</p>
-<p>管理别名的通用接口。作为org.springframework.beans.factory.support.BeanDefinitionRegistry的顶层接口 </p>
-</li>
-<li><p>AbstractApplicationContext</p>
-</li>
-</ul>
-<p>ApplicationContext接口的抽象实现。不指定用于配置的存储类型；只需实现公共上下文功能。使用模板方法设计模式，需要具体的子类来实现抽象方法。</p>
-<p>与普通的BeanFactory不同，ApplicationContext应该检测在其内部Bean工厂中定义的特殊Bean：因此，此类自动注册在上下文中定义为Bean的BeanFactoryPostProcessor、BeanPostProcessor和ApplicationListeners。</p>
-<p>MessageSource也可以在上下文中作为Bean提供，名称为“MessageSource”；否则，消息解析将委托给父上下文。此外，应用程序事件的广播可以作为上下文中类型为applicationEventMulticaster的“applicationEventMulticaster” Bean提供；否则，将使用SimpleApplicationEventMulticast类型的默认Multicast。</p>
-<p>通过扩展DefaultResourceLoader实现资源加载。因此，将非URL资源路径视为类路径资源（支持包含包路径的完整类路径资源名称，例如“mypackage/myresource.dat”），除非在子类中重写getResourceByPath方法</p>
-<ul>
-<li>ConfigurableApplicationContext</li>
-</ul>
-<p>SPI接口将由大多数（如果不是所有）应用程序上下文实现。除了ApplicationContext接口中的应用程序上下文客户端方法之外，还提供了配置应用程序上下文的工具。</p>
-<ul>
-<li>DefaultResourceLoader</li>
-</ul>
-<p>ResourceLoader接口的默认实现。由ResourceEditor使用，并用作org.springframework.context.support.AbstractApplicationContext的基类。也可以单独使用。如果位置值是URL，则返回UrlResource；如果是非URL路径或“classpath：”伪URL，则返回ClassPathResource。</p>
-<ul>
-<li>ResourceLoader</li>
-</ul>
-<p>用于加载资源（例如，类路径或文件系统资源）的策略接口。org.springframework.context.ApplicationContext 来提供此功能和扩展org.springframework.core.io.support.ResourcePatternResolver来支持。</p>
-<ul>
-<li>ApplicationContext</li>
-</ul>
-<p>为应用程序提供配置的中央接口。当应用程序运行时，这是只读的，但如果实现支持这一点，则可能会重新加载。</p>
-<p>ApplicationContext提供：</p>
-<ul>
-<li>访问应用程序组件的Bean工厂方法。继承自ListableBeanFactory。</li>
-<li>以通用方式加载文件资源的能力。继承自org.springframework.core.io.ResourceLoader 接口。</li>
-<li>向注册侦听器发布事件的能力。继承自ApplicationEventPublisher接口。</li>
-<li>能够解析消息，支持国际化。从MessageSource接口继承。</li>
-<li>从父上下文继承。后代上下文中的定义始终具有优先权。例如，这意味着整个web应用程序可以使用单个父上下文，而每个servlet都有自己的子上下文，独立于任何其他servlet的子上下文。</li>
-</ul>
-<p>除了标准的org.springframework.beans.factory.BeanFactory 生命周期功能之外，ApplicationContext实现还检测和调用ApplicationContextAware bean以及ResourceLoaderWare、ApplicationEventPublisherAware和MessageSourceAware bean。</p>
-<ul>
-<li>ListableBeanFactory</li>
-</ul>
-<p>BeanFactory接口的扩展由Bean工厂实现，Bean工厂可以枚举其所Bean实例，而不是按照客户端的请求逐个尝试查找Bean。预加载所有Bean定义的BeanFactory实现（例如基于XML的工厂）可以实现此接口。</p>
-<p>如果这是HierarchycalBeanFactory，则返回值将不考虑任何BeanFactory层次结构，而只与当前工厂中定义的Bean相关。使用BeanFactoryUtils助手类也可以考虑祖先工厂中的bean。</p>
-<p>这个接口中的方法将只期望这个工厂的bean定义。他们将忽略任何已通过其他方法（如org.springframework.beans.factory.config.ConfigurableBeanFactory的registerSingleton方法）注册的单例bean，但getBeanNamesForType和getBeansOfType除外，它们也将检查手动注册的单例。当然，BeanFactory的getBean也允许透明地访问这些特殊的Bean。然而，在典型场景中，所有Bean都将由外部Bean定义来定义，因此大多数应用程序不需要担心这种差异。</p>
-<p>注意：除了getBeanDefinitionCount和containsBeanDefinition之外，此接口中的方法不是为频繁调用而设计的。实现可能很慢。</p>
-<ul>
-<li>HierarchicalBeanFactory</li>
-</ul>
-<p>由bean工厂实现的子接口，可以是层次结构的一部分。<br>可以在ConfigurableBeanFactory接口中找到允许以可配置方式设置父级的bean工厂的相应setParentBeanFactory方法。</p>
-<ul>
-<li>BeanFactory</li>
-</ul>
-<p>用于访问SpringBean容器的根接口。<br>这是bean容器的基本客户端视图；其他接口（如ListableBeanFactory和org.springframework.beans.factory.config.ConfigurableBeanFactory ）可用于特定用途。</p>
-<p>此接口由包含许多Bean定义的对象实现，每个Bean定义由字符串名称唯一标识。根据Bean定义，工厂将返回所包含对象的独立实例（原型设计模式）或单个共享实例（单例设计模式的高级替代方案，其中实例是工厂范围内的单件）。将返回哪种类型的实例取决于bean工厂配置：API是相同的。自Spring 2.0以来，根据具体的应用程序上下文（例如web环境中的“请求”和“会话”范围），可以使用更多的范围。</p>
-<p>这种方法的要点是BeanFactory是应用程序组件的中央注册表，并集中配置应用程序组件（例如，单个对象不再需要读取属性文件）。有关这种方法的好处的讨论，请参阅“《Expert One-on-One J2EE Design and Development》”的第4章和第11章。</p>
-<p>请注意，通常最好依靠依赖注入（“推”配置）通过setter或构造函数配置应用程序对象，而不是使用任何形式的“拉”配置，如BeanFactory查找。Spring的依赖注入功能是使用这个BeanFactory接口及其子接口实现的。</p>
-<p>通常，BeanFactory将加载存储在配置源（如XML文档）中的bean定义，并使用org.springframework.beans 包配置bean。然而，实现可以直接在Java代码中返回它根据需要创建的Java对象。对于定义的存储方式没有任何限制：LDAP、RDBMS、XML、属性文件等。建议实现支持bean之间的引用（依赖注入）。</p>
-<p>与ListableBeanFactory中的方法不同，如果这是HierarchicalBeanFactory，则此接口中的所有操作也将检查父工厂。如果在此工厂实例中未找到bean，将询问直接的父工厂。此工厂实例中的bean应该覆盖任何父工厂中同名的bean</p>
-<p>Bean工厂实现应尽可能支持标准Bean生命周期接口。整套初始化方法及其标准顺序为：</p>
-<ol>
-<li>BeanNameAware的setBeanName</li>
-<li>BeanClassLoaderAware的setBeanClassLoader</li>
-<li>BeanFactoryAware的setBeanFactory</li>
-<li>EnvironmentAware的setEnvironment</li>
-<li>EmbeddedValueResolverAware的setEmbeddedValueResolver</li>
-<li>ResourceLoaderWare的setResourceLoader（仅在应用程序上下文中运行时适用）</li>
-<li>ApplicationEventPublisherAware的setApplicationEventPublisher（仅在应用程序上下文中运行时适用）</li>
-<li>MessageSourceAware的setMessageSource（仅在应用程序上下文中运行时适用）</li>
-<li>ApplicationContextAware的setApplicationContext（仅在应用程序上下文中运行时适用）</li>
-<li>ServletContextAware的setServletContext（仅在web应用程序上下文中运行时适用）</li>
-<li>BeanPostProcessor的postProcessBeforeInitialization方法</li>
-<li>初始化Bean InitializingBean的AfterPropertieSet</li>
-<li>使用自定义初始化方法定义init-method</li>
-<li>BeanPostProcessor的后处理postProcessAfterInitialization</li>
-</ol>
-<p>关闭bean工厂时，应用以下生命周期方法：</p>
-<ol>
-<li>销毁前的后处理DestructionAwareBeanPostProcessors 处理器的postProcessBeforeDestruction方法</li>
-<li>DisposableBean的destroy方法</li>
-<li>自定义销毁方法destroy-method</li>
-</ol>
-<ul>
-<li>EnvironmentCapable</li>
-</ul>
-<p>EnvironmentCapable接口，指示包含并公开环境引用的组件。<br>所有Spring应用程序上下文都支持环境，该接口主要用于在接受BeanFactory实例的框架方法中执行instanceof检查，BeanFactory实例可能是应用程序上下文实例，也可能不是应用程序上下文实例，以便在环境确实可用时与环境交互。<br>如上所述，ApplicationContext扩展了Environmentable，从而公开了getEnvironment() 方法；但是，ConfigurableApplicationContext重新定义了getEnvironment()  并缩小了签名范围以返回ConfigurableEnvironment。其效果是，在从ConfigurableApplicationContext访问环境对象之前，环境对象是“只读”的，此时也可以对其进行配置 </p>
-<ul>
-<li>MessageSource</li>
-</ul>
-<p>用于解析消息的策略接口，支持此类消息的参数化和国际化。<br>Spring为生产提供了两种现成的实现：</p>
-<p>org.springframework.context.support.ResourceBundleMessageSource:  建立在 java.util.ResourceBundle标准上<br>org.springframework.context.support.ReloadableResourceBundleMessageSource: 高度可配置，尤其是在重新加载消息定义方面。</p>
-<ul>
-<li>ApplicationEventPublisher</li>
-</ul>
-<p>封装事件发布功能的接口。<br>用作ApplicationContext的超级接口。</p>
-<ul>
-<li>ResourcePatternResolver</li>
-</ul>
-<p>用于将位置匹配（例如，Ant样式的路径模式）解析为资源对象的策略接口。</p>
-<p>这是ResourceLoader接口的扩展。可以检查传入的ResourceLoader（例如，在上下文中运行时通过org.springframework.context.ApplicationContext 传入的org.springframework.context.ResourceLoaderAware ）是否也实现了此扩展接口。</p>
-<p>PathMatchingResourcePatternResolver是一个独立的实现，可在ApplicationContext外部使用，ResourceArrayPropertyEditor也使用它来填充资源数组bean属性</p>
-<p>可用于任何类型的位置模式（例如“/WEB-INF/*-context.xml”）：输入模式必须与策略实现相匹配。此接口仅指定转换方法，而不是特定的模式格式。</p>
-<p>此接口还为类路径中的所有匹配资源建议一个新的资源前缀“classpath*：”。注意，在这种情况下，资源位置应该是没有占位符的路径（例如“/beans.xml”）；JAR文件或类路径中的不同目录可以包含多个同名文件。</p>
-<h2 id="5-3-AnnotationConfigApplicationContext容器的初始化过程"><a href="#5-3-AnnotationConfigApplicationContext容器的初始化过程" class="headerlink" title="5.3 AnnotationConfigApplicationContext容器的初始化过程"></a>5.3 AnnotationConfigApplicationContext容器的初始化过程</h2><p>接下来我们按类型继承关系中代码的实际执行顺序来看，先来看刚刚我们调用的构造器</p>
-<p>先调用的是父类型AbstractApplicationContext 抽象容器的构造器</p>
-<p>这个构造器比较简单创建一个资源匹配解析器</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">AbstractApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token keyword">this</span><span class="token punctuation">.</span>resourcePatternResolver <span class="token operator">=</span> <span class="token function">getResourcePatternResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-
-
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token class-name">ResourcePatternResolver</span> <span class="token function">getResourcePatternResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">PathMatchingResourcePatternResolver</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>然后再看通用上下文GenericApplicationContext的构造器</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">GenericApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DefaultListableBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>这个构造器创建了个默认集合类型的Bean工厂</p>
-<p>前面两个构造器创建完成了之后才会创建注解AnnotationConfigApplicationContext的构造器</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">AnnotationConfigApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token class-name">StartupStep</span> createAnnotatedBeanDefReader <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getApplicationStartup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token string">"spring.context.annotated-bean-reader.create"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token keyword">this</span><span class="token punctuation">.</span>reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AnnotatedBeanDefinitionReader</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   createAnnotatedBeanDefReader<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token keyword">this</span><span class="token punctuation">.</span>scanner <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ClassPathBeanDefinitionScanner</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>这个构造器主要创建了两个对象：</p>
-<ul>
-<li><p>reader：AnnotatedBeanDefinitionReader</p>
-</li>
-<li><p>scanner：ClassPathBeanDefinitionScanner</p>
-</li>
-</ul>
-<p>AnnotatedBeanDefinitionReader：关于AnnotatedBeanDefinitionReader官方注释是这样解释的： 方便的适配器，用于bean类的编程注册。<br>这是ClassPathBeanDefinitionScanner的另一种选择，应用相同的注释，但仅适用于显式注册的类。 </p>
-<p>其实这个类型就是通过注解来扫描Bean的</p>
-<p>ClassPathBeanDefinitionScanner：bean定义扫描器，用于检测类路径上的bean候选，并向给定注册表（BeanFactory或ApplicationContext）注册相应的bean定义。<br>候选类通过可配置的类型过滤器检测。默认过滤器包括用Spring的@Component, @Repository, @Service, or @Controller原型注释的类。<br>还支持Java EE 6的javax.annotation.ManagedBean 和JSR-330的javax.inject.Named 注释（如果可用）。</p>
-<h2 id="5-4-可容器化的Bean工厂DefaultListableBeanFactory初始化过程"><a href="#5-4-可容器化的Bean工厂DefaultListableBeanFactory初始化过程" class="headerlink" title="5.4 可容器化的Bean工厂DefaultListableBeanFactory初始化过程"></a>5.4 可容器化的Bean工厂DefaultListableBeanFactory初始化过程</h2><p>然后就得看默认的容器集合化的工厂 DefaultListableBeanFactory创建过程</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">DefaultListableBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>执行父类型构造器 抽象可装配能力的Bean工厂 AbstractAutowireCapableBeanFactory()</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">AbstractAutowireCapableBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token function">ignoreDependencyInterface</span><span class="token punctuation">(</span><span class="token class-name">BeanNameAware</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token function">ignoreDependencyInterface</span><span class="token punctuation">(</span><span class="token class-name">BeanFactoryAware</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token function">ignoreDependencyInterface</span><span class="token punctuation">(</span><span class="token class-name">BeanClassLoaderAware</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token comment">//是否开启了本地镜像</span>
-   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">NativeDetector</span><span class="token punctuation">.</span><span class="token function">inNativeImage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-     	<span class="token comment">//用于BeanFactory的简单对象实例化策略。不支持方法注入，尽管它为要重写的子类提供了挂钩，以添加方法注入支持，例如通过重写方法。</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>instantiationStrategy <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleInstantiationStrategy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span>
-   <span class="token keyword">else</span> <span class="token punctuation">{</span>
-     <span class="token comment">//在BeanFactory中使用的默认对象实例化策略。如果容器需要重写方法来实现方法注入，则使用CGLIB动态生成子类。</span>
-     <span class="token comment">//CglibSubclassingInstantiationStrategy继承了SimpleInstantiationStrategy</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>instantiationStrategy <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CglibSubclassingInstantiationStrategy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>  ignoreDependencyInterface 方法忽略自动关联的给定依赖关系接口。<br>这通常<strong>由应用程序上下文用于注册以其他方式解析的依赖项</strong>，例如通过BeanFactoryAware的BeanFactory或通过ApplicationContextAware的ApplicationContext。 默认情况下，仅忽略BeanFactoryAware接口。要忽略其他类型，请为每个类型调用此方法</p>
-<ul>
-<li><p>BeanNameAware 接口将由希望在bean工厂中知道其bean名称的bean实现。请注意，通常不建议对象依赖于其bean名称，因为这表示对外部配置的潜在脆弱依赖，以及对Spring API的不必要依赖。有关所有bean生命周期方法的列表，请参阅BeanFactory javadocs。</p>
-</li>
-<li><p>BeanFactoryAware 接口将由希望了解其所属BeanFactory的Bean实现。例如，bean可以通过工厂查找协作bean（依赖项查找）。注意，大多数bean将选择通过相应的bean属性或构造函数参数（依赖注入）接收对协作bean的引用。有关所有bean生命周期方法的列表，请参阅BeanFactory javadocs</p>
-</li>
-<li><p>BeanClassLoaderAware 回调，允许bean知道bean类装入器；也就是说，当前bean工厂用来加载bean类的类加载器。<br>这主要是由框架类实现的，框架类必须按名称提取应用程序类，尽管它们可能是从共享类加载器加载的。<br>有关所有bean生命周期方法的列表，请参阅BeanFactory javadocs。</p>
-</li>
-</ul>
-<p>NativeDetector.inNativeImage()这个代码是通过是否开启配置org.graalvm.nativeimage.imagecode来判断的</p>
-<p>​	// See <a target="_blank" rel="noopener" href="https://github.com/oracle/graal/blob/master/sdk/src/org.graalvm.nativeimage/src/org/graalvm/nativeimage/ImageInfo.java">https://github.com/oracle/graal/blob/master/sdk/src/org.graalvm.nativeimage/src/org/graalvm/nativeimage/ImageInfo.java</a></p>
-<p>用于检测GraalVM本机图像环境的常见委托。<br>需要使用-H:+InlineBeforeAlysis本机映像编译器标志，以便允许在生成时删除代码。</p>
-<p>GraalVM是一个共享运行时间的生态系统，无论是那些依赖于<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=JVM&amp;spm=1001.2101.3001.7020">JVM</a>的语言（Java、Scala、Groovy、Kotlin）还是说其他的编程语言例如（JavaScript、Ruby、Python、R）有性能上的优势。另外，GraalVM能够通过一种前端的LLVM执行JVM上面的原生代码。GraalVM 1.0版本是基于JDK8的<br><img src="https://img-blog.csdnimg.cn/df69aaea7d474221943ebb92286523ba.png" alt="在这里插入图片描述"></p>
-<p>虚拟化层代表了GraalVM提供的编程语言。非宿主型语言（JavaScript、<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=Ruby&amp;spm=1001.2101.3001.7020">Ruby</a>、R、Python、LLVM二进制码）能够和基于JVM的宿主型语言达到同样的一个运行时间，并且两者可以在同一个内存空间中来回传递数据进行互操作。</p>
-<p>raalVM是由以下几个部分组成的：</p>
-<ul>
-<li>Graal： 动态的实时（JIT）编译器，通过独特的代码分析和优化方法，能够提升应用程序的效率和速度。</li>
-<li>Graal Polyglot APIs：APIs用来在共享运行时间里绑定编程语言。这些APIs可以根据你的需求去匹配编程语言，并且只需很少的资源就可以达到更好的性能。</li>
-<li>Graal SDK：一组高效的APIs集合，用于嵌入式Graal语言以及配置本机镜像。</li>
-<li>Oracle HotSpot Java Virtual Machine (JVM):针对那些基于JVM的语言或者支持非宿主编程语言提供的一个运行时环境。</li>
-</ul>
-<h2 id="5-5-GraalVM特性"><a href="#5-5-GraalVM特性" class="headerlink" title="5.5 GraalVM特性"></a>5.5 GraalVM特性</h2><p>GraalVM能够：</p>
-<ul>
-<li>代码运行的更快更高效</li>
-<li>和一些更现代化的编程语言直接操作</li>
-<li>通过Graal SDK嵌入到语言内部</li>
-<li>创建编译成功的本机镜像</li>
-<li>使用简单的工具集合来监控、调试、描述代码</li>
-</ul>
-<p>官方文档可以参考：</p>
-<p><a target="_blank" rel="noopener" href="https://www.graalvm.org/22.1/docs/getting-started/">https://www.graalvm.org/22.1/docs/getting-started/</a></p>
-<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/SprigBoot%E6%BA%90%E7%A0%81/" rel="tag">SprigBoot源码<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/Spring/" rel="tag">Spring<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot<span class="tag-unordered list-count">6</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2022/06/01/springboot/6-beandefinition-de-reader-he-scanner/"> 6-BeanDefinition的Reader和Scanner</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">

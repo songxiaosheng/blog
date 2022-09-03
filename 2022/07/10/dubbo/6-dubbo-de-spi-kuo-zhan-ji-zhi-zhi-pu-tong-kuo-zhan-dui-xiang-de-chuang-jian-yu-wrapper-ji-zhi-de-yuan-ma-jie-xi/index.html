@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168176000">
+<link rel="stylesheet" href="/css/style.css?v=1662168254542">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168176000"></script>
+<script src="/js/core.js?v=1662168254542"></script>
 
 
 
@@ -48,646 +48,149 @@
         </ul>
     </div>
 </div>
-        <div class="content">
+        <div class="content home">
 	<div class="banner">
 		<div class="container">
-			<h1>06-【Dubbo3.0.8源码解析系列】Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析</h1>
-			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
-			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">Dubbo3源码</a>》
-				
-				
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/6-Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
-				
+			<h1>开源组件调研，分析，评测</h1>
+			<div class="search">
+				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
+					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
+					<input class="submit" type="submit" value="搜索">
+				</form>
 			</div>
-			
 		</div>
 	</div>
 	<div class="container">
-		<article class="post">
-			<h1 id="6-Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析"><a href="#6-Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析" class="headerlink" title="6 Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析"></a>6 Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析</h1><h2 id="6-1-普通扩展对象的加载与创建"><a href="#6-1-普通扩展对象的加载与创建" class="headerlink" title="6.1 普通扩展对象的加载与创建"></a>6.1 普通扩展对象的加载与创建</h2><p>这里我们要分析的是ExtensionLoader类型的getExtension(String name)方法, 有了前面自适应扩展的铺垫,这里就更容易来看了getExtension是根据扩展名字获取具体扩展的通用方法,我们来根据某个类型来获取扩展的时候就是走的这里,比如在这个博客开头的介绍:</p>
-<ul>
-<li>ApplicationModel中获取配置管理器对象<pre class="line-numbers language-java" data-language="java"><code class="language-java">configManager <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">ConfigManager</span><span class="token punctuation">)</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">ApplicationExt</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
-               <span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span><span class="token class-name">ConfigManager</span><span class="token punctuation">.</span>NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
-</ul>
-<h3 id="6-1-1-getExtension方法源码"><a href="#6-1-1-getExtension方法源码" class="headerlink" title="6.1.1 getExtension方法源码"></a>6.1.1 getExtension方法源码</h3><p>先来看下getExtension方法的源码,根据扩展名字查询扩展对象</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
-<span class="token keyword">public</span> T <span class="token function">getExtension</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//这里并不能看到什么,只多传了个参数wrap为true调用另外一个重载的方法</span>
-        T extension <span class="token operator">=</span> <span class="token function">getExtension</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>extension <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token function">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Not find extension: "</span> <span class="token operator">+</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> extension<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">T</span> <span class="token function">getExtension</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">,</span> <span class="token keyword">boolean</span> wrap<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//检查扩展加载器是否已被销毁</span>
-        <span class="token function">checkDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Extension name == null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">//扩展名字为true则加载默认扩展</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"true"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token function">getDefaultExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">//非wrap类型则将缓存的扩展名字key加上_origin后缀</span>
-        <span class="token comment">//wrap是aop机制 俗称切面,这个origin在aop里面可以称为切点,下面的wrap扩展可以称为增强通知的类型,普通扩展和wrap扩展的扩展名字是一样的</span>
-        <span class="token class-name">String</span> cacheKey <span class="token operator">=</span> name<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>wrap<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            cacheKey <span class="token operator">+=</span> <span class="token string">"_origin"</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">//从cachedInstances缓存中查询</span>
-        <span class="token keyword">final</span> <span class="token class-name">Holder</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> holder <span class="token operator">=</span> <span class="token function">getOrCreateHolder</span><span class="token punctuation">(</span>cacheKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token class-name">Object</span> instance <span class="token operator">=</span> holder<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//缓存中不存在则创建扩展对象 双重校验锁</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>holder<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            	<span class="token comment">//双重校验锁的方式</span>
-                instance <span class="token operator">=</span> holder<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                	<span class="token comment">//创建扩展对象</span>
-                    instance <span class="token operator">=</span> <span class="token function">createExtension</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> wrap<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    holder<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">T</span><span class="token punctuation">)</span> instance<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>我们先来看一下默认扩展的加载代码:</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">T</span> <span class="token function">getDefaultExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//加载扩展类型对应的所有扩展SPI实现类型,在加载所有扩展实现类型的时候会缓存这个扩展的默认实现类型,将对象缓存在cachedDefaultName中</span>
-        <span class="token function">getExtensionClasses</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isBlank</span><span class="token punctuation">(</span>cachedDefaultName<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token string">"true"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>cachedDefaultName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">//再回到加载扩展的方法</span>
-        <span class="token keyword">return</span> <span class="token function">getExtension</span><span class="token punctuation">(</span>cachedDefaultName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>创建扩展对象方法这个和自适应扩展的创建扩展类似<br>createExtension:<br>具体过程如下:</p>
-<ul>
-<li>加载扩展类型:getExtensionClasses()</li>
-<li>创建扩展对象:createExtensionInstance(clazz)</li>
-<li>注入自适应扩展: injectExtension(instance);</li>
-<li>wrap处理</li>
-</ul>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> T <span class="token function">createExtension</span><span class="token punctuation">(</span>String name<span class="token punctuation">,</span> boolean wrap<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token comment">//扩展的创建的第一步扫描所有jar中的扩展实现,这里扫描完之后获取对应扩展名字的扩展实现类型的Class对象</span>
-        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> clazz <span class="token operator">=</span> <span class="token function">getExtensionClasses</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//出现异常了 转换下异常信息 再抛出</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>clazz <span class="token operator">==</span> null <span class="token operator">||</span> unacceptableExceptions<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token function">findException</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-        	<span class="token comment">//当前扩展对象是否已经创建过了则直接从缓存中获取</span>
-            T instance <span class="token operator">=</span> <span class="token punctuation">(</span>T<span class="token punctuation">)</span> extensionInstances<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            	<span class="token comment">//第一次获取缓存中肯定没有则创建扩展对象然后缓存起来</span>
-            	<span class="token comment">//createExtensionInstance 这个是与自适应扩展对象创建对象的不同之处</span>
-                extensionInstances<span class="token punctuation">.</span><span class="token function">putIfAbsent</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> <span class="token function">createExtensionInstance</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                instance <span class="token operator">=</span> <span class="token punctuation">(</span>T<span class="token punctuation">)</span> extensionInstances<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                instance <span class="token operator">=</span> <span class="token function">postProcessBeforeInitialization</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment">//注入扩展自适应方法,这个方法前面讲自适应扩展时候说了,注入自适应扩展方法的自适应扩展对象</span>
-                <span class="token function">injectExtension</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                instance <span class="token operator">=</span> <span class="token function">postProcessAfterInitialization</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-			<span class="token comment">//是否开启了wrap</span>
-			<span class="token comment">//Dubbo通过Wrapper实现AOP的方法</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>wrap<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment">//这个可以参考下Dubbo扩展的加载</span>
-                List<span class="token operator">&lt;</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;&gt;</span> wrapperClassesList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">ArrayList</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment">//wrap类型排序 这个wrap类型是如何来的呢,在前面扫描扩展类型的时候如果当前扩展类型不是Adaptive注解修饰的,并且当前类型type有个构造器参数是type自身的也是前面加载扩展类型时候说的装饰器模式 可以参考DubboProtocol的构造器</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>cachedWrapperClasses <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    wrapperClassesList<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>cachedWrapperClasses<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token comment">//根据Wrapper注解的order值来进行排序值越小越在列表的前面</span>
-                    wrapperClassesList<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span>WrapperComparator<span class="token punctuation">.</span>COMPARATOR<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token comment">//反转之后值越大就会在列表的前面</span>
-                    Collections<span class="token punctuation">.</span><span class="token function">reverse</span><span class="token punctuation">(</span>wrapperClassesList<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-				<span class="token comment">//从缓存中查到了wrapper扩展则遍历这些wrapp扩展进行筛选</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>CollectionUtils<span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>wrapperClassesList<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">for</span> <span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> wrapperClass <span class="token operator">:</span> wrapperClassesList<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        Wrapper wrapper <span class="token operator">=</span> wrapperClass<span class="token punctuation">.</span><span class="token function">getAnnotation</span><span class="token punctuation">(</span>Wrapper<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token comment">//需要包装的扩展名。当此数组为空时，默认值为匹配</span>
-                        <span class="token comment">//看下当前扩展是否匹配这个wrap,如何判断呢?</span>
-                        <span class="token comment">//wrapper注解不存在或者matches匹配,或者mismatches不包含当前扩展</span>
-                        <span class="token comment">//如果匹配到了当前扩展对象是需要进行wrapp的就为当前扩展创建当前wrapper扩展对象进行包装</span>
-                        boolean match <span class="token operator">=</span> <span class="token punctuation">(</span>wrapper <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token operator">||</span>
-                            <span class="token punctuation">(</span><span class="token punctuation">(</span>ArrayUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>wrapper<span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span> ArrayUtils<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>wrapper<span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
-                                <span class="token operator">!</span>ArrayUtils<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>wrapper<span class="token punctuation">.</span><span class="token function">mismatches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                <span class="token comment">//这是扩展类型是匹配wrapp的则开始注入</span>
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span>match<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token comment">//匹配到了就创建所有的wrapper类型的对象同时构造器参数设置为当前类型</span>
-                            instance <span class="token operator">=</span> <span class="token function">injectExtension</span><span class="token punctuation">(</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span> wrapperClass<span class="token punctuation">.</span><span class="token function">getConstructor</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            instance <span class="token operator">=</span> <span class="token function">postProcessAfterInitialization</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-
-            <span class="token comment">// Warning: After an instance of Lifecycle is wrapped by cachedWrapperClasses, it may not still be Lifecycle instance, this application may not invoke the lifecycle.initialize hook.</span>
-            <span class="token comment">//初始化扩展,如果当前扩展是Lifecycle类型则调用初始化方法</span>
-            <span class="token function">initExtension</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>Throwable t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token function">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Extension instance (name: "</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">", class: "</span> <span class="token operator">+</span>
-                type <span class="token operator">+</span> <span class="token string">") couldn't be instantiated: "</span> <span class="token operator">+</span> t<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-<h3 id="6-1-2-创建扩展对象"><a href="#6-1-2-创建扩展对象" class="headerlink" title="6.1.2 创建扩展对象"></a>6.1.2 创建扩展对象</h3><p>前面加载扩展类型在自适应扩展的时候已经说过了这里就不重复了,这里我们来看下<br>扩展对象的创建过程:createExtensionInstance(clazz)</p>
-<p>前面看自适应扩展对象创建的时候自适应扩展对象仅仅是使用反射newInstance了一个扩展对象,而普通的扩展类型创建对象的过程就相对复杂一点,接下来我们来看下:</p>
-<p>ExtensionLoader的createExtensionInstance方法</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> Object <span class="token function">createExtensionInstance</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> type<span class="token punctuation">)</span> throws ReflectiveOperationException <span class="token punctuation">{</span>
-		<span class="token comment">//在ExtensionLoader构造器中,有个initInstantiationStrategy()方法中new了一个初始化策略InstantiationStrategy类型对象 </span>
-        <span class="token keyword">return</span> instantiationStrategy<span class="token punctuation">.</span><span class="token function">instantiate</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>InstantiationStrategy的实例化对象方法instantiate</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">public</span> <span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> T <span class="token function">instantiate</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> type<span class="token punctuation">)</span> throws ReflectiveOperationException <span class="token punctuation">{</span>
-
-        <span class="token comment">// should not use default constructor directly, maybe also has another constructor matched scope model arguments</span>
-        <span class="token comment">// 1. try to get default constructor</span>
-        Constructor<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> defaultConstructor <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-        	<span class="token comment">//反射获取对应类型的无参构造器</span>
-            defaultConstructor <span class="token operator">=</span> type<span class="token punctuation">.</span><span class="token function">getConstructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>NoSuchMethodException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment">// ignore no default constructor</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment">// 2. use matched constructor if found</span>
-        List<span class="token operator">&lt;</span>Constructor<span class="token operator">&gt;</span> matchedConstructors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">ArrayList</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//获取所有构造器</span>
-        Constructor<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token punctuation">]</span> declaredConstructors <span class="token operator">=</span> type<span class="token punctuation">.</span><span class="token function">getConstructors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//遍历构造器列表,</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>Constructor<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> constructor <span class="token operator">:</span> declaredConstructors<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//如果存在构造器则构造器参数类型是否为ScopeModel类型,如果为ScopeModel则为匹配的构造器 说明我们扩展类型在这个版本如果想要让这个构造器生效必须参数类型为ScopeModel</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isMatched</span><span class="token punctuation">(</span>constructor<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                matchedConstructors<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>constructor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">// remove default constructor from matchedConstructors</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>defaultConstructor <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            matchedConstructors<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>defaultConstructor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment">// match order:</span>
-        <span class="token comment">// 1. the only matched constructor with parameters</span>
-        <span class="token comment">// 2. default constructor if absent</span>
-		
-        Constructor targetConstructor<span class="token punctuation">;</span>
-        <span class="token comment">//匹配的参数ScopeModel的构造器太多了就抛出异常</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>matchedConstructors<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token function">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Expect only one but found "</span> <span class="token operator">+</span>
-                matchedConstructors<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" matched constructors for type: "</span> <span class="token operator">+</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span>
-                <span class="token string">", matched constructors: "</span> <span class="token operator">+</span> matchedConstructors<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>matchedConstructors<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//一个参数一般为一个参数类型ScopeModel的构造器</span>
-            targetConstructor <span class="token operator">=</span> matchedConstructors<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>defaultConstructor <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//如果没有自定义构造器则使用空参数构造器</span>
-            targetConstructor <span class="token operator">=</span> defaultConstructor<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-        <span class="token comment">//一个构造器也没匹配上也要报错</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token function">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"None matched constructor was found for type: "</span> <span class="token operator">+</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment">// create instance with arguments</span>
-        <span class="token comment">//反射获取构造器参数的参数类型列表</span>
-        Class<span class="token punctuation">[</span><span class="token punctuation">]</span> parameterTypes <span class="token operator">=</span> targetConstructor<span class="token punctuation">.</span><span class="token function">getParameterTypes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//如果存在参数则为参数设置值</span>
-        Object<span class="token punctuation">[</span><span class="token punctuation">]</span> args <span class="token operator">=</span> <span class="token keyword">new</span> Object<span class="token punctuation">[</span>parameterTypes<span class="token punctuation">.</span>length<span class="token punctuation">]</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> parameterTypes<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//借助scopeModelAccessor工具获取参数类型,这个参数类型为当前的域模型对象</span>
-            args<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">getArgumentValueForType</span><span class="token punctuation">(</span>parameterTypes<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">//创建扩展对象</span>
-        <span class="token keyword">return</span> <span class="token punctuation">(</span>T<span class="token punctuation">)</span> targetConstructor<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<h2 id="6-2-wrap机制"><a href="#6-2-wrap机制" class="headerlink" title="6.2 wrap机制"></a>6.2 wrap机制</h2><h3 id="6-2-1-Wrapper机制说明"><a href="#6-2-1-Wrapper机制说明" class="headerlink" title="6.2.1 Wrapper机制说明"></a>6.2.1 Wrapper机制说明</h3><p>Dubbo通过Wrapper实现AOP的方法</p>
-<p>Wrapper机制，即扩展点自动包装。Wrapper 类同样实现了扩展点接口，但是 Wrapper 不是扩展点的真正实现。它的用途主要是用于从 ExtensionLoader 返回扩展点时，包装在真正的扩展点实现外。即从 ExtensionLoader 中返回的实际上是 Wrapper 类的实例，Wrapper 持有了实际的扩展点实现类。<br>扩展点的 Wrapper 类可以有多个，也可以根据需要新增。<br>通过 Wrapper 类可以把所有扩展点公共逻辑移至 Wrapper 中。新加的 Wrapper 在所有的扩展点上添加了逻辑，有些类似 AOP，即 Wrapper 代理了扩展点。</p>
-<p>Wrapper的规范<br>Wrapper 机制不是通过注解实现的，而是通过一套 Wrapper 规范实现的。<br>Wrapper 类在定义时需要遵循如下规范。</p>
-<ul>
-<li>该类要实现 SPI 接口</li>
-<li>该类中要有 SPI 接口的引用</li>
-<li>该类中必须含有一个含参的构造方法且参数只能有一个类型为SPI接口</li>
-<li>在接口实现方法中要调用 SPI 接口引用对象的相应方法</li>
-<li>该类名称以 Wrapper 结尾</li>
-</ul>
-<p>比如如下几个扩展类型</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">org</span><span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>protocol<span class="token punctuation">.</span>ProtocolListenerWrapper
-<span class="token keyword">class</span> <span class="token class-name">org</span><span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>qos<span class="token punctuation">.</span>protocol<span class="token punctuation">.</span>QosProtocolWrapper
-<span class="token keyword">class</span> <span class="token class-name">org</span><span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>protocol<span class="token punctuation">.</span>ProtocolListenerWrapper
-<span class="token keyword">class</span> <span class="token class-name">org</span><span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>qos<span class="token punctuation">.</span>protocol<span class="token punctuation">.</span>QosProtocolWrapper<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>回顾下Wrapper扩展类型的扫描于对象的创建</p>
-<h3 id="6-2-2-Wrapper类型的扫描"><a href="#6-2-2-Wrapper类型的扫描" class="headerlink" title="6.2.2 Wrapper类型的扫描"></a>6.2.2 Wrapper类型的扫描</h3><p><strong>Wrapper类型的扫描代码如下:</strong></p>
-<p>来自4.5.2.3小节ExtensionLoader类型中的loadClass方法</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">//扩展子类型是否存在这个注解@Adaptive</span>
-       <span class="token keyword">if</span> <span class="token punctuation">(</span>clazz<span class="token punctuation">.</span><span class="token function">isAnnotationPresent</span><span class="token punctuation">(</span>Adaptive<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-           <span class="token function">cacheAdaptiveClass</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> overridden<span class="token punctuation">)</span><span class="token punctuation">;</span>
-       <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isWrapperClass</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token comment">//扩展子类型构造器中是否有这个类型的接口 (这个可以想象下我们了解的Java IO流中的类型使用到的装饰器模式 构造器传个类型)</span>
-           <span class="token function">cacheWrapperClass</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">;</span>
-       <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>isWrapperClass方法通过判断构造器类型是否为当前类型来判断是否为Wrapper类型</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> boolean <span class="token function">isWrapperClass</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> clazz<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token keyword">try</span> <span class="token punctuation">{</span>
-           clazz<span class="token punctuation">.</span><span class="token function">getConstructor</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">;</span>
-           <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-       <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>NoSuchMethodException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-           <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-       <span class="token punctuation">}</span>
-   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<h3 id="6-2-3-Wrapper类型的创建"><a href="#6-2-3-Wrapper类型的创建" class="headerlink" title="6.2.3 Wrapper类型的创建"></a>6.2.3 Wrapper类型的创建</h3><p>这个可以看下4.6.1 getExtension方法源码的获取扩展对象时候查询扩展对象是否有对应的Wrapper类型的扩展为其创建Wrapper扩展对象,如下代码</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">//Dubbo通过Wrapper实现AOP的方法</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>wrap<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment">//这个可以参考下Dubbo扩展的加载</span>
-                List<span class="token operator">&lt;</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;&gt;</span> wrapperClassesList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">ArrayList</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment">//wrap类型排序 这个wrap类型是如何来的呢,在前面扫描扩展类型的时候如果当前扩展类型不是Adaptive注解修饰的,并且当前类型type有个构造器参数是type自身的也是前面加载扩展类型时候说的装饰器模式 可以参考DubboProtocol的构造器</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>cachedWrapperClasses <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    wrapperClassesList<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>cachedWrapperClasses<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token comment">//根据Wrapper注解的order值来进行排序值越小越在列表的前面</span>
-                    wrapperClassesList<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span>WrapperComparator<span class="token punctuation">.</span>COMPARATOR<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token comment">//反转之后值越大就会在列表的前面</span>
-                    Collections<span class="token punctuation">.</span><span class="token function">reverse</span><span class="token punctuation">(</span>wrapperClassesList<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-				<span class="token comment">//从缓存中查到了wrapper扩展则遍历这些wrapp扩展进行筛选</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>CollectionUtils<span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>wrapperClassesList<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">for</span> <span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> wrapperClass <span class="token operator">:</span> wrapperClassesList<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        Wrapper wrapper <span class="token operator">=</span> wrapperClass<span class="token punctuation">.</span><span class="token function">getAnnotation</span><span class="token punctuation">(</span>Wrapper<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token comment">//需要包装的扩展名。当此数组为空时，默认值为匹配</span>
-                        <span class="token comment">//看下当前扩展是否匹配这个wrap,如何判断呢?</span>
-                        <span class="token comment">//wrapper注解不存在或者matches匹配,或者mismatches不包含当前扩展</span>
-                        <span class="token comment">//如果匹配到了当前扩展对象是需要进行wrapp的就为当前扩展创建当前wrapper扩展对象进行包装</span>
-                        boolean match <span class="token operator">=</span> <span class="token punctuation">(</span>wrapper <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token operator">||</span>
-                            <span class="token punctuation">(</span><span class="token punctuation">(</span>ArrayUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>wrapper<span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span> ArrayUtils<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>wrapper<span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
-                                <span class="token operator">!</span>ArrayUtils<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>wrapper<span class="token punctuation">.</span><span class="token function">mismatches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                <span class="token comment">//这是扩展类型是匹配wrapp的则开始注入</span>
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span>match<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token comment">//匹配到了就创建所有的wrapper类型的对象同时构造器参数设置为当前类型</span>
-                            instance <span class="token operator">=</span> <span class="token function">injectExtension</span><span class="token punctuation">(</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span> wrapperClass<span class="token punctuation">.</span><span class="token function">getConstructor</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            instance <span class="token operator">=</span> <span class="token function">postProcessAfterInitialization</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>主要来看下什么情况下才为当前扩展类型创建Wrapper包装类型:</p>
-<ul>
-<li>wrapper注解不存在(前面判断过Wrapper类型是构造器满足条件的)</li>
-<li>存在Wrapper注解:<ul>
-<li>matches匹配,</li>
-<li>或者mismatches不包含当前扩展</li>
-</ul>
-</li>
-</ul>
-<p>如果匹配到了当前扩展对象是需要进行wrapp的就为当前扩展创建当前wrapper扩展对象进行包装</p>
-<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
-
-			<br>
-			<!-- <a class="tag-unordered list-link" href="/tags/Dubbo/" rel="tag">Dubbo<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3/" rel="tag">Dubbo3<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Dubbo3源码解析<span class="tag-unordered list-count">23</span></a> -->
-		</article>
-	</div>
-	<div class="other">
-		<div class="container">
-			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-         <!-- 先找到与当前文字相同的目录 -->
-            
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                 <!-- 在找到当前文章所在的 index -->
-                    
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                         <!-- 下一篇文章 --> 
-                            <div class="new">
-                                <span>下一章</span>
-                                <a href="/2022/07/10/dubbo/7-dubbo-de-spi-kuo-zhan-ji-zhi-zhi-zi-dong-ji-huo-kuo-zhan-activate-yuan-ma-jie-xi/"> 07-【Dubbo3.0.8源码解析系列】Dubbo的SPI扩展机制之自动激活扩展Activate源码解析</a>
-                            </div>
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2022/07/10/dubbo/5-dubbo-de-spi-kuo-zhan-ji-zhi-yu-zi-gua-ying-kuo-zhan-dui-xiang-de-chuang-jian-yu-kuo-zhan-wen-jian-de-sao-miao-yuan-ma-jie-xi/"> 05-【Dubbo3.0.8源码解析系列】自适应扩展对象的创建getAdaptiveExtension方法</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-</nav> 
+		<div class="category">
+			
+				
+						
+				
+					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
+						<div class="cover"><img  data-sizes="auto"
+							data-src="true" class="lazyload" alt="JDK源码"></div>
+						<div class="title">JDK源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Kafka源码</h1></div>
+						<div class="title">Kafka源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Linux网络源码</h1></div>
+						<div class="title">Linux网络源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/AI/">
+						<div class="cover red"><h1>AI</h1></div>
+						<div class="title">AI</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/escoked/">
+						<div class="cover red"><h1>escoked</h1></div>
+						<div class="title">escoked</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/kubernetes/">
+						<div class="cover red"><h1>kubernetes</h1></div>
+						<div class="title">kubernetes</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Rebar3/">
+						<div class="cover red"><h1>Rebar3</h1></div>
+						<div class="title">Rebar3</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Linux/">
+						<div class="cover red"><h1>Linux</h1></div>
+						<div class="title">Linux</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>SpringBoot2源码</h1></div>
+						<div class="title">SpringBoot2源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Erlang/">
+						<div class="cover red"><h1>Erlang</h1></div>
+						<div class="title">Erlang</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
+						<div class="title">Elastic-Job2.1.5源码</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
+						<div class="cover red"><h1>算法问题</h1></div>
+						<div class="title">算法问题</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
+						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
+						<div class="title">Zookeeper版本3.6.2源码系列</div>
+					</a>
+				 
+			
+				
+						
+				 
+					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
+						<div class="cover red"><h1>Dubbo3源码</h1></div>
+						<div class="title">Dubbo3源码</div>
+					</a>
+				 
+			
 		</div>
-	</div>
-	<div class="container comment">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '80b2453b6d5f37ad6225',
-        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
-        id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
-    })
-    gitalk.render('gitalk')
-</script>
 	</div>
 </div>
 		<div class="footer">
