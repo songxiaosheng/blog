@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>13- 法定人对象QuorumPeer启动之加载磁盘快照与事务日志 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662168176078">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662168176078"></script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/archives">Archives</a></li>
+            
+                <li class="nav-item"><a href="/about.html">About</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>13- 法定人对象QuorumPeer启动之加载磁盘快照与事务日志</h1>
+			<div class="info"><span class="date">2021年7月12日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">Zookeeper版本3.6.2源码系列</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/zookeeper/13- 法定人对象QuorumPeer启动之加载磁盘快照与事务日志.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="13-法定人对象QuorumPeer启动之加载磁盘快照与事务日志"><a href="#13-法定人对象QuorumPeer启动之加载磁盘快照与事务日志" class="headerlink" title="13- 法定人对象QuorumPeer启动之加载磁盘快照与事务日志"></a>13- 法定人对象QuorumPeer启动之加载磁盘快照与事务日志</h1><h2 id="13-1-简介"><a href="#13-1-简介" class="headerlink" title="13.1 简介"></a>13.1 简介</h2><p> 前面我们了解了管理协议的法定人对象QuorumPeer的启动方法如下</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//重写了线程的start方法 start为代理方法在启动之前做一些逻辑处理</span>
+quorumPeer<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>在QuorumPeer类型中 重写了start方法，启动线程的调用被放在了start方法的最后,启动之前,这种代理方法策略一般用于我们对某些操作逻辑的增强逻辑类似AOP机制 , start操作如下代码：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> 
+	<span class="token comment">//getView是当前初始化的法定人对象 列表</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">getView</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span>myid<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"My id "</span> <span class="token operator">+</span> myid <span class="token operator">+</span> <span class="token string">" not in the peer list"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> 
+ 
+<span class="token comment">//将数据从磁盘加载到内存中，并将事务添加到内存中的committedlog中。 读取快照和事物文件</span>
+  <span class="token function">loadDataBase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//服务端开启连接线程</span>
+  <span class="token function">startServerCnxnFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+
+<span class="token comment">//开启管理端</span>
+    adminServer<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">AdminServerException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Problem starting AdminServer"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+<span class="token comment">//开启选举功能</span>
+  <span class="token function">startLeaderElection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//开启JVM监控</span>
+  <span class="token function">startJvmPauseMonitor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//线程启动QuorumPeer开始运行</span>
+  <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>关于事务日志的加载 其实包含了两部分，</p>
+<ul>
+<li>一部分是Zookeper定期将事务日志压缩的快照</li>
+<li>一部分是还未压缩的事务增量数据<br>Zookeeper通过这样的机制保证数据空间的压缩与可靠性保证</li>
+</ul>
+<h2 id="12-3-恢复本地数据到内存的模板方法"><a href="#12-3-恢复本地数据到内存的模板方法" class="headerlink" title="12.3 恢复本地数据到内存的模板方法"></a>12.3 恢复本地数据到内存的模板方法</h2><p> 在法定人线程启动之前先执行了 恢复本地数据到内存</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token function">loadDataBase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个方法是将数据库从磁盘加载到内存中，并将事务添加到内存中的committedlog中。最后返回磁盘上最后一个有效的zxid<br>ZKDatabase功能：ZKDatabase负责管理会话、DataTree和事务日志，向上层提供统一的数据操作接口，其基本结构如下图所示</p>
+<p> <img src="https://img-blog.csdnimg.cn/8d05ead85bf64ec2963c7f381ca57aaa.png" alt="在这里插入图片描述"><br>也就是说Zookeeper在处理事务的时候会将事务持久化到磁盘里面等到，关闭进程重启的时候会加载这些事务信息可以保证数据不丢失。</p>
+<p>接下来让我们学习下zookeeper是如何将磁盘中的数据库快照同步到内存的：</p>
+<p>QuorumPeer类型中</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadDataBase</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	
+      <span class="token keyword">try</span> <span class="token punctuation">{</span>
+		<span class="token comment">//加载数据库到内存核心代码，这个zkDb是ZKDatabase对象 ZKDatabase是quorumpeer的顶级成员，将在稍后实例化的所有Zookeeperserver中使用。此外，它在引导时创建一次，只有在引导者发出截断消息时才会丢弃</span>
+           zkDb<span class="token punctuation">.</span><span class="token function">loadDataBase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+           <span class="token comment">// load the epochs</span>
+		<span class="token comment">//最新的处理事物id，在处理事物的时候处理完成的事物会将最新事物id更新到lastProcessedZxid，在处理事物时候有个zxid这里是不能直接用的会读取到脏数据</span>
+<span class="token comment">//当我们修改数据树时，快照可能正在进行中。如果我们在对树进行相应更改之前设置lastProcessedZxid，那么与快照文件关联的zxid将位于其内容之前。因此，在从快照进行恢复时，恢复方法将不会应用事务</span>
+ <span class="token comment">//对于与快照文件关联的zxid，因为恢复方法假定快照中存在该事务。为了避免这种情况，我们首先应用事务，然后修改lastProcessedZxid。在恢复期间，我们正确地处理了快照包含zxid之前的数据的情况</span>
+
+与文件
+           <span class="token keyword">long</span> lastProcessedZxid <span class="token operator">=</span> zkDb<span class="token punctuation">.</span><span class="token function">getDataTree</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>lastProcessedZxid<span class="token punctuation">;</span>
+         
+<span class="token comment">//为了保证事务的顺序一致性，zookeeper采用了递增的事务id号（zxid）来标识事务。所有的提议（proposal）都在被提出的时候加上了zxid。实现中zxid是一个64位的数字，它高32位是epoch用来标识 leader关系是否改变，每次一个leader被选出来，它都会有一个新的epoch，标识当前属于那个leader的统治时期。低32位用于递增计数。</span>
+
+<span class="token comment">//epoch：可以理解为当前集群所处的年代或者周期，每个leader就像皇帝，都有自己的年号，所以每次改朝换代，leader变更之后，都会在前一个年代的基础上加1。这样就算旧的leader崩溃恢复之后，也没有人听他的了，因为follower只听从当前年代的leader的命令</span>
+
+<span class="token comment">//在这里呢就是获取高32位用来标示leader关系是否改变的值 ZxidUtils zxid工具类</span>
+ <span class="token keyword">long</span> epochOfZxid <span class="token operator">=</span> <span class="token class-name">ZxidUtils</span><span class="token punctuation">.</span><span class="token function">getEpochFromZxid</span><span class="token punctuation">(</span>lastProcessedZxid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token keyword">try</span> <span class="token punctuation">{</span>
+
+<span class="token comment">//接下来就是读取数据文件目录中的currentEpoch文件，文件中显示的是当前的epoch。 只有一个数字</span>
+<span class="token comment">//其实程序中还有个epoch文件</span>
+<span class="token comment">//acceptedEpoch：没有确认的epoch，LEADERINFO阶段</span>
+<span class="token comment">//currentEpoch：确认的epoch，接收到UPTODATE后</span>
+               currentEpoch <span class="token operator">=</span> <span class="token function">readLongFromFile</span><span class="token punctuation">(</span>CURRENT_EPOCH_FILENAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//如果从快照文件中读取的epoch id大于currentEpoch文件中的id号则将快照中读取的最新的epoch号更新到文件currentEpoch文件中</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span>epochOfZxid <span class="token operator">&gt;</span> currentEpoch <span class="token operator">&amp;&amp;</span> updating<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"{} found. The server was terminated after "</span> <span class="token operator">+</span>
+                            <span class="token string">"taking a snapshot but before updating current "</span> <span class="token operator">+</span>
+                            <span class="token string">"epoch. Setting current epoch to {}."</span><span class="token punctuation">,</span>
+                            UPDATING_EPOCH_FILENAME<span class="token punctuation">,</span> epochOfZxid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token function">setCurrentEpoch</span><span class="token punctuation">(</span>epochOfZxid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>updating<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                       <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span><span class="token string">"Failed to delete "</span> <span class="token operator">+</span>
+                                             updating<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token punctuation">}</span>
+               <span class="token punctuation">}</span>
+           <span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token class-name">FileNotFoundException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token comment">//...</span>
+       <span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token class-name">IOException</span> ie<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token comment">//...</span>
+       <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这个模板方法我们总结一下：</p>
+<ul>
+<li>使用ZKDatabase加载事务快照日志和事务增量日志</li>
+<li>数据恢复完成后从ZKDatabase查询最新的最新的处理事物id lastProcessedZxid</li>
+<li>获取高32位用来标示leader关系是否改变的值epochOfZxid</li>
+<li>读取数据文件目录中的currentEpoch文件，文件中显示的是当前的epoch</li>
+<li>刷新内存中的epoch值，继续上个纪元开始，不能从0开始</li>
+</ul>
+<h2 id="13-3-Zookeeper数据库管理加载磁盘快照的核心方法"><a href="#13-3-Zookeeper数据库管理加载磁盘快照的核心方法" class="headerlink" title="13.3 Zookeeper数据库管理加载磁盘快照的核心方法"></a>13.3 Zookeeper数据库管理加载磁盘快照的核心方法</h2><p>接下来我们就重点看下zookeeper如何把磁盘中的数据加载到内存中<br>ZKDatabase类型中的加载方法：<br> 这个zkDb是ZKDatabase对象 ZKDatabase是quorumpeer的顶级成员，将在稍后实例化的所有Zookeeperserver中使用。此外，它在引导时创建一次，只有在引导者发出截断消息时才会丢弃</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">loadDataBase</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">long</span> startTime <span class="token operator">=</span> <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">currentElapsedTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> zxid <span class="token operator">=</span> snapLog<span class="token punctuation">.</span><span class="token function">restore</span><span class="token punctuation">(</span>dataTree<span class="token punctuation">,</span> sessionsWithTimeouts<span class="token punctuation">,</span> commitProposalPlaybackListener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    initialized <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> loadTime <span class="token operator">=</span> <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">currentElapsedTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> startTime<span class="token punctuation">;</span>
+    <span class="token class-name">ServerMetrics</span><span class="token punctuation">.</span><span class="token function">getMetrics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>DB_INIT_TIME<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>loadTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Snapshot loaded in {} ms, highest zxid is 0x{}, digest is {}"</span><span class="token punctuation">,</span>
+            loadTime<span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>zxid<span class="token punctuation">)</span><span class="token punctuation">,</span> dataTree<span class="token punctuation">.</span><span class="token function">getTreeDigest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> zxid<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里比简单 这个方法其实是个代理方法 本来执行snapLog.restore 增加一个loadDataBase()在事务日志执行前后加了埋点这样就可以看到数据库文件初始化加载的耗时</p>
+<h3 id="13-3-1-事务快照日志的恢复过程"><a href="#13-3-1-事务快照日志的恢复过程" class="headerlink" title="13.3.1 事务快照日志的恢复过程"></a>13.3.1 事务快照日志的恢复过程</h3><p>再来看FileTxnSnapLog中的restore方法：<br>下面只有两个位置需要看 用！！！ 提示了</p>
+<ul>
+<li>反序列化过程 ！！！ 第一个要看的位置<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">long</span> deserializeResult <span class="token operator">=</span> snapLog<span class="token punctuation">.</span><span class="token function">deserialize</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> sessions<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li>恢复事物日志 ！！！ 第二个要看的位置  fastForwardFromEdits<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">long</span> highestZxid <span class="token operator">=</span> <span class="token function">fastForwardFromEdits</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> sessions<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">restore</span><span class="token punctuation">(</span><span class="token class-name">DataTree</span> dt<span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> sessions<span class="token punctuation">,</span> <span class="token class-name">PlayBackListener</span> listener<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">long</span> snapLoadingStartTime <span class="token operator">=</span> <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">currentElapsedTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//反序列化过程 ！！！ 第一个要看的位置</span>
+    <span class="token keyword">long</span> deserializeResult <span class="token operator">=</span> snapLog<span class="token punctuation">.</span><span class="token function">deserialize</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> sessions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">ServerMetrics</span><span class="token punctuation">.</span><span class="token function">getMetrics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>STARTUP_SNAP_LOAD_TIME<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">currentElapsedTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> snapLoadingStartTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">FileTxnLog</span> txnLog <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileTxnLog</span><span class="token punctuation">(</span>dataDir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">boolean</span> trustEmptyDB<span class="token punctuation">;</span>
+    <span class="token class-name">File</span> initFile <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>dataDir<span class="token punctuation">.</span><span class="token function">getParent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"initialize"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">Files</span><span class="token punctuation">.</span><span class="token function">deleteIfExists</span><span class="token punctuation">(</span>initFile<span class="token punctuation">.</span><span class="token function">toPath</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Initialize file found, an empty database will not block voting participation"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        trustEmptyDB <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        trustEmptyDB <span class="token operator">=</span> autoCreateDB<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+   <span class="token comment">//恢复事物日志 ！！！ 第二个要看的位置  fastForwardFromEdits</span>
+    <span class="token class-name">RestoreFinalizer</span> finalizer <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">long</span> highestZxid <span class="token operator">=</span> <span class="token function">fastForwardFromEdits</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> sessions<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// The snapshotZxidDigest will reset after replaying the txn of the</span>
+        <span class="token comment">// zxid in the snapshotZxidDigest, if it's not reset to null after</span>
+        <span class="token comment">// restoring, it means either there are not enough txns to cover that</span>
+        <span class="token comment">// zxid or that txn is missing</span>
+        <span class="token class-name">DataTree<span class="token punctuation">.</span>ZxidDigest</span> snapshotZxidDigest <span class="token operator">=</span> dt<span class="token punctuation">.</span><span class="token function">getDigestFromLoadedSnapshot</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>snapshotZxidDigest <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span>
+                    <span class="token string">"Highest txn zxid 0x{} is not covering the snapshot digest zxid 0x{}, "</span>
+                            <span class="token operator">+</span> <span class="token string">"which might lead to inconsistent state"</span><span class="token punctuation">,</span>
+                    <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>highestZxid<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>snapshotZxidDigest<span class="token punctuation">.</span><span class="token function">getZxid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> highestZxid<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token comment">//这里是快照日志为空</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1L</span> <span class="token operator">==</span> deserializeResult<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">/* this means that we couldn't find any snapshot, so we need to
+         * initialize an empty database (reported in ZOOKEEPER-2325) */</span>
+<span class="token comment">//这里判断事物日志不为空</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>txnLog<span class="token punctuation">.</span><span class="token function">getLastLoggedZxid</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// ZOOKEEPER-3056: provides an escape hatch for users upgrading</span>
+            <span class="token comment">// from old versions of zookeeper (3.4.x, pre 3.5.3).</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>trustEmptySnapshot<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span>EMPTY_SNAPSHOT_WARNING <span class="token operator">+</span> <span class="token string">"Something is broken!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"{}This should only be allowed during upgrading."</span><span class="token punctuation">,</span> EMPTY_SNAPSHOT_WARNING<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span> finalizer<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>trustEmptyDB<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">/* TODO: (br33d) we should either put a ConcurrentHashMap on restore()
+             *       or use Map on save() */</span>
+            <span class="token function">save</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token class-name">ConcurrentHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> sessions<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">/* return a zxid of 0, since we know the database is empty */</span>
+            <span class="token keyword">return</span> <span class="token number">0L</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment">/* return a zxid of -1, since we are possibly missing data */</span>
+            LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Unexpected empty data tree, setting zxid to -1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            dt<span class="token punctuation">.</span>lastProcessedZxid <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1L</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1L</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token comment">//执行事物日志恢复</span>
+    <span class="token keyword">return</span> finalizer<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<p>上面我们主要看两个点就行了 </p>
+<ul>
+<li>反序列化过程 ！！！ 第一个要看的位置<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">long</span> deserializeResult <span class="token operator">=</span> snapLog<span class="token punctuation">.</span><span class="token function">deserialize</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> sessions<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li>恢复事物日志 ！！！ 第二个要看的位置  fastForwardFromEdits<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">long</span> highestZxid <span class="token operator">=</span> <span class="token function">fastForwardFromEdits</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> sessions<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+</ul>
+<h3 id="13-3-2-反序列化事务快照日志的过程"><a href="#13-3-2-反序列化事务快照日志的过程" class="headerlink" title="13.3.2 反序列化事务快照日志的过程"></a>13.3.2 反序列化事务快照日志的过程</h3><p>再来看FileSnap中的序列化事物方法 降序查询最新的100个快照依次遍历找到第一个合法的快照文件并将其恢复，最后返回当前恢复的最新的快照对应的事物id：<br>下面主要看两个位置：</p>
+<ul>
+<li>查询最近的具有snapshot前缀的100个快照文件，<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">File</span><span class="token punctuation">&gt;</span></span> snapList <span class="token operator">=</span> <span class="token function">findNValidSnapshots</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li>反序列化文件到内存</li>
+</ul>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token function">deserialize</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> sessions<span class="token punctuation">,</span> ia<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">deserialize</span><span class="token punctuation">(</span><span class="token class-name">DataTree</span> dt<span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> sessions<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token comment">// we run through 100 snapshots (not all of them)</span>
+    <span class="token comment">// if we cannot get it running within 100 snapshots</span>
+    <span class="token comment">// we should  give up</span>
+<span class="token comment">//查询最近的具有snapshot前缀的100个快照文件，</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">File</span><span class="token punctuation">&gt;</span></span> snapList <span class="token operator">=</span> <span class="token function">findNValidSnapshots</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>snapList<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1L</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token class-name">File</span> snap <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> snapZxid <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">boolean</span> foundValid <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token comment">//遍历这些文件 对数据流进行Adler-32数据校验</span>
+
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> snapListSize <span class="token operator">=</span> snapList<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> snapListSize<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        snap <span class="token operator">=</span> snapList<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Reading snapshot {}"</span><span class="token punctuation">,</span> snap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        snapZxid <span class="token operator">=</span> <span class="token class-name">Util</span><span class="token punctuation">.</span><span class="token function">getZxidFromName</span><span class="token punctuation">(</span>snap<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> SNAPSHOT_FILE_PREFIX<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token class-name">CheckedInputStream</span> snapIS <span class="token operator">=</span> <span class="token class-name">SnapStream</span><span class="token punctuation">.</span><span class="token function">getInputStream</span><span class="token punctuation">(</span>snap<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">InputArchive</span> ia <span class="token operator">=</span> <span class="token class-name">BinaryInputArchive</span><span class="token punctuation">.</span><span class="token function">getArchive</span><span class="token punctuation">(</span>snapIS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//反序列化的过程就是把磁盘快照中的数据这些快照数据使用了数据流来操作DataInputStream，反序列化的时候调用DataTree类型的deserialize方法来将数据流读取出来读入DataTree对象中，所以说DataTree是相当于快照数据的内存映射</span>
+            <span class="token function">deserialize</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> sessions<span class="token punctuation">,</span> ia<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">SnapStream</span><span class="token punctuation">.</span><span class="token function">checkSealIntegrity</span><span class="token punctuation">(</span>snapIS<span class="token punctuation">,</span> ia<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// Digest feature was added after the CRC to make it backward</span>
+            <span class="token comment">// compatible, the older code can still read snapshots which</span>
+            <span class="token comment">// includes digest.</span>
+            <span class="token comment">//</span>
+            <span class="token comment">// To check the intact, after adding digest we added another</span>
+            <span class="token comment">// CRC check.</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>dt<span class="token punctuation">.</span><span class="token function">deserializeZxidDigest</span><span class="token punctuation">(</span>ia<span class="token punctuation">,</span> snapZxid<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">SnapStream</span><span class="token punctuation">.</span><span class="token function">checkSealIntegrity</span><span class="token punctuation">(</span>snapIS<span class="token punctuation">,</span> ia<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            foundValid <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"problem reading snap file {}"</span><span class="token punctuation">,</span> snap<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>foundValid<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span><span class="token string">"Not able to find valid snapshots in "</span> <span class="token operator">+</span> snapDir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    dt<span class="token punctuation">.</span>lastProcessedZxid <span class="token operator">=</span> snapZxid<span class="token punctuation">;</span>
+    lastSnapshotInfo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SnapshotInfo</span><span class="token punctuation">(</span>dt<span class="token punctuation">.</span>lastProcessedZxid<span class="token punctuation">,</span> snap<span class="token punctuation">.</span><span class="token function">lastModified</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// compare the digest if this is not a fuzzy snapshot, we want to compare</span>
+    <span class="token comment">// and find inconsistent asap.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>dt<span class="token punctuation">.</span><span class="token function">getDigestFromLoadedSnapshot</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        dt<span class="token punctuation">.</span><span class="token function">compareSnapshotDigests</span><span class="token punctuation">(</span>dt<span class="token punctuation">.</span>lastProcessedZxid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> dt<span class="token punctuation">.</span>lastProcessedZxid<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+
+    <span class="token comment">//反序列化模板方法</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">deserialize</span><span class="token punctuation">(</span><span class="token class-name">DataTree</span> dt<span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> sessions<span class="token punctuation">,</span> <span class="token class-name">InputArchive</span> ia<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+<span class="token comment">//使用jute读取文件头，进行校验</span>
+    <span class="token class-name">FileHeader</span> header <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileHeader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    header<span class="token punctuation">.</span><span class="token function">deserialize</span><span class="token punctuation">(</span>ia<span class="token punctuation">,</span> <span class="token string">"fileheader"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>header<span class="token punctuation">.</span><span class="token function">getMagic</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> SNAP_MAGIC<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span><span class="token string">"mismatching magic headers "</span> <span class="token operator">+</span> header<span class="token punctuation">.</span><span class="token function">getMagic</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" !=  "</span> <span class="token operator">+</span> <span class="token class-name">FileSnap</span><span class="token punctuation">.</span>SNAP_MAGIC<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token comment">//反序列化快照文件</span>
+    <span class="token class-name">SerializeUtils</span><span class="token punctuation">.</span><span class="token function">deserializeSnapshot</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> ia<span class="token punctuation">,</span> sessions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这个FileHeader是zookeeper下jute模块的序列化组建<br>这里主要看下SerializeUtils.deserializeSnapshot(dt, ia, sessions);</p>
+<p>SerializeUtils类型下的快照序列化方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">deserializeSnapshot</span><span class="token punctuation">(</span><span class="token class-name">DataTree</span> dt<span class="token punctuation">,</span> <span class="token class-name">InputArchive</span> ia<span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> sessions<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> count <span class="token operator">=</span> ia<span class="token punctuation">.</span><span class="token function">readInt</span><span class="token punctuation">(</span><span class="token string">"count"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>count <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">long</span> id <span class="token operator">=</span> ia<span class="token punctuation">.</span><span class="token function">readLong</span><span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> <span class="token keyword">to</span> <span class="token operator">=</span> ia<span class="token punctuation">.</span><span class="token function">readInt</span><span class="token punctuation">(</span><span class="token string">"timeout"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        sessions<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> <span class="token keyword">to</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>LOG<span class="token punctuation">.</span><span class="token function">isTraceEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">ZooTrace</span><span class="token punctuation">.</span><span class="token function">logTraceMessage</span><span class="token punctuation">(</span>
+                LOG<span class="token punctuation">,</span>
+                <span class="token class-name">ZooTrace</span><span class="token punctuation">.</span>SESSION_TRACE_MASK<span class="token punctuation">,</span>
+                <span class="token string">"loadData --- session in archive: "</span> <span class="token operator">+</span> id <span class="token operator">+</span> <span class="token string">" with timeout: "</span> <span class="token operator">+</span> <span class="token keyword">to</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        count<span class="token operator">--</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token comment">//反序列化DataTree</span>
+    dt<span class="token punctuation">.</span><span class="token function">deserialize</span><span class="token punctuation">(</span>ia<span class="token punctuation">,</span> <span class="token string">"tree"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后调用DataTree的反序列化方法deserialize：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">deserialize</span><span class="token punctuation">(</span><span class="token class-name">InputArchive</span> ia<span class="token punctuation">,</span> <span class="token class-name">String</span> tag<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+<span class="token comment">//反序列化acl数据</span>
+    aclCache<span class="token punctuation">.</span><span class="token function">deserialize</span><span class="token punctuation">(</span>ia<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    nodes<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    pTrie<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    nodeDataSize<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">String</span> path <span class="token operator">=</span> ia<span class="token punctuation">.</span><span class="token function">readString</span><span class="token punctuation">(</span><span class="token string">"path"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//下面是反序列化节点数据</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token string">"/"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">DataNode</span> node <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DataNode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ia<span class="token punctuation">.</span><span class="token function">readRecord</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> <span class="token string">"node"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        nodes<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            aclCache<span class="token punctuation">.</span><span class="token function">addUsage</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span>acl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">int</span> lastSlash <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">lastIndexOf</span><span class="token punctuation">(</span><span class="token char">'/'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>lastSlash <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            root <span class="token operator">=</span> node<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token class-name">String</span> parentPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> lastSlash<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">DataNode</span> parent <span class="token operator">=</span> nodes<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>parentPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>parent <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span><span class="token string">"Invalid Datatree, unable to find "</span>
+                                      <span class="token operator">+</span> <span class="token string">"parent "</span>
+                                      <span class="token operator">+</span> parentPath
+                                      <span class="token operator">+</span> <span class="token string">" of path "</span>
+                                      <span class="token operator">+</span> path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            parent<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>lastSlash <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">long</span> eowner <span class="token operator">=</span> node<span class="token punctuation">.</span>stat<span class="token punctuation">.</span><span class="token function">getEphemeralOwner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">EphemeralType</span> ephemeralType <span class="token operator">=</span> <span class="token class-name">EphemeralType</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>eowner<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>ephemeralType <span class="token operator">==</span> <span class="token class-name">EphemeralType</span><span class="token punctuation">.</span>CONTAINER<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                containers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>ephemeralType <span class="token operator">==</span> <span class="token class-name">EphemeralType</span><span class="token punctuation">.</span>TTL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                ttls<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>eowner <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">HashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> list <span class="token operator">=</span> ephemerals<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>eowner<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>list <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    list <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    ephemerals<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>eowner<span class="token punctuation">,</span> list<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        path <span class="token operator">=</span> ia<span class="token punctuation">.</span><span class="token function">readString</span><span class="token punctuation">(</span><span class="token string">"path"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// have counted digest for root node with "", ignore here to avoid</span>
+    <span class="token comment">// counting twice for root node</span>
+    nodes<span class="token punctuation">.</span><span class="token function">putWithoutDigest</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">,</span> root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    nodeDataSize<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token function">approximateDataSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// we are done with deserializing the</span>
+    <span class="token comment">// the datatree</span>
+    <span class="token comment">// update the quotas - create path trie</span>
+    <span class="token comment">// and also update the stat nodes</span>
+    <span class="token function">setupQuota</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    aclCache<span class="token punctuation">.</span><span class="token function">purgeUnused</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h2 id="13-4-事务增量日志加载"><a href="#13-4-事务增量日志加载" class="headerlink" title="13.4 事务增量日志加载"></a>13.4 事务增量日志加载</h2><p>在前面 13.3.1 事务快照日志的恢复过程 小节中我们看到事务的快照日志已经加载完毕这是存量的数据，然后还有增量的数据需要加载那就是事务增量的数据我们继续看</p>
+<p>从事务日志中恢复数据的实现：fastForwardFromEdits(dt, sessions, listener)<br>此函数将快速转发服务器数据库，使其具有最新的事务。 这与还原相同，但只从读取事务日志而不是从快照恢复,这个方法主要去读取事物日志数据 先获取到最大事物id，然后直接读取最大事物id对应的事物日志文件，使用TxnIterator迭代器依次遍历事物日志，遍历过程中调用processTransaction去处理事物的session关系，然后调用DataTree类中的processTxn方法来根据具体事物信息来执行对应的CRUD等操作。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">fastForwardFromEdits</span><span class="token punctuation">(</span>
+    <span class="token class-name">DataTree</span> dt<span class="token punctuation">,</span>
+    <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> sessions<span class="token punctuation">,</span>
+    <span class="token class-name">PlayBackListener</span> listener<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+<span class="token comment">//获取比当前快照恢复的最大的事物id更大的那个</span>
+    <span class="token class-name">TxnIterator</span> itr <span class="token operator">=</span> txnLog<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>dt<span class="token punctuation">.</span>lastProcessedZxid <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> highestZxid <span class="token operator">=</span> dt<span class="token punctuation">.</span>lastProcessedZxid<span class="token punctuation">;</span>
+    <span class="token class-name">TxnHeader</span> hdr<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> txnLoaded <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> startTime <span class="token operator">=</span> <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">currentElapsedTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// iterator points to</span>
+            <span class="token comment">// the first valid txn when initialized</span>
+            hdr <span class="token operator">=</span> itr<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>hdr <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment">//empty logs</span>
+                <span class="token keyword">return</span> dt<span class="token punctuation">.</span>lastProcessedZxid<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+<span class="token comment">//获取当前最大的zxid</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>hdr<span class="token punctuation">.</span><span class="token function">getZxid</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> highestZxid <span class="token operator">&amp;&amp;</span> highestZxid <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"{}(highestZxid) &gt; {}(next log) for type {}"</span><span class="token punctuation">,</span> highestZxid<span class="token punctuation">,</span> hdr<span class="token punctuation">.</span><span class="token function">getZxid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> hdr<span class="token punctuation">.</span><span class="token function">getType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                highestZxid <span class="token operator">=</span> hdr<span class="token punctuation">.</span><span class="token function">getZxid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+<span class="token comment">//处理事物日志，进行数据恢复，这个处理方法内容就是根据日志内容进行恢复 后续会详细看</span>
+                <span class="token function">processTransaction</span><span class="token punctuation">(</span>hdr<span class="token punctuation">,</span> dt<span class="token punctuation">,</span> sessions<span class="token punctuation">,</span> itr<span class="token punctuation">.</span><span class="token function">getTxn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                dt<span class="token punctuation">.</span><span class="token function">compareDigest</span><span class="token punctuation">(</span>hdr<span class="token punctuation">,</span> itr<span class="token punctuation">.</span><span class="token function">getTxn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> itr<span class="token punctuation">.</span><span class="token function">getDigest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                txnLoaded<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">KeeperException<span class="token punctuation">.</span>NoNodeException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span><span class="token string">"Failed to process transaction type: "</span>
+                                      <span class="token operator">+</span> hdr<span class="token punctuation">.</span><span class="token function">getType</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                                      <span class="token operator">+</span> <span class="token string">" error: "</span>
+                                      <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                      e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+<span class="token comment">//事物日志处理完毕的回调方法</span>
+            listener<span class="token punctuation">.</span><span class="token function">onTxnLoaded</span><span class="token punctuation">(</span>hdr<span class="token punctuation">,</span> itr<span class="token punctuation">.</span><span class="token function">getTxn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> itr<span class="token punctuation">.</span><span class="token function">getDigest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>itr<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>itr <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            itr<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">long</span> loadTime <span class="token operator">=</span> <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">currentElapsedTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> startTime<span class="token punctuation">;</span>
+    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"{} txns loaded in {} ms"</span><span class="token punctuation">,</span> txnLoaded<span class="token punctuation">,</span> loadTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//监控指标数据收集</span>
+    <span class="token class-name">ServerMetrics</span><span class="token punctuation">.</span><span class="token function">getMetrics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>STARTUP_TXNS_LOADED<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>txnLoaded<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">ServerMetrics</span><span class="token punctuation">.</span><span class="token function">getMetrics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>STARTUP_TXNS_LOAD_TIME<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>loadTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> highestZxid<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>事务日志主要看下</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//txnLog是FileTxnLog类型的</span>
+<span class="token class-name">TxnIterator</span> itr <span class="token operator">=</span> txnLog<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>dt<span class="token punctuation">.</span>lastProcessedZxid <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这个FileTxnLog的read方法就不展开了其实就是读取文件的一个方法</p>
+<p>以上就是zookeeper中loadDataBase恢复数据的过程，恢复过程采用了快照数据+增量事物日志数据恢复的思想来完整恢复关闭之前的全量数据。</p>
+<p>查看原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<!-- <a class="tag-unordered list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper<span class="tag-unordered list-count">16</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="tag">Zookeeper安装配置<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Zookeeper源码解析<span class="tag-unordered list-count">16</span></a> -->
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2021/07/12/zookeeper/14-zookeeper-shi-yong-dao-de-reactor-wang-luo-mo-xing-yuan-li-fen-xi/"> 14- 启服务端网络监听连接NIOServerCnxnFactory</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2021/07/12/zookeeper/12-guan-li-xie-yi-de-fa-ding-ren-dui-xiang-quorumpeer-chuang-jian-yu-chu-shi-hua/"> 12- 管理协议的法定人对象QuorumPeer创建与初始化</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                        <a target="_blank" rel="noopener" href="https://nexmoe.com/">折影轻梦</a>
+                    
+                        <a target="_blank" rel="noopener" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books">还有书籍</a>
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>34 有效的数独 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662168176108">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662168176108"></script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/archives">Archives</a></li>
+            
+                <li class="nav-item"><a href="/about.html">About</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>34 有效的数独</h1>
+			<div class="info"><span class="date">2016年9月7日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">算法问题</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/leetcode/36-有效的数独.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="请你判断一个-9-x-9-的数独是否有效。只需要-根据以下规则-，验证已经填入的数字是否有效即可。"><a href="#请你判断一个-9-x-9-的数独是否有效。只需要-根据以下规则-，验证已经填入的数字是否有效即可。" class="headerlink" title="请你判断一个&nbsp;9 x 9 的数独是否有效。只需要 根据以下规则 ，验证已经填入的数字是否有效即可。"></a>请你判断一个&nbsp;9 x 9 的数独是否有效。只需要 根据以下规则 ，验证已经填入的数字是否有效即可。</h1><p>数字&nbsp;1-9&nbsp;在每一行只能出现一次。<br>数字&nbsp;1-9&nbsp;在每一列只能出现一次。<br>数字&nbsp;1-9&nbsp;在每一个以粗实线分隔的&nbsp;3x3&nbsp;宫内只能出现一次。（请参考示例图）
+&nbsp;</p>
+<p>注意：</p>
+<p>一个有效的数独（部分已被填充）不一定是可解的。<br>只需要根据以上规则，验证已经填入的数字是否有效即可。<br>空白格用&nbsp;‘.’&nbsp;表示。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isValidSudoku</span><span class="token punctuation">(</span><span class="token keyword">char</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> board<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token comment">//桶计数法，每个位置都会有个桶占据一个位置，用来计数 </span>
+         <span class="token comment">//行桶（行坐标）,一共9行9种元素 行计数的时候就需要81个桶标记为行桶</span>
+         <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> rows <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+         <span class="token comment">//列桶（列坐标），一共9行9种元素，列计数的时候也需要81个桶标记为列桶</span>
+         <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> columns <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+         <span class="token comment">//3*3宫格桶（9宫格坐标），每个宫格有3行3列,每个宫格有9个元素，一共9个宫格也是81个桶记录方式如下</span>
+         <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> box <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+         <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> rowIndex <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> rowIndex <span class="token operator">&lt;</span> <span class="token number">9</span><span class="token punctuation">;</span> rowIndex<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+             <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> colIndex <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> colIndex <span class="token operator">&lt;</span> <span class="token number">9</span><span class="token punctuation">;</span> colIndex<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                 <span class="token keyword">char</span> c <span class="token operator">=</span> board<span class="token punctuation">[</span>rowIndex<span class="token punctuation">]</span><span class="token punctuation">[</span>colIndex<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                 <span class="token keyword">if</span><span class="token punctuation">(</span>c <span class="token operator">!=</span> <span class="token char">'.'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                     <span class="token comment">//当前元素大小（减1是当前元素计数数组里面的坐标）</span>
+                     <span class="token keyword">int</span> index <span class="token operator">=</span> c <span class="token operator">-</span> <span class="token char">'0'</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+                     <span class="token comment">//行桶计数</span>
+                     rows<span class="token punctuation">[</span>rowIndex<span class="token punctuation">]</span><span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+                     columns<span class="token punctuation">[</span>colIndex<span class="token punctuation">]</span><span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+                     box<span class="token punctuation">[</span>rowIndex <span class="token operator">/</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">[</span>colIndex <span class="token operator">/</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+                     <span class="token keyword">boolean</span> flag <span class="token operator">=</span> rows<span class="token punctuation">[</span>rowIndex<span class="token punctuation">]</span><span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">&gt;</span> <span class="token number">1</span><span class="token operator">||</span>columns<span class="token punctuation">[</span>colIndex<span class="token punctuation">]</span><span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">&gt;</span> <span class="token number">1</span><span class="token operator">||</span>box<span class="token punctuation">[</span>rowIndex <span class="token operator">/</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">[</span>colIndex <span class="token operator">/</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">&gt;</span> <span class="token number">1</span><span class="token punctuation">;</span>
+                     <span class="token keyword">if</span><span class="token punctuation">(</span>flag<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                         <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                     <span class="token punctuation">}</span>
+                 <span class="token punctuation">}</span>
+             <span class="token punctuation">}</span>
+         <span class="token punctuation">}</span>
+         <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+			<br>
+			<!-- <a class="tag-unordered list-link" href="/tags/%E5%8E%BB%E9%87%8D/" rel="tag">去重<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/%E6%95%B0%E7%8B%AC/" rel="tag">数独<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/%E6%A1%B6%E8%AE%A1%E6%95%B0/" rel="tag">桶计数<span class="tag-unordered list-count">1</span></a> -->
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2016/09/07/leetcode/34-zai-pai-xu-shu-zu-zhong-cha-zhao-yuan-su-de-di-yi-ge-he-zui-hou-yi-ge-wei-zhi/"> 34 在排序数组中查找元素的第一个和最后一个位置</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                        <a target="_blank" rel="noopener" href="https://nexmoe.com/">折影轻梦</a>
+                    
+                        <a target="_blank" rel="noopener" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books">还有书籍</a>
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

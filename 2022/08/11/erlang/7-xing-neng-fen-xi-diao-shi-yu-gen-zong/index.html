@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662168175985">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662168175985"></script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/archives">Archives</a></li>
+            
+                <li class="nav-item"><a href="/about.html">About</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1></h1>
+			<div class="info"><span class="date">2022年8月11日</span>•songxiaosheng 
+			
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/erlang/7-性能分析、调试与跟踪.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h2 id="Erlang调试器"><a href="#Erlang调试器" class="headerlink" title="Erlang调试器"></a>Erlang调试器</h2><ul>
+<li>im()<br>启动一个新的图形监视器，它是调试器的主窗口，会显示调试器正在监视的所有进程的状态</li>
+<li>ii(Mod)<br>解释Mod模块里的代码。</li>
+<li>iaa([init])<br>在执行已解释代码的进程启动时让调试器关联它</li>
+</ul>
+<p>要了解更多关于调试的信息，可以试试这些资源。<br><a target="_blank" rel="noopener" href="http://www.erlang.org/doc/apps/debugger/debugger.pdf">http://www.erlang.org/doc/apps/debugger/debugger.pdf</a><br>这份调试器参考手册对调试器进行了介绍，包括屏幕截图和API文档，等等。它是调试器 高级用户的必读文档。</p>
+<p><a target="_blank" rel="noopener" href="http://www.erlang.org/doc/man/i.html">http://www.erlang.org/doc/man/i.html</a> 在这里能找到shell里可用的调试器命令</p>
+<h2 id="跟踪消息与进程执行"><a href="#跟踪消息与进程执行" class="headerlink" title="跟踪消息与进程执行"></a>跟踪消息与进程执行</h2><p>无需用特殊方式编译你的代码就能跟踪某个进程。跟踪一个(或多个)进程是一种强有力的 方式，它既能让你理解系统行为，又能在不改动代码的前提下测试复杂系统。它特别适用于嵌入 式系统，或者在无法修改被测代码的时候使用</p>
+<p>可以在底层调用一些Erlang内置函数来设置一个跟踪。用这些内置函数设置复杂的跟踪很困 难，所以我们设计了一些库来让这个任务变得容易些。<br>我们将从底层的Erlang内置跟踪函数入手，看看如何设置一个简单的跟踪器，然后展示能为 内置跟踪函数提供更高层接口的库</p>
+<p>对底层跟踪而言，有两个内置函数特别重要。erlang:trace/3的作用大致是，“我想要监 视这个进程，所以请在发生有意思的事时给我发一个消息”。erlang:trace_pattern则定义了 哪些算是“有意思”的事。</p>
+<h3 id="erlang-trace-PidSpec-How-FlagList"><a href="#erlang-trace-PidSpec-How-FlagList" class="headerlink" title="erlang:trace(PidSpec, How, FlagList)"></a>erlang:trace(PidSpec, How, FlagList)</h3><p>它会启动跟踪。</p>
+<ul>
+<li>PidSpec告诉系统要跟踪什么进程，</li>
+<li>How是一个开启或关闭跟踪的布尔值， </li>
+<li>FlagList指定了要跟踪的事件(比如，可以跟踪所有的函数调用，跟踪所有正在发送的 消息，跟踪垃圾收集何时进行，等等)。</li>
+</ul>
+<p> 一旦调用了erlang:trace/3这个内置函数，调用它的进程就会在跟踪事件发生时收到跟 踪消息。跟踪事件本身是通过调用erlang:trace_pattern/3确定的。</p>
+<h3 id="erlang-trace-pattern-MFA-MatchSpec-FlagList"><a href="#erlang-trace-pattern-MFA-MatchSpec-FlagList" class="headerlink" title="erlang:trace_pattern(MFA, MatchSpec, FlagList)"></a>erlang:trace_pattern(MFA, MatchSpec, FlagList)</h3><p> 它用于设置一个跟踪模式。如果模式匹配，请求的操作就会执行。这里的MFA是一个 {Module, Function, Args}元组，指定要对哪些代码应用跟踪模式。</p>
+<ul>
+<li>MatchSpec是一个 模式，会在每次进入MFA指定的函数时进行测试，</li>
+<li>而FlagList规定了跟踪条件满足时要 做什么。</li>
+</ul>
+<p>为MatchSpec编写匹配规则非常复杂，对我们理解跟踪也没有太大帮助。好在有几个库1能 够让事情变得简单一些。</p>
+<h2 id="使用跟踪库"><a href="#使用跟踪库" class="headerlink" title="使用跟踪库"></a>使用跟踪库</h2><p>可以用库模块dbg来执行与之前相同的跟踪。它会隐藏底层Erlang内置函数的所有细节<br>如：</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token atom">dbg</span><span class="token punctuation">:</span><span class="token function">tracer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token atom">dbg</span><span class="token punctuation">:</span><span class="token function">tpl</span><span class="token punctuation">(</span><span class="token atom">tracer_test</span><span class="token punctuation">,</span><span class="token atom">fib</span><span class="token punctuation">,</span><span class="token quoted-atom atom">'_'</span><span class="token punctuation">,</span><span class="token atom">dbg</span><span class="token punctuation">:</span><span class="token function">fun2ms</span><span class="token punctuation">(</span><span class="token keyword">fun</span><span class="token punctuation">(</span><span class="token variable">_</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">return_trace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token keyword">end</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token atom">dbg</span><span class="token punctuation">:</span><span class="token function">p</span><span class="token punctuation">(</span><span class="token atom">all</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token atom">c</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
+<span class="token atom">tracer_test</span><span class="token punctuation">:</span><span class="token function">fib</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Erlang-代码的测试框架"><a href="#Erlang-代码的测试框架" class="headerlink" title="Erlang 代码的测试框架"></a>Erlang 代码的测试框架</h2>
+			<br>
+			<!--  -->
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                        <a target="_blank" rel="noopener" href="https://nexmoe.com/">折影轻梦</a>
+                    
+                        <a target="_blank" rel="noopener" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books">还有书籍</a>
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

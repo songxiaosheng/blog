@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>K8S简介 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662168175969">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662168175969"></script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/archives">Archives</a></li>
+            
+                <li class="nav-item"><a href="/about.html">About</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>K8S简介</h1>
+			<div class="info"><span class="date">2022年9月7日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/kubernetes/">kubernetes</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/k8s/k8s源码/1-k8s源码入门.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="1-K8S简介"><a href="#1-K8S简介" class="headerlink" title="1. K8S简介"></a>1. K8S简介</h1><p>本文档翻译自官方GITHUB的README</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Kubernetes，也称为K8s，是一个用于跨多个主机管理容器化应用程序的开源系统。它为应用程序的部署、维护和扩展提供了基本机制。</p>
+<p>Kubernetes在Google拥有15年的经验，使用名为Borg的系统大规模运行生产工作负载，并结合社区的最佳想法和实践。</p>
+<p>Kubernetes由云原生计算基金会（CNCF）主办。如果您的公司希望帮助塑造容器包装、动态调度和面向微服务的技术的发展，请考虑加入CNCF。有关谁参与以及Kubernetes如何发挥作用的详细信息，请阅读CNCF公告。</p>
+<h2 id="开始使用K8s"><a href="#开始使用K8s" class="headerlink" title="开始使用K8s"></a>开始使用K8s</h2><ul>
+<li>可以请参阅关于<a href="kubernetes.io">kubernetes.io</a>的文档。</li>
+<li>可以试试我们的<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tutorials/kubernetes-basics/">互动教程</a>。</li>
+<li>使用Kubernetes免费学习可伸缩微服务:<a target="_blank" rel="noopener" href="https://www.udacity.com/course/scalable-microservices-with-kubernetes--ud615">文档</a></li>
+<li>要在其他应用程序中使用Kubernetes代码作为库，请参阅<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kubernetes/blob/master/staging/README.md">已发布组件列表</a>。使用k8s。不支持将io/kubernetes模块或k8s.io/kubernetes/…包作为库。</li>
+</ul>
+<h2 id="开始开发K8s"><a href="#开始开发K8s" class="headerlink" title="开始开发K8s"></a>开始开发K8s</h2><p>社区存储库包含所有关于从源代码构建Kubernetes的信息，如何贡献代码和文档，联系谁了解什么，等等。<br>如果您想立即构建Kubernetes，有两个选项：</p>
+<p>你有一个<a target="_blank" rel="noopener" href="https://golang.org/doc/install">Go环境</a>。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> -p <span class="token variable">$GOPATH</span>/src/k8s.io
+<span class="token builtin class-name">cd</span> <span class="token variable">$GOPATH</span>/src/k8s.io
+<span class="token function">git</span> clone https://github.com/kubernetes/kubernetes
+<span class="token builtin class-name">cd</span> kubernetes
+<span class="token function">make</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>你有一个<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/">Docker 环境</a>.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone https://github.com/kubernetes/kubernetes
+<span class="token builtin class-name">cd</span> kubernetes
+<span class="token function">make</span> quick-release<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>要了解完整的故事，请参阅<a target="_blank" rel="noopener" href="https://github.com/kubernetes/community/tree/master/contributors/devel#readme">开发人员文档</a></p>
+<p>如果您需要支持，请从<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/debug/">故障排除指南</a>开始，然后按照我们概述的流程进行操作。也就是说，如果您有问题，请以某种方式联系我们。。</p>
+<h2 id="社区会议"><a href="#社区会议" class="headerlink" title="社区会议"></a>社区会议</h2><p><a target="_blank" rel="noopener" href="https://www.kubernetes.dev/resources/calendar/">日历</a> 中有Kubernetes社区在一个位置的所有会议的列表。</p>
+<h2 id="路线图"><a href="#路线图" class="headerlink" title="路线图"></a>路线图</h2><p><a target="_blank" rel="noopener" href="https://github.com/kubernetes/enhancements">Kubernetes增强repo</a>提供有关Kubernets版本的信息，以及功能跟踪和积压。</p>
+
+			<br>
+			<!-- <a class="tag-unordered list-link" href="/tags/K8S%E7%AE%80%E4%BB%8B/" rel="tag">K8S简介<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/kubernetes/" rel="tag">kubernetes<span class="tag-unordered list-count">3</span></a> -->
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2016/09/07/k8s/1-k8s-ming-ling-da-quan/"> K8S命令大全</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                        <a target="_blank" rel="noopener" href="https://nexmoe.com/">折影轻梦</a>
+                    
+                        <a target="_blank" rel="noopener" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books">还有书籍</a>
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

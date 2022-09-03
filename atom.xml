@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>中间件源码</title>
+  
+  <subtitle>开源组件调研，分析，评测</subtitle>
+  <link href="https://blog.elastic.link/atom.xml" rel="self"/>
+  
+  <link href="https://blog.elastic.link/"/>
+  <updated>2022-07-28T15:07:44.399Z</updated>
+  <id>https://blog.elastic.link/</id>
+  
+  <author>
+    <name>songxiaosheng</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2-Erlang并发编程思想</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-07-28T15:07:44.399Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;部分内容摘抄自《Erlang程序设计第2版》&lt;/p&gt;
+&lt;h1 id=&quot;Erlang的并发概念&quot;&gt;&lt;a href=&quot;#Erlang的并发概念&quot; class=&quot;headerlink&quot; title=&quot;Erlang的并发概念&quot;&gt;&lt;/a&gt;Erlang的并发概念&lt;/h1&gt;&lt;h2</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Erlang并发" scheme="https://blog.elastic.link/tags/Erlang%E5%B9%B6%E5%8F%91/"/>
+    
+    <category term="并发编程" scheme="https://blog.elastic.link/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>3-Erlang分布式编程思想</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/3-erlang-fen-bu-shi-bian-cheng/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/3-erlang-fen-bu-shi-bian-cheng/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-08-01T14:32:50.391Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;编写分布式应用程序的原因&quot;&gt;&lt;a href=&quot;#编写分布式应用程序的原因&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Erlang分布式" scheme="https://blog.elastic.link/tags/Erlang%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+    <category term="分布式" scheme="https://blog.elastic.link/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>4-套接字编程</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/4-tao-jie-zi-bian-cheng/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/4-tao-jie-zi-bian-cheng/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-08-11T14:19:25.003Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;4-套接字编程&quot;&gt;&lt;a href=&quot;#4-套接字编程&quot; class=&quot;headerlink&quot; title=&quot;4-套接字编程&quot;&gt;&lt;/a&gt;4-套接字编程&lt;/h1&gt;&lt;p&gt;套接字编程有两个主要的库:gen_tcp用于编写TCP应用程序，gen_udp用于编写UDP应用</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Erlang套接字" scheme="https://blog.elastic.link/tags/Erlang%E5%A5%97%E6%8E%A5%E5%AD%97/"/>
+    
+    <category term="套接字" scheme="https://blog.elastic.link/tags/%E5%A5%97%E6%8E%A5%E5%AD%97/"/>
+    
+    <category term="网络编程" scheme="https://blog.elastic.link/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>5-Erlang KEY VALUE数据存储 ETS</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-08-11T14:21:03.517Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;5-Erlang-KEY-VALUE数据存储-ETS&quot;&gt;&lt;a href=&quot;#5-Erlang-KEY-VALUE数据存储-ETS&quot; class=&quot;headerlink&quot; title=&quot;5-Erlang KEY VALUE数据存储</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Erlangets" scheme="https://blog.elastic.link/tags/Erlangets/"/>
+    
+    <category term="ets" scheme="https://blog.elastic.link/tags/ets/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>6-Mnesia分布式数据库</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-08-11T14:20:48.738Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;6-Mnesia分布式数据库&quot;&gt;&lt;a href=&quot;#6-Mnesia分布式数据库&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Mnesia" scheme="https://blog.elastic.link/tags/Mnesia/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>K8S简介</title>
+    <link href="https://blog.elastic.link/2022/09/07/k8s/k8s-yuan-ma/1-k8s-yuan-ma-ru-men/"/>
+    <id>https://blog.elastic.link/2022/09/07/k8s/k8s-yuan-ma/1-k8s-yuan-ma-ru-men/</id>
+    <published>2022-09-07T12:25:01.000Z</published>
+    <updated>2022-08-20T13:52:12.476Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-K8S简介&quot;&gt;&lt;a href=&quot;#1-K8S简介&quot; class=&quot;headerlink&quot; title=&quot;1. K8S简介&quot;&gt;&lt;/a&gt;1. K8S简介&lt;/h1&gt;&lt;p&gt;本文档翻译自官方GITHUB的README&lt;/p&gt;
+&lt;h2 id=&quot;简介&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="kubernetes" scheme="https://blog.elastic.link/categories/kubernetes/"/>
+    
+    
+    <category term="kubernetes" scheme="https://blog.elastic.link/tags/kubernetes/"/>
+    
+    <category term="K8S简介" scheme="https://blog.elastic.link/tags/K8S%E7%AE%80%E4%BB%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>1-过五关斩六将开发属于自己的jdk版本</title>
+    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
+    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-19T14:32:52.744Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
+    
+    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>1-Rebar3 从一个例子入门</title>
+    <link href="https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/"/>
+    <id>https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-19T14:43:13.982Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-Rebar3-从一个例子入门&quot;&gt;&lt;a href=&quot;#1-Rebar3-从一个例子入门&quot; class=&quot;headerlink&quot; title=&quot;1-Rebar3 从一个例子入门&quot;&gt;&lt;/a&gt;1-Rebar3 从一个例子入门&lt;/h1&gt;&lt;h2</summary>
+        
+      
+    
+    
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2-Rebar3 基本配置</title>
+    <link href="https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/"/>
+    <id>https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-21T14:05:37.247Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;基本配置&quot;&gt;&lt;a href=&quot;#基本配置&quot; class=&quot;headerlink&quot; title=&quot;基本配置&quot;&gt;&lt;/a&gt;基本配置&lt;/h1&gt;&lt;p&gt;下面列举一些常见的配置项，如果对所有配置项感兴趣可以去看官网&lt;/p&gt;
+&lt;h2 id=&quot;环境配置&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>3-Rebar3 命令</title>
+    <link href="https://blog.elastic.link/2022/09/07/rebar3/3-rebar3-ming-ling-xing/"/>
+    <id>https://blog.elastic.link/2022/09/07/rebar3/3-rebar3-ming-ling-xing/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-23T06:18:36.470Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;命令&quot;&gt;&lt;a href=&quot;#命令&quot; class=&quot;headerlink&quot; title=&quot;命令&quot;&gt;&lt;/a&gt;命令&lt;/h1&gt;&lt;p&gt;每个 Rebar3 命令的用法。&lt;/p&gt;
+&lt;p&gt;每个命令代表一个任务，它运行一个或多个提供者来完成任务。&lt;/p&gt;
+&lt;h2</summary>
+        
+      
+    
+    
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>1-Erlang 语法基础</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/1-erlang-yu-fa-ji-chu/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/1-erlang-yu-fa-ji-chu/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-19T14:33:30.433Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-语法基础&quot;&gt;&lt;a href=&quot;#1-语法基础&quot; class=&quot;headerlink&quot; title=&quot;1-语法基础&quot;&gt;&lt;/a&gt;1-语法基础&lt;/h1&gt;&lt;h2 id=&quot;shell终端&quot;&gt;&lt;a href=&quot;#shell终端&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/08/27/dubbo/26-rpc-diao-yong-guo-cheng/"/>
+    <id>https://blog.elastic.link/2022/08/27/dubbo/26-rpc-diao-yong-guo-cheng/</id>
+    <published>2022-08-27T10:58:00.262Z</published>
+    <updated>2022-08-29T23:16:41.532Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;这个就要回到消费者的调用代码了主要代码如下：&lt;br&gt;下面是我写的消费者样例代码中的一块代码：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-java&quot; data-language=&quot;java&quot;&gt;&lt;code</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/08/27/dubbo/25-wei-diao-yong-qi-dui-xiang-zeng-jia-rong-cuo-he-guo-lu-qi-deng-gong-neng/"/>
+    <id>https://blog.elastic.link/2022/08/27/dubbo/25-wei-diao-yong-qi-dui-xiang-zeng-jia-rong-cuo-he-guo-lu-qi-deng-gong-neng/</id>
+    <published>2022-08-27T10:42:32.965Z</published>
+    <updated>2022-08-28T12:01:43.057Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;将思路拉回到RegistryProtocol的创建Invoker对象的doCreateInvoker代码&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-java&quot; data-language=&quot;java&quot;&gt;&lt;code</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/08/26/yi-jing/zi-wei-dou-shu/"/>
+    <id>https://blog.elastic.link/2022/08/26/yi-jing/zi-wei-dou-shu/</id>
+    <published>2022-08-26T05:48:53.305Z</published>
+    <updated>2022-08-26T05:48:56.308Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;紫微斗数属五大神数之首，因其断命准确而详细，倍受广大爱好者欢迎。然而如何更好的学会紫微斗数，进入斗数之门，也是有窍门的。最好地方法是选择一个好的老师，跟老师学习进步非常快。一般3-5天的学习，1-3个月的实践，就能掌握紫微斗数断命方法，为人断命快速准确。就能成为命理界高手。</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/08/26/yi-jing/mei-hua-yi-shu/"/>
+    <id>https://blog.elastic.link/2022/08/26/yi-jing/mei-hua-yi-shu/</id>
+    <published>2022-08-26T05:29:28.656Z</published>
+    <updated>2022-08-26T05:29:28.656Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/08/26/kafka/13-xiao-fei-zhe-poll-cong-fu-wu-duan-la-qu-shu-ju/"/>
+    <id>https://blog.elastic.link/2022/08/26/kafka/13-xiao-fei-zhe-poll-cong-fu-wu-duan-la-qu-shu-ju/</id>
+    <published>2022-08-26T00:37:34.253Z</published>
+    <updated>2022-08-26T00:38:52.495Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;•开始&lt;/p&gt;
+&lt;p&gt;•Fetcher的sendFetches()为我们分配了分区的任何节点设置一个fetch请求，前提是这些节点没有正在进行的fetch或挂起的fetch数据。&lt;/p&gt;
+&lt;p&gt;•prepareFetchRequests准备请求数据FetchRequestD</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/08/26/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/"/>
+    <id>https://blog.elastic.link/2022/08/26/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/</id>
+    <published>2022-08-26T00:35:32.666Z</published>
+    <updated>2022-08-26T00:38:47.404Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;开始&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;调用KafkaConsumer的poll方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;获取轻量级锁然后检测消费者开启状态&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;消费者监控指标KafkaConsumerMetrics记录poll</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/08/26/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/"/>
+    <id>https://blog.elastic.link/2022/08/26/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/</id>
+    <published>2022-08-26T00:35:01.270Z</published>
+    <updated>2022-08-26T00:38:42.427Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;•开始&lt;/p&gt;
+&lt;p&gt;•消费者协调器</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/08/26/kafka/10-xiao-fei-zhe-ding-yue-topic/"/>
+    <id>https://blog.elastic.link/2022/08/26/kafka/10-xiao-fei-zhe-ding-yue-topic/</id>
+    <published>2022-08-26T00:33:37.309Z</published>
+    <updated>2022-08-26T00:38:36.706Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;开始&lt;/li&gt;
+&lt;li&gt;调用订阅方法KafkaConsumer的subscribe&lt;/li&gt;
+&lt;li&gt;消费者获取轻量级锁然后检测消费者状态是否正常&lt;/li&gt;
+&lt;li&gt;groupId为空则抛出异常&lt;/li&gt;
+&lt;li&gt;topic为空则执行取消订阅逻辑&lt;/li&gt;
+&lt;l</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/08/26/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/08/26/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/</id>
+    <published>2022-08-26T00:31:47.842Z</published>
+    <updated>2022-08-26T00:38:29.956Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;开始&lt;/li&gt;
+&lt;li&gt;Properties配置转Map&amp;lt;String, Object&amp;gt;&lt;/li&gt;
+&lt;li&gt;Map&amp;lt;String,</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+</feed>

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>11-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662168175997">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662168175997"></script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/archives">Archives</a></li>
+            
+                <li class="nav-item"><a href="/about.html">About</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>11-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig</h1>
+			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">Dubbo3源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig"><a href="#11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig" class="headerlink" title="11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig"></a>11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig</h1><h2 id="11-1-简介"><a href="#11-1-简介" class="headerlink" title="11.1 简介"></a>11.1 简介</h2><p>先贴个代码用来参考:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">DubboBootstrap</span> bootstrap <span class="token operator">=</span> <span class="token class-name">DubboBootstrap</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+bootstrap<span class="token punctuation">.</span><span class="token function">application</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ApplicationConfig</span><span class="token punctuation">(</span><span class="token string">"dubbo-demo-api-provider"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">registry</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegistryConfig</span><span class="token punctuation">(</span><span class="token string">"zookeeper://127.0.0.1:2181"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">protocol</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProtocolConfig</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">service</span><span class="token punctuation">(</span>service<span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上个博客我们说了 RegistryConfig对象的创建,启动器对象在启动之前是要初始化一些配置信息的,这里我们来看这一行代码协议配置信息:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token punctuation">.</span><span class="token function">protocol</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProtocolConfig</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<h2 id="11-2-协议的配置相关"><a href="#11-2-协议的配置相关" class="headerlink" title="11.2  协议的配置相关"></a>11.2  协议的配置相关</h2><p>下面的配置来源于官网</p>
+<p>服务提供者协议配置。对应的配置类： org.apache.dubbo.config.ProtocolConfig。同时，如果需要支持多协议，可以声明多个 <a href="dubbo:protocol">dubbo:protocol</a> 标签，并在 <a href="dubbo:service">dubbo:service</a> 中通过 protocol 属性指定使用的协议。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>对应URL参数</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>缺省值</th>
+<th>作用</th>
+<th>描述</th>
+<th>兼容性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td></td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo</td>
+<td>配置关联</td>
+<td>协议BeanId，可以在&lt;dubbo:service protocol=””&gt;中引用此ID，如果ID不填，缺省和name属性值一样，重复则在name后加序号。</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>name</td>
+<td><protocol></protocol></td>
+<td>string</td>
+<td><strong>必填</strong></td>
+<td>dubbo</td>
+<td>性能调优</td>
+<td>协议名称</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>port</td>
+<td><port></port></td>
+<td>int</td>
+<td>可选</td>
+<td>dubbo协议缺省端口为20880，rmi协议缺省端口为1099，http和hessian协议缺省端口为80；如果<strong>没有</strong>配置port，则自动采用默认端口，如果配置为**-1**，则会分配一个没有被占用的端口。Dubbo 2.4.0+，分配的端口在协议缺省端口的基础上增长，确保端口段可控。</td>
+<td>服务发现</td>
+<td>服务端口</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>host</td>
+<td><host></host></td>
+<td>string</td>
+<td>可选</td>
+<td>自动查找本机IP</td>
+<td>服务发现</td>
+<td>-服务主机名，多网卡选择或指定VIP及域名时使用，为空则自动查找本机IP，-建议不要配置，让Dubbo自动获取本机IP</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>threadpool</td>
+<td>threadpool</td>
+<td>string</td>
+<td>可选</td>
+<td>fixed</td>
+<td>性能调优</td>
+<td>线程池类型，可选：fixed/cached</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>threads</td>
+<td>threads</td>
+<td>int</td>
+<td>可选</td>
+<td>200</td>
+<td>性能调优</td>
+<td>服务线程池大小(固定大小)</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>iothreads</td>
+<td>threads</td>
+<td>int</td>
+<td>可选</td>
+<td>cpu个数+1</td>
+<td>性能调优</td>
+<td>io线程池大小(固定大小)</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>accepts</td>
+<td>accepts</td>
+<td>int</td>
+<td>可选</td>
+<td>0</td>
+<td>性能调优</td>
+<td>服务提供方最大可接受连接数</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>payload</td>
+<td>payload</td>
+<td>int</td>
+<td>可选</td>
+<td>8388608(=8M)</td>
+<td>性能调优</td>
+<td>请求及响应数据包大小限制，单位：字节</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>codec</td>
+<td>codec</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo</td>
+<td>性能调优</td>
+<td>协议编码方式</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>serialization</td>
+<td>serialization</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo协议缺省为hessian2，rmi协议缺省为java，http协议缺省为json</td>
+<td>性能调优</td>
+<td>协议序列化方式，当协议支持多种序列化方式时使用，比如：dubbo协议的dubbo,hessian2,java,compactedjava，以及http协议的json等</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>accesslog</td>
+<td>accesslog</td>
+<td>string/boolean</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>设为true，将向logger中输出访问日志，也可填写访问日志文件路径，直接把访问日志输出到指定文件</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>path</td>
+<td><path></path></td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务发现</td>
+<td>提供者上下文路径，为服务path的前缀</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>transporter</td>
+<td>transporter</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo协议缺省为netty</td>
+<td>性能调优</td>
+<td>协议的服务端和客户端实现类型，比如：dubbo协议的mina,netty等，可以分拆为server和client配置</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>server</td>
+<td>server</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo协议缺省为netty，http协议缺省为servlet</td>
+<td>性能调优</td>
+<td>协议的服务器端实现类型，比如：dubbo协议的mina,netty等，http协议的jetty,servlet等</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>client</td>
+<td>client</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo协议缺省为netty</td>
+<td>性能调优</td>
+<td>协议的客户端实现类型，比如：dubbo协议的mina,netty等</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>dispatcher</td>
+<td>dispatcher</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo协议缺省为all</td>
+<td>性能调优</td>
+<td>协议的消息派发方式，用于指定线程模型，比如：dubbo协议的all, direct, message, execution, connection等</td>
+<td>2.1.0以上版本</td>
+</tr>
+<tr>
+<td>queues</td>
+<td>queues</td>
+<td>int</td>
+<td>可选</td>
+<td>0</td>
+<td>性能调优</td>
+<td>线程池队列大小，当线程池满时，排队等待执行的队列大小，建议不要设置，当线程池满时应立即失败，重试其它服务提供机器，而不是排队，除非有特殊需求。</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>charset</td>
+<td>charset</td>
+<td>string</td>
+<td>可选</td>
+<td>UTF-8</td>
+<td>性能调优</td>
+<td>序列化编码</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>buffer</td>
+<td>buffer</td>
+<td>int</td>
+<td>可选</td>
+<td>8192</td>
+<td>性能调优</td>
+<td>网络读写缓冲区大小</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>heartbeat</td>
+<td>heartbeat</td>
+<td>int</td>
+<td>可选</td>
+<td>0</td>
+<td>性能调优</td>
+<td>心跳间隔，对于长连接，当物理层断开时，比如拔网线，TCP的FIN消息来不及发送，对方收不到断开事件，此时需要心跳来帮助检查连接是否已断开</td>
+<td>2.0.10以上版本</td>
+</tr>
+<tr>
+<td>telnet</td>
+<td>telnet</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>所支持的telnet命令，多个命令用逗号分隔</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>register</td>
+<td>register</td>
+<td>boolean</td>
+<td>可选</td>
+<td>true</td>
+<td>服务治理</td>
+<td>该协议的服务是否注册到注册中心</td>
+<td>2.0.8以上版本</td>
+</tr>
+<tr>
+<td>contextpath</td>
+<td>contextpath</td>
+<td>String</td>
+<td>可选</td>
+<td>缺省为空串</td>
+<td>服务治理</td>
+<td></td>
+<td>2.0.6以上版本</td>
+</tr>
+</tbody></table>
+<p> 同样官网提供的参数里面并未包含所有的属性 下面我就将其余的属性列举一下方便学习参考:</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>threadname</td>
+<td>String</td>
+<td>线程池名称</td>
+</tr>
+<tr>
+<td>corethreads</td>
+<td>Integer</td>
+<td>线程池核心线程大小</td>
+</tr>
+<tr>
+<td>alive</td>
+<td>Integer</td>
+<td>线程池keepAliveTime，默认单位时间单位。毫秒</td>
+</tr>
+<tr>
+<td>exchanger</td>
+<td>String</td>
+<td>交换器配置信息如何交换</td>
+</tr>
+<tr>
+<td>prompt</td>
+<td>String</td>
+<td>命令行提示符</td>
+</tr>
+<tr>
+<td>status</td>
+<td>String</td>
+<td>状态检查</td>
+</tr>
+<tr>
+<td>sslEnabled</td>
+<td>Boolean</td>
+<td>ssl是否启用</td>
+</tr>
+</tbody></table>
+<h2 id="11-3-协议配置对象创建与添加"><a href="#11-3-协议配置对象创建与添加" class="headerlink" title="11.3 协议配置对象创建与添加"></a>11.3 协议配置对象创建与添加</h2><p>前面例子中调用的代码</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token punctuation">.</span><span class="token function">protocol</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProtocolConfig</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这里我们配置了协议类型为dubbo 端口为-1则会分配一个没有被占用的端口</p>
+<p>继续看下DubboBootstrap的protocol方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">DubboBootstrap</span> <span class="token function">protocol</span><span class="token punctuation">(</span><span class="token class-name">ProtocolConfig</span> protocolConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//配置信息转List</span>
+        <span class="token keyword">return</span> <span class="token function">protocols</span><span class="token punctuation">(</span><span class="token function">singletonList</span><span class="token punctuation">(</span>protocolConfig<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>继续看protocols方法 ,这个代码与前面两个博客中看到的向配置管理器添加配置对象的逻辑是一样的<br>这里就不说了可以看前面的博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/songjunyan/article/details/124524350">《9-Dubbo启动器DubboBootstrap添加应用程序的配置信息ApplicationConfig》</a></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">DubboBootstrap</span> <span class="token function">protocols</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProtocolConfig</span><span class="token punctuation">&gt;</span></span> protocolConfigs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>protocolConfigs<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ProtocolConfig</span> protocolConfig <span class="token operator">:</span> protocolConfigs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         protocolConfig<span class="token punctuation">.</span><span class="token function">setScopeModel</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+         configManager<span class="token punctuation">.</span><span class="token function">addProtocol</span><span class="token punctuation">(</span>protocolConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+     <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+ <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<!-- <a class="tag-unordered list-link" href="/tags/Dubbo/" rel="tag">Dubbo<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3/" rel="tag">Dubbo3<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Dubbo3源码解析<span class="tag-unordered list-count">23</span></a> -->
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/07/10/dubbo/12-quan-ju-shi-ye-lai-kan-dubbo3.0.8-de-fu-wu-qi-dong-sheng-ming-zhou-qi/"> 12-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/07/10/dubbo/10-dubbo-qi-dong-qi-dubbobootstrap-tian-jia-zhu-ce-zhong-xin-pei-zhi-xin-xi-registryconfig/"> 10-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加注册中心配置信息RegistryConfig</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                        <a target="_blank" rel="noopener" href="https://nexmoe.com/">折影轻梦</a>
+                    
+                        <a target="_blank" rel="noopener" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books">还有书籍</a>
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

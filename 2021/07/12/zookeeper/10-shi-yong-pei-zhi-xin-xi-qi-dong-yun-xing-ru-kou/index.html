@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>10-使用配置信息启动运行入口 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662168176087">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662168176087"></script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/archives">Archives</a></li>
+            
+                <li class="nav-item"><a href="/about.html">About</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>10-使用配置信息启动运行入口</h1>
+			<div class="info"><span class="date">2021年7月12日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">Zookeeper版本3.6.2源码系列</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/zookeeper/10-使用配置信息启动运行入口.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="10-使用配置信息启动运行入口"><a href="#10-使用配置信息启动运行入口" class="headerlink" title="10-使用配置信息启动运行入口"></a>10-使用配置信息启动运行入口</h1><p>在 QuorumPeerMain类型中前面我看了解了刚刚启动时候的配置加载,日志清理工具开启,接下来我们先回顾一下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initializeAndRun</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">ConfigException</span><span class="token punctuation">,</span> <span class="token class-name">IOException</span><span class="token punctuation">,</span> <span class="token class-name">AdminServerException</span> <span class="token punctuation">{</span>
+		<span class="token comment">//配置加载前面看过</span>
+        <span class="token class-name">QuorumPeerConfig</span> config <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">QuorumPeerConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>args<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            config<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// Start and schedule the the purge task</span>
+        <span class="token comment">//清理工具前面说过</span>
+        <span class="token class-name">DatadirCleanupManager</span> purgeMgr <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DatadirCleanupManager</span><span class="token punctuation">(</span>
+            config<span class="token punctuation">.</span><span class="token function">getDataDir</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            config<span class="token punctuation">.</span><span class="token function">getDataLogDir</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            config<span class="token punctuation">.</span><span class="token function">getSnapRetainCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            config<span class="token punctuation">.</span><span class="token function">getPurgeInterval</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        purgeMgr<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		
+		<span class="token comment">//分布式运行或者单机运行</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>args<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">1</span> <span class="token operator">&amp;&amp;</span> config<span class="token punctuation">.</span><span class="token function">isDistributed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">runFromConfig</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Either no config or no quorum defined in config, running in standalone mode"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// there is only server in the quorum -- run as standalone</span>
+            <span class="token class-name">ZooKeeperServerMain</span><span class="token punctuation">.</span><span class="token function">main</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用配置运行分布式应用<br>启动代码如下根据参数判断单机启动还是分布式启动，这里我们主要看分布式启动一般产线我们部署的应用都是分布式的不会是单机来部署。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">if</span> <span class="token punctuation">(</span>args<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">1</span> <span class="token operator">&amp;&amp;</span> config<span class="token punctuation">.</span><span class="token function">isDistributed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">runFromConfig</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Either no config or no quorum defined in config, running in standalone mode"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// there is only server in the quorum -- run as standalone</span>
+    <span class="token class-name">ZooKeeperServerMain</span><span class="token punctuation">.</span><span class="token function">main</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>上面主要做了初始化操作，接下来就是启动过程</p>
+<ul>
+<li>1:如果存在配置参数并且也存在server参数则程序将使用配置来启动。</li>
+<li>2:如果不存在配置参数则以独立程序模式来启动</li>
+</ul>
+<p>使用配置启动过程runFromConfig我们先来review一下代码做了什么：</p>
+<p>QuorumPeerMain类型的使用配置信息启动运行入口</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">runFromConfig</span><span class="token punctuation">(</span><span class="token class-name">QuorumPeerConfig</span> config<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span><span class="token punctuation">,</span> <span class="token class-name">AdminServerException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    	<span class="token comment">//log4jMBean</span>
+        <span class="token class-name">ManagedUtil</span><span class="token punctuation">.</span><span class="token function">registerLog4jMBeans</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">JMException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Unable to register log4j JMX control"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+	<span class="token comment">//监控指标</span>
+    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Starting quorum peer, myid="</span> <span class="token operator">+</span> config<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">MetricsProvider</span> metricsProvider<span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        metricsProvider <span class="token operator">=</span> <span class="token class-name">MetricsProviderBootstrap</span><span class="token punctuation">.</span><span class="token function">startMetricsProvider</span><span class="token punctuation">(</span>
+            config<span class="token punctuation">.</span><span class="token function">getMetricsProviderClassName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            config<span class="token punctuation">.</span><span class="token function">getMetricsProviderConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">MetricsProviderLifeCycleException</span> error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span><span class="token string">"Cannot boot MetricsProvider "</span> <span class="token operator">+</span> config<span class="token punctuation">.</span><span class="token function">getMetricsProviderClassName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> error<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token class-name">ServerMetrics</span><span class="token punctuation">.</span><span class="token function">metricsProviderInitialized</span><span class="token punctuation">(</span>metricsProvider<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ServerCnxnFactory</span> cnxnFactory <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token class-name">ServerCnxnFactory</span> secureCnxnFactory <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+		<span class="token comment">//连接信息</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            cnxnFactory <span class="token operator">=</span> <span class="token class-name">ServerCnxnFactory</span><span class="token punctuation">.</span><span class="token function">createFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            cnxnFactory<span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getMaxClientCnxns</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getClientPortListenBacklog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getSecureClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            secureCnxnFactory <span class="token operator">=</span> <span class="token class-name">ServerCnxnFactory</span><span class="token punctuation">.</span><span class="token function">createFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            secureCnxnFactory<span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getSecureClientPortAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getMaxClientCnxns</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getClientPortListenBacklog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+		<span class="token comment">//节点创建与配置初始化</span>
+        quorumPeer <span class="token operator">=</span> <span class="token function">getQuorumPeer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setTxnFactory</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FileTxnSnapLog</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getDataLogDir</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getDataDir</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">enableLocalSessions</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">areLocalSessionsEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">enableLocalSessionsUpgrading</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">isLocalSessionsUpgradingEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//quorumPeer.setQuorumPeers(config.getAllMembers());</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setElectionType</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getElectionAlg</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setMyid</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setTickTime</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getTickTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setMinSessionTimeout</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getMinSessionTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setMaxSessionTimeout</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getMaxSessionTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setInitLimit</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getInitLimit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setSyncLimit</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getSyncLimit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setConnectToLearnerMasterLimit</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getConnectToLearnerMasterLimit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setObserverMasterPort</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getObserverMasterPort</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setConfigFileName</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getConfigFilename</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setClientPortListenBacklog</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getClientPortListenBacklog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setZKDatabase</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ZKDatabase</span><span class="token punctuation">(</span>quorumPeer<span class="token punctuation">.</span><span class="token function">getTxnFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setQuorumVerifier</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getQuorumVerifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getLastSeenQuorumVerifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            quorumPeer<span class="token punctuation">.</span><span class="token function">setLastSeenQuorumVerifier</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getLastSeenQuorumVerifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">initConfigInZKDatabase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setCnxnFactory</span><span class="token punctuation">(</span>cnxnFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setSecureCnxnFactory</span><span class="token punctuation">(</span>secureCnxnFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setSslQuorum</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">isSslQuorum</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setUsePortUnification</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">shouldUsePortUnification</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setLearnerType</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getPeerType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setSyncEnabled</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getSyncEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setQuorumListenOnAllIPs</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getQuorumListenOnAllIPs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span>sslQuorumReloadCertFiles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            quorumPeer<span class="token punctuation">.</span><span class="token function">getX509Util</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">enableCertFileReloading</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setMultiAddressEnabled</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">isMultiAddressEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setMultiAddressReachabilityCheckEnabled</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">isMultiAddressReachabilityCheckEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setMultiAddressReachabilityCheckTimeoutMs</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getMultiAddressReachabilityCheckTimeoutMs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// sets quorum sasl authentication configurations</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setQuorumSaslEnabled</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>quorumEnableSasl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>quorumPeer<span class="token punctuation">.</span><span class="token function">isQuorumSaslAuthEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            quorumPeer<span class="token punctuation">.</span><span class="token function">setQuorumServerSaslRequired</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>quorumServerRequireSasl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            quorumPeer<span class="token punctuation">.</span><span class="token function">setQuorumLearnerSaslRequired</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>quorumLearnerRequireSasl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            quorumPeer<span class="token punctuation">.</span><span class="token function">setQuorumServicePrincipal</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>quorumServicePrincipal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            quorumPeer<span class="token punctuation">.</span><span class="token function">setQuorumServerLoginContext</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>quorumServerLoginContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            quorumPeer<span class="token punctuation">.</span><span class="token function">setQuorumLearnerLoginContext</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>quorumLearnerLoginContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">setQuorumCnxnThreadsSize</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>quorumCnxnThreadsSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//节点初始化</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span>jvmPauseMonitorToRun<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            quorumPeer<span class="token punctuation">.</span><span class="token function">setJvmPauseMonitor</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">JvmPauseMonitor</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+		<span class="token comment">//节点启动</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ZKAuditProvider</span><span class="token punctuation">.</span><span class="token function">addZKStartStopAuditLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//节点加入集群</span>
+        quorumPeer<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// warn, but generally this is ok</span>
+        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Quorum Peer interrupted"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>metricsProvider <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                metricsProvider<span class="token punctuation">.</span><span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Error while stopping metrics"</span><span class="token punctuation">,</span> error<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>说下目前遇到的runFromConfig主流程主要如下:</p>
+<ul>
+<li>log4jMBean启动</li>
+<li>监控指标启动</li>
+<li>连接信息配置</li>
+<li>QuorumPeer节点对象创建</li>
+<li>QuorumPeer节点配置初始化</li>
+<li>QuorumPeer节点启动</li>
+<li>QuorumPeer节点加入集群</li>
+</ul>
+<p>后续我们针对这个流程详细细说,可以继续关注后续博客</p>
+<p>查看原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<!-- <a class="tag-unordered list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper<span class="tag-unordered list-count">16</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="tag">Zookeeper安装配置<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Zookeeper源码解析<span class="tag-unordered list-count">16</span></a> -->
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2021/07/12/zookeeper/11-servercnxnfactory-fu-wu-qi-lian-jie-gong-han-dui-xiang-de-chuang-jian-yu-shu-xing-chu-shi-hua/"> 11- ServerCnxnFactory 服务器连接工厂对象的创建与属性初始化</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2021/07/12/zookeeper/9-ri-zhi-qing-li-ding-shi-ren-wu-de-qi-dong-yuan-ma/"> 09-日志清理定时任务的启动</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                        <a target="_blank" rel="noopener" href="https://nexmoe.com/">折影轻梦</a>
+                    
+                        <a target="_blank" rel="noopener" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books">还有书籍</a>
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

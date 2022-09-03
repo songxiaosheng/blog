@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>04-Builder建造者设计模式构造复杂的作业配置 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662168176098">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662168176098"></script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/archives">Archives</a></li>
+            
+                <li class="nav-item"><a href="/about.html">About</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>04-Builder建造者设计模式构造复杂的作业配置</h1>
+			<div class="info"><span class="date">2021年7月3日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">Elastic-Job2.1.5源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/elasticjob/4-Builder建造者设计模式构造复杂的作业配置.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="4-Builder建造者设计模式构造复杂的作业配置"><a href="#4-Builder建造者设计模式构造复杂的作业配置" class="headerlink" title="4 Builder建造者设计模式构造复杂的作业配置"></a>4 Builder建造者设计模式构造复杂的作业配置</h1><h2 id="4-1-作业配置示例"><a href="#4-1-作业配置示例" class="headerlink" title="4.1 作业配置示例"></a>4.1 作业配置示例</h2><p>在了解具体配置信息之前我们先来看下调度作业配置信息对象的初始化代码如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//作业初始化</span>
+<span class="token comment">//这里是定义JOB的名字</span>
+<span class="token class-name">String</span> jobName <span class="token operator">=</span> <span class="token string">"JavaSimpleJob"</span><span class="token punctuation">;</span>
+
+<span class="token comment">//创建JAVA核心配置的建造者builder</span>
+<span class="token class-name">JobCoreConfiguration<span class="token punctuation">.</span>Builder</span> javaCoreConfigurationBuilder <span class="token operator">=</span>
+        <span class="token class-name">JobCoreConfiguration</span><span class="token punctuation">.</span><span class="token function">newBuilder</span><span class="token punctuation">(</span>jobName<span class="token punctuation">,</span> cron<span class="token punctuation">,</span> shardingTotalCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//根据builder构建核心配置</span>
+<span class="token class-name">JobCoreConfiguration</span> jobCoreConfiguration <span class="token operator">=</span> javaCoreConfigurationBuilder<span class="token punctuation">.</span><span class="token function">shardingItemParameters</span><span class="token punctuation">(</span>shardingItemParameters<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//getCanonicalName 返回包名+类名字</span>
+<span class="token class-name">String</span> canonicalName <span class="token operator">=</span> <span class="token class-name">JavaSimpleJob</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getCanonicalName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//根据核心配置创建作业具体配置</span>
+<span class="token class-name">JobTypeConfiguration</span> jobTypeConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleJobConfiguration</span><span class="token punctuation">(</span>jobCoreConfiguration<span class="token punctuation">,</span> canonicalName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//根据作业配置初始化轻量级job配置</span>
+<span class="token class-name">LiteJobConfiguration</span> liteJobConfiguration <span class="token operator">=</span> <span class="token class-name">LiteJobConfiguration</span><span class="token punctuation">.</span><span class="token function">newBuilder</span><span class="token punctuation">(</span>jobTypeConfiguration<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>看代码之后我们可以了解到调度作业配置对象初始化过程主要如下图：</p>
+<p><img src="https://img-blog.csdnimg.cn/958afd2776ae451dbaed15d5cb6ad535.png" alt="图片"></p>
+<p>图4.1 调度作业的初始化过程</p>
+<p>调度作业配置对象主要有3种：</p>
+<ul>
+<li><p>JobCoreConfiguration</p>
+</li>
+<li><p>JobTypeConfiguration</p>
+</li>
+<li><p>LiteJobConfiguration</p>
+</li>
+</ul>
+<p>这里我们主要了解了调度作业配置类型的3大类，作业核心配置类型主要封装一些公共的配置信息，作业类型配置类型主要是针对不同种定制作业的配置，轻量级作业配置主要是针对调度使用过程中的一些功能配置，我们需要将想要初始化的配置信息放入对象属性即可。</p>
+<h2 id="4-2-作业配置的类结构信息"><a href="#4-2-作业配置的类结构信息" class="headerlink" title="4.2 作业配置的类结构信息"></a>4.2 作业配置的类结构信息</h2><p>调度作业配置对象的初始化过程我们已经大致了解了，再来看下配置相关的类型具体有哪些：</p>
+<p><img src="https://img-blog.csdnimg.cn/481b550b606a44288c2ec6bbdddd60a4.png" alt="图片"></p>
+<p>   图4.2 作业配置相关类型</p>
+<ul>
+<li><p>通过UML图我们可以看到最外层是轻量级作业配置类型LiteJobConfiguration</p>
+</li>
+<li><p>LiteJobConfiguration内部包含了作业类型配置JobTypeConfiguration</p>
+</li>
+<li><p>JobTypeConfiguration内部包含了核心作业配置JobCoreConfiguration</p>
+</li>
+<li><p>JobTypeConfiguration接口目前提供了三种配置类型的实现类如下：</p>
+<ul>
+<li>SimpleJobConfiguration</li>
+<li>DataflowJobConfiguration</li>
+<li>ScriptJobConfiguration</li>
+</ul>
+</li>
+</ul>
+<p>这三种作业配置信息分别对应了调度系统中提供的三种定制化作业类型：简单作业，数据流作业，脚本作业，如果后期我们需要定制化自己的作业，可以优先实现自定义作业配置，来进行特殊化配置。</p>
+<h2 id="4-3-常见配置类属性讲解"><a href="#4-3-常见配置类属性讲解" class="headerlink" title="4.3 常见配置类属性讲解"></a>4.3 常见配置类属性讲解</h2><p>前面了解了作业的配置类型的关系，接下来我们可以看下每种作业配置类型在使用的时候分别可以针对作业进行哪种信息的配置。</p>
+<p>LiteJobConfiguration 轻量级作业配置类</p>
+<p><img src="https://img-blog.csdnimg.cn/6b8b4a13370d4fd982e58f8534043360.png" alt="图片"></p>
+<p>JobTypeConfiguration 作业类型配置接口 ，这个类型是作业类型接口并不需要具体的配置类型，后面我们会介绍到它的三种实现类的配置信息，这里呢我们列举下作业类型配置中存在的成员方法</p>
+<p><img src="https://img-blog.csdnimg.cn/d38be6dc0c564af4a7485983f2a654c3.png" alt="图片"></p>
+<p>JobCoreConfiguration 作业核心配置</p>
+<p><img src="https://img-blog.csdnimg.cn/6e432f12e54f42a69f409ac2be1cdc83.png" alt="图片"></p>
+<p>SimpleJobConfiguration 简单类型作业配置</p>
+<p><img src="https://img-blog.csdnimg.cn/03d030ff93c64ae2abc5c34eb947fc24.png" alt="片"></p>
+<p>DataflowJobConfiguration 数据流类型作业配置信息</p>
+<p><img src="https://img-blog.csdnimg.cn/743f34a6802a4201a4fd7c9bee4f5fce.png" alt="图片"></p>
+<p>ScriptJobConfiguration 脚本作业类型配置信息</p>
+<p><img src="https://img-blog.csdnimg.cn/6b062df34e064b01b30a35b2d2360c71.png" alt="图片"></p>
+<p>作业配置类使用Builder建造者设计模式，来解决复杂配置对象的赋值问题，通过建造者模式将各种配置信息组装为完整的配置。将核心参数放到JobCoreConfiguration配置类中，将每个作业的特性分别放到对应配置实体类中如：简单作业配置SimpleJobConfiguration，数据流作业配置信息DataflowJobConfiguration，脚本作业配置信息ScriptJobConfiguration。这里列举到的各种作业配置信息可以先作为一种参考，了解下Elastic-Job对于作业配置的设计，到后面我们会在介绍具体功能的时候看到每种配置配置后是如何生效的，每个配置的作用与使用方法。</p>
+<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<!-- <a class="tag-unordered list-link" href="/tags/ElasticJob/" rel="tag">ElasticJob<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">ElasticJob源码解析<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/%E4%BD%9C%E4%B8%9A%E9%85%8D%E7%BD%AE/" rel="tag">作业配置<span class="tag-unordered list-count">1</span></a> -->
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2021/07/04/elasticjob/5-diao-du-zuo-ye-mo-ban-lei-xing-she-ji/"> 05-调度作业模版类型设计</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2021/07/02/elasticjob/3-zhu-ce-zhong-xin-de-she-ji/"> 03-Elastic-Job 注册中心的设计原理</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                        <a target="_blank" rel="noopener" href="https://nexmoe.com/">折影轻梦</a>
+                    
+                        <a target="_blank" rel="noopener" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books">还有书籍</a>
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

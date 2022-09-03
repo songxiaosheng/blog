@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>07-线程安全的单例模式设计全局作业注册表JobRegistry - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662168176097">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662168176097"></script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/archives">Archives</a></li>
+            
+                <li class="nav-item"><a href="/about.html">About</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>07-线程安全的单例模式设计全局作业注册表JobRegistry</h1>
+			<div class="info"><span class="date">2021年7月6日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">Elastic-Job2.1.5源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/elasticjob/7-线程安全的单例模式设计全局作业注册表JobRegistry.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<p>@<a href="%E7%9B%AE%E5%BD%95">TOC</a></p>
+<h1 id="7-线程安全的单例模式设计全局作业注册表JobRegistry"><a href="#7-线程安全的单例模式设计全局作业注册表JobRegistry" class="headerlink" title="7-线程安全的单例模式设计全局作业注册表JobRegistry"></a>7-线程安全的单例模式设计全局作业注册表JobRegistry</h1><h2 id="7-1-注册作业分片总数"><a href="#7-1-注册作业分片总数" class="headerlink" title="7.1 注册作业分片总数"></a>7.1 注册作业分片总数</h2><p>在作业调度器配置信息同步之后，接下来需要将分片总数写入全局注册表中，方便在程序的任何位置获取分片总数，比如我们后期程序运行时，在调度后台动态修改Zookeeper上存储的分片总数配置，这个时候是需要重新触发分片的，运行中的调度作业程序可以通过判断Zookeeper上发生变更的分片总数与本地注册表中的分片总数进行比较，来判断是否发生了分片总数变更，如果分片总数发生了变更，则需要重新设置分片标记进行重新分片。</p>
+<p>那接下来就来看下是如何将分片总数写入本地注册表，代码如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">//向作业注册表中写入分片总数
+JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCenter.getJobName(),
+        liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getShardingTotalCount());<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>写入过程非常简单只需要一行代码，获取全局单例的作业注册表然后将配置中的分片总数写入即可，而作业注册表JobRegistry类型中的setCurrentShardingTotalCount方法就是将作业名和分片总数的映射关系存入Map中，具体代码如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">/**
+    * 设置当前分片总数.
+    *
+    * @param jobName 作业名称
+    * @param currentShardingTotalCount 当前分片总数
+    */
+   public void setCurrentShardingTotalCount(final String jobName, final int currentShardingTotalCount) {
+       currentShardingTotalCountMap.put(jobName, currentShardingTotalCount);
+   }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>了解到了分片总数写入全局作业注册表的过程，那在下面我们就来详细看下全局作业注册表的设计。</p>
+<h2 id="7-2-作业全局注册表JobRegistry"><a href="#7-2-作业全局注册表JobRegistry" class="headerlink" title="7.2 作业全局注册表JobRegistry"></a>7.2 作业全局注册表JobRegistry</h2><p>我们可以看到在注册作业分片总数的时候有将配置中的分片总数写入到JobRegistry类型的单例子对象中，来进行保存，这个分片总数存储到这个JobRegistry注册表类型对象中，在整个系统中都可以通过获取JobRegistry单例对象来获取属性，作业注册表其实就是用来管理一些公共对象，这些对象可以做为全局变量在任何地方都可以使用， JobRegistry目前系统提供了5种信息的注册，分别为：作业调度控制器对象，协调注册中心对象，作业实例对象，作业运行状态对象，当前分片总数对象。具体类型则使用ConcurrentHashMap来保证线程安全，KEY值均为作业名字，VALUE则为具体对象，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>schedulerMap</td>
+<td>Map**&lt;<strong>String,JobScheduleController**&gt;</strong></td>
+<td>作业调度控制器映射KEY为作业名，值为作业调度控制器</td>
+</tr>
+<tr>
+<td>regCenterMap</td>
+<td>Map**&lt;<strong>String, CoordinatorRegistryCenter**&gt;</strong></td>
+<td>作业协调注册中心映射，KEY为作业名，值为协调注册中心</td>
+</tr>
+<tr>
+<td>jobInstanceMap</td>
+<td>Map**&lt;<strong>String, JobInstance**&gt;</strong></td>
+<td>作业实例映射，KEY为作业名值为作业实例对象</td>
+</tr>
+<tr>
+<td><code>jobRunningMap</code></td>
+<td>Map**&lt;<strong>String, Boolean**&gt;</strong></td>
+<td>作业的运行状态，true为正在运行</td>
+</tr>
+<tr>
+<td>currentShardingTotalCountMap</td>
+<td>Map**&lt;<strong>String, Integer**&gt;</strong></td>
+<td>作业分片总数映射，KEY为作业名，值为分片总数</td>
+</tr>
+</tbody></table>
+<p>实现一个全局的作业注册表JobRegistry，需要用到单例模式， 保证全局对象唯一，这里就直接介绍下JobRegistry类型使用到的单例模式，在这里使用到了单例模式中的 双检锁/双重校验锁（DCL，即 double-checked locking），这种方式采用双锁机制，安全且在多线程情况下能保持高性能。接下来我们来看一下双检锁单例模式的实现，需要如下几个部分：</p>
+<ul>
+<li>私有的单例对象成员变量singleton，使用保证线程间变量可见的volatile 类型来修饰</li>
+<li>私有的构造器，保证外部无法创建对象，对象只能在内部创建保证对象创建可控</li>
+<li>公有的获取单例对象的静态方法getSingleton</li>
+<li>getSingleton中进行对象初始化，加锁之前判断单例对象是否为空，加锁之后也判断下对象是否为空，两次判断对象均为空条件下创建对象，并赋值给singleton对象</li>
+</ul>
+<p>简化后的单例代码如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">public class Singleton {  
+    private volatile static Singleton singleton;  
+    private Singleton (){}  
+    public static Singleton getSingleton() {  
+    if (singleton == null) {  
+        synchronized (Singleton.class) {  
+        if (singleton == null) {  
+            singleton = new Singleton();  
+        }  
+        }  
+    }  
+    return singleton;  
+    }  
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>getSingleton方法为什么需要两次判断呢，第一个if减少性能开销，第二个if避免多线程环境下多线程同时在第一次判断时候对象为空，导致生成多个对象实例。</p>
+<p>全局作业注册表的单例对象可以在程序任何位置获取到，然后通过作业名字即可获取到本地内存存储的对象然后进行操作。</p>
+<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<!-- <a class="tag-unordered list-link" href="/tags/ElasticJob/" rel="tag">ElasticJob<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">ElasticJob源码解析<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/%E4%BD%9C%E4%B8%9A%E7%9A%84%E9%85%8D%E7%BD%AE/" rel="tag">作业的配置<span class="tag-unordered list-count">2</span></a> -->
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2021/07/07/elasticjob/8-shi-yong-quartz-wei-mei-ge-zuo-ye-chuang-jian-dan-ji-zhi-xing-de-diao-du-qi-dui-xiang/"> 08 - 使用Quartz为每个作业创建单机执行的调度器对象</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2021/07/05/elasticjob/6-diao-du-zuo-ye-de-pei-zhi-shi-ru-he-zai-fen-bu-shi-chang-jing-xia-cun-chu-de/"> 06-调度作业的配置是如何在分布式场景下存储的？</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                        <a target="_blank" rel="noopener" href="https://nexmoe.com/">折影轻梦</a>
+                    
+                        <a target="_blank" rel="noopener" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books">还有书籍</a>
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

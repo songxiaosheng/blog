@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>【Linux】-3-磁盘问题排查常用命令 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662168176110">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662168176110"></script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/archives">Archives</a></li>
+            
+                <li class="nav-item"><a href="/about.html">About</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>【Linux】-3-磁盘问题排查常用命令</h1>
+			<div class="info"><span class="date">2016年9月7日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Linux/">Linux</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/linux/problem/3-linux磁盘相关命令.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="3-磁盘问题排查常用命令"><a href="#3-磁盘问题排查常用命令" class="headerlink" title="3-磁盘问题排查常用命令"></a>3-磁盘问题排查常用命令</h1><p>五个常见指标：</p>
+<ul>
+<li><p>使用率：磁盘处理 I/O 的时间百分比。过高的使用率(比如超过 80%)，通常意味 着磁盘 I/O 存在性能瓶颈。</p>
+</li>
+<li><p>饱 和度： I/O 的繁忙程度。过高的饱和度，意味着磁盘存在严重的性能瓶 颈</p>
+</li>
+<li><p>IOPS ： 每秒的 I/O 请求数</p>
+</li>
+<li><p>吞吐量：每秒的 I/O 请求大小</p>
+</li>
+<li><p>响应时间：I/O 请求从发出到收到响应的间隔时间</p>
+<p>这五个指标，是衡量磁盘性能的基本指标。</p>
+</li>
+</ul>
+<h2 id="iostat命令"><a href="#iostat命令" class="headerlink" title="iostat命令"></a>iostat命令</h2><p>-d -x 表示显示所有磁盘 I/O 的指标<br>$ iostat -d -x 1</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># iostat -d -x 1</span>
+Linux <span class="token number">5.10</span>.104-linuxkit <span class="token punctuation">(</span>481b468ee053<span class="token punctuation">)</span> 	07/15/22 	_x86_64_	<span class="token punctuation">(</span><span class="token number">2</span> CPU<span class="token punctuation">)</span>
+
+Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
+vda              <span class="token number">0.02</span>      <span class="token number">1.31</span>     <span class="token number">0.00</span>  <span class="token number">12.19</span>    <span class="token number">0.60</span>    <span class="token number">59.41</span>    <span class="token number">3.57</span>     <span class="token number">15.61</span>     <span class="token number">0.99</span>  <span class="token number">21.78</span>    <span class="token number">3.27</span>     <span class="token number">4.37</span>    <span class="token number">0.47</span>    <span class="token number">691.31</span>     <span class="token number">0.00</span>   <span class="token number">0.00</span>    <span class="token number">0.41</span>  <span class="token number">1464.85</span>    <span class="token number">1.26</span>    <span class="token number">4.99</span>    <span class="token number">0.02</span>   <span class="token number">1.22</span>
+
+Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
+vda              <span class="token number">0.00</span>      <span class="token number">0.00</span>     <span class="token number">0.00</span>   <span class="token number">0.00</span>    <span class="token number">0.00</span>     <span class="token number">0.00</span>    <span class="token number">0.00</span>      <span class="token number">0.00</span>     <span class="token number">0.00</span>   <span class="token number">0.00</span>    <span class="token number">0.00</span>     <span class="token number">0.00</span>    <span class="token number">0.00</span>      <span class="token number">0.00</span>     <span class="token number">0.00</span>   <span class="token number">0.00</span>    <span class="token number">0.00</span>     <span class="token number">0.00</span>    <span class="token number">0.00</span>    <span class="token number">0.00</span>    <span class="token number">0.00</span>   <span class="token number">0.00</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>五大IO指标查看：</p>
+<ul>
+<li><p>%util ：磁盘 I/O 使用率; </p>
+</li>
+<li><p>r/s+ w/s ： IOPS;</p>
+</li>
+<li><p>rkB/s+wkB/s ：吞吐量;</p>
+</li>
+<li><p>r_await+w_await ：响应时间。</p>
+</li>
+</ul>
+<h2 id="pidstat"><a href="#pidstat" class="headerlink" title="pidstat"></a>pidstat</h2><p>pidstat -d 1</p>
+<p>![image-20220715081525931](/Users/mac/Library/Application Support/typora-user-images/image-20220715081525931.png)</p>
+<h2 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h2><p>查看某个进程打开了哪些文件</p>
+ <pre class="line-numbers language-java" data-language="java"><code class="language-java">lsof <span class="token operator">-</span>p 进程id<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>IO问题从大到小范围的排查思路：</p>
+<p>top看%iowait到升高，再看pidstat是哪个进程在操作磁盘，再strace看进程的调用 栈。</p>
+<p>如果正常的思路查不到调用栈也可能是写的临时文件，写完立马释放了，可以使用动态追踪工具filetop 和 opensnoop </p>
+<p>io问题一般都是先top发展iowait比较高，然后iostat看是哪个进程比较高，然后再通过<br>strace，lsof找出进程在读写的具体文件，然后对应的分析</p>
+<p> ![image-20220728080329703](/Users/mac/Library/Application Support/typora-user-images/image-20220728080329703.png)</p>
+<p>![image-20220728080341756](/Users/mac/Library/Application Support/typora-user-images/image-20220728080341756.png)</p>
+<p>![image-20220728080349718](/Users/mac/Library/Application Support/typora-user-images/image-20220728080349718.png)</p>
+
+			<br>
+			<!-- <a class="tag-unordered list-link" href="/tags/Linux%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" rel="tag">Linux问题排查<span class="tag-unordered list-count">4</span></a>, <a class="tag-unordered list-link" href="/tags/%E7%A3%81%E7%9B%98/" rel="tag">磁盘<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/%E7%A3%81%E7%9B%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="tag">磁盘问题排查常用命令<span class="tag-unordered list-count">1</span></a> -->
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2016/09/07/linux/problem/2-linux-nei-cun-xiang-guan-ming-ling/"> 【Linux】-2-内存问题排查常用命令</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2016/09/07/linux/problem/4-linux-wang-luo-xiang-guan-ming-ling/"> 【Linux】-4-网络问题排查常用命令</a>
+                            </div>
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                        <a target="_blank" rel="noopener" href="https://nexmoe.com/">折影轻梦</a>
+                    
+                        <a target="_blank" rel="noopener" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books">还有书籍</a>
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

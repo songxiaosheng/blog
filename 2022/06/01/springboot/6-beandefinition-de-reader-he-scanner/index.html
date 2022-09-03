@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>6-BeanDefinition的Reader和Scanner - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662168176076">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662168176076"></script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/archives">Archives</a></li>
+            
+                <li class="nav-item"><a href="/about.html">About</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>6-BeanDefinition的Reader和Scanner</h1>
+			<div class="info"><span class="date">2022年6月1日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">SpringBoot2源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/springboot/6-BeanDefinition的Reader和Scanner.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="6-BeanDefinition的Reader和Scanner"><a href="#6-BeanDefinition的Reader和Scanner" class="headerlink" title="6-BeanDefinition的Reader和Scanner"></a>6-BeanDefinition的Reader和Scanner</h1><h2 id="6-1-简介"><a href="#6-1-简介" class="headerlink" title="6.1 简介"></a>6.1 简介</h2><p>前面两个构造器创建完成了之后才会创建注解AnnotationConfigApplicationContext的构造器</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">AnnotationConfigApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token class-name">StartupStep</span> createAnnotatedBeanDefReader <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getApplicationStartup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token string">"spring.context.annotated-bean-reader.create"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">this</span><span class="token punctuation">.</span>reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AnnotatedBeanDefinitionReader</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   createAnnotatedBeanDefReader<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">this</span><span class="token punctuation">.</span>scanner <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ClassPathBeanDefinitionScanner</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这个构造器主要创建了两个对象：</p>
+<ul>
+<li><p>reader：AnnotatedBeanDefinitionReader</p>
+</li>
+<li><p>scanner：ClassPathBeanDefinitionScanner</p>
+</li>
+</ul>
+<p>AnnotatedBeanDefinitionReader：关于AnnotatedBeanDefinitionReader官方注释是这样解释的： 方便的适配器，用于bean类的编程注册。<br>这是ClassPathBeanDefinitionScanner的另一种选择，应用相同的注释，但仅适用于显式注册的类。 </p>
+<p>其实这个类型就是通过注解来扫描Bean的</p>
+<p>ClassPathBeanDefinitionScanner：bean定义扫描器，用于检测类路径上的bean候选，并向给定注册表（BeanFactory或ApplicationContext）注册相应的bean定义。<br>候选类通过可配置的类型过滤器检测。默认过滤器包括用Spring的@Component, @Repository, @Service, or @Controller原型注释的类。<br>还支持Java EE 6的javax.annotation.ManagedBean 和JSR-330的javax.inject.Named 注释（如果可用）。</p>
+<p>继续看AnnotatedBeanDefinitionReader方法的执行逻辑</p>
+<h2 id="6-2-AnnotatedBeanDefinitionReader的构造器"><a href="#6-2-AnnotatedBeanDefinitionReader的构造器" class="headerlink" title="6.2 AnnotatedBeanDefinitionReader的构造器"></a>6.2 AnnotatedBeanDefinitionReader的构造器</h2><p>参数为BeanDefinitionRegistry类型的构造器，这个参数实际上是AnnotationConfigApplicationContext类型对象</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">AnnotatedBeanDefinitionReader</span><span class="token punctuation">(</span><span class="token class-name">BeanDefinitionRegistry</span> registry<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">this</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> <span class="token function">getOrCreateEnvironment</span><span class="token punctuation">(</span>registry<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>获取Environment对象</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">Environment</span> <span class="token function">getOrCreateEnvironment</span><span class="token punctuation">(</span><span class="token class-name">BeanDefinitionRegistry</span> registry<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> <span class="token string">"BeanDefinitionRegistry must not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span>registry <span class="token keyword">instanceof</span> <span class="token class-name">EnvironmentCapable</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">EnvironmentCapable</span><span class="token punctuation">)</span> registry<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+   <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">StandardEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>参数为BeanDefinitionRegistry类型和Environment类型重载的构造器这个Demo中Environment是StandardEnvironment 类型</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">AnnotatedBeanDefinitionReader</span><span class="token punctuation">(</span><span class="token class-name">BeanDefinitionRegistry</span> registry<span class="token punctuation">,</span> <span class="token class-name">Environment</span> environment<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> <span class="token string">"BeanDefinitionRegistry must not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>environment<span class="token punctuation">,</span> <span class="token string">"Environment must not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">this</span><span class="token punctuation">.</span>registry <span class="token operator">=</span> registry<span class="token punctuation">;</span>
+   <span class="token comment">//用于计算Conditional条件注解的的内部类。</span>
+   <span class="token keyword">this</span><span class="token punctuation">.</span>conditionEvaluator <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConditionEvaluator</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> environment<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//在给定注册表中注册所有相关的批注后处理程序</span>
+   <span class="token class-name">AnnotationConfigUtils</span><span class="token punctuation">.</span><span class="token function">registerAnnotationConfigProcessors</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="6-3-Conditional条件注解处理器"><a href="#6-3-Conditional条件注解处理器" class="headerlink" title="6.3 Conditional条件注解处理器"></a>6.3 Conditional条件注解处理器</h2><p>ConditionEvaluator</p>
+<p>ConditionContextImpl</p>
+<h2 id="6-4-注解配置工具类AnnotationConfigUtils的注册所后处理器"><a href="#6-4-注解配置工具类AnnotationConfigUtils的注册所后处理器" class="headerlink" title="6.4 注解配置工具类AnnotationConfigUtils的注册所后处理器"></a>6.4 注解配置工具类AnnotationConfigUtils的注册所后处理器</h2><p>在给定注册表中注册所有相关的批注后处理程序</p>
+<pre class="line-numbers language-none"><code class="language-none">public static void registerAnnotationConfigProcessors(BeanDefinitionRegistry registry) {
+   registerAnnotationConfigProcessors(registry, null);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>AnnotationConfigUtils的registerAnnotationConfigProcessors方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">BeanDefinitionHolder</span><span class="token punctuation">&gt;</span></span> <span class="token function">registerAnnotationConfigProcessors</span><span class="token punctuation">(</span>
+      <span class="token class-name">BeanDefinitionRegistry</span> registry<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> <span class="token class-name">Object</span> source<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	 <span class="token comment">//可集合容器化的Bean工厂 unwrapDefaultListableBeanFactory方法借助instanceof关键词进行抽象类型转具体实现类型逻辑判断，这里最终转换为可容器画的Bean工程DefaultListableBeanFactory</span>
+   <span class="token class-name">DefaultListableBeanFactory</span> beanFactory <span class="token operator">=</span> <span class="token function">unwrapDefaultListableBeanFactory</span><span class="token punctuation">(</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span>beanFactory <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   		<span class="token comment">//为Bean工厂配置 注解Order排序器</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">.</span><span class="token function">getDependencyComparator</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">instanceof</span> <span class="token class-name">AnnotationAwareOrderComparator</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         beanFactory<span class="token punctuation">.</span><span class="token function">setDependencyComparator</span><span class="token punctuation">(</span><span class="token class-name">AnnotationAwareOrderComparator</span><span class="token punctuation">.</span>INSTANCE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token comment">//为Bean工厂配置 自动注入工具</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">.</span><span class="token function">getAutowireCandidateResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">instanceof</span> <span class="token class-name">ContextAnnotationAutowireCandidateResolver</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//注解自动注入解析器</span>
+         beanFactory<span class="token punctuation">.</span><span class="token function">setAutowireCandidateResolver</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ContextAnnotationAutowireCandidateResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span>
+
+ <span class="token comment">//Bean定义集合 BeanDefinitionHolder用于村粗RootBeanDefinition和Bean的name</span>
+   <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">BeanDefinitionHolder</span><span class="token punctuation">&gt;</span></span> beanDefs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedHashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  	<span class="token comment">//如果不包含内部管理配置的注释处理器Bean名称。如下类型则为其添加</span>
+  <span class="token comment">//org.springframework.context.annotation.internalConfigurationAnnotationProcessor</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>registry<span class="token punctuation">.</span><span class="token function">containsBeanDefinition</span><span class="token punctuation">(</span>CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token comment">//这里添加的类型为ConfigurationClassPostProcessor  </span>
+     <span class="token class-name">RootBeanDefinition</span> def <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RootBeanDefinition</span><span class="token punctuation">(</span><span class="token class-name">ConfigurationClassPostProcessor</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      def<span class="token punctuation">.</span><span class="token function">setSource</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      beanDefs<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token function">registerPostProcessor</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> def<span class="token punctuation">,</span> CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+	<span class="token comment">//如果不包含内部自动注入的处理器则为其添加</span>
+  <span class="token comment">//自动注入的处理器为：org.springframework.context.annotation.internalAutowiredAnnotationProcessor</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>registry<span class="token punctuation">.</span><span class="token function">containsBeanDefinition</span><span class="token punctuation">(</span>AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token comment">//自动注入的处理器类型为AutowiredAnnotationBeanPostProcessor</span>
+      <span class="token class-name">RootBeanDefinition</span> def <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RootBeanDefinition</span><span class="token punctuation">(</span><span class="token class-name">AutowiredAnnotationBeanPostProcessor</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      def<span class="token punctuation">.</span><span class="token function">setSource</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      beanDefs<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token function">registerPostProcessor</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> def<span class="token punctuation">,</span> AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+
+   <span class="token comment">// Check for JSR-250 support, and if present add the CommonAnnotationBeanPostProcessor.</span>
+  <span class="token comment">//JSR-250  注解处理器 比如javax.annotation包下的注解在JDK11的版不能已经没有了</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span>jsr250Present <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>registry<span class="token punctuation">.</span><span class="token function">containsBeanDefinition</span><span class="token punctuation">(</span>COMMON_ANNOTATION_PROCESSOR_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token class-name">RootBeanDefinition</span> def <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RootBeanDefinition</span><span class="token punctuation">(</span><span class="token class-name">CommonAnnotationBeanPostProcessor</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      def<span class="token punctuation">.</span><span class="token function">setSource</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      beanDefs<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token function">registerPostProcessor</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> def<span class="token punctuation">,</span> COMMON_ANNOTATION_PROCESSOR_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+
+   <span class="token comment">// Check for JPA support, and if present add the PersistenceAnnotationBeanPostProcessor.</span>
+  <span class="token comment">//JPA注解支持</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span>jpaPresent <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>registry<span class="token punctuation">.</span><span class="token function">containsBeanDefinition</span><span class="token punctuation">(</span>PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token class-name">RootBeanDefinition</span> def <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RootBeanDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">try</span> <span class="token punctuation">{</span>
+         def<span class="token punctuation">.</span><span class="token function">setBeanClass</span><span class="token punctuation">(</span><span class="token class-name">ClassUtils</span><span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>PERSISTENCE_ANNOTATION_PROCESSOR_CLASS_NAME<span class="token punctuation">,</span>
+               <span class="token class-name">AnnotationConfigUtils</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ClassNotFoundException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span>
+               <span class="token string">"Cannot load optional framework class: "</span> <span class="token operator">+</span> PERSISTENCE_ANNOTATION_PROCESSOR_CLASS_NAME<span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      def<span class="token punctuation">.</span><span class="token function">setSource</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      beanDefs<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token function">registerPostProcessor</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> def<span class="token punctuation">,</span> PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+
+   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>registry<span class="token punctuation">.</span><span class="token function">containsBeanDefinition</span><span class="token punctuation">(</span>EVENT_LISTENER_PROCESSOR_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token class-name">RootBeanDefinition</span> def <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RootBeanDefinition</span><span class="token punctuation">(</span><span class="token class-name">EventListenerMethodProcessor</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      def<span class="token punctuation">.</span><span class="token function">setSource</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      beanDefs<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token function">registerPostProcessor</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> def<span class="token punctuation">,</span> EVENT_LISTENER_PROCESSOR_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+
+   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>registry<span class="token punctuation">.</span><span class="token function">containsBeanDefinition</span><span class="token punctuation">(</span>EVENT_LISTENER_FACTORY_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token class-name">RootBeanDefinition</span> def <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RootBeanDefinition</span><span class="token punctuation">(</span><span class="token class-name">DefaultEventListenerFactory</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      def<span class="token punctuation">.</span><span class="token function">setSource</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      beanDefs<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token function">registerPostProcessor</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> def<span class="token punctuation">,</span> EVENT_LISTENER_FACTORY_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+
+   <span class="token keyword">return</span> beanDefs<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<!-- <a class="tag-unordered list-link" href="/tags/SprigBoot%E6%BA%90%E7%A0%81/" rel="tag">SprigBoot源码<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/Spring/" rel="tag">Spring<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot<span class="tag-unordered list-count">6</span></a> -->
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/06/01/springboot/5-springboot-rong-qi-de-chuang-jian/"> 5-SpringBoot容器的创建</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/06/01/springboot/4-pei-zhi-xin-xi-jia-zai-quan-jie-xi-kai-fa-zi-ji-de-pei-zhi-zhong-xin-bi-bei-gong-neng/"> 4-配置信息加载全解析-(开发自己的配置中心必备功能)</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                        <a target="_blank" rel="noopener" href="https://nexmoe.com/">折影轻梦</a>
+                    
+                        <a target="_blank" rel="noopener" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books">还有书籍</a>
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>
