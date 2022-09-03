@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918057">
+<link rel="stylesheet" href="/css/style.css?v=1662168973073">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918057"></script>
+<script src="/js/core.js?v=1662168973073"></script>
 
 
 
@@ -48,149 +48,1184 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>15- 选举算法的准备等待选举</h1>
+			<div class="info"><span class="date">2021年7月12日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">Zookeeper版本3.6.2源码系列</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/zookeeper/15-选举算法的准备等待选举.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="15-选举算法的准备等待选举"><a href="#15-选举算法的准备等待选举" class="headerlink" title="15-选举算法的准备等待选举"></a>15-选举算法的准备等待选举</h1><h2 id="15-1-简介"><a href="#15-1-简介" class="headerlink" title="15.1 简介"></a>15.1 简介</h2><p>先来回顾下QuorumPeer的启动方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">getView</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span>myid<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"My id "</span> <span class="token operator">+</span> myid <span class="token operator">+</span> <span class="token string">" not in the peer list"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token comment">//将数据库从磁盘加载到内存中，并将事务添加到内存中的committedlog中。</span>
+    <span class="token function">loadDataBase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//服务端开启连接线程</span>
+    <span class="token function">startServerCnxnFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+<span class="token comment">//开启管理端</span>
+        adminServer<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">AdminServerException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Problem starting AdminServer"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token comment">//开启选举功能</span>
+    <span class="token function">startLeaderElection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//开启JVM监控</span>
+    <span class="token function">startJvmPauseMonitor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//线程启动QuorumPeer开始运行</span>
+    <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="15-2-开始选举源码"><a href="#15-2-开始选举源码" class="headerlink" title="15.2 开始选举源码"></a>15.2 开始选举源码</h2><p>启动时候从磁盘加载数据到内存，然后开启服务端的网络处理服务，然后开启一个管理端，接下来就进入比较重要的一个章节，选举功能</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token function">startLeaderElection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>QuorumPeer的startLeaderElection方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">startLeaderElection</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+<span class="token comment">//寻找leader状态</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">getPeerState</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token class-name">ServerState</span><span class="token punctuation">.</span>LOOKING<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//创建投票，这里有三个参数第一个参数的值是当前节点的id也就是我们在配置文件中配置的serverId ，Vote类中第一个参数是投票id，第二个参数是值是dataTree.lastProcessedZxid最新处理的事务id zxid，第三个参数是currentEpoch，也就是currentEpoch文件中最新的epoch值</span>
+            currentVote <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vote</span><span class="token punctuation">(</span>myid<span class="token punctuation">,</span> <span class="token function">getLastLoggedZxid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">getCurrentEpoch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">RuntimeException</span> re <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        re<span class="token punctuation">.</span><span class="token function">setStackTrace</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">getStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> re<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>electionAlg <span class="token operator">=</span> <span class="token function">createElectionAlgorithm</span><span class="token punctuation">(</span>electionType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>ZK节点状态角色<br>ZK集群单节点状态（每个节点有且只有一个状态），ZK的定位一定需要一个leader节点处于lading状态。</p>
+<ul>
+<li>looking：寻找leader状态，当前集群没有leader，进入leader选举流程。</li>
+<li>following：跟随者状态，接受leading节点同步和指挥。</li>
+<li>leading：领导者状态。</li>
+<li>observing：观察者状态，表名当前服务器是observer。</li>
+</ul>
+<h2 id="15-3-创建选举算法"><a href="#15-3-创建选举算法" class="headerlink" title="15.3 创建选举算法"></a>15.3 创建选举算法</h2><p>QuorumPeer的createElectionAlgorithm方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token class-name">Election</span> <span class="token function">createElectionAlgorithm</span><span class="token punctuation">(</span><span class="token keyword">int</span> electionAlgorithm<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">Election</span> le <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+    <span class="token comment">//TODO: use a factory rather than a switch</span>
+    <span class="token keyword">switch</span> <span class="token punctuation">(</span>electionAlgorithm<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">case</span> <span class="token number">1</span><span class="token operator">:</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">UnsupportedOperationException</span><span class="token punctuation">(</span><span class="token string">"Election Algorithm 1 is not supported."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> <span class="token number">2</span><span class="token operator">:</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">UnsupportedOperationException</span><span class="token punctuation">(</span><span class="token string">"Election Algorithm 2 is not supported."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> <span class="token number">3</span><span class="token operator">:</span>
+	<span class="token comment">//创建连接QuorumCnxManager对象，用来处理连接</span>
+        <span class="token class-name">QuorumCnxManager</span> qcm <span class="token operator">=</span> <span class="token function">createCnxnManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token comment">//将连接对象放入：AtomicReference中跨线程可见</span>
+        <span class="token class-name">QuorumCnxManager</span> oldQcm <span class="token operator">=</span> qcmRef<span class="token punctuation">.</span><span class="token function">getAndSet</span><span class="token punctuation">(</span>qcm<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>oldQcm <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token comment">//连接存在则关闭之前的连接</span>
+            LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Clobbering already-set QuorumCnxManager (restarting leader election?)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            oldQcm<span class="token punctuation">.</span><span class="token function">halt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token class-name">QuorumCnxManager<span class="token punctuation">.</span>Listener</span> listener <span class="token operator">=</span> qcm<span class="token punctuation">.</span>listener<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>listener <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+			<span class="token comment">//开启监听器</span>
+            listener<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">FastLeaderElection</span> fle <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FastLeaderElection</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> qcm<span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token comment">//开启快速选举</span>
+            fle<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            le <span class="token operator">=</span> fle<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Null listener when initializing cnx manager"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">default</span><span class="token operator">:</span>
+        <span class="token keyword">assert</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> le<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>electionType 的值是哪里来的呢 其实是来源配置文件中electionAlg属性默认值为3.使用何种选举方式，目前只支持3在老的版本中也是支持其他选项的（0，1，2，3），</p>
+<ul>
+<li>“0”表示使用原生的UDP（LeaderElection），</li>
+<li>“1”表示使用非授权UDP，</li>
+<li>“2”表示授权UDP，</li>
+<li>“3”基于TCP的快速选举（FastLeaderElection）</li>
+</ul>
+<p>。目前保留“3”，其他方式将在未来版本不予支持，参QuorumPear.createElectionAlgorithm（int alg）</p>
+<h2 id="15-4-选举之前的初始化"><a href="#15-4-选举之前的初始化" class="headerlink" title="15.4 选举之前的初始化"></a>15.4 选举之前的初始化</h2><p>先来看选举之前的初始化<br>创建QuorumCnxManager对象：<br>QuorumCnxManager(qcm) 实现领导选举中的网络连接管理功能。它为每一对节点维护唯一的一个连接，在两个节点都启动申请连接时，只有sid大的一方才会申请连接成功。qcm对每个节点维护一个消息发送队列。<br>Qcm主要成员变量：</p>
+<ul>
+<li>public final ArrayBlockingQueue<message> recvQueue; //本节点的消息接收队列</message></li>
+<li>final ConcurrentHashMap&lt;Long, SendWorker&gt; senderWorkerMap;//对每一个远程节点都会定义一个SendWorker</li>
+<li>ConcurrentHashMap&lt;Long, ArrayBlockingQueue<bytebuffer>&gt; queueSendMap;//每个远程节点都会定义一个消息发型队列</bytebuffer></li>
+<li>Qcm主要三个内类（线程）：<ul>
+<li>Listener 网络监听线程</li>
+<li>SendWorker 消息发送线程（每个远程节点都会有一个）</li>
+<li>RecvWorker 消息接受线程</li>
+</ul>
+</li>
+</ul>
+<p>这个类实现了使用TCP进行leader选举的连接管理器。它为每对服务器维护一个连接。棘手的部分是确保每对正确运行并可以通过网络通信的服务器只有一个连接。<br>如果两个服务器试图同时启动一个连接，那么连接管理器将使用一种非常简单的打破连接机制，根据双方的IP地址来决定要删除哪个连接。<br>对于每个对等点，管理器维护一个要发送的消息队列。如果与任何特定对等点的连接断开，则发送方线程将消息放回到列表中。由于此实现目前使用队列实现来维护要发送给另一个对等体的消息，因此我们将消息添加到队列的尾部，从而更改消息的顺序。虽然这对领导选举来说不是问题，但在点对点通信时可能会出现问题。不过，这还有待证实。<br>对象初始化代码如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">QuorumCnxManager</span> <span class="token function">createCnxnManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> timeout <span class="token operator">=</span> quorumCnxnTimeoutMs <span class="token operator">&gt;</span> <span class="token number">0</span> <span class="token operator">?</span> quorumCnxnTimeoutMs <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tickTime <span class="token operator">*</span> <span class="token keyword">this</span><span class="token punctuation">.</span>syncLimit<span class="token punctuation">;</span>
+    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Using {}ms as the quorum cnxn socket timeout"</span><span class="token punctuation">,</span> timeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">QuorumCnxManager</span><span class="token punctuation">(</span>
+        <span class="token keyword">this</span><span class="token punctuation">,</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getView</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>authServer<span class="token punctuation">,</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>authLearner<span class="token punctuation">,</span>
+        timeout<span class="token punctuation">,</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getQuorumListenOnAllIPs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>quorumCnxnThreadsSize<span class="token punctuation">,</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">isQuorumSaslAuthEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>构造器如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">QuorumCnxManager</span><span class="token punctuation">(</span><span class="token class-name">QuorumPeer</span> self<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">long</span> mySid<span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">,</span> <span class="token class-name">QuorumPeer<span class="token punctuation">.</span>QuorumServer</span><span class="token punctuation">&gt;</span></span> view<span class="token punctuation">,</span>
+    <span class="token class-name">QuorumAuthServer</span> authServer<span class="token punctuation">,</span> <span class="token class-name">QuorumAuthLearner</span> authLearner<span class="token punctuation">,</span> <span class="token keyword">int</span> socketTimeout<span class="token punctuation">,</span> <span class="token keyword">boolean</span> listenOnAllIPs<span class="token punctuation">,</span>
+    <span class="token keyword">int</span> quorumCnxnThreadsSize<span class="token punctuation">,</span> <span class="token keyword">boolean</span> quorumSaslAuthEnabled<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>recvQueue <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CircularBlockingQueue</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>RECV_CAPACITY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>queueSendMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>senderWorkerMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>lastMessageSent <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token class-name">String</span> cnxToValue <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token string">"zookeeper.cnxTimeout"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>cnxToValue <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>cnxTO <span class="token operator">=</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">parseInt</span><span class="token punctuation">(</span>cnxToValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>self <span class="token operator">=</span> self<span class="token punctuation">;</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>mySid <span class="token operator">=</span> mySid<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>socketTimeout <span class="token operator">=</span> socketTimeout<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>view <span class="token operator">=</span> view<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>listenOnAllIPs <span class="token operator">=</span> listenOnAllIPs<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>authServer <span class="token operator">=</span> authServer<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>authLearner <span class="token operator">=</span> authLearner<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>quorumSaslAuthEnabled <span class="token operator">=</span> quorumSaslAuthEnabled<span class="token punctuation">;</span>
+
+    <span class="token function">initializeConnectionExecutor</span><span class="token punctuation">(</span>mySid<span class="token punctuation">,</span> quorumCnxnThreadsSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Starts listener thread that waits for connection requests</span>
+    listener <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Listener</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    listener<span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span><span class="token string">"QuorumPeerListener"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>先来了解下各个参数的含义：</p>
+<ul>
+<li><p>QuorumPeer self ：当前server管理仲裁协议的QuorumPeer类型</p>
+</li>
+<li><p>long mySid: 为当前server配置的id在myid文件中</p>
+</li>
+<li><p>Map&lt;Long, QuorumPeer.QuorumServer&gt; view, 需要投票的服务器列表在配置zookeeper配置文件中可以配置服务器列表（可以配置每个服务器对应的投票权重）</p>
+</li>
+<li><p>QuorumAuthServer authServer：初始化QuorumPeer对象时候创建的仲裁服务器的认证服务，用于认证客户端的连接</p>
+</li>
+<li><p>QuorumAuthLearner authLearner：仲裁学习者认证服务</p>
+</li>
+<li><p>int socketTimeout ：使用quorumCnxnTimeoutMs的JVM参数配置：（Java系统属性：饲养员quorumCnxnTimeoutMs）设置为领导人选举通知的连接读取超时值。仅适用于使用electionAlg 3 的情况。笔记默认值为 -1，然后将使用 syncLimit * tickTime 作为超时。</p>
+</li>
+<li><p>boolean listenOnAllIPs: 配置来源于配置中间中的quorumListenOnAllIPs是否监听两个仲裁端口（广播和选举）的所有ip，这个配置默认为false，监听多个IP会创建多个ServerSocket对象进行绑定，如果为false如果zookeeper配置了istio sidecar ，在选举阶段就会报- connection refused（Connection refused）错误，这主要是因为 zookeeper 在server之间通信默认是监听 pod IP 地址，而istio要求监听0.0.0.0，因此需要设置- quorumListenOnAllIPs=true。<br>具体问题可以参考：<a target="_blank" rel="noopener" href="https://istio.io/latest/faq/applications/">https://istio.io/latest/faq/applications/</a></p>
+</li>
+<li><p>int quorumCnxnThreadsSize：connectionexecutor线程池中允许用于初始化仲裁服务器连接的最大线程数。默认配置为20，可以在配置文件中进行配置</p>
+</li>
+<li><p>quorumSaslAuthEnabled ：是否开启sasl认证</p>
+</li>
+</ul>
+<p>构造器的初始化主要看一下initializeConnectionExecutor创建连接线程池<br>在连接初始化期间使用Connection Executor(用于处理连接超时)，也可以在接收连接期间选择使用它(因为Quorum SASL身份验证可能需要额外的时间)</p>
+<p>创建对象完毕之后则将QuorumCnxManager对象存入成员变量AtomicReference中用于跨线程可见</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">QuorumCnxManager</span> oldQcm <span class="token operator">=</span> qcmRef<span class="token punctuation">.</span><span class="token function">getAndSet</span><span class="token punctuation">(</span>qcm<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//如果缓存的对象存在则关闭之前的使用最新的</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>oldQcm <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Clobbering already-set QuorumCnxManager (restarting leader election?)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    oldQcm<span class="token punctuation">.</span><span class="token function">halt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="15-5-QuorumCnxManager的网络监听线程Listener"><a href="#15-5-QuorumCnxManager的网络监听线程Listener" class="headerlink" title="15.5 QuorumCnxManager的网络监听线程Listener"></a>15.5 QuorumCnxManager的网络监听线程Listener</h2><p>Listener内部线程的run方法如下用于启动监听端口，监听其他server的连接与数据传输</p>
+<p>启动之前的监听器</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>shutdown<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Listener thread started, myId: {}"</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">InetSocketAddress</span><span class="token punctuation">&gt;</span></span> addresses<span class="token punctuation">;</span>
+	<span class="token comment">//quorumListenOnAllIPs配置是否监听所有网卡的IP连接</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>self<span class="token punctuation">.</span><span class="token function">getQuorumListenOnAllIPs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            addresses <span class="token operator">=</span> self<span class="token punctuation">.</span><span class="token function">getElectionAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getWildcardAddresses</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            addresses <span class="token operator">=</span> self<span class="token punctuation">.</span><span class="token function">getElectionAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAllAddresses</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token class-name">CountDownLatch</span> latch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountDownLatch</span><span class="token punctuation">(</span>addresses<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        listenerHandlers <span class="token operator">=</span> addresses<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>address <span class="token operator">-&gt;</span>
+                        <span class="token keyword">new</span> <span class="token class-name">ListenerHandler</span><span class="token punctuation">(</span>address<span class="token punctuation">,</span> self<span class="token punctuation">.</span><span class="token function">shouldUsePortUnification</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span><span class="token function">isSslQuorum</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> latch<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//为每个网卡创建socket监听</span>
+        <span class="token class-name">ExecutorService</span> executor <span class="token operator">=</span> <span class="token class-name">Executors</span><span class="token punctuation">.</span><span class="token function">newFixedThreadPool</span><span class="token punctuation">(</span>addresses<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        listenerHandlers<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>executor<span class="token operator">::</span><span class="token function">submit</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            latch<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> ie<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Interrupted while sleeping. Ignoring exception"</span><span class="token punctuation">,</span> ie<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            <span class="token comment">// Clean up for shutdown.</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ListenerHandler</span> handler <span class="token operator">:</span> listenerHandlers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    handler<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> ie<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment">// Don't log an error for shutdown.</span>
+                    LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Error closing server socket"</span><span class="token punctuation">,</span> ie<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Leaving listener"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>shutdown<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>
+          <span class="token string">"As I'm leaving the listener thread, I won't be able to participate in leader election any longer: {}"</span><span class="token punctuation">,</span>
+          self<span class="token punctuation">.</span><span class="token function">getElectionAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAllAddresses</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token class-name">NetUtils</span><span class="token operator">::</span><span class="token function">formatInetAddr</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">joining</span><span class="token punctuation">(</span><span class="token string">"|"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>socketException<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// After leaving listener thread, the host cannot join the quorum anymore,</span>
+            <span class="token comment">// this is a severe error that we cannot recover from, so we need to exit</span>
+            socketBindErrorHandler<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>//开启服务端口监听等待客户端连接, 大的sid连接小的sid的服务逻辑如下:</p>
+<ul>
+<li>如果建立连接的客户端的sid小于当前实例的sid则断开与当前客户端的连接转而充当客户端- 连接当前更大sid的服务</li>
+<li>如果建立连接的客户端的sid大于当前实例的sid则正常连接开启发送和接收的子线程SendWorker和RecvWorker</li>
+<li>发送线程循环从发送队列中拉取消息进行发送(queueSendMap<br>中sid对应的发送队列)</li>
+<li>接收消息线程循环的获取客户端发送过来的消息,然后将消息存入接收消息队列中recvQueue</li>
+<li>在FastLeaderElection选取算法类型中会创建Messenger类型对象</li>
+<li>Messenger类型对象通过内部的WorkerSender和WorkerReceiver线程来处理需要发送和需要接收的消息然后将消息放入发送队列(queueSendMap中sid对应的发送队列)或者从接收队列recvQueue中获取消息进行处理</li>
+</ul>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">ListenerHandler</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span><span class="token punctuation">,</span> <span class="token class-name">Closeable</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token class-name">ServerSocket</span> serverSocket<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">InetSocketAddress</span> address<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> portUnification<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> sslQuorum<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">CountDownLatch</span> latch<span class="token punctuation">;</span>
+
+    <span class="token class-name">ListenerHandler</span><span class="token punctuation">(</span><span class="token class-name">InetSocketAddress</span> address<span class="token punctuation">,</span> <span class="token keyword">boolean</span> portUnification<span class="token punctuation">,</span> <span class="token keyword">boolean</span> sslQuorum<span class="token punctuation">,</span>
+                    <span class="token class-name">CountDownLatch</span> latch<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>address <span class="token operator">=</span> address<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>portUnification <span class="token operator">=</span> portUnification<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>sslQuorum <span class="token operator">=</span> sslQuorum<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>latch <span class="token operator">=</span> latch<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/**
+     * Sleeps on acceptConnections().
+     */</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span><span class="token string">"ListenerHandler-"</span> <span class="token operator">+</span> address<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//创建接收连接</span>
+            <span class="token function">acceptConnections</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Exception when shutting down listener: "</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// Output of unexpected exception, should never happen</span>
+            LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Unexpected error "</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            latch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>serverSocket <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>serverSocket<span class="token punctuation">.</span><span class="token function">isClosed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Trying to close listeners: {}"</span><span class="token punctuation">,</span> serverSocket<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            serverSocket<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/**
+     * Sleeps on accept().
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">acceptConnections</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">int</span> numRetries <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token class-name">Socket</span> client <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token comment">//创建ServerSocket</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token operator">!</span>shutdown<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>portBindMaxRetry <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> numRetries <span class="token operator">&lt;</span> portBindMaxRetry<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                serverSocket <span class="token operator">=</span> <span class="token function">createNewServerSocket</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"{} is accepting connections now, my election bind port: {}"</span><span class="token punctuation">,</span> <span class="token class-name">QuorumCnxManager</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span>mySid<span class="token punctuation">,</span> address<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span>shutdown<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                        client <span class="token operator">=</span> serverSocket<span class="token punctuation">.</span><span class="token function">accept</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//设置socket通信参数</span>
+                        <span class="token function">setSockOpts</span><span class="token punctuation">(</span>client<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Received connection request from {}"</span><span class="token punctuation">,</span> client<span class="token punctuation">.</span><span class="token function">getRemoteSocketAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment">// Receive and handle the connection request</span>
+                        <span class="token comment">// asynchronously if the quorum sasl authentication is</span>
+                        <span class="token comment">// enabled. This is required because sasl server</span>
+                        <span class="token comment">// authentication process may take few seconds to finish,</span>
+                        <span class="token comment">// this may delay next peer connection requests.</span>
+如果启用了仲裁sasl身份验证，则异步接收和处理连接请求。这是必需的，因为sasl服务器身份验证过程可能需要几秒钟才能完成，这可能会延迟下一个对等连接请求。
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>quorumSaslAuthEnabled<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token function">receiveConnectionAsync</span><span class="token punctuation">(</span>client<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                            <span class="token function">receiveConnection</span><span class="token punctuation">(</span>client<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                        numRetries <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">SocketTimeoutException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"The socket is listening for the election accepted "</span>
+                                <span class="token operator">+</span> <span class="token string">"and it timed out unexpectedly, but will retry."</span>
+                                <span class="token operator">+</span> <span class="token string">"see ZOOKEEPER-2836"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>shutdown<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Exception while listening"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>e <span class="token keyword">instanceof</span> <span class="token class-name">SocketException</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    socketException<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                numRetries<span class="token operator">++</span><span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> ie<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Error closing server socket"</span><span class="token punctuation">,</span> ie<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> ie<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Interrupted while sleeping. Ignoring exception"</span><span class="token punctuation">,</span> ie<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token function">closeSocket</span><span class="token punctuation">(</span>client<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>shutdown<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>
+              <span class="token string">"Leaving listener thread for address {} after {} errors. Use {} property to increase retry count."</span><span class="token punctuation">,</span>
+              <span class="token function">formatInetAddr</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span><span class="token punctuation">,</span>
+              numRetries<span class="token punctuation">,</span>
+              ELECTION_PORT_BIND_RETRY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">ServerSocket</span> <span class="token function">createNewServerSocket</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+        <span class="token class-name">ServerSocket</span> socket<span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>portUnification<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Creating TLS-enabled quorum server socket"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            socket <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UnifiedServerSocket</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span><span class="token function">getX509Util</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>sslQuorum<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Creating TLS-only quorum server socket"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            socket <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UnifiedServerSocket</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span><span class="token function">getX509Util</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            socket <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServerSocket</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        socket<span class="token punctuation">.</span><span class="token function">setReuseAddress</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        socket<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> socket<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">receiveConnection</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">Socket</span> sock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">DataInputStream</span> din <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        din <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DataInputStream</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BufferedInputStream</span><span class="token punctuation">(</span>sock<span class="token punctuation">.</span><span class="token function">getInputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Sync handling of connection request received from: {}"</span><span class="token punctuation">,</span> sock<span class="token punctuation">.</span><span class="token function">getRemoteSocketAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">handleConnection</span><span class="token punctuation">(</span>sock<span class="token punctuation">,</span> din<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Exception handling connection, addr: {}, closing server connection"</span><span class="token punctuation">,</span> sock<span class="token punctuation">.</span><span class="token function">getRemoteSocketAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Exception details: "</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">closeSocket</span><span class="token punctuation">(</span>sock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+rivate <span class="token keyword">void</span> <span class="token function">handleConnection</span><span class="token punctuation">(</span><span class="token class-name">Socket</span> sock<span class="token punctuation">,</span> <span class="token class-name">DataInputStream</span> din<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token class-name">Long</span> sid <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">,</span> protocolVersion <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token class-name">MultipleAddresses</span> electionAddr <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        protocolVersion <span class="token operator">=</span> din<span class="token punctuation">.</span><span class="token function">readLong</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>protocolVersion <span class="token operator">&gt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// this is a server id and not a protocol version</span>
+            sid <span class="token operator">=</span> protocolVersion<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token class-name">InitialMessage</span> init <span class="token operator">=</span> <span class="token class-name">InitialMessage</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>protocolVersion<span class="token punctuation">,</span> din<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                sid <span class="token operator">=</span> init<span class="token punctuation">.</span>sid<span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>init<span class="token punctuation">.</span>electionAddr<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    electionAddr <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MultipleAddresses</span><span class="token punctuation">(</span>init<span class="token punctuation">.</span>electionAddr<span class="token punctuation">,</span>
+                            <span class="token class-name">Duration</span><span class="token punctuation">.</span><span class="token function">ofMillis</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span><span class="token function">getMultiAddressReachabilityCheckTimeoutMs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Initial message parsed by {}: {}"</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> init<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InitialMessage<span class="token punctuation">.</span>InitialMessageException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Initial message parsing error!"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">closeSocket</span><span class="token punctuation">(</span>sock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>sid <span class="token operator">==</span> <span class="token class-name">QuorumPeer</span><span class="token punctuation">.</span>OBSERVER_ID<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">/*
+             * Choose identifier at random. We need a value to identify
+             * the connection.
+             */</span>
+            sid <span class="token operator">=</span> observerCounter<span class="token punctuation">.</span><span class="token function">getAndDecrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Setting arbitrary identifier to observer: {}"</span><span class="token punctuation">,</span> sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Exception reading or writing challenge"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">closeSocket</span><span class="token punctuation">(</span>sock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// do authenticating learner</span>
+    authServer<span class="token punctuation">.</span><span class="token function">authenticate</span><span class="token punctuation">(</span>sock<span class="token punctuation">,</span> din<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//If wins the challenge, then close the new connection.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>sid <span class="token operator">&lt;</span> self<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">/*
+         * This replica might still believe that the connection to sid is
+         * up, so we have to shut down the workers before trying to open a
+         * new connection.
+         */</span>
+        <span class="token class-name">SendWorker</span> sw <span class="token operator">=</span> senderWorkerMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>sw <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            sw<span class="token punctuation">.</span><span class="token function">finish</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">/*
+         * Now we start a new connection
+         */</span>
+        LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Create new connection to server: {}"</span><span class="token punctuation">,</span> sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">closeSocket</span><span class="token punctuation">(</span>sock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>electionAddr <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">connectOne</span><span class="token punctuation">(</span>sid<span class="token punctuation">,</span> electionAddr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token function">connectOne</span><span class="token punctuation">(</span>sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>sid <span class="token operator">==</span> self<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// we saw this case in ZOOKEEPER-2164</span>
+        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"We got a connection request from a server with our own ID. "</span>
+                 <span class="token operator">+</span> <span class="token string">"This should be either a configuration error, or a bug."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span> <span class="token comment">// Otherwise start worker threads to receive data.</span>
+        <span class="token class-name">SendWorker</span> sw <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SendWorker</span><span class="token punctuation">(</span>sock<span class="token punctuation">,</span> sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">RecvWorker</span> rw <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RecvWorker</span><span class="token punctuation">(</span>sock<span class="token punctuation">,</span> din<span class="token punctuation">,</span> sid<span class="token punctuation">,</span> sw<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        sw<span class="token punctuation">.</span><span class="token function">setRecv</span><span class="token punctuation">(</span>rw<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">SendWorker</span> vsw <span class="token operator">=</span> senderWorkerMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>vsw <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            vsw<span class="token punctuation">.</span><span class="token function">finish</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        senderWorkerMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>sid<span class="token punctuation">,</span> sw<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        queueSendMap<span class="token punctuation">.</span><span class="token function">putIfAbsent</span><span class="token punctuation">(</span>sid<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">CircularBlockingQueue</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>SEND_CAPACITY<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        sw<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        rw<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="15-6-SendWorker网络层发送数据"><a href="#15-6-SendWorker网络层发送数据" class="headerlink" title="15.6 SendWorker网络层发送数据:"></a>15.6 SendWorker网络层发送数据:</h2><p>如何发送数据我们主要看下核心的实现就可以了主要逻辑代码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//循环处理</span>
+<span class="token keyword">while</span> <span class="token punctuation">(</span>running <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>shutdown <span class="token operator">&amp;&amp;</span> sock <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">ByteBuffer</span> b <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+<span class="token comment">//如果有数据需要发送到远程节点(sid远程节点的id),则获取发送队列</span>
+        <span class="token class-name">BlockingQueue</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ByteBuffer</span><span class="token punctuation">&gt;</span></span> bq <span class="token operator">=</span> queueSendMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>bq <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token comment">//发送队列不为空则拉取最新需要发送的消息</span>
+            b <span class="token operator">=</span> <span class="token function">pollSendQueue</span><span class="token punctuation">(</span>bq<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"No queue of incoming messages for server {}"</span><span class="token punctuation">,</span> sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>b <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token comment">//缓存一下最新消息</span>
+            lastMessageSent<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>sid<span class="token punctuation">,</span> b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">send</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Interrupted while waiting for message on queue"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment">//发送数据</span>
+<span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">send</span><span class="token punctuation">(</span><span class="token class-name">ByteBuffer</span> b<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> msgBytes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">byte</span><span class="token punctuation">[</span>b<span class="token punctuation">.</span><span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        b<span class="token punctuation">.</span><span class="token function">position</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//检查字节数是否满足</span>
+        b<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>msgBytes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">BufferUnderflowException</span> be<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"BufferUnderflowException "</span><span class="token punctuation">,</span> be<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token comment">//先写入当前需要传输数据大容量大小</span>
+    dout<span class="token punctuation">.</span><span class="token function">writeInt</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//写入当前需要发送的数据</span>
+    dout<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//刷新数据,强制缓冲区中数据写入流中</span>
+    dout<span class="token punctuation">.</span><span class="token function">flush</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>//这里来了解下ByteBuffer的get方法:<br>相对批量获取方法。<br>此方法将此缓冲区中的字节传输到给定的目标数组中。 如果缓冲区中剩余的字节数少于满足请求所需的字节数，即如果 length &gt; remaining()，则不会传输任何字节并抛出 BufferUnderflowException。<br>否则，此方法将此缓冲区中的 length 个字节复制到给定数组中，从该缓冲区的当前位置和数组中的给定偏移量开始。 然后这个缓冲区的位置按长度递增。<br>换句话说，以 src.get(dst, off, len) 形式调用此方法与循环具有完全相同的效果</p>
+<p>  for (int i = off; i &lt; off + len; i++)<br>      dst[i] = src.get():</p>
+<p>除了它首先检查此缓冲区中是否有足够的字节并且它可能更有效率。</p>
+<h2 id="15-7-RecvWorker网络层接收数据"><a href="#15-7-RecvWorker网络层接收数据" class="headerlink" title="15.7 RecvWorker网络层接收数据:"></a>15.7 RecvWorker网络层接收数据:</h2><p>接收来自远程服务器节点的数据,接下来我们看下接收到的数据是如何进行处理的</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">while</span> <span class="token punctuation">(</span>running <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>shutdown <span class="token operator">&amp;&amp;</span> sock <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * Reads the first int to determine the length of the
+     * message
+     */</span>
+<span class="token comment">//先读取前面4个字节的数据</span>
+    <span class="token keyword">int</span> length <span class="token operator">=</span> din<span class="token punctuation">.</span><span class="token function">readInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>length <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token operator">||</span> length <span class="token operator">&gt;</span> PACKETMAXSIZE<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span><span class="token string">"Received packet with invalid packet: "</span> <span class="token operator">+</span> length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">/**
+     * Allocates a new ByteBuffer to receive the message
+     */</span>
+    <span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> msgArray <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">byte</span><span class="token punctuation">[</span>length<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token comment">//根据数据长度将数据读入临时数组中</span>
+    din<span class="token punctuation">.</span><span class="token function">readFully</span><span class="token punctuation">(</span>msgArray<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//封装消息,将收到的消息放入接收队列中</span>
+    <span class="token function">addToRecvQueue</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Message</span><span class="token punctuation">(</span><span class="token class-name">ByteBuffer</span><span class="token punctuation">.</span><span class="token function">wrap</span><span class="token punctuation">(</span>msgArray<span class="token punctuation">)</span><span class="token punctuation">,</span> sid<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">//将收到的数据放入接收队列</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addToRecvQueue</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">Message</span> msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">final</span> <span class="token keyword">boolean</span> success <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>recvQueue<span class="token punctuation">.</span><span class="token function">offer</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>success<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"Could not insert into receive queue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="15-8-选举算法的创建与启动"><a href="#15-8-选举算法的创建与启动" class="headerlink" title="15.8 选举算法的创建与启动"></a>15.8 选举算法的创建与启动</h2><p>回到QuorumPeer中的createElectionAlgorithm方法来看</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">case</span> <span class="token number">3</span><span class="token operator">:</span>
+    <span class="token class-name">QuorumCnxManager</span> qcm <span class="token operator">=</span> <span class="token function">createCnxnManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">QuorumCnxManager</span> oldQcm <span class="token operator">=</span> qcmRef<span class="token punctuation">.</span><span class="token function">getAndSet</span><span class="token punctuation">(</span>qcm<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>oldQcm <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Clobbering already-set QuorumCnxManager (restarting leader election?)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        oldQcm<span class="token punctuation">.</span><span class="token function">halt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token class-name">QuorumCnxManager<span class="token punctuation">.</span>Listener</span> listener <span class="token operator">=</span> qcm<span class="token punctuation">.</span>listener<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>listener <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        listener<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">FastLeaderElection</span> fle <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FastLeaderElection</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> qcm<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        fle<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        le <span class="token operator">=</span> fle<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Null listener when initializing cnx manager"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">break</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>选举连接管理器启动完毕之后则开始创建QuorumCnxManager 然后启动选举策略<br>先来看下FastLeaderElection对象的创建涉及到哪些内容</p>
+<ul>
+<li>创建发送队列sendqueue </li>
+<li>创建接收队列recvqueue </li>
+<li>创建Messenger类型对象<br>创建Messenger类型对象做了什么内容呢?</li>
+<li>创建用于发送消息的线程WorkerSender类型对象</li>
+<li>创建用于接收消息的线程WorkerReceiver类型对象</li>
+</ul>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">FastLeaderElection</span><span class="token punctuation">(</span><span class="token class-name">QuorumPeer</span> self<span class="token punctuation">,</span> <span class="token class-name">QuorumCnxManager</span> manager<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>stop <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>manager <span class="token operator">=</span> manager<span class="token punctuation">;</span>
+    <span class="token function">starter</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> manager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">starter</span><span class="token punctuation">(</span><span class="token class-name">QuorumPeer</span> self<span class="token punctuation">,</span> <span class="token class-name">QuorumCnxManager</span> manager<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>self <span class="token operator">=</span> self<span class="token punctuation">;</span>
+    proposedLeader <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+    proposedZxid <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+
+    sendqueue <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedBlockingQueue</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ToSend</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    recvqueue <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedBlockingQueue</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Notification</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>messenger <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Messenger</span><span class="token punctuation">(</span>manager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token class-name">Messenger</span><span class="token punctuation">(</span><span class="token class-name">QuorumCnxManager</span> manager<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>ws <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WorkerSender</span><span class="token punctuation">(</span>manager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>wsThread <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>ws<span class="token punctuation">,</span> <span class="token string">"WorkerSender[myid="</span> <span class="token operator">+</span> self<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"]"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>wsThread<span class="token punctuation">.</span><span class="token function">setDaemon</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>wr <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WorkerReceiver</span><span class="token punctuation">(</span>manager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>wrThread <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>wr<span class="token punctuation">,</span> <span class="token string">"WorkerReceiver[myid="</span> <span class="token operator">+</span> self<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"]"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>wrThread<span class="token punctuation">.</span><span class="token function">setDaemon</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>启动选举算法:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">FastLeaderElection</span> fle <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FastLeaderElection</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> qcm<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        fle<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+在<span class="token class-name">FastLeaderElection</span> 中的start方法<span class="token operator">:</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>messenger<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+在messenger类型中的start方法
+<span class="token keyword">void</span> <span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>wsThread<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>wrThread<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>这里启动了用于接收和发送数据使用的WorkerSender线程和WorkerReceiver线程,是否需要投票还需要根据当前集群的一个状态来看,在 QuorumPeer 最后一步启动的时候会进行状态判断发起投票. 发送和接收的详细内容待会在看<br>WorkerSender数据传输层<br>这个发送类型主要做中间层将需要发送的消息转换成ByteBuffer ,然后调用QuorumCnxManager的toSend方法来发送消息</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span>stop<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token class-name">ToSend</span> m <span class="token operator">=</span> sendqueue<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span><span class="token number">3000</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>m <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token function">process</span><span class="token punctuation">(</span>m<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"WorkerSender is down"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/**
+ * Called by run() once there is a new message to send.
+ *
+ * @param m     message to send
+ */</span>
+<span class="token keyword">void</span> <span class="token function">process</span><span class="token punctuation">(</span><span class="token class-name">ToSend</span> m<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">ByteBuffer</span> requestBuffer <span class="token operator">=</span> <span class="token function">buildMsg</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>state<span class="token punctuation">.</span><span class="token function">ordinal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m<span class="token punctuation">.</span>leader<span class="token punctuation">,</span> m<span class="token punctuation">.</span>zxid<span class="token punctuation">,</span> m<span class="token punctuation">.</span>electionEpoch<span class="token punctuation">,</span> m<span class="token punctuation">.</span>peerEpoch<span class="token punctuation">,</span> m<span class="token punctuation">.</span>configData<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    manager<span class="token punctuation">.</span><span class="token function">toSend</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>sid<span class="token punctuation">,</span> requestBuffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>WorkerReceiver数据接收层<br>WorkerReceiver类型主要作用是解析来自远端的消息,并对消息内容做处理</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token class-name">Message</span> response<span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span>stop<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// Sleeps on receive</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                response <span class="token operator">=</span> manager<span class="token punctuation">.</span><span class="token function">pollRecvQueue</span><span class="token punctuation">(</span><span class="token number">3000</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>response <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">final</span> <span class="token keyword">int</span> capacity <span class="token operator">=</span> response<span class="token punctuation">.</span>buffer<span class="token punctuation">.</span><span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">// The current protocol and two previous generations all send at least 28 bytes</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>capacity <span class="token operator">&lt;</span> <span class="token number">28</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Got a short response from server {}: {}"</span><span class="token punctuation">,</span> response<span class="token punctuation">.</span>sid<span class="token punctuation">,</span> capacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment">// this is the backwardCompatibility mode in place before ZK-107</span>
+                <span class="token comment">// It is for a version of the protocol in which we didn't send peer epoch</span>
+                <span class="token comment">// With peer epoch and version the message became 40 bytes</span>
+                <span class="token keyword">boolean</span> backCompatibility28 <span class="token operator">=</span> <span class="token punctuation">(</span>capacity <span class="token operator">==</span> <span class="token number">28</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">// this is the backwardCompatibility mode for no version information</span>
+                <span class="token keyword">boolean</span> backCompatibility40 <span class="token operator">=</span> <span class="token punctuation">(</span>capacity <span class="token operator">==</span> <span class="token number">40</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                response<span class="token punctuation">.</span>buffer<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">// Instantiate Notification and set its attributes</span>
+                <span class="token class-name">Notification</span> n <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Notification</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token keyword">int</span> rstate <span class="token operator">=</span> response<span class="token punctuation">.</span>buffer<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">long</span> rleader <span class="token operator">=</span> response<span class="token punctuation">.</span>buffer<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">long</span> rzxid <span class="token operator">=</span> response<span class="token punctuation">.</span>buffer<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">long</span> relectionEpoch <span class="token operator">=</span> response<span class="token punctuation">.</span>buffer<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">long</span> rpeerepoch<span class="token punctuation">;</span>
+
+                <span class="token keyword">int</span> version <span class="token operator">=</span> <span class="token number">0x0</span><span class="token punctuation">;</span>
+                <span class="token class-name">QuorumVerifier</span> rqv <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>backCompatibility28<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        rpeerepoch <span class="token operator">=</span> response<span class="token punctuation">.</span>buffer<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>backCompatibility40<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment">/*
+                             * Version added in 3.4.6
+                             */</span>
+
+                            version <span class="token operator">=</span> response<span class="token punctuation">.</span>buffer<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                            LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Backward compatibility mode (36 bits), server id: {}"</span><span class="token punctuation">,</span> response<span class="token punctuation">.</span>sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                        LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Backward compatibility mode (28 bits), server id: {}"</span><span class="token punctuation">,</span> response<span class="token punctuation">.</span>sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        rpeerepoch <span class="token operator">=</span> <span class="token class-name">ZxidUtils</span><span class="token punctuation">.</span><span class="token function">getEpochFromZxid</span><span class="token punctuation">(</span>rzxid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+
+                    <span class="token comment">// check if we have a version that includes config. If so extract config info from message.</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>version <span class="token operator">&gt;</span> <span class="token number">0x1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">int</span> configLength <span class="token operator">=</span> response<span class="token punctuation">.</span>buffer<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                        <span class="token comment">// we want to avoid errors caused by the allocation of a byte array with negative length</span>
+                        <span class="token comment">// (causing NegativeArraySizeException) or huge length (causing e.g. OutOfMemoryError)</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>configLength <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token operator">||</span> configLength <span class="token operator">&gt;</span> capacity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"Invalid configLength in notification message! sid=%d, capacity=%d, version=%d, configLength=%d"</span><span class="token punctuation">,</span>
+                                                                response<span class="token punctuation">.</span>sid<span class="token punctuation">,</span> capacity<span class="token punctuation">,</span> version<span class="token punctuation">,</span> configLength<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+
+                        <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> b <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">byte</span><span class="token punctuation">[</span>configLength<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                        response<span class="token punctuation">.</span>buffer<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                                rqv <span class="token operator">=</span> self<span class="token punctuation">.</span><span class="token function">configFromString</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                <span class="token class-name">QuorumVerifier</span> curQV <span class="token operator">=</span> self<span class="token punctuation">.</span><span class="token function">getQuorumVerifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                <span class="token keyword">if</span> <span class="token punctuation">(</span>rqv<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> curQV<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"{} Received version: {} my version: {}"</span><span class="token punctuation">,</span>
+                                             self<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                             <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>rqv<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                             <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span><span class="token function">getQuorumVerifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                    <span class="token keyword">if</span> <span class="token punctuation">(</span>self<span class="token punctuation">.</span><span class="token function">getPeerState</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token class-name">ServerState</span><span class="token punctuation">.</span>LOOKING<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                        LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Invoking processReconfig(), state: {}"</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span><span class="token function">getServerState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                        self<span class="token punctuation">.</span><span class="token function">processReconfig</span><span class="token punctuation">(</span>rqv<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>rqv<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>curQV<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                            LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"restarting leader election"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                            self<span class="token punctuation">.</span>shuttingDownLE <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                                            self<span class="token punctuation">.</span><span class="token function">getElectionAlg</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">shutdown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                                            <span class="token keyword">break</span><span class="token punctuation">;</span>
+                                        <span class="token punctuation">}</span>
+                                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                                        LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Skip processReconfig(), state: {}"</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span><span class="token function">getServerState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                    <span class="token punctuation">}</span>
+                                <span class="token punctuation">}</span>
+                            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> <span class="token operator">|</span> <span class="token class-name">ConfigException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                LOG<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Something went wrong while processing config received from {}"</span><span class="token punctuation">,</span> response<span class="token punctuation">.</span>sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                        LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Backward compatibility mode (before reconfig), server id: {}"</span><span class="token punctuation">,</span> response<span class="token punctuation">.</span>sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">BufferUnderflowException</span> <span class="token operator">|</span> <span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Skipping the processing of a partial / malformed response message sent by sid={} (message length: {})"</span><span class="token punctuation">,</span>
+                             response<span class="token punctuation">.</span>sid<span class="token punctuation">,</span> capacity<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment">/*
+                 * If it is from a non-voting server (such as an observer or
+                 * a non-voting follower), respond right away.
+                 */</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">validVoter</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>sid<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token class-name">Vote</span> current <span class="token operator">=</span> self<span class="token punctuation">.</span><span class="token function">getCurrentVote</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token class-name">QuorumVerifier</span> qv <span class="token operator">=</span> self<span class="token punctuation">.</span><span class="token function">getQuorumVerifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token class-name">ToSend</span> notmsg <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ToSend</span><span class="token punctuation">(</span>
+                        <span class="token class-name">ToSend</span><span class="token punctuation">.</span>mType<span class="token punctuation">.</span>notification<span class="token punctuation">,</span>
+                        current<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        current<span class="token punctuation">.</span><span class="token function">getZxid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        logicalclock<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        self<span class="token punctuation">.</span><span class="token function">getPeerState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        response<span class="token punctuation">.</span>sid<span class="token punctuation">,</span>
+                        current<span class="token punctuation">.</span><span class="token function">getPeerEpoch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        qv<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                    sendqueue<span class="token punctuation">.</span><span class="token function">offer</span><span class="token punctuation">(</span>notmsg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token comment">// Receive new message</span>
+                    LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Receive new notification message. My id = {}"</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                    <span class="token comment">// State of peer that sent this message</span>
+                    <span class="token class-name">QuorumPeer<span class="token punctuation">.</span>ServerState</span> ackstate <span class="token operator">=</span> <span class="token class-name">QuorumPeer<span class="token punctuation">.</span>ServerState</span><span class="token punctuation">.</span>LOOKING<span class="token punctuation">;</span>
+                    <span class="token keyword">switch</span> <span class="token punctuation">(</span>rstate<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">case</span> <span class="token number">0</span><span class="token operator">:</span>
+                        ackstate <span class="token operator">=</span> <span class="token class-name">QuorumPeer<span class="token punctuation">.</span>ServerState</span><span class="token punctuation">.</span>LOOKING<span class="token punctuation">;</span>
+                        <span class="token keyword">break</span><span class="token punctuation">;</span>
+                    <span class="token keyword">case</span> <span class="token number">1</span><span class="token operator">:</span>
+                        ackstate <span class="token operator">=</span> <span class="token class-name">QuorumPeer<span class="token punctuation">.</span>ServerState</span><span class="token punctuation">.</span>FOLLOWING<span class="token punctuation">;</span>
+                        <span class="token keyword">break</span><span class="token punctuation">;</span>
+                    <span class="token keyword">case</span> <span class="token number">2</span><span class="token operator">:</span>
+                        ackstate <span class="token operator">=</span> <span class="token class-name">QuorumPeer<span class="token punctuation">.</span>ServerState</span><span class="token punctuation">.</span>LEADING<span class="token punctuation">;</span>
+                        <span class="token keyword">break</span><span class="token punctuation">;</span>
+                    <span class="token keyword">case</span> <span class="token number">3</span><span class="token operator">:</span>
+                        ackstate <span class="token operator">=</span> <span class="token class-name">QuorumPeer<span class="token punctuation">.</span>ServerState</span><span class="token punctuation">.</span>OBSERVING<span class="token punctuation">;</span>
+                        <span class="token keyword">break</span><span class="token punctuation">;</span>
+                    <span class="token keyword">default</span><span class="token operator">:</span>
+                        <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+
+                    n<span class="token punctuation">.</span>leader <span class="token operator">=</span> rleader<span class="token punctuation">;</span>
+                    n<span class="token punctuation">.</span>zxid <span class="token operator">=</span> rzxid<span class="token punctuation">;</span>
+                    n<span class="token punctuation">.</span>electionEpoch <span class="token operator">=</span> relectionEpoch<span class="token punctuation">;</span>
+                    n<span class="token punctuation">.</span>state <span class="token operator">=</span> ackstate<span class="token punctuation">;</span>
+                    n<span class="token punctuation">.</span>sid <span class="token operator">=</span> response<span class="token punctuation">.</span>sid<span class="token punctuation">;</span>
+                    n<span class="token punctuation">.</span>peerEpoch <span class="token operator">=</span> rpeerepoch<span class="token punctuation">;</span>
+                    n<span class="token punctuation">.</span>version <span class="token operator">=</span> version<span class="token punctuation">;</span>
+                    n<span class="token punctuation">.</span>qv <span class="token operator">=</span> rqv<span class="token punctuation">;</span>
+                    <span class="token comment">/*
+                     * Print notification info
+                     */</span>
+                    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>
+                        <span class="token string">"Notification: my state:{}; n.sid:{}, n.state:{}, n.leader:{}, n.round:0x{}, "</span>
+                            <span class="token operator">+</span> <span class="token string">"n.peerEpoch:0x{}, n.zxid:0x{}, message format version:0x{}, n.config version:0x{}"</span><span class="token punctuation">,</span>
+                        self<span class="token punctuation">.</span><span class="token function">getPeerState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        n<span class="token punctuation">.</span>sid<span class="token punctuation">,</span>
+                        n<span class="token punctuation">.</span>state<span class="token punctuation">,</span>
+                        n<span class="token punctuation">.</span>leader<span class="token punctuation">,</span>
+                        <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>n<span class="token punctuation">.</span>electionEpoch<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>n<span class="token punctuation">.</span>peerEpoch<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>n<span class="token punctuation">.</span>zxid<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>n<span class="token punctuation">.</span>version<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        <span class="token punctuation">(</span>n<span class="token punctuation">.</span>qv <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token punctuation">(</span><span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>n<span class="token punctuation">.</span>qv<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token string">"0"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                    <span class="token comment">/*
+                     * If this server is looking, then send proposed leader
+                     */</span>
+
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>self<span class="token punctuation">.</span><span class="token function">getPeerState</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token class-name">QuorumPeer<span class="token punctuation">.</span>ServerState</span><span class="token punctuation">.</span>LOOKING<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        recvqueue<span class="token punctuation">.</span><span class="token function">offer</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                        <span class="token comment">/*
+                         * Send a notification back if the peer that sent this
+                         * message is also looking and its logical clock is
+                         * lagging behind.
+                         */</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>ackstate <span class="token operator">==</span> <span class="token class-name">QuorumPeer<span class="token punctuation">.</span>ServerState</span><span class="token punctuation">.</span>LOOKING<span class="token punctuation">)</span>
+                            <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>n<span class="token punctuation">.</span>electionEpoch <span class="token operator">&lt;</span> logicalclock<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token class-name">Vote</span> v <span class="token operator">=</span> <span class="token function">getVote</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token class-name">QuorumVerifier</span> qv <span class="token operator">=</span> self<span class="token punctuation">.</span><span class="token function">getQuorumVerifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token class-name">ToSend</span> notmsg <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ToSend</span><span class="token punctuation">(</span>
+                                <span class="token class-name">ToSend</span><span class="token punctuation">.</span>mType<span class="token punctuation">.</span>notification<span class="token punctuation">,</span>
+                                v<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                v<span class="token punctuation">.</span><span class="token function">getZxid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                logicalclock<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                self<span class="token punctuation">.</span><span class="token function">getPeerState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                response<span class="token punctuation">.</span>sid<span class="token punctuation">,</span>
+                                v<span class="token punctuation">.</span><span class="token function">getPeerEpoch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                qv<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            sendqueue<span class="token punctuation">.</span><span class="token function">offer</span><span class="token punctuation">(</span>notmsg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                        <span class="token comment">/*
+                         * If this server is not looking, but the one that sent the ack
+                         * is looking, then send back what it believes to be the leader.
+                         */</span>
+                        <span class="token class-name">Vote</span> current <span class="token operator">=</span> self<span class="token punctuation">.</span><span class="token function">getCurrentVote</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>ackstate <span class="token operator">==</span> <span class="token class-name">QuorumPeer<span class="token punctuation">.</span>ServerState</span><span class="token punctuation">.</span>LOOKING<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span>self<span class="token punctuation">.</span>leader <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token keyword">if</span> <span class="token punctuation">(</span>leadingVoteSet <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                    self<span class="token punctuation">.</span>leader<span class="token punctuation">.</span><span class="token function">setLeadingVoteSet</span><span class="token punctuation">(</span>leadingVoteSet<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                    leadingVoteSet <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+                                <span class="token punctuation">}</span>
+                                self<span class="token punctuation">.</span>leader<span class="token punctuation">.</span><span class="token function">reportLookingSid</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>sid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+
+
+                            LOG<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span>
+                                <span class="token string">"Sending new notification. My id ={} recipient={} zxid=0x{} leader={} config version = {}"</span><span class="token punctuation">,</span>
+                                self<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                response<span class="token punctuation">.</span>sid<span class="token punctuation">,</span>
+                                <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span><span class="token function">getZxid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                current<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span><span class="token function">getQuorumVerifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                            <span class="token class-name">QuorumVerifier</span> qv <span class="token operator">=</span> self<span class="token punctuation">.</span><span class="token function">getQuorumVerifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token class-name">ToSend</span> notmsg <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ToSend</span><span class="token punctuation">(</span>
+                                <span class="token class-name">ToSend</span><span class="token punctuation">.</span>mType<span class="token punctuation">.</span>notification<span class="token punctuation">,</span>
+                                current<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                current<span class="token punctuation">.</span><span class="token function">getZxid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                current<span class="token punctuation">.</span><span class="token function">getElectionEpoch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                self<span class="token punctuation">.</span><span class="token function">getPeerState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                response<span class="token punctuation">.</span>sid<span class="token punctuation">,</span>
+                                current<span class="token punctuation">.</span><span class="token function">getPeerEpoch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                qv<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            sendqueue<span class="token punctuation">.</span><span class="token function">offer</span><span class="token punctuation">(</span>notmsg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Interrupted Exception while waiting for new message"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"WorkerReceiver is down"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper<span class="tag-unordered list-count">16</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="tag">Zookeeper安装配置<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Zookeeper源码解析<span class="tag-unordered list-count">16</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2021/07/12/zookeeper/16-quorumpeer-zhu-xun-huan-yun-xing-zhong-de-ge-zhuang-tai-de-luo-ji/"> 16-QuorumPeer主循环</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2021/07/12/zookeeper/14-zookeeper-shi-yong-dao-de-reactor-wang-luo-mo-xing-yuan-li-fen-xi/"> 14- 启服务端网络监听连接NIOServerCnxnFactory</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918046">
+<link rel="stylesheet" href="/css/style.css?v=1662168973056">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918046"></script>
+<script src="/js/core.js?v=1662168973056"></script>
 
 
 
@@ -48,149 +48,570 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>22-【Dubbo3.0.8源码解析系列】Dubbo3消费者自动感应决策应用级服务发现原理</h1>
+			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">Dubbo3源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/22-Dubbo3消费者自动感应决策应用级服务发现原理.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="22-Dubbo3消费者自动感应决策应用级服务发现原理"><a href="#22-Dubbo3消费者自动感应决策应用级服务发现原理" class="headerlink" title="22-Dubbo3消费者自动感应决策应用级服务发现原理"></a>22-Dubbo3消费者自动感应决策应用级服务发现原理</h1><h2 id="22-1-简介"><a href="#22-1-简介" class="headerlink" title="22.1 简介"></a>22.1 简介</h2><p>这里要说的内容对Dubbo2迁移到Dubbo3的应用比较有帮助，消费者应用级服务发现做了一些自动决策的逻辑来决定当前消费者是应用级发现还是接口级服务发现，这里与前面说的提供者双注册的原理是对等的，提供者默认同时进行应用级注册和接口级注册，消费者对提供者注册的数据来决定使用应用级发现或者接口级发现。这些都是默认的行为，当然对于消费者来说还可以自定义其他的迁移规则，具体的需要我们详细来看逻辑。</p>
+<p>如果说对于迁移过程比较感兴趣可以直接去官网看文档相对来说还是比较清晰:<a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docs/migration/migration-service-discovery/">https://dubbo.apache.org/zh/docs/migration/migration-service-discovery/</a></p>
+<p>这里再借官网的图来用用，迁移过程主要如下所示：<br>第一个图是提供者双注册的图：<br><img src="https://dubbo.apache.org/imgs/v3/migration/provider-registration.png" alt="在这里插入图片描述"></p>
+<p>第二个图是消费者订阅决策的图：<br><img src="https://dubbo.apache.org/imgs/v3/migration/consumer-subscription.png" alt="在这里插入图片描述"></p>
+<p>第三个图就是精确到消费者订阅的代码层的逻辑了，消费者服务间调用通过一个Invoker类型对象来进行对象，如下图所示消费者代理对象通过创建一个迁移容错的调用器对象来对应用级或者接口级订阅进行适配如下所示<br><img src="https://dubbo.apache.org/imgs/v3/migration/migration-cluster-invoker.png" alt="在这里插入图片描述"></p>
+<p>第二个图和第三个图是重点要关注的这一个文章的内容主要就是说这里的逻辑。</p>
+<p> 关于代码位置如果不知道是如何调用到这一块逻辑的可以查看博文<a href="https://blog.elastic.link/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/">《21-Dubbo3消费者引用服务入口》</a></p>
+<p> 这里直接将代码位置定位到：RegistryProtocol类型的interceptInvoker方法中：<br> 如下所示：</p>
+<p> RegistryProtocol类型的interceptInvoker方法<br> </p><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">Invoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">interceptInvoker</span><span class="token punctuation">(</span><span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> invoker<span class="token punctuation">,</span> <span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">URL</span> consumerUrl<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+ <span class="token comment">//目前存在的扩展类型为RegistryProtocolListener监听器的实现类型MigrationRuleListener </span>
+       <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RegistryProtocolListener</span><span class="token punctuation">&gt;</span></span> listeners <span class="token operator">=</span> <span class="token function">findRegistryProtocolListeners</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>listeners<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span> invoker<span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+
+       <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">RegistryProtocolListener</span> listener <span class="token operator">:</span> listeners<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           listener<span class="token punctuation">.</span><span class="token function">onRefer</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> invoker<span class="token punctuation">,</span> consumerUrl<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token keyword">return</span> invoker<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p></p>
+<p>该方法尝试加载所有RegistryProtocolListener定义，这些定义通过与定义的交互来控制调用器的行为，然后使用这些侦听器更改MigrationInvoker的状态和行为。当前可用的监听器是MigrationRuleListener，用于通过动态变化的规则控制迁移行为。</p>
+<h2 id="22-2-MigrationRuleListener-类型的onRefer方法"><a href="#22-2-MigrationRuleListener-类型的onRefer方法" class="headerlink" title="22.2 MigrationRuleListener 类型的onRefer方法"></a>22.2 MigrationRuleListener 类型的onRefer方法</h2><p>直接来看代码：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onRefer</span><span class="token punctuation">(</span><span class="token class-name">RegistryProtocol</span> registryProtocol<span class="token punctuation">,</span> <span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> invoker<span class="token punctuation">,</span> <span class="token class-name">URL</span> consumerUrl<span class="token punctuation">,</span> <span class="token class-name">URL</span> registryURL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">//创建一个对应invoker对象的MigrationRuleHandler类型对象 然后将其存放在缓存Map&lt;MigrationInvoker, MigrationRuleHandler&gt;类型对象handles中</span>
+        <span class="token class-name">MigrationRuleHandler</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> migrationRuleHandler <span class="token operator">=</span> handlers<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">MigrationInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> invoker<span class="token punctuation">,</span> _key <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+            <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">MigrationInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> invoker<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setMigrationRuleListener</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">MigrationRuleHandler</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">MigrationInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> invoker<span class="token punctuation">,</span> consumerUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      <span class="token comment">//迁移规则执行 rule是封装了迁移的配置规则的信息对应类型MigrationRule类型，在初始化对象的时候进行了配置初始化</span>
+        migrationRuleHandler<span class="token punctuation">.</span><span class="token function">doMigrate</span><span class="token punctuation">(</span>rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>关于这个igrationRule的文可以直接看官方的文档比较详细：<a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docs/v3.0/advanced/migration-invoker/#1-%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%B8%8B%E5%8F%91%E6%8E%A8%E8%8D%90">地址迁移规则说明</a></p>
+<p>这个迁移规则是为了更细粒度的迁移决策：<br>相关配置可以参考下面这个样例：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">key</span><span class="token punctuation">:</span> 消费者应用名（必填）
+<span class="token key atrule">step</span><span class="token punctuation">:</span> 状态名（必填）
+<span class="token key atrule">threshold</span><span class="token punctuation">:</span> 决策阈值（默认1.0）
+<span class="token key atrule">proportion</span><span class="token punctuation">:</span> 灰度比例（默认100）
+<span class="token key atrule">delay</span><span class="token punctuation">:</span> 延迟决策时间（默认0）
+<span class="token key atrule">force</span><span class="token punctuation">:</span> 强制切换（默认 false）
+<span class="token key atrule">interfaces</span><span class="token punctuation">:</span> 接口粒度配置（可选）
+  <span class="token punctuation">-</span> <span class="token key atrule">serviceKey</span><span class="token punctuation">:</span> <span class="token key atrule">接口名（接口 +</span> <span class="token punctuation">:</span> + 版本号）（必填）
+    <span class="token key atrule">threshold</span><span class="token punctuation">:</span> 决策阈值
+    <span class="token key atrule">proportion</span><span class="token punctuation">:</span> 灰度比例
+    <span class="token key atrule">delay</span><span class="token punctuation">:</span> 延迟决策时间
+    <span class="token key atrule">force</span><span class="token punctuation">:</span> 强制切换
+    <span class="token key atrule">step</span><span class="token punctuation">:</span> 状态名（必填）
+  <span class="token punctuation">-</span> <span class="token key atrule">serviceKey</span><span class="token punctuation">:</span> <span class="token key atrule">接口名（接口 +</span> <span class="token punctuation">:</span> + 版本号）
+    <span class="token key atrule">step</span><span class="token punctuation">:</span> 状态名
+<span class="token key atrule">applications</span><span class="token punctuation">:</span> 应用粒度配置（可选）
+  <span class="token punctuation">-</span> <span class="token key atrule">serviceKey</span><span class="token punctuation">:</span> 应用名（消费的上游应用名）（必填）
+    <span class="token key atrule">threshold</span><span class="token punctuation">:</span> 决策阈值
+    <span class="token key atrule">proportion</span><span class="token punctuation">:</span> 灰度比例
+    <span class="token key atrule">delay</span><span class="token punctuation">:</span> 延迟决策时间
+    <span class="token key atrule">force</span><span class="token punctuation">:</span> 强制切换
+    <span class="token key atrule">step</span><span class="token punctuation">:</span> 状态名（必填）<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>不过为了简单起见暂时先不详细说这个配置细节，我们继续往下看</p>
+<h2 id="22-3-迁移规则处理器执行迁移规则MigrationRuleHandler类型的doMigrate方法"><a href="#22-3-迁移规则处理器执行迁移规则MigrationRuleHandler类型的doMigrate方法" class="headerlink" title="22.3 迁移规则处理器执行迁移规则MigrationRuleHandler类型的doMigrate方法"></a>22.3 迁移规则处理器执行迁移规则MigrationRuleHandler类型的doMigrate方法</h2><h3 id="22-3-1-迁移规则的模版方法："><a href="#22-3-1-迁移规则的模版方法：" class="headerlink" title="22.3.1 迁移规则的模版方法："></a>22.3.1 迁移规则的模版方法：</h3><p>MigrationRuleHandler类型的doMigrate方法代码如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">doMigrate</span><span class="token punctuation">(</span><span class="token class-name">MigrationRule</span> rule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//默认情况下这个类型是MigrationInvoker</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>migrationInvoker <span class="token keyword">instanceof</span> <span class="token class-name">ServiceDiscoveryMigrationInvoker</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">refreshInvoker</span><span class="token punctuation">(</span><span class="token class-name">MigrationStep</span><span class="token punctuation">.</span>FORCE_APPLICATION<span class="token punctuation">,</span> <span class="token number">1.0f</span><span class="token punctuation">,</span> rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+      <span class="token comment">//迁移步骤，MigrationStep 一共有3种枚举情况：FORCE_INTERFACE, APPLICATION_FIRST, FORCE_APPLICATION</span>
+        <span class="token comment">// initial step : APPLICATION_FIRST</span>
+        <span class="token class-name">MigrationStep</span> step <span class="token operator">=</span> <span class="token class-name">MigrationStep</span><span class="token punctuation">.</span>APPLICATION_FIRST<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> threshold <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1f</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment">//获取配置的类型 默认走APPLICATION_FIRST</span>
+            step <span class="token operator">=</span> rule<span class="token punctuation">.</span><span class="token function">getStep</span><span class="token punctuation">(</span>consumerURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//threshold: 决策阈值（默认-1.0）计算与获取</span>
+            threshold <span class="token operator">=</span> rule<span class="token punctuation">.</span><span class="token function">getThreshold</span><span class="token punctuation">(</span>consumerURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Failed to get step and threshold info from rule: "</span> <span class="token operator">+</span> rule<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//刷洗调用器对象 来进行决策服务发现模式</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">refreshInvoker</span><span class="token punctuation">(</span>step<span class="token punctuation">,</span> threshold<span class="token punctuation">,</span> rule<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// refresh success, update rule</span>
+            <span class="token function">setMigrationRule</span><span class="token punctuation">(</span>rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="22-3-2-服务发现调用器对象的选择（决策服务发现策略）"><a href="#22-3-2-服务发现调用器对象的选择（决策服务发现策略）" class="headerlink" title="22.3.2 服务发现调用器对象的选择（决策服务发现策略）"></a>22.3.2 服务发现调用器对象的选择（决策服务发现策略）</h3><p>这里就是关键代码了：通过迁移配置和当前提供者注册信息来决定创建什么类型的调用器对象（Invoker)来为后续服务调用做准备</p>
+<p>MigrationRuleHandler的refreshInvoker，注意默认情况下这个step参数为APPLICATION_FIRST</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">refreshInvoker</span><span class="token punctuation">(</span><span class="token class-name">MigrationStep</span> step<span class="token punctuation">,</span> <span class="token class-name">Float</span> threshold<span class="token punctuation">,</span> <span class="token class-name">MigrationRule</span> newRule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>step <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> threshold <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Step or threshold of migration rule cannot be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token class-name">MigrationStep</span> originStep <span class="token operator">=</span> currentStep<span class="token punctuation">;</span>
+
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>currentStep <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> currentStep <span class="token operator">!=</span> step<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token operator">!</span>currentThreshold<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>threshold<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">boolean</span> success <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+           <span class="token keyword">switch</span> <span class="token punctuation">(</span>step<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token keyword">case</span> APPLICATION_FIRST<span class="token operator">:</span>
+                   <span class="token comment">//默认和配置了应用级优先的服务发现则走这里</span>
+                   migrationInvoker<span class="token punctuation">.</span><span class="token function">migrateToApplicationFirstInvoker</span><span class="token punctuation">(</span>newRule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token keyword">break</span><span class="token punctuation">;</span>
+               <span class="token keyword">case</span> FORCE_APPLICATION<span class="token operator">:</span>
+               <span class="token comment">//配置了应用级服务发现则走这里</span>
+                   success <span class="token operator">=</span> migrationInvoker<span class="token punctuation">.</span><span class="token function">migrateToForceApplicationInvoker</span><span class="token punctuation">(</span>newRule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token keyword">break</span><span class="token punctuation">;</span>
+               <span class="token keyword">case</span> FORCE_INTERFACE<span class="token operator">:</span>
+               <span class="token comment">//配置了接口级服务发现则走这里</span>
+               <span class="token keyword">default</span><span class="token operator">:</span>
+                   success <span class="token operator">=</span> migrationInvoker<span class="token punctuation">.</span><span class="token function">migrateToForceInterfaceInvoker</span><span class="token punctuation">(</span>newRule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+
+           <span class="token keyword">if</span> <span class="token punctuation">(</span>success<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token function">setCurrentStepAndThreshold</span><span class="token punctuation">(</span>step<span class="token punctuation">,</span> threshold<span class="token punctuation">)</span><span class="token punctuation">;</span>
+               logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Succeed Migrated to "</span> <span class="token operator">+</span> step <span class="token operator">+</span> <span class="token string">" mode. Service Name: "</span> <span class="token operator">+</span> consumerURL<span class="token punctuation">.</span><span class="token function">getDisplayServiceKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token function">report</span><span class="token punctuation">(</span>step<span class="token punctuation">,</span> originStep<span class="token punctuation">,</span> <span class="token string">"true"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+               <span class="token comment">// migrate failed, do not save new step and rule</span>
+               logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Migrate to "</span> <span class="token operator">+</span> step <span class="token operator">+</span> <span class="token string">" mode failed. Probably not satisfy the threshold you set "</span>
+                       <span class="token operator">+</span> threshold <span class="token operator">+</span> <span class="token string">". Please try re-publish configuration if you still after check."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token function">report</span><span class="token punctuation">(</span>step<span class="token punctuation">,</span> originStep<span class="token punctuation">,</span> <span class="token string">"false"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+
+           <span class="token keyword">return</span> success<span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token comment">// ignore if step is same with previous, will continue override rule for MigrationInvoker</span>
+       <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>可以看到这个代码做了判断的逻辑分别对应了Dubbo3消费者迁移的一个状态逻辑：<br>三种状态分别如下枚举类型：<br>当前共存在三种状态，</p>
+<ul>
+<li>FORCE_INTERFACE（强制接口级）</li>
+<li>APPLICATION_FIRST（应用级优先）</li>
+<li>FORCE_APPLICATION（强制应用级）</li>
+</ul>
+<p>通过代码我们可以看到默认情况下都会走APPLICATION_FIRST（应用级优先）的策略，这里我们也重点来说 APPLICATION_FIRST（应用级优先）来看下Dubbo3是如何决策使用接口级还是应用级发现模型来兼容迁移的服务的。</p>
+<h3 id="22-3-3-应用级优先的服务发现规则逻辑"><a href="#22-3-3-应用级优先的服务发现规则逻辑" class="headerlink" title="22.3.3 应用级优先的服务发现规则逻辑"></a>22.3.3 应用级优先的服务发现规则逻辑</h3><p> 这个规则就是智能选择应用级还是接口级的代码了，对应类型为MigrationInvoker的migrateToApplicationFirstInvoker方法，接下来我们详细看下：</p>
+<p> MigrationInvoker类型的migrateToApplicationFirstInvoker方法：<br> </p><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">migrateToApplicationFirstInvoker</span><span class="token punctuation">(</span><span class="token class-name">MigrationRule</span> newRule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token class-name">CountDownLatch</span> latch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountDownLatch</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//刷新接口级服务发现Invoker </span>
+       <span class="token function">refreshInterfaceInvoker</span><span class="token punctuation">(</span>latch<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//刷新应用级服务发现Invoker类型对象</span>
+       <span class="token function">refreshServiceDiscoveryInvoker</span><span class="token punctuation">(</span>latch<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">// directly calculate preferred invoker, will not wait until address notify</span>
+       <span class="token comment">// calculation will re-occurred when address notify later</span>
+       <span class="token comment">//计算当前使用应用级还是接口级服务发现的Invoker对象</span>
+       <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span>newRule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p></p>
+<h3 id="22-3-4-刷新接口级服务发现Invoker"><a href="#22-3-4-刷新接口级服务发现Invoker" class="headerlink" title="22.3.4 刷新接口级服务发现Invoker"></a>22.3.4 刷新接口级服务发现Invoker</h3><p>MigrationInvoker类型的refreshInterfaceInvoker方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">refreshInterfaceInvoker</span><span class="token punctuation">(</span><span class="token class-name">CountDownLatch</span> latch<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">clearListener</span><span class="token punctuation">(</span>invoker<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">needRefresh</span><span class="token punctuation">(</span>invoker<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Re-subscribing interface addresses for interface "</span> <span class="token operator">+</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>invoker <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                invoker<span class="token punctuation">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            invoker <span class="token operator">=</span> registryProtocol<span class="token punctuation">.</span><span class="token function">getInvoker</span><span class="token punctuation">(</span>cluster<span class="token punctuation">,</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">setListener</span><span class="token punctuation">(</span>invoker<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+            latch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>reportService<span class="token punctuation">.</span><span class="token function">hasReporter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                reportService<span class="token punctuation">.</span><span class="token function">reportConsumptionStatus</span><span class="token punctuation">(</span>
+                    reportService<span class="token punctuation">.</span><span class="token function">createConsumptionReport</span><span class="token punctuation">(</span>consumerUrl<span class="token punctuation">.</span><span class="token function">getServiceInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"interface"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>step <span class="token operator">==</span> APPLICATION_FIRST<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span>rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="22-3-5-刷新应用级服务发现Invoker类型对象"><a href="#22-3-5-刷新应用级服务发现Invoker类型对象" class="headerlink" title="22.3.5 刷新应用级服务发现Invoker类型对象"></a>22.3.5 刷新应用级服务发现Invoker类型对象</h3><p>MigrationInvoker类型的refreshServiceDiscoveryInvoker方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">refreshServiceDiscoveryInvoker</span><span class="token punctuation">(</span><span class="token class-name">CountDownLatch</span> latch<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">clearListener</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">needRefresh</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Re-subscribing instance addresses, current interface "</span> <span class="token operator">+</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>serviceDiscoveryInvoker <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                serviceDiscoveryInvoker<span class="token punctuation">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            serviceDiscoveryInvoker <span class="token operator">=</span> registryProtocol<span class="token punctuation">.</span><span class="token function">getServiceDiscoveryInvoker</span><span class="token punctuation">(</span>cluster<span class="token punctuation">,</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">setListener</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+            latch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>reportService<span class="token punctuation">.</span><span class="token function">hasReporter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                reportService<span class="token punctuation">.</span><span class="token function">reportConsumptionStatus</span><span class="token punctuation">(</span>
+                    reportService<span class="token punctuation">.</span><span class="token function">createConsumptionReport</span><span class="token punctuation">(</span>consumerUrl<span class="token punctuation">.</span><span class="token function">getServiceInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"app"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>step <span class="token operator">==</span> APPLICATION_FIRST<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span>rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="22-3-6-计算当前使用应用级还是接口级服务发现的Invoker对象"><a href="#22-3-6-计算当前使用应用级还是接口级服务发现的Invoker对象" class="headerlink" title="22.3.6 计算当前使用应用级还是接口级服务发现的Invoker对象"></a>22.3.6 计算当前使用应用级还是接口级服务发现的Invoker对象</h3><p>MigrationInvoker类型的的calcPreferredInvoker方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span><span class="token class-name">MigrationRule</span> migrationRule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>serviceDiscoveryInvoker <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> invoker <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">MigrationAddressComparator</span><span class="token punctuation">&gt;</span></span> detectors <span class="token operator">=</span> <span class="token class-name">ScopeModelUtil</span><span class="token punctuation">.</span><span class="token function">getApplicationModel</span><span class="token punctuation">(</span>consumerUrl <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token keyword">null</span> <span class="token operator">:</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">MigrationAddressComparator</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSupportedExtensionInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>detectors<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// pick preferred invoker</span>
+            <span class="token comment">// the real invoker choice in invocation will be affected by promotion</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>detectors<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">allMatch</span><span class="token punctuation">(</span>comparator <span class="token operator">-&gt;</span> comparator<span class="token punctuation">.</span><span class="token function">shouldMigrate</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">,</span> invoker<span class="token punctuation">,</span> migrationRule<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>currentAvailableInvoker <span class="token operator">=</span> serviceDiscoveryInvoker<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>currentAvailableInvoker <span class="token operator">=</span> invoker<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>currentAvailableInvoker是后期服务调用使用的Invoker对象</p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/Dubbo/" rel="tag">Dubbo<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3/" rel="tag">Dubbo3<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Dubbo3源码解析<span class="tag-unordered list-count">23</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/07/10/dubbo/23-dubbo3-jie-kou-ji-fu-wu-fa-xian-luo-ji/"> 23-【Dubbo3.0.8源码解析系列】消费者进行接口级服务发现订阅的逻辑</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/"> 21-【Dubbo3.0.8源码解析系列】Dubbo3消费者引用服务入口</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

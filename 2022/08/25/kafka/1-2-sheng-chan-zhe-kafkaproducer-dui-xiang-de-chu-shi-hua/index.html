@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918040">
+<link rel="stylesheet" href="/css/style.css?v=1662168973033">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918040"></script>
+<script src="/js/core.js?v=1662168973033"></script>
 
 
 
@@ -48,149 +48,292 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1></h1>
+			<div class="info"><span class="date">2022年8月25日</span>•songxiaosheng 
+			
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/kafka/1-2-生产者KafkaProducer对象的初始化.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
+		<article class="post">
+			<h1 id="2-生产者KafkaProducer对象的初始化"><a href="#2-生产者KafkaProducer对象的初始化" class="headerlink" title="2 生产者KafkaProducer对象的初始化"></a>2 生产者KafkaProducer对象的初始化</h1><h2 id="2-1-简介"><a href="#2-1-简介" class="headerlink" title="2.1 简介"></a>2.1 简介</h2><p>这个类型是将记录发布到Kafka群集的Kafka客户端。<br>生产者是线程安全的，跨线程共享单个生产者实例通常比拥有多个实例快。</p>
+<p>下面是一个使用生产者发送记录的简单示例，其中包含序列号作为键/值对的字符串。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">Properties</span> props <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"bootstrap.servers"</span><span class="token punctuation">,</span> <span class="token string">"localhost:9092"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"acks"</span><span class="token punctuation">,</span> <span class="token string">"all"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"key.serializer"</span><span class="token punctuation">,</span> <span class="token string">"org.apache.kafka.common.serialization.StringSerializer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"value.serializer"</span><span class="token punctuation">,</span> <span class="token string">"org.apache.kafka.common.serialization.StringSerializer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token class-name">Producer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> producer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KafkaProducer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span>   
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>       
+    producer<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProducerRecord</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token string">"my-topic"</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      
+producer<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>生产者包括一个缓冲区池，其中保存尚未传输到服务器的记录，以及一个后台I/O线程，负责将这些记录转换为请求并将其传输到集群。使用后未关闭生产者将泄漏这些资源。</p>
+<ul>
+<li><p><strong>send() 方法是异步的</strong>。调用时，它将记录添加到挂起<strong>记录发送的缓冲区</strong>中，并立即返回。这使制作人能够将单个记录批处理在一起，以提高效率</p>
+</li>
+<li><p><strong>acks配置控制将请求视为完成的条件</strong>。默认设置“all”将导致阻止记录的完全提交，这是最慢但最持久的设置。</p>
+</li>
+<li><p><strong>如果请求失败，生产者可以自动重试</strong>。重试设置默认为整数Integer.MAX_VALUE，建议使用<strong>delivery.timeout.ms</strong> 控制重试行为，而不是重试。</p>
+</li>
+<li><p><strong>生产者为每个分区维护未发送记录的缓冲区</strong>。这些缓冲区的大小由 <strong>batch.size</strong> 配置。将其变大可能会导致更多的批处理，但需要更多的内存（因为通常每个活动分区都有一个这样的缓冲区）。</p>
+</li>
+<li><p>默认情况下，<strong>即使缓冲区中有额外的未使用空间，也可以立即发送缓冲区</strong>。但是，如果要减少请求数，可以设置<strong>linger.ms</strong> 设置为大于0的值。这将指示生产者在<strong>发送请求之前等待该毫秒数</strong>，希望更多记录将到达以填充同一批。这<strong>类似于TCP中的Nagle算法</strong>。例如，在上面的代码片段中，可能所有100条记录都将在一个请求中发送，因为我们将延迟时间设置为1毫秒。然而，如果我们没有填满缓冲区，这个设置会给等待更多记录到达的请求增加1毫秒的延迟。请注意，及时到达的记录通常会一起批处理，即使存在 linger.ms=0。因此，在负载比较大的情况下，无论延迟linger配置如何，都会进行批处理；但是，如果将其设置为大于0的值，则在不处于最大负载的情况下，可能会导致更少、更高效的请求，而代价是<strong>很小的延迟</strong></p>
+</li>
+<li><p><strong>buffer.memory控制生产者可用于缓冲的内存总量</strong>。如果记录的发送速度超过了它们传输到服务器的速度，那么该缓冲区空间将耗尽。当<strong>缓冲区空间耗尽时，其他发送调用将被阻止</strong>。阻止时间的阈值由<strong>max.block.m</strong>确定。之后，它抛出<strong>TimeoutException</strong>。</p>
+</li>
+<li><p><strong>key.serializer</strong> 和<strong>value.serializer</strong> 指示如何将用户随其ProducerRecord提供的<strong>键和值对象转换为字节</strong>。对于简单的字符串或字节类型，可以使用包含的org.apache.kafka.common.serialization.ByteArraySerializer或org.apache.kafka.common.serialization.StringSerializer 。</p>
+</li>
+<li><p>从<strong>Kafka 0.11开始</strong>，KafkaProducer支持<strong>两种附加模式</strong>：<strong>幂等生产者</strong>和<strong>事务生产者</strong>。<strong>幂等生产者将Kafka的传递语义从至少一次传递加强到了完全一次传递</strong>。特别是<strong>生产者重试将不再引入重复</strong>。<strong>事务生产者允许应用程序将消息原子的发送到多个分区（和主题！）</strong></p>
+</li>
+<li><p>从<strong>Kafka  3.0开始</strong>，<strong>enable.idempotence配置默认为true</strong>。启用幂等时，<strong>重试配置将默认为Integer.MAX_VALUE，acks配置将默认为all</strong>。幂等生产者没有API更改，因此不需要修改现有应用程序来利用此功能</p>
+</li>
+<li><p>为了利用幂等生产者，必须避免应用程序级的重新发送，因为这些数据不能重复消除。因此，如果应用程序启用了幂等性，建议不要设置重试配置，因为它将默认为Integer.MAX_VALUE。此外，如果发送（ProducerRecord）返回错误，即使无限次重试（例如，如果消息在发送之前在缓冲区中过期），则建议关闭生产者并检查最后生成的消息的内容，以确保其不重复。最后，生产者只能保证在单个会话中发送的消息的幂等性。</p>
+</li>
+<li><p>要使用事务生产者和助理API，必须设置transactional.id配置属性。如果transactional.id设置后，幂等性将自动启用，同时生产者配置幂等性所依赖的。此外，应配置事务中包含的主题以确保持久性。特别是， replication.factor应至少为3，这些主题的min.insync.replicas应设置为2。最后，为了从端到端实现事务性保证，还必须将使用者配置为只读提交的消息</p>
+</li>
+<li><p>transactional.id的目的是支持跨单个生产者实例的多个会话进行事务恢复。它通常是从分区的、有状态的应用程序中的碎片标识符派生出来的。因此，对于在分区应用程序中运行的每个生产者实例，它应该是唯一的。<br>所有新的事务性API都处于阻塞状态，并且在出现故障时会引发异常。下面的示例说明了如何使用新的API。它与上面的示例类似，只是所有100条消息都是单个事务的一部分</p>
+</li>
+</ul>
+<p>The producer consists of a pool of buffer space that holds records that haven’t yet been transmitted to the server as well as a background I/O thread that is responsible for turning these records into requests and transmitting them to the cluster. Failure to close the producer after use will leak these resources.</p>
+<p>The send() method is asynchronous. When called it adds the record to a buffer of pending record sends and immediately returns. This allows the producer to batch together individual records for efficiency.<br>The acks config controls the criteria under which requests are considered complete. The “all” setting we have specified will result in blocking on the full commit of the record, the slowest but most durable setting.<br>If the request fails, the producer can automatically retry, though since we have specified retries as 0 it won’t. Enabling retries also opens up the possibility of duplicates (see the documentation on message delivery semantics  for details).<br>The producer maintains buffers of unsent records for each partition. These buffers are of a size specified by the batch.size config. Making this larger can result in more batching, but requires more memory (since we will generally have one of these buffers for each active partition).<br>By default a buffer is available to send immediately even if there is additional unused space in the buffer. However if you want to reduce the number of requests you can set linger.ms to something greater than 0. This will instruct the producer to wait up to that number of milliseconds before sending a request in hope that more records will arrive to fill up the same batch. This is analogous to Nagle’s algorithm in TCP. For example, in the code snippet above, likely all 100 records would be sent in a single request since we set our linger time to 1 millisecond. However this setting would add 1 millisecond of latency to our request waiting for more records to arrive if we didn’t fill up the buffer. Note that records that arrive close together in time will generally batch together even with linger.ms=0 so under heavy load batching will occur regardless of the linger configuration; however setting this to something larger than 0 can lead to fewer, more efficient requests when not under maximal load at the cost of a small amount of latency.<br>The buffer.memory controls the total amount of memory available to the producer for buffering. If records are sent faster than they can be transmitted to the server then this buffer space will be exhausted. When the buffer space is exhausted additional send calls will block. The threshold for time to block is determined by max.block.ms after which it throws a TimeoutException.<br>The key.serializer and value.serializer instruct how to turn the key and value objects the user provides with their ProducerRecord into bytes. You can use the included org.apache.kafka.common.serialization.ByteArraySerializer or org.apache.kafka.common.serialization.StringSerializer for simple string or byte types.<br>From Kafka 0.11, the KafkaProducer supports two additional modes: the idempotent producer and the transactional producer. The idempotent producer strengthens Kafka’s delivery semantics from at least once to exactly once delivery. In particular producer retries will no longer introduce duplicates. The transactional producer allows an application to send messages to multiple partitions (and topics!) atomically.<br>To enable idempotence, the enable.idempotence configuration must be set to true. If set, the retries config will default to Integer.MAX_VALUE and the acks config will default to all. There are no API changes for the idempotent producer, so existing applications will not need to be modified to take advantage of this feature.<br>To take advantage of the idempotent producer, it is imperative to avoid application level re-sends since these cannot be de-duplicated. As such, if an application enables idempotence, it is recommended to leave the retries config unset, as it will be defaulted to Integer.MAX_VALUE. Additionally, if a send(ProducerRecord) returns an error even with infinite retries (for instance if the message expires in the buffer before being sent), then it is recommended to shut down the producer and check the contents of the last produced message to ensure that it is not duplicated. Finally, the producer can only guarantee idempotence for messages sent within a single session.<br>To use the transactional producer and the attendant APIs, you must set the transactional.id configuration property. If the transactional.id is set, idempotence is automatically enabled along with the producer configs which idempotence depends on. Further, topics which are included in transactions should be configured for durability. In particular, the replication.factor should be at least 3, and the min.insync.replicas for these topics should be set to 2. Finally, in order for transactional guarantees to be realized from end-to-end, the consumers must be configured to read only committed messages as well.<br>The purpose of the transactional.id is to enable transaction recovery across multiple sessions of a single producer instance. It would typically be derived from the shard identifier in a partitioned, stateful, application. As such, it should be unique to each producer instance running within a partitioned application.<br>All the new transactional APIs are blocking and will throw exceptions on failure. The example below illustrates how the new APIs are meant to be used. It is similar to the example above, except that all 100 messages are part of a single transaction.</p>
+<p>  Properties props = new Properties();   props.put(“bootstrap.servers”, “localhost:9092”);   props.put(“transactional.id”, “my-transactional-id”);   Producer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props, new StringSerializer(), new StringSerializer());      producer.initTransactions();      try {       producer.beginTransaction();       for (int i = 0; i &lt; 100; i++)           producer.send(new ProducerRecord&lt;&gt;(“my-topic”, Integer.toString(i), Integer.toString(i)));       producer.commitTransaction();   } catch (ProducerFencedException | OutOfOrderSequenceException | AuthorizationException e) {       // We can’t recover from these exceptions, so our only option is to close the producer and exit.       producer.close();   } catch (KafkaException e) {       // For all other exceptions, just abort the transaction and try again.       producer.abortTransaction();   }   producer.close();<br>As is hinted at in the example, there can be only one open transaction per producer. All messages sent between the beginTransaction() and commitTransaction() calls will be part of a single transaction. When the transactional.id is specified, all messages sent by the producer must be part of a transaction.<br>The transactional producer uses exceptions to communicate error states. In particular, it is not required to specify callbacks for producer.send() or to call .get() on the returned Future: a KafkaException would be thrown if any of the producer.send() or transactional calls hit an irrecoverable error during a transaction. See the send(ProducerRecord) documentation for more details about detecting errors from a transactional send.<br>By calling producer.abortTransaction() upon receiving a KafkaException we can ensure that any successful writes are marked as aborted, hence keeping the transactional guarantees.<br>This client can communicate with brokers that are version 0.10.0 or newer. Older or newer brokers may not support certain client features. For instance, the transactional APIs need broker versions 0.11.0 or later. You will receive an UnsupportedVersionException when invoking an API that is not available in the running broker version.</p>
+<h2 id="2-2-构造器代码"><a href="#2-2-构造器代码" class="headerlink" title="2.2 构造器代码"></a>2.2 构造器代码</h2><h3 id="2-2-1-构造器代码逻辑大纲"><a href="#2-2-1-构造器代码逻辑大纲" class="headerlink" title="2.2.1 构造器代码逻辑大纲"></a>2.2.1 构造器代码逻辑大纲</h3><ul>
+<li>开始</li>
+<li>配置转换<ul>
+<li>Properties配置转 Map&lt;String, Object&gt;</li>
+<li>Map&lt;String, Object&gt;配置 转ProducerConfig</li>
+</ul>
+</li>
+<li>KafkaProducer基础属性初始化<ul>
+<li>producerConfig</li>
+<li>time</li>
+<li>clientId 默认为producer-自增长的id</li>
+</ul>
+</li>
+<li>可观测性对象的初始化<ul>
+<li>初始化Logger类型日志 对象log</li>
+<li>初始化监控指标配置 MetricConfig类型对象</li>
+<li>加载指标报告器 List<metricsreporter></metricsreporter></li>
+<li>JmxReporter对象初始 化</li>
+<li>KafkaProducerMetrics监 控指对象创建标对象</li>
+</ul>
+</li>
+<li>消息发送相关对象初始化<ul>
+<li>分区器Partitioner类型对 象初始化</li>
+<li>keySerializer对象创建序 列化KEY使用</li>
+<li>valueSerializer对象创建 序列化VALUE使用</li>
+</ul>
+</li>
+<li>过滤器拦截器增强功能对象初始化<ul>
+<li>ProducerInterceptors 生产者拦截器对象初始 化</li>
+<li>ClusterResourceListeners 集群资源监听器</li>
+</ul>
+</li>
+<li>其他对象的初始化<ul>
+<li>RecordAccumulator记录 累加器初始化</li>
+<li>ProducerMetadata 生产者元数据对象初始 化</li>
+</ul>
+</li>
+<li>发送器创建于IO线程的启动调用<ul>
+<li>Sender发送器对象初始 化</li>
+<li>KafkaThread IO线程对 象创建</li>
+<li>ioThread.start()启动IO 线程</li>
+</ul>
+</li>
+<li>注册AppInfo信息到JMX</li>
+<li>结束</li>
+</ul>
+<p>KafkaProducer的构造器</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">KafkaProducer</span><span class="token punctuation">(</span><span class="token class-name">Properties</span> properties<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//配置转换 Properties配置转 Map&lt;String, Object&gt;</span>
+        <span class="token keyword">this</span><span class="token punctuation">(</span><span class="token function">propsToMap</span><span class="token punctuation">(</span>properties<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token class-name">Time</span><span class="token punctuation">.</span>SYSTEM<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>KafkaProducer 重载的构造器 </p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">KafkaProducer</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> configs<span class="token punctuation">,</span>
+              <span class="token class-name">Serializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">K</span><span class="token punctuation">&gt;</span></span> keySerializer<span class="token punctuation">,</span>
+              <span class="token class-name">Serializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">V</span><span class="token punctuation">&gt;</span></span> valueSerializer<span class="token punctuation">,</span>
+              <span class="token class-name">ProducerMetadata</span> metadata<span class="token punctuation">,</span>
+              <span class="token class-name">KafkaClient</span> kafkaClient<span class="token punctuation">,</span>
+              <span class="token class-name">ProducerInterceptors</span> interceptors<span class="token punctuation">,</span>
+              <span class="token class-name">Time</span> time<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token comment">//配置转换 Map&lt;String, Object&gt;配置 转ProducerConfig</span>
+    <span class="token class-name">ProducerConfig</span> config <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ProducerConfig</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span><span class="token function">addSerializerToConfig</span><span class="token punctuation">(</span>configs<span class="token punctuation">,</span> keySerializer<span class="token punctuation">,</span>
+            valueSerializer<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token comment">//KafkaProducer基础属性初始化</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> userProvidedConfigs <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">originals</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>producerConfig <span class="token operator">=</span> config<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>time <span class="token operator">=</span> time<span class="token punctuation">;</span>
+        <span class="token class-name">String</span> clientId <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>CLIENT_ID_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>clientId<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+            clientId <span class="token operator">=</span> <span class="token string">"producer-"</span> <span class="token operator">+</span> PRODUCER_CLIENT_ID_SEQUENCE<span class="token punctuation">.</span><span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>clientId <span class="token operator">=</span> clientId<span class="token punctuation">;</span>
+
+        <span class="token class-name">String</span> transactionalId <span class="token operator">=</span> userProvidedConfigs<span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>TRANSACTIONAL_ID_CONFIG<span class="token punctuation">)</span> <span class="token operator">?</span>
+                <span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">)</span> userProvidedConfigs<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>TRANSACTIONAL_ID_CONFIG<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+       <span class="token comment">//初始化Logger类型日志 对象log</span>
+        <span class="token class-name">LogContext</span> logContext<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>transactionalId <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+            logContext <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LogContext</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"[Producer clientId=%s] "</span><span class="token punctuation">,</span> clientId<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span>
+            logContext <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LogContext</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"[Producer clientId=%s, transactionalId=%s] "</span><span class="token punctuation">,</span> clientId<span class="token punctuation">,</span> transactionalId<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log <span class="token operator">=</span> logContext<span class="token punctuation">.</span><span class="token function">logger</span><span class="token punctuation">(</span><span class="token class-name">KafkaProducer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Starting the Kafka producer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
+      	<span class="token comment">//初始化监控指标配置 MetricConfig类型对象</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> metricTags <span class="token operator">=</span> <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">singletonMap</span><span class="token punctuation">(</span><span class="token string">"client-id"</span><span class="token punctuation">,</span> clientId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">MetricConfig</span> metricConfig <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MetricConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">samples</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>METRICS_NUM_SAMPLES_CONFIG<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">timeWindow</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>METRICS_SAMPLE_WINDOW_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">recordLevel</span><span class="token punctuation">(</span><span class="token class-name">Sensor<span class="token punctuation">.</span>RecordingLevel</span><span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>METRICS_RECORDING_LEVEL_CONFIG<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">tags</span><span class="token punctuation">(</span>metricTags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">MetricsReporter</span><span class="token punctuation">&gt;</span></span> reporters <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getConfiguredInstances</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>METRIC_REPORTER_CLASSES_CONFIG<span class="token punctuation">,</span>
+                <span class="token class-name">MetricsReporter</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span>
+                <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">singletonMap</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>CLIENT_ID_CONFIG<span class="token punctuation">,</span> clientId<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        reporters<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">JmxReporter</span><span class="token punctuation">(</span>JMX_PREFIX<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>metrics <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Metrics</span><span class="token punctuation">(</span>metricConfig<span class="token punctuation">,</span> reporters<span class="token punctuation">,</span> time<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>partitioner <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getConfiguredInstance</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>PARTITIONER_CLASS_CONFIG<span class="token punctuation">,</span> <span class="token class-name">Partitioner</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">long</span> retryBackoffMs <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>RETRY_BACKOFF_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>keySerializer <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>keySerializer <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getConfiguredInstance</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>KEY_SERIALIZER_CLASS_CONFIG<span class="token punctuation">,</span>
+                                                                                     <span class="token class-name">Serializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>keySerializer<span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">originals</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            config<span class="token punctuation">.</span><span class="token function">ignore</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>KEY_SERIALIZER_CLASS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>keySerializer <span class="token operator">=</span> keySerializer<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>valueSerializer <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>valueSerializer <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getConfiguredInstance</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>VALUE_SERIALIZER_CLASS_CONFIG<span class="token punctuation">,</span>
+                                                                                       <span class="token class-name">Serializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>valueSerializer<span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">originals</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            config<span class="token punctuation">.</span><span class="token function">ignore</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>VALUE_SERIALIZER_CLASS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>valueSerializer <span class="token operator">=</span> valueSerializer<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// load interceptors and make sure they get clientId</span>
+        userProvidedConfigs<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>CLIENT_ID_CONFIG<span class="token punctuation">,</span> clientId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ProducerConfig</span> configWithClientId <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ProducerConfig</span><span class="token punctuation">(</span>userProvidedConfigs<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProducerInterceptor</span><span class="token punctuation">&lt;</span><span class="token class-name">K</span><span class="token punctuation">,</span> <span class="token class-name">V</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> interceptorList <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">List</span><span class="token punctuation">)</span> configWithClientId<span class="token punctuation">.</span><span class="token function">getConfiguredInstances</span><span class="token punctuation">(</span>
+                <span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>INTERCEPTOR_CLASSES_CONFIG<span class="token punctuation">,</span> <span class="token class-name">ProducerInterceptor</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>interceptors <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>interceptors <span class="token operator">=</span> interceptors<span class="token punctuation">;</span>
+        <span class="token keyword">else</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>interceptors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ProducerInterceptors</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>interceptorList<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ClusterResourceListeners</span> clusterResourceListeners <span class="token operator">=</span> <span class="token function">configureClusterResourceListeners</span><span class="token punctuation">(</span>keySerializer<span class="token punctuation">,</span>
+                valueSerializer<span class="token punctuation">,</span> interceptorList<span class="token punctuation">,</span> reporters<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>maxRequestSize <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>MAX_REQUEST_SIZE_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>totalMemorySize <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>BUFFER_MEMORY_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>compressionType <span class="token operator">=</span> <span class="token class-name">CompressionType</span><span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>COMPRESSION_TYPE_CONFIG<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>maxBlockTimeMs <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>MAX_BLOCK_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>transactionManager <span class="token operator">=</span> <span class="token function">configureTransactionState</span><span class="token punctuation">(</span>config<span class="token punctuation">,</span> logContext<span class="token punctuation">,</span> log<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> deliveryTimeoutMs <span class="token operator">=</span> <span class="token function">configureDeliveryTimeout</span><span class="token punctuation">(</span>config<span class="token punctuation">,</span> log<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>apiVersions <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ApiVersions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RecordAccumulator</span><span class="token punctuation">(</span>logContext<span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>BATCH_SIZE_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>compressionType<span class="token punctuation">,</span>
+                <span class="token function">lingerMs</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                retryBackoffMs<span class="token punctuation">,</span>
+                deliveryTimeoutMs<span class="token punctuation">,</span>
+                metrics<span class="token punctuation">,</span>
+                PRODUCER_METRIC_GROUP_NAME<span class="token punctuation">,</span>
+                time<span class="token punctuation">,</span>
+                apiVersions<span class="token punctuation">,</span>
+                transactionManager<span class="token punctuation">,</span>
+                <span class="token keyword">new</span> <span class="token class-name">BufferPool</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>totalMemorySize<span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>BATCH_SIZE_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span> metrics<span class="token punctuation">,</span> time<span class="token punctuation">,</span> PRODUCER_METRIC_GROUP_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">InetSocketAddress</span><span class="token punctuation">&gt;</span></span> addresses <span class="token operator">=</span> <span class="token class-name">ClientUtils</span><span class="token punctuation">.</span><span class="token function">parseAndValidateAddresses</span><span class="token punctuation">(</span>
+                config<span class="token punctuation">.</span><span class="token function">getList</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>BOOTSTRAP_SERVERS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>CLIENT_DNS_LOOKUP_CONFIG<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>metadata <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>metadata <span class="token operator">=</span> metadata<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>metadata <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ProducerMetadata</span><span class="token punctuation">(</span>retryBackoffMs<span class="token punctuation">,</span>
+                    config<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>METADATA_MAX_AGE_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    logContext<span class="token punctuation">,</span>
+                    clusterResourceListeners<span class="token punctuation">,</span>
+                    <span class="token class-name">Time</span><span class="token punctuation">.</span>SYSTEM<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">.</span><span class="token function">bootstrap</span><span class="token punctuation">(</span>addresses<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>errors <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>metrics<span class="token punctuation">.</span><span class="token function">sensor</span><span class="token punctuation">(</span><span class="token string">"errors"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>sender <span class="token operator">=</span> <span class="token function">newSender</span><span class="token punctuation">(</span>logContext<span class="token punctuation">,</span> kafkaClient<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> ioThreadName <span class="token operator">=</span> NETWORK_THREAD_PREFIX <span class="token operator">+</span> <span class="token string">" | "</span> <span class="token operator">+</span> clientId<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>ioThread <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KafkaThread</span><span class="token punctuation">(</span>ioThreadName<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>sender<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>ioThread<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        config<span class="token punctuation">.</span><span class="token function">logUnused</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">AppInfoParser</span><span class="token punctuation">.</span><span class="token function">registerAppInfo</span><span class="token punctuation">(</span>JMX_PREFIX<span class="token punctuation">,</span> clientId<span class="token punctuation">,</span> metrics<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Kafka producer started"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// call close methods if internal objects are already constructed this is to prevent resource leak. see KAFKA-2121</span>
+        <span class="token function">close</span><span class="token punctuation">(</span><span class="token class-name">Duration</span><span class="token punctuation">.</span><span class="token function">ofMillis</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// now propagate the exception</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">KafkaException</span><span class="token punctuation">(</span><span class="token string">"Failed to construct kafka producer"</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+			<br>
 			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

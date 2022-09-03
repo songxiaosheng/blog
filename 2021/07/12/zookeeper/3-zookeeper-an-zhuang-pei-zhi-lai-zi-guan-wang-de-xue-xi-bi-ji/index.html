@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918061">
+<link rel="stylesheet" href="/css/style.css?v=1662168973088">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918061"></script>
+<script src="/js/core.js?v=1662168973088"></script>
 
 
 
@@ -48,149 +48,362 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>03-Zookeeper安装配置</h1>
+			<div class="info"><span class="date">2021年7月12日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">Zookeeper版本3.6.2源码系列</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/zookeeper/3-zookeeper安装配置(来自官网的学习笔记).md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<p>@<a href="%E7%9B%AE%E5%BD%95">TOC</a></p>
+<h1 id="3-zookeeper安装配置"><a href="#3-zookeeper安装配置" class="headerlink" title="3 zookeeper安装配置"></a>3 zookeeper安装配置</h1><p>可以打开如下地址找到自己所需要的版本进行下载<br><a target="_blank" rel="noopener" href="https://zookeeper.apache.org/releases.html#download">https://zookeeper.apache.org/releases.html#download</a><br>下载文件中一共有两个地址一个是带源码的下载一个是不带源码的下载可以根据自己需要进行下载，下载完毕之后可以对文件进行解压，我们可以看下不带源码的安装目录其中主要包含了bin目录下的脚本文件，conf配置文件，lib依赖库，docs离线教程等</p>
+<h2 id="3-1单个机器单个节点如何启动需要什么配置？"><a href="#3-1单个机器单个节点如何启动需要什么配置？" class="headerlink" title="3.1单个机器单个节点如何启动需要什么配置？"></a>3.1单个机器单个节点如何启动需要什么配置？</h2><p>独立模式启动比较简单可以执行bin目录下面的启动脚本进行启动，不过在启动前我们先来简单的配置下配置文件，打开解压后的zookeeper目录中的conf文件夹可以看到默认情况下会有个zoo_sample.cfg文件先将配置文件名称修改为zoo.cfg确保zookeeper启动的时候可以识别，然后打开zoo.cfg文件添加如下配置</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">tickTime<span class="token operator">=</span><span class="token number">2000</span>
+ dataDir<span class="token operator">=</span><span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">/</span>lib<span class="token operator">/</span>zookeeper
+ clientPort<span class="token operator">=</span><span class="token number">2181</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>上面这些配置不是必须的直接启动也是可以的不过我们先来简单配置下配置文件，说明下这几个参数的含义<br>tickTime  Zookeeper使用的基本单位，以毫秒为单位。用于进行心跳，并且最小会话超时将是tickTime的两倍。<br>dataDir存储内存中对应数据库快照的位置，以及数据库更新事物的日志。<br>clientPort 侦听客户端连接的端口<br>配置文件创建好了那接下来如何启动呢，让我们打开bin目录可以看到有zkServer.sh和zkServer.cmd如果我们使用的操作系统是mac或者linux则执行命令zkServer.sh start如果我们用的是windows则执行命令zkServer.cmd start<br> 如何验证进程是否启动成功了呢可以通过查看java进程是否存在zookeeper的进程或者验证端口2181是否已经处于监听状态，另外我们也可以看下在解压的根目录下面会自动生成个logs文件夹zookeeper启动日志默认会打印在这里，如果说我们要定制化日志格式和修改日志目录可以打开conf配置目录下面配置下log4j的配置文件，log4j的详细配置可以参考log4j官网<br>单机模式下的zookeeper部署，没有备份复制如果运行中的进程出现故障那么整个zookeeper服务就不可以用了，如果我们处于开发环境可以使用这种方式简单快捷，如果在产线或者高可用场景下使用则需要配置集群模式，这个后面我们会详细说明。</p>
+<h2 id="3-2多个机器多个节点启动如何配置？"><a href="#3-2多个机器多个节点启动如何配置？" class="headerlink" title="3.2多个机器多个节点启动如何配置？"></a>3.2多个机器多个节点启动如何配置？</h2><p>独立模式运行zookeeper方便部署和测试但是在生产环境应该在复制模式下运行zookeeper，同一个应用程序中的复制服务器组称为quorum，在复制模式下quorum组中的服务器都具有相同的配置文件，接<br>下来我们就先看一个在复制模式下zoo.cfg文件的简单配置</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">tickTime<span class="token operator">=</span><span class="token number">2000</span>
+dataDir<span class="token operator">=</span><span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">/</span>lib<span class="token operator">/</span>zookeeper
+clientPort<span class="token operator">=</span><span class="token number">2181</span>
+initLimit<span class="token operator">=</span><span class="token number">5</span>
+syncLimit<span class="token operator">=</span><span class="token number">2</span>
+server<span class="token punctuation">.</span><span class="token number">1</span><span class="token operator">=</span>zoo1<span class="token operator">:</span><span class="token number">2888</span><span class="token operator">:</span><span class="token number">3888</span>
+server<span class="token punctuation">.</span><span class="token number">2</span><span class="token operator">=</span>zoo2<span class="token operator">:</span><span class="token number">2888</span><span class="token operator">:</span><span class="token number">3888</span>
+server<span class="token punctuation">.</span><span class="token number">3</span><span class="token operator">=</span>zoo3<span class="token operator">:</span><span class="token number">2888</span><span class="token operator">:</span><span class="token number">3888</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以了解下与单机模式部署时新增的配置项<br>initLimit zookeeper服务器连接到leader的超时时间长度(单位是tickTime)在这个配置中为5个心跳单位超时时间为，5✖️2000=10000毫秒<br>syncLimit zookeeper服务器与leader之间的连接超时时间(单位是tickTime)</p>
+<p>接下来可以看到配置zookeeper服务地址信息的配置就是先来看一下等号前面的变量名server.x 这个圆点符号后面的x序号代表着对应服务器的序号，配置了对应序号的机器要在数据目录中创建一个myid文件来写入序号，如果myid文件不存在就可能导致启动报错，然后在来看值这里第一个配置的是zoo1:2888:3888一共三个部分zoo1代表着第一个zookeeper服务的地址，然后配置在地址后面的2888端口用于集群内机器follower到leader点对点通信使用，第三个端口3888配置的是进行leader选举使用的端口</p>
+<p><strong>Zookeeper集群的配置有如下步骤：</strong><br>1安装Java JDK(ZooKeeper运行在Java版本1.8或更高版本(不支持JDK 8 LTS, JDK 11 LTS, JDK 12 – Java 9和10))<br>2设置Java堆大小,要确定正确的值，请使用负载测试，并确保远低于导致交换的使用限制,保守一点——对于一台4GB的机器，使用3GB的最大堆大小<br>3安装ZooKeeper服务器包可以从<a target="_blank" rel="noopener" href="http://zookeeper.apache.org/releases.html%E4%B8%8B%E8%BD%BD">http://zookeeper.apache.org/releases.html下载</a><br>4创建配置文件,zoo.cfg,假如有3台节点情况下，集群配置至少需要如下的配置信息</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">tickTime<span class="token operator">=</span><span class="token number">2000</span>
+   dataDir<span class="token operator">=</span><span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">/</span>lib<span class="token operator">/</span>zookeeper<span class="token operator">/</span>
+   clientPort<span class="token operator">=</span><span class="token number">2181</span>
+initLimit<span class="token operator">=</span><span class="token number">5</span>
+syncLimit<span class="token operator">=</span><span class="token number">2</span>
+   server<span class="token punctuation">.</span><span class="token number">1</span><span class="token operator">=</span>zoo1<span class="token operator">:</span><span class="token number">2888</span><span class="token operator">:</span><span class="token number">3888</span>
+   server<span class="token punctuation">.</span><span class="token number">2</span><span class="token operator">=</span>zoo2<span class="token operator">:</span><span class="token number">2888</span><span class="token operator">:</span><span class="token number">3888</span>
+server<span class="token punctuation">.</span><span class="token number">3</span><span class="token operator">=</span>zoo3<span class="token operator">:</span><span class="token number">2888</span><span class="token operator">:</span><span class="token number">3888</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里我们新增了server.id=host:port:port，server是常量，id是当前服务器的id，host是对应id服务器的主机地址，第一个port是仲裁端口，第二个port是选举端口</p>
+<p>1上一步我们有个id 需要我们在dataDir目录创建myid文件，myid文件由一行组成，只包含该机器id的文本。因此，服务器1的myid将包含文本“1”，而不包含其他内容。该id必须在整个系统中唯一，取值范围为1 ~ 255。重要提示:如果启用扩展特性，比如TTL节点(见下文)，由于内部限制，id必须在1到254之间。<br>2<br>3在与myid相同的目录中创建一个初始化标记文件initialize。这个文件表明需要一个空的数据目录。出现时，将创建一个空数据库并删除标记文件。当数据目录不存在时，<br>4一个空的数据目录将意味着这个对等节点将没有投票权，它将不会填充数据目录，直到它与一个活跃的领导者通信。预期的用途是仅在创建新集成时创建此文件。<br>5<br>6当每个服务节点配置完成之后，最后一步，指定对应启动文件在来启动zookeeper服务<br>7Java -cp zookeeper.jar:lib/*:conf org.apache.zookeeper.server.quorum</p>
+<h2 id="3-3-ZooKeeper可靠性保障"><a href="#3-3-ZooKeeper可靠性保障" class="headerlink" title="3.3 ZooKeeper可靠性保障"></a>3.3 ZooKeeper可靠性保障</h2><ul>
+<li>监督进程</li>
+<li>监控配置</li>
+<li>日志配置</li>
+<li>故障排除</li>
+<li>参数配置大全</li>
+</ul>
+<p><strong>跨机器的需求</strong></p>
+<p>要使ZooKeeper服务处于存活状态，必须有大多数正常的机器能够相互通信。要创建一个能够容忍F台机器故障的部署，您应该部署2xF+1台机器。因此，由三台机器组成的部署可以处理一次故障，而由五台机器组成的部署可以处理两次故障。请注意，部署6台机器只能处理2个故障，因为3台机器不是大多数。由于这个原因，ZooKeeper部署通常由奇数台机器组成。</p>
+<p><strong>数据目录清理</strong></p>
+<p>ZooKeeper数据目录包含的文件是特定服务集成存储的znode的持久副本。这些是快照和事务日志文件。当对znode进行更改时，这些更改被追加到事务日志中。有时，当日志变大时，所有znode当前状态的快照将被写入文件系统，并为未来的事务创建一个新的事务日志文件。在快照过程中，ZooKeeper可能会继续将传入的事务追加到旧日志文件中。因此，可能会在快照之前的最后一个事务日志中找到一些比快照更新的事务。</p>
+<p>使用默认配置时，ZooKeeper服务器不会删除旧快照和日志文件(详见下面的autopurge)，这是运营商的责任。每个服务环境都是不同的，因此管理这些文件的需求可能因安装而异(例如备份)。</p>
+<p>数据的清理一般有3种方式：<br>1:运维人员编写清理脚本定期清理日志文件</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">#<span class="token operator">!</span><span class="token operator">/</span>bin<span class="token operator">/</span>bash
+           
+#snapshot file dir
+dataDir<span class="token operator">=</span><span class="token operator">/</span>home<span class="token operator">/</span>nileader<span class="token operator">/</span>taokeeper<span class="token operator">/</span>zk_data<span class="token operator">/</span>version<span class="token operator">-</span><span class="token number">2</span>
+#tran log dir
+dataLogDir<span class="token operator">=</span><span class="token operator">/</span>home<span class="token operator">/</span>nileader<span class="token operator">/</span>taokeeper<span class="token operator">/</span>zk_log<span class="token operator">/</span>version<span class="token operator">-</span><span class="token number">2</span>
+#zk log dir
+logDir<span class="token operator">=</span><span class="token operator">/</span>home<span class="token operator">/</span>nileader<span class="token operator">/</span>taokeeper<span class="token operator">/</span>logs
+#<span class="token class-name">Leave</span> <span class="token number">60</span> files
+count<span class="token operator">=</span><span class="token number">60</span>
+count<span class="token operator">=</span>$<span class="token punctuation">[</span> $count <span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span>
+ls <span class="token operator">-</span>t  $dataLogDir <span class="token operator">/</span> log <span class="token punctuation">.</span>* <span class="token operator">|</span> tail <span class="token operator">-</span>n <span class="token operator">+</span> $count  <span class="token operator">|</span> xargs rm <span class="token operator">-</span>f
+ls <span class="token operator">-</span>t  $dataDir <span class="token operator">/</span>snapshot<span class="token punctuation">.</span>* <span class="token operator">|</span> tail <span class="token operator">-</span>n <span class="token operator">+</span> $count  <span class="token operator">|</span> xargs rm <span class="token operator">-</span>f
+ls <span class="token operator">-</span>t  $logDir <span class="token operator">/</span>zookeeper<span class="token punctuation">.</span> log <span class="token punctuation">.</span>* <span class="token operator">|</span> tail <span class="token operator">-</span>n <span class="token operator">+</span> $count  <span class="token operator">|</span> xargs rm <span class="token operator">-</span>f<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre><code>        以上这个脚本定义了删除对应两个目录中的文件，保留最新的60个文件，可以将他写到crontab中，设置为每天凌晨2点执行一次就可以了。
+</code></pre>
+<p> 使用ZK的工具类PurgeTxnLog，<br>使用ZK的工具类PurgeTxnLog<br>它的实现了一种简单的历史文件清理策略，可以在这里看一下他的使用方法：<a target="_blank" rel="noopener" href="http://zookeeper.apache.org/doc/r3.4.3/api/index.html%EF%BC%8C%E5%8F%AF%E4%BB%A5%E6%8C%87%E5%AE%9A%E8%A6%81%E6%B8%85%E7%90%86%E7%9A%84%E7%9B%AE%E5%BD%95%E5%92%8C%E9%9C%80%E8%A6%81%E4%BF%9D%E7%95%99%E7%9A%84%E6%96%87%E4%BB%B6%E6%95%B0%E7%9B%AE%EF%BC%8C%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8%E5%A6%82%E4%B8%8B%EF%BC%9A">http://zookeeper.apache.org/doc/r3.4.3/api/index.html，可以指定要清理的目录和需要保留的文件数目，简单使用如下：</a></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">java <span class="token operator">-</span>cp zookeeper<span class="token punctuation">.</span>jar<span class="token operator">:</span>lib<span class="token operator">/</span>slf4j<span class="token operator">-</span>api<span class="token operator">-</span><span class="token number">1.6</span><span class="token number">.1</span><span class="token punctuation">.</span>jar<span class="token operator">:</span>lib<span class="token operator">/</span>slf4j<span class="token operator">-</span>log4j12<span class="token operator">-</span><span class="token number">1.6</span><span class="token number">.1</span><span class="token punctuation">.</span>jar<span class="token operator">:</span>lib<span class="token operator">/</span>log4j<span class="token operator">-</span><span class="token number">1.2</span><span class="token number">.15</span><span class="token punctuation">.</span>jar<span class="token operator">:</span>conf <span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>zookeeper<span class="token punctuation">.</span>server<span class="token punctuation">.</span></span>PurgeTxnLog</span> <span class="token generics"><span class="token punctuation">&lt;</span>dataDir<span class="token punctuation">&gt;</span></span><span class="token generics"><span class="token punctuation">&lt;</span>snapDir<span class="token punctuation">&gt;</span></span> <span class="token operator">-</span>n <span class="token generics"><span class="token punctuation">&lt;</span>count<span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>3:对于上面这个Java类的执行，ZK自己已经写好了脚本，在bin/zkCleanup.sh中，所以直接使用这个脚本也是可以执行清理工作的。</p>
+<p>4:从3.4.0开始，zookeeper提供了自动清理snapshot和事务日志的功能，通过配置 <strong>autopurge.snapRetainCount</strong> 和 <strong>autopurge.purgeInterval</strong> 这两个参数能够实现定时清理了。这两个参数都是在zoo.cfg中配置的：</p>
+<p>autopurge.purgeInterval  这个参数指定了清理频率，单位是小时，需要填写一个1或更大的整数，默认是0，表示不开启自己清理功能。</p>
+<p>autopurge.snapRetainCount 这个参数和上面的参数搭配使用，这个参数指定了需要保留的文件数目。默认是保留3个。</p>
+<p><strong>调试日志清理(log4j)</strong><br>ZooKeeper 使用SLF4J作为其日志基础设施， 默认使用log4j日志，日志的清理我们可以通过log4j的配置来保留日志文件的大小和数量</p>
+<p><strong>监控</strong></p>
+<p>可以通过以下三种主要方式监控ZooKeeper服务:</p>
+<p>该命令通过端口使用4个字母单词<br>与JMX<br>使用zkServer.sh status命令</p>
+<p>我们可以将监控数据发送给zabbix，Prometheu，cat或者其他监控端这取决于我们监控方案的选择。</p>
+<p><strong>Zookeeper配置表格：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://zookeeper.apache.org/doc/r3.6.2/zookeeperAdmin.html#sc_configuration">https://zookeeper.apache.org/doc/r3.6.2/zookeeperAdmin.html#sc_configuration</a></p>
+<p><strong>Zookeeper命令表格：</strong><br>ZooKeeper Commands<br><a target="_blank" rel="noopener" href="https://zookeeper.apache.org/doc/r3.6.2/zookeeperAdmin.html#sc_zkCommands">https://zookeeper.apache.org/doc/r3.6.2/zookeeperAdmin.html#sc_zkCommands</a></p>
+<p><strong>数据文件管理：</strong></p>
+<p>Recovery - TxnLogToolkit<br>More details can be found in this</p>
+<p><a target="_blank" rel="noopener" href="https://zookeeper.apache.org/doc/current/zookeeperTools.html#zkTxnLogToolkit">https://zookeeper.apache.org/doc/current/zookeeperTools.html#zkTxnLogToolkit</a></p>
+<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper<span class="tag-unordered list-count">16</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="tag">Zookeeper安装配置<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Zookeeper源码解析<span class="tag-unordered list-count">16</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2021/07/12/zookeeper/4-zookeeper-ke-hu-duan-de-ru-men-shi-yong/"> 04-客户端的入门使用</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2021/07/12/zookeeper/2-zookeeper-de-shi-xian-lai-zi-guan-wang-de-xue-xi-bi-ji/"> 02-Zookeeper的实现</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918068">
+<link rel="stylesheet" href="/css/style.css?v=1662168973096">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918068"></script>
+<script src="/js/core.js?v=1662168973096"></script>
 
 
 
@@ -48,149 +48,190 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>K8S命令大全</h1>
+			<div class="info"><span class="date">2016年9月7日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/kubernetes/">kubernetes</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/k8s/1-k8s命令大全.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="deployment"><a href="#deployment" class="headerlink" title="deployment"></a>deployment</h1><p>直接修改deployment镜像</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl <span class="token builtin class-name">set</span> image deployment/nginx-deployment <span class="token assign-left variable">nginx</span><span class="token operator">=</span>nginx:1.91<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>回滚deployment变更</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout undo deployment/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>查询deployment信息</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl describe deployment nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>deployment变更历史查询</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout <span class="token function">history</span> deployment/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>查看deployment变更历史中某个版本(版本号是变更历史查询到的版本号)的细节</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout <span class="token function">history</span> deployment/nginx-deployment --revision<span class="token operator">=</span><span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>回滚deployment到某个版本号,前面两个命令可以查看历史版本信息</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout undo deployment/nginx-deployment --to-revision<span class="token operator">=</span><span class="token number">6</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>不要触发deployment的自动滚动更新功能:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout pause deployment/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>恢复deployment的自动滚动更新功能</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl rollout resume deploy/nginx-deployment<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>命令式-更新deployment</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl replace -f nginx.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>声明式API-创建或者更新deployment</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl apply -f nginx.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h1 id="副本"><a href="#副本" class="headerlink" title="副本"></a>副本</h1><p>查询副本<br>kubectl get rs</p>
+<h1 id="POD"><a href="#POD" class="headerlink" title="POD"></a>POD</h1><p>通过标签查询pods</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl get pods -w -l <span class="token assign-left variable">app</span><span class="token operator">=</span>nginx<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h1 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h1><p>Headless Service的DNS域名记录格式</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>pod-name<span class="token operator">&gt;</span>.<span class="token operator">&lt;</span>svc-name<span class="token operator">&gt;</span>.<span class="token operator">&lt;</span>namespace<span class="token operator">&gt;</span>.svc.cluster.local<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>默认的命名空间为default</p>
+<h1 id="进入容器"><a href="#进入容器" class="headerlink" title="进入容器"></a>进入容器</h1><p>进入容器查询容器主机名字</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl <span class="token builtin class-name">exec</span> web-0 -- <span class="token function">sh</span> -c <span class="token string">'hostname'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/K8S%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" rel="tag">K8S命令大全<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/kubernetes/" rel="tag">kubernetes<span class="tag-unordered list-count">3</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/09/07/k8s/k8s-yuan-ma/1-k8s-yuan-ma-ru-men/"> K8S简介</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2016/09/07/k8s/2-k8s-yun-xing-mysql-de-yaml/"> 2-K8S运行MySQL的yaml配置</a>
+                            </div>
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

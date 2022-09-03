@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918052">
+<link rel="stylesheet" href="/css/style.css?v=1662168973065">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918052"></script>
+<script src="/js/core.js?v=1662168973065"></script>
 
 
 
@@ -48,149 +48,1069 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>05-【Dubbo3.0.8源码解析系列】自适应扩展对象的创建getAdaptiveExtension方法</h1>
+			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">Dubbo3源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/5-Dubbo的SPI扩展机制与自适应扩展对象的创建与扩展文件的扫描源码解析.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
+		<article class="post">
+			<h2 id="5-自适应扩展对象的创建getAdaptiveExtension方法"><a href="#5-自适应扩展对象的创建getAdaptiveExtension方法" class="headerlink" title="5 自适应扩展对象的创建getAdaptiveExtension方法"></a>5 自适应扩展对象的创建getAdaptiveExtension方法</h2><p>自适应扩展又称为动态扩展,可以在运行时生成扩展对象</p>
+<p>ExtensionLoader中的getAdaptiveExtension()方法,这个方法也是我们看到的第一个获取扩展对象的方法. ,这个方法可以帮助我们通过SPI机制从扩展文件中找到需要的扩展类型并创建它的对象,<br><strong>自适应扩展:<strong>如果对设计模式比较了解的可能会联想到</strong>适配器模式</strong>,自适应扩展其实就是适配器模式的思路,自适应扩展有两种策略:</p>
+<ul>
+<li><p>一种是我们自己实现自适应扩展:然后使用@Adaptive修饰这个时候适配器的逻辑由我们自己实现,当扩展加载器去查找具体的扩展的时候可以通过找到我们这个对应的适配器扩展,然后适配器扩展帮忙去查询真正的扩展,这个比如我们下面要举的扩展注入器的例子,具体扩展通过扩展注入器适配器,注入器适配器来查询具体的注入器扩展实现来帮忙查找扩展。 </p>
+</li>
+<li><p>还有一种方式是我们未实现这个自适应扩展,Dubbo在运行时通过字节码动态代理的方式在运行时生成一个适配器,使用这个适配器映射到具体的扩展. 第二种情况往往用在比如 Protocol、Cluster、LoadBalance 等。有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。(如果还不了解可以考虑看下@Adaptive注解加载方法上面的时候扩展是如何加载的)</p>
+</li>
+</ul>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">T</span> <span class="token function">getAdaptiveExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//检查当前扩展加载器是否已经被销毁</span>
+       <span class="token function">checkDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//从自适应扩展缓存中查询扩展对象如果存在就直接返回,这个自适应扩展类型只会有一个扩展实现类型如果是多个的话根据是否可以覆盖参数决定扩展实现类是否可以相互覆盖</span>
+       <span class="token class-name">Object</span> instance <span class="token operator">=</span> cachedAdaptiveInstance<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//这个if判断不太优雅 容易多层嵌套,上面instance不为空就可以直接返回了</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       	<span class="token comment">//创建异常则抛出异常直接返回(多线程场景下可能第一个线程异常了第二个线程进来之后走到这里)</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span>createAdaptiveInstanceError <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Failed to create adaptive instance: "</span> <span class="token operator">+</span>
+                   createAdaptiveInstanceError<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                   createAdaptiveInstanceError<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+		<span class="token comment">//加锁排队 (单例模式创建对象的思想 双重校验锁)</span>
+           <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>cachedAdaptiveInstance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           	<span class="token comment">//加锁的时候对象都是空的,进来之后先判断下防止重复创建</span>
+               instance <span class="token operator">=</span> cachedAdaptiveInstance<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token comment">//只有第一个进来锁的对象为空开始创建扩展对象</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                   	<span class="token comment">//根据SPI机制获取类型,创建对象</span>
+                       instance <span class="token operator">=</span> <span class="token function">createAdaptiveExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                       <span class="token comment">//存入缓存</span>
+                       cachedAdaptiveInstance<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                       createAdaptiveInstanceError <span class="token operator">=</span> t<span class="token punctuation">;</span>
+                       <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Failed to create adaptive instance: "</span> <span class="token operator">+</span> t<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token punctuation">}</span>
+               <span class="token punctuation">}</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+
+       <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">T</span><span class="token punctuation">)</span> instance<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>前面使用单例思想来调用创建自适应扩展对象的方法,下面就让我们深入探究下创建自适应扩展对象的整个过程createAdaptiveExtension();方法:</p>
+<h2 id="5-1-创建扩展对象的生命周期方法-注意这个后续会详细解析这个声明周期方法的细节"><a href="#5-1-创建扩展对象的生命周期方法-注意这个后续会详细解析这个声明周期方法的细节" class="headerlink" title="5.1 创建扩展对象的生命周期方法-注意这个后续会详细解析这个声明周期方法的细节"></a>5.1 创建扩展对象的生命周期方法-注意这个后续会详细解析这个声明周期方法的细节</h2><p>createAdaptiveExtension()<br>我们先来看ExtensionLoader类型中的createAdaptiveExtension();方法,这个方法包含了扩展对象创建初始化的整个生命周期,如下代码所示:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">T</span> <span class="token function">createAdaptiveExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//获取扩展类型实现类, 创建扩展对象</span>
+            <span class="token class-name">T</span> instance <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">T</span><span class="token punctuation">)</span> <span class="token function">getAdaptiveExtensionClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//注入扩展对象之前的回调方法</span>
+            instance <span class="token operator">=</span> <span class="token function">postProcessBeforeInitialization</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//注入扩展对象</span>
+            instance <span class="token operator">=</span> <span class="token function">injectExtension</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//注入扩展对象之后的回调方法</span>
+            instance <span class="token operator">=</span> <span class="token function">postProcessAfterInitialization</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//初始化扩展对象的属性,如果当前扩展实例的类型实现了Lifecycle则调用当前扩展对象的生命周期回调方法initialize()(来自Lifecycle接口)</span>
+            <span class="token comment">//参考样例第一个instance为ExtensionInjector的自适应扩展对象类型为AdaptiveExtensionInjector,自适应扩展注入器(适配器)用来查询具体支持的扩展注入器比如scope,spi,spring注入器</span>
+            <span class="token function">initExtension</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Can't create adaptive extension "</span> <span class="token operator">+</span> type <span class="token operator">+</span> <span class="token string">", cause: "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="5-2-SPI机制获取扩展对象实现类型getAdaptiveExtensionClass"><a href="#5-2-SPI机制获取扩展对象实现类型getAdaptiveExtensionClass" class="headerlink" title="5.2 SPI机制获取扩展对象实现类型getAdaptiveExtensionClass()"></a>5.2 SPI机制获取扩展对象实现类型getAdaptiveExtensionClass()</h2><p>这个方法可以帮助我们了解具体的Dubbo SPI机制 如果找到扩展类型的实现类,会寻找哪些文件,扩展文件的优先级又是什么,对我们自己写扩展方法很有帮助,接下来我们就来看下它的源码:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> <span class="token function">getAdaptiveExtensionClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//获取扩展类型,将扩展类型存入成员变量cachedClasses中进行缓存</span>
+       <span class="token function">getExtensionClasses</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//在上个方法的详细解析中的最后一步loadClass方法中如果扩展类型存在Adaptive注解将会将扩展类型赋值给cachedAdaptiveClass,否则的话会把扩展类型都缓存起来存储在扩展集合extensionClasses中</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>cachedAdaptiveClass <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span> cachedAdaptiveClass<span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token comment">//扩展实现类型没有一个这个自适应注解Adaptive时候会走到这里</span>
+       <span class="token comment">//刚刚我们扫描到了扩展类型然后将其存入cachedClasses集合中了 接下来我们看下如何创建扩展类型</span>
+       <span class="token keyword">return</span> cachedAdaptiveClass <span class="token operator">=</span> <span class="token function">createAdaptiveExtensionClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>继续看获取扩展类型的方法<strong>getExtensionClasses()</strong>:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> <span class="token function">getExtensionClasses</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//缓存中查询扩展类型是否存在</span>
+       <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> classes <span class="token operator">=</span> cachedClasses<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>classes <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       	<span class="token comment">//单例模式双重校验锁判断</span>
+           <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>cachedClasses<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               classes <span class="token operator">=</span> cachedClasses<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span>classes <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               	<span class="token comment">//加载扩展类型</span>
+                   classes <span class="token operator">=</span> <span class="token function">loadExtensionClasses</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token comment">//将我们扫描到的扩展类型存入成员变量cachedClasses中</span>
+                   cachedClasses<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>classes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token punctuation">}</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+       <span class="token keyword">return</span> classes<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="5-2-1-使用不同的的策略加载加载不同目录下的扩展"><a href="#5-2-1-使用不同的的策略加载加载不同目录下的扩展" class="headerlink" title="5.2.1 使用不同的的策略加载加载不同目录下的扩展"></a>5.2.1 使用不同的的策略加载加载不同目录下的扩展</h3><p>加载扩展类型的方法<strong>loadExtensionClasses()</strong></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;&gt;</span> <span class="token function">loadExtensionClasses</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//检查扩展加载器是否被销毁</span>
+      <span class="token function">checkDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//缓存默认的扩展名到成员变量cachedDefaultName中</span>
+      <span class="token function">cacheDefaultExtensionName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//加载到的扩展集合</span>
+      Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;&gt;</span> extensionClasses <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">HashMap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//扩展策略,在4.3章节中我们介绍了这个类型的UML与说明</span>
+<span class="token comment">//LoadingStrategy扩展加载策略,目前有3个扩展加载策略</span>
+<span class="token comment">//DubboInternalLoadingStrategy:Dubbo内置的扩展加载策略,将加载文件目录为META-INF/dubbo/internal/的扩展</span>
+<span class="token comment">//DubboLoadingStrategy:Dubbo普通的扩展加载策略,将加载目录为META-INF/dubbo/的扩展</span>
+<span class="token comment">//ServicesLoadingStrategy:JAVA SPI加载策略 ,将加载目录为META-INF/services/的扩展</span>
+<span class="token comment">//扩展策略集合对象在什么时候初始化的呢在成员变量初始化的时候就创建了集合对象,这个可以看方法loadLoadingStrategies() 通过Java的 SPI加载策略</span>
+      <span class="token keyword">for</span> <span class="token punctuation">(</span>LoadingStrategy strategy <span class="token operator">:</span> strategies<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	<span class="token comment">//根据策略从指定文件目录中加载扩展类型</span>
+          <span class="token function">loadDirectory</span><span class="token punctuation">(</span>extensionClasses<span class="token punctuation">,</span> strategy<span class="token punctuation">,</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+          <span class="token comment">// compatible with old ExtensionFactory</span>
+          <span class="token comment">//如果当前要加载的扩展类型是扩展注入类型则扫描下ExtensionFactory类型的扩展</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>type <span class="token operator">==</span> ExtensionInjector<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          	<span class="token comment">//这个方法和上面那个方法是一样的就不详细说了 扫描文件 找到扩展类型</span>
+              <span class="token function">loadDirectory</span><span class="token punctuation">(</span>extensionClasses<span class="token punctuation">,</span> strategy<span class="token punctuation">,</span> ExtensionFactory<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+<span class="token comment">//通过loadDirectory扫描 扫描到了ExtensionInjector类型的扩展实现类有3个 我们将会得到这样一个集合例子:</span>
+<span class="token comment">//"spring" -&gt;  "class org.apache.dubbo.config.spring.extension.SpringExtensionInjector"</span>
+<span class="token comment">//"scopeBean" -&gt;  "class org.apache.dubbo.common.beans.ScopeBeanExtensionInjector"</span>
+<span class="token comment">//"spi" -&gt;  "class org.apache.dubbo.common.extension.inject.SpiExtensionInjector"</span>
+      <span class="token keyword">return</span> extensionClasses<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p> 从文件中加载扩展实现loadDirectory方法:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadDirectory</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> extensionClasses<span class="token punctuation">,</span> <span class="token class-name">LoadingStrategy</span> strategy<span class="token punctuation">,</span> <span class="token class-name">String</span> type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//加载并根据策略的参数来加载</span>
+       <span class="token function">loadDirectory</span><span class="token punctuation">(</span>extensionClasses<span class="token punctuation">,</span> strategy<span class="token punctuation">.</span><span class="token function">directory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> type<span class="token punctuation">,</span> strategy<span class="token punctuation">.</span><span class="token function">preferExtensionClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+           strategy<span class="token punctuation">.</span><span class="token function">overridden</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> strategy<span class="token punctuation">.</span><span class="token function">includedPackages</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> strategy<span class="token punctuation">.</span><span class="token function">excludedPackages</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> strategy<span class="token punctuation">.</span><span class="token function">onlyExtensionClassLoaderPackages</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//下面两行就是要兼容alibaba的扩展包了  </span>
+       <span class="token class-name">String</span> oldType <span class="token operator">=</span> type<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">"org.apache"</span><span class="token punctuation">,</span> <span class="token string">"com.alibaba"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token function">loadDirectory</span><span class="token punctuation">(</span>extensionClasses<span class="token punctuation">,</span> strategy<span class="token punctuation">.</span><span class="token function">directory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> oldType<span class="token punctuation">,</span> strategy<span class="token punctuation">.</span><span class="token function">preferExtensionClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+           strategy<span class="token punctuation">.</span><span class="token function">overridden</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> strategy<span class="token punctuation">.</span><span class="token function">includedPackagesInCompatibleType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> strategy<span class="token punctuation">.</span><span class="token function">excludedPackages</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> strategy<span class="token punctuation">.</span><span class="token function">onlyExtensionClassLoaderPackages</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>带扩展策略参数的loadDirectory方法</p>
+<p>关于扩展策略的参数列表我这里列个表格方便大家来看</p>
+<table>
+<thead>
+<tr>
+<th>扩展类型</th>
+<th>dir(目录)</th>
+<th>extensionLoaderClassLoaderFirst(优先扩展类型的类加载器)</th>
+<th>overridden(是否允许覆盖同名扩展)</th>
+<th>includedPackages (明确包含的扩展包)</th>
+<th>excludedPackages (明确排除的扩展包)</th>
+<th>onlyExtensionClassLoaderPackages(限制应该从Dubbo的类加载器加载的类)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DubboInternalLoadingStrategy</td>
+<td>META-INF/dubbo/internal/</td>
+<td>false</td>
+<td>false</td>
+<td>null</td>
+<td>null</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>DubboLoadingStrategy</td>
+<td>META-INF/dubbo/</td>
+<td>false</td>
+<td>true</td>
+<td>null</td>
+<td>null</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>ServicesLoadingStrategy</td>
+<td>META-INF/services/</td>
+<td>false</td>
+<td>true</td>
+<td>null</td>
+<td>null</td>
+<td>[]</td>
+</tr>
+</tbody></table>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">    <span class="token comment">/**
+     * 不同的扩展策略传递了不同的参数,但是扩展的加载流程是相同的,这里我们可以参考上面表格
+     * @param extensionClasses 
+     * @param dir 
+     * @param type 这里我们参考的示例这个值为org.apache.dubbo.common.extension.ExtensionInjector
+     * @param extensionLoaderClassLoaderFirst 
+     * @param overridden false
+     * @param includedPackages 
+     * @param excludedPackages 
+     * @param onlyExtensionClassLoaderPackages 
+     */</span>
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadDirectory</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> extensionClasses<span class="token punctuation">,</span> <span class="token class-name">String</span> dir<span class="token punctuation">,</span> <span class="token class-name">String</span> type<span class="token punctuation">,</span>
+                               <span class="token keyword">boolean</span> extensionLoaderClassLoaderFirst<span class="token punctuation">,</span> <span class="token keyword">boolean</span> overridden<span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> includedPackages<span class="token punctuation">,</span>
+                               <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> excludedPackages<span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> onlyExtensionClassLoaderPackages<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//扩展目录 + 扩展类型全路径 比如: META-INF/dubbo/internal/org.apache.dubbo.common.extension.ExtensionInjector</span>
+        <span class="token class-name">String</span> fileName <span class="token operator">=</span> dir <span class="token operator">+</span> type<span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClassLoader</span><span class="token punctuation">&gt;</span></span> classLoadersToLoad <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// try to load from ExtensionLoader's ClassLoader first</span>
+            <span class="token comment">//是否优先使用扩展加载器的 类加载器</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>extensionLoaderClassLoaderFirst<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">ClassLoader</span> extensionLoaderClassLoader <span class="token operator">=</span> <span class="token class-name">ExtensionLoader</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">ClassLoader</span><span class="token punctuation">.</span><span class="token function">getSystemClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> extensionLoaderClassLoader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    classLoadersToLoad<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>extensionLoaderClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">// load from scope model</span>
+            <span class="token comment">//获取域模型对象的类型加载器 ,这个域模型对象在初始化的时候会将自己的类加载器放入集合中可以参考《3.2.2 初始化ScopeModel》章节</span>
+            <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClassLoader</span><span class="token punctuation">&gt;</span></span> classLoaders <span class="token operator">=</span> scopeModel<span class="token punctuation">.</span><span class="token function">getClassLoaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+			<span class="token comment">//没有可用的类加载器则从使用</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>classLoaders<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">//从用于加载类的搜索路径中查找指定名称的所有资源。</span>
+                <span class="token class-name">Enumeration</span><span class="token generics"><span class="token punctuation">&lt;</span>java<span class="token punctuation">.</span>net<span class="token punctuation">.</span>URL<span class="token punctuation">&gt;</span></span> resources <span class="token operator">=</span> <span class="token class-name">ClassLoader</span><span class="token punctuation">.</span><span class="token function">getSystemResources</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>resources <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">while</span> <span class="token punctuation">(</span>resources<span class="token punctuation">.</span><span class="token function">hasMoreElements</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token function">loadResource</span><span class="token punctuation">(</span>extensionClasses<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> resources<span class="token punctuation">.</span><span class="token function">nextElement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> overridden<span class="token punctuation">,</span> includedPackages<span class="token punctuation">,</span> excludedPackages<span class="token punctuation">,</span> onlyExtensionClassLoaderPackages<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                classLoadersToLoad<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>classLoaders<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+			<span class="token comment">//使用类加载资源加载器(ClassLoaderResourceLoader)来加载具体的资源</span>
+            <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClassLoader</span><span class="token punctuation">,</span> <span class="token class-name">Set</span><span class="token punctuation">&lt;</span>java<span class="token punctuation">.</span>net<span class="token punctuation">.</span>URL<span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> resources <span class="token operator">=</span> <span class="token class-name">ClassLoaderResourceLoader</span><span class="token punctuation">.</span><span class="token function">loadResources</span><span class="token punctuation">(</span>fileName<span class="token punctuation">,</span> classLoadersToLoad<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//遍历从所有资源文件中读取到资源url地址,key为类加载器,值为扩展文件url如夏所示</span>
+           <span class="token comment">//jar:file:/Users/song/.m2/repository/org/apache/dubbo/dubbo/3.0.7/dubbo-3.0.7.jar!/META-INF/dubbo/internal/org.apache.dubbo.common.extension.ExtensionInjector</span>
+            resources<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>classLoader<span class="token punctuation">,</span> urls<span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+             <span class="token comment">//从文件中加载完资源之后开始根据类加载器和url加载具体的扩展类型,最后将扩展存放进extensionClasses集合</span>
+                <span class="token function">loadFromClass</span><span class="token punctuation">(</span>extensionClasses<span class="token punctuation">,</span> overridden<span class="token punctuation">,</span> urls<span class="token punctuation">,</span> classLoader<span class="token punctuation">,</span> includedPackages<span class="token punctuation">,</span> excludedPackages<span class="token punctuation">,</span> onlyExtensionClassLoaderPackages<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Exception occurred when loading extension class (interface: "</span> <span class="token operator">+</span>
+                type <span class="token operator">+</span> <span class="token string">", description file: "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">")."</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="5-2-2-借助类加载器的getResources方法遍历所有文件进行扩展文件的查询"><a href="#5-2-2-借助类加载器的getResources方法遍历所有文件进行扩展文件的查询" class="headerlink" title="5.2.2 借助类加载器的getResources方法遍历所有文件进行扩展文件的查询"></a>5.2.2 借助类加载器的getResources方法遍历所有文件进行扩展文件的查询</h3><p>查找扩展类型对应的扩展文件的url方法:ClassLoaderResourceLoader类型的loadResources源码:</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">public</span> <span class="token keyword">static</span> Map<span class="token operator">&lt;</span>ClassLoader<span class="token punctuation">,</span> Set<span class="token operator">&lt;</span>URL<span class="token operator">&gt;&gt;</span> <span class="token function">loadResources</span><span class="token punctuation">(</span>String fileName<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>ClassLoader<span class="token operator">&gt;</span> classLoaders<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//</span>
+        Map<span class="token operator">&lt;</span>ClassLoader<span class="token punctuation">,</span> Set<span class="token operator">&lt;</span>URL<span class="token operator">&gt;&gt;</span> resources <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">ConcurrentHashMap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//不同的类加载器之间使用不同的线程异步的方式进行扫描</span>
+        CountDownLatch countDownLatch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">CountDownLatch</span><span class="token punctuation">(</span>classLoaders<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>ClassLoader classLoader <span class="token operator">:</span> classLoaders<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//多线程扫描,这个是个newCachedThreadPool的类型的线程池</span>
+            GlobalResourcesRepository<span class="token punctuation">.</span><span class="token function">getGlobalExecutorService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">submit</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+            	<span class="token comment">//</span>
+                resources<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>classLoader<span class="token punctuation">,</span> <span class="token function">loadResources</span><span class="token punctuation">(</span>fileName<span class="token punctuation">,</span> classLoader<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                countDownLatch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            countDownLatch<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>InterruptedException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> Collections<span class="token punctuation">.</span><span class="token function">unmodifiableMap</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token generic-function"><span class="token function">LinkedHashMap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>resources<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>加载具体类加载器中的资源文件的loadResources方法</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">public</span> <span class="token keyword">static</span> Set<span class="token operator">&lt;</span>URL<span class="token operator">&gt;</span> <span class="token function">loadResources</span><span class="token punctuation">(</span>String fileName<span class="token punctuation">,</span> ClassLoader currentClassLoader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Map<span class="token operator">&lt;</span>ClassLoader<span class="token punctuation">,</span> Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Set<span class="token operator">&lt;</span>URL<span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> classLoaderCache<span class="token punctuation">;</span>
+        <span class="token comment">//第一次进来类加载器资源缓存是空的</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>classLoaderResourcesCache <span class="token operator">==</span> null <span class="token operator">||</span> <span class="token punctuation">(</span>classLoaderCache <span class="token operator">=</span> classLoaderResourcesCache<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//类对象锁 </span>
+            <span class="token function">synchronized</span> <span class="token punctuation">(</span>ClassLoaderResourceLoader<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>classLoaderResourcesCache <span class="token operator">==</span> null <span class="token operator">||</span> <span class="token punctuation">(</span>classLoaderCache <span class="token operator">=</span> classLoaderResourcesCache<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    classLoaderCache <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">ConcurrentHashMap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment">//创建一个类资源映射url的软引用缓存对象</span>
+                    <span class="token comment">//软引用(soft references)，用于帮助垃圾收集器管理内存使用和消除潜在的内存泄漏。当内存快要不足的时候，GC会迅速的把所有的软引用清除掉，释放内存空间</span>
+                    classLoaderResourcesCache <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">SoftReference</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>classLoaderCache<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//第一次进来时候类加载器url映射缓存是空的,给类加载器缓存对象新增一个值,key是类加载器,值是map类型用来存储文件名对应的url集合</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>classLoaderCache<span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span>currentClassLoader<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            classLoaderCache<span class="token punctuation">.</span><span class="token function">putIfAbsent</span><span class="token punctuation">(</span>currentClassLoader<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">ConcurrentHashMap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        
+        Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Set<span class="token operator">&lt;</span>URL<span class="token operator">&gt;&gt;</span> urlCache <span class="token operator">=</span> classLoaderCache<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>currentClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//缓存中没有就从文件里面找</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>urlCache<span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Set<span class="token operator">&lt;</span>URL<span class="token operator">&gt;</span> set <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">LinkedHashSet</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            Enumeration<span class="token operator">&lt;</span>URL<span class="token operator">&gt;</span> urls<span class="token punctuation">;</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            	<span class="token comment">//getResources这个方法是这样的:加载当前类加载器以及父类加载器所在路径的资源文件,将遇到的所有资源文件全部返回！这个可以理解为使用双亲委派模型中的类加载器 加载各个位置的资源文件</span>
+                urls <span class="token operator">=</span> currentClassLoader<span class="token punctuation">.</span><span class="token function">getResources</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//native配置 是否为本地镜像(k可以参考官方文档:https://dubbo.apache.org/zh/docs/references/graalvm/support-graalvm/</span>
+                boolean isNative <span class="token operator">=</span> NativeUtils<span class="token punctuation">.</span><span class="token function">isNative</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>urls <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment">//遍历找到的对应扩展的文件url将其加入集合</span>
+                    <span class="token keyword">while</span> <span class="token punctuation">(</span>urls<span class="token punctuation">.</span><span class="token function">hasMoreElements</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        URL url <span class="token operator">=</span> urls<span class="token punctuation">.</span><span class="token function">nextElement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>isNative<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment">//In native mode, the address of each URL is the same instead of different paths, so it is necessary to set the ref to make it different</span>
+                            <span class="token comment">//动态修改jdk底层url对象的ref变量为可访问,让我们在用反射时访问私有变量</span>
+                            <span class="token function">setRef</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                        set<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>IOException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">//存入缓存</span>
+            urlCache<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>fileName<span class="token punctuation">,</span> set<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//返回结果</span>
+        <span class="token keyword">return</span> urlCache<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="5-2-3-使用找到的扩展资源url加载具体扩展类型到内存"><a href="#5-2-3-使用找到的扩展资源url加载具体扩展类型到内存" class="headerlink" title="5.2.3 使用找到的扩展资源url加载具体扩展类型到内存"></a>5.2.3 使用找到的扩展资源url加载具体扩展类型到内存</h3><p>ExtensionLoader类型中的loadFromClass方法 遍历url 开始加载扩展类型</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadFromClass</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> extensionClasses<span class="token punctuation">,</span> <span class="token keyword">boolean</span> overridden<span class="token punctuation">,</span> <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span>java<span class="token punctuation">.</span>net<span class="token punctuation">.</span>URL<span class="token punctuation">&gt;</span></span> urls<span class="token punctuation">,</span> <span class="token class-name">ClassLoader</span> classLoader<span class="token punctuation">,</span>
+                              <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> includedPackages<span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> excludedPackages<span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> onlyExtensionClassLoaderPackages<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>urls<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">for</span> <span class="token punctuation">(</span>java<span class="token punctuation">.</span>net<span class="token punctuation">.</span>URL url <span class="token operator">:</span> urls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token function">loadResource</span><span class="token punctuation">(</span>extensionClasses<span class="token punctuation">,</span> classLoader<span class="token punctuation">,</span> url<span class="token punctuation">,</span> overridden<span class="token punctuation">,</span> includedPackages<span class="token punctuation">,</span> excludedPackages<span class="token punctuation">,</span> onlyExtensionClassLoaderPackages<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ExtensionLoader类型中的loadResource方法 使用IO流读取扩展文件的内容<br>读取内容之前我这里先贴一下我们参考的扩展注入类型的文件中的内容如下所示:</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">adaptive<span class="token operator">=</span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>extension<span class="token punctuation">.</span>inject<span class="token punctuation">.</span>AdaptiveExtensionInjector
+spi<span class="token operator">=</span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>extension<span class="token punctuation">.</span>inject<span class="token punctuation">.</span>SpiExtensionInjector
+scopeBean<span class="token operator">=</span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>beans<span class="token punctuation">.</span>ScopeBeanExtensionInjector<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>扩展中的文件都是一行一行的,并且扩展名字和扩展类型之间使用等号隔开=<br>了解了文件内容之后 应该下面的代码大致思路就知道了,我们可以详细看下</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadResource</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> extensionClasses<span class="token punctuation">,</span> <span class="token class-name">ClassLoader</span> classLoader<span class="token punctuation">,</span>
+                              <span class="token class-name"><span class="token namespace">java<span class="token punctuation">.</span>net<span class="token punctuation">.</span></span>URL</span> resourceURL<span class="token punctuation">,</span> <span class="token keyword">boolean</span> overridden<span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> includedPackages<span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> excludedPackages<span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> onlyExtensionClassLoaderPackages<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+           <span class="token comment">//这里固定了文件的格式为utf8</span>
+            <span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token class-name">BufferedReader</span> reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BufferedReader</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InputStreamReader</span><span class="token punctuation">(</span>resourceURL<span class="token punctuation">.</span><span class="token function">openStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">StandardCharsets</span><span class="token punctuation">.</span>UTF_8<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">String</span> line<span class="token punctuation">;</span>
+                <span class="token class-name">String</span> clazz<span class="token punctuation">;</span>
+                <span class="token comment">//按行读取 例如读取到的内容:spring=org.apache.dubbo.config.spring.extension.SpringExtensionInjector</span>
+                <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>line <span class="token operator">=</span> reader<span class="token punctuation">.</span><span class="token function">readLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment">//不知道为何会有这么一行代码删除#之后的字符串</span>
+                    <span class="token keyword">final</span> <span class="token keyword">int</span> ci <span class="token operator">=</span> line<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span><span class="token char">'#'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>ci <span class="token operator">&gt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        line <span class="token operator">=</span> line<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> ci<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    line <span class="token operator">=</span> line<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment">//</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>line<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                            <span class="token class-name">String</span> name <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+                            <span class="token comment">//扩展文件可能如上面我贴的那样 名字和类型等号隔开,也可能是无类型的,例如扩展加载策略使用的是JDK自带的方式services内容中只包含具体的扩展类型</span>
+                            <span class="token keyword">int</span> i <span class="token operator">=</span> line<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span><span class="token char">'='</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                name <span class="token operator">=</span> line<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                clazz <span class="token operator">=</span> line<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                                clazz <span class="token operator">=</span> line<span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+                            <span class="token comment">//isExcluded是否为加载策略要排除的配置,参数这里为空代表全部类型不排除</span>
+                            <span class="token comment">//isIncluded是否为加载策略包含的类型,参数这里为空代表全部文件皆可包含				</span>
+                            <span class="token comment">//onlyExtensionClassLoaderPackages参数是否只有扩展类的类加载器可以加载扩展,其他扩展类型的类加载器不能加载扩展 这里结果为false 不排除任何类加载器</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">isExcluded</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> excludedPackages<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token function">isIncluded</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> includedPackages<span class="token punctuation">)</span>
+                                <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">isExcludedByClassLoader</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> classLoader<span class="token punctuation">,</span> onlyExtensionClassLoaderPackages<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token comment">//根据类全路径加载类到内存</span>
+                                <span class="token function">loadClass</span><span class="token punctuation">(</span>extensionClasses<span class="token punctuation">,</span> resourceURL<span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> classLoader<span class="token punctuation">)</span><span class="token punctuation">,</span> name<span class="token punctuation">,</span> overridden<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token class-name">IllegalStateException</span> e <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Failed to load extension class (interface: "</span> <span class="token operator">+</span> type <span class="token operator">+</span>
+                                <span class="token string">", class line: "</span> <span class="token operator">+</span> line <span class="token operator">+</span> <span class="token string">") in "</span> <span class="token operator">+</span> resourceURL <span class="token operator">+</span> <span class="token string">", cause: "</span> <span class="token operator">+</span> t<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            exceptions<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>line<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Exception occurred when loading extension class (interface: "</span> <span class="token operator">+</span>
+                type <span class="token operator">+</span> <span class="token string">", class file: "</span> <span class="token operator">+</span> resourceURL <span class="token operator">+</span> <span class="token string">") in "</span> <span class="token operator">+</span> resourceURL<span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>ExtensionLoader类型中的loadClass方法加载具体的类到内存</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadClass</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> extensionClasses<span class="token punctuation">,</span> <span class="token class-name"><span class="token namespace">java<span class="token punctuation">.</span>net<span class="token punctuation">.</span></span>URL</span> resourceURL<span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> clazz<span class="token punctuation">,</span> <span class="token class-name">String</span> name<span class="token punctuation">,</span>
+                           <span class="token keyword">boolean</span> overridden<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">NoSuchMethodException</span> <span class="token punctuation">{</span>
+           <span class="token comment">//当前clazz是否为type的子类型</span>
+           <span class="token comment">//这里第一次访问到的type是ExtensionInjector,clazz是SpringExtensionInjector 父子类型关系满足情况</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>type<span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Error occurred when loading extension class (interface: "</span> <span class="token operator">+</span>
+                type <span class="token operator">+</span> <span class="token string">", class line: "</span> <span class="token operator">+</span> clazz<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"), class "</span>
+                <span class="token operator">+</span> clazz<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" is not subtype of interface."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//扩展子类型是否存在这个注解@Adaptive</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>clazz<span class="token punctuation">.</span><span class="token function">isAnnotationPresent</span><span class="token punctuation">(</span><span class="token class-name">Adaptive</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">cacheAdaptiveClass</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> overridden<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isWrapperClass</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//扩展子类型构造器中是否有这个类型的接口 (这个可以想象下我们了解的Java IO流中的类型使用到的装饰器模式 构造器传个类型)</span>
+            <span class="token function">cacheWrapperClass</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment">//无自适应注解,也没有构造器是扩展类型参数 ,这个name我们在扩展文件中找到了就是等号前面那个</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">//低版本中可以使用@Extension 扩展注解来标注扩展类型,这里获取注解有两个渠道:</span>
+            <span class="token comment">//先查询@Extension注解是否存在如果存在则取value值,如果不存在@Extension注解则获取当前类型的名字</span>
+                name <span class="token operator">=</span> <span class="token function">findAnnotationName</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>name<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"No such extension name for the class "</span> <span class="token operator">+</span> clazz<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" in the config "</span> <span class="token operator">+</span> resourceURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+		<span class="token comment">//获取扩展名字数组,扩展名字可能为逗号隔开的</span>
+            <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> names <span class="token operator">=</span> NAME_SEPARATOR<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">ArrayUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>names<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              <span class="token comment">//@Activate注解修饰的扩展</span>
+                <span class="token function">cacheActivateClass</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> names<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> n <span class="token operator">:</span> names<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                	<span class="token comment">//cachedNames缓存集合缓存当前扩展类型的扩展名字</span>
+                    <span class="token function">cacheName</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment">//将扩展类型加入结果集合extensionClasses中,不允许覆盖的话出现同同名字扩展将抛出异常</span>
+                    <span class="token function">saveInExtensionClass</span><span class="token punctuation">(</span>extensionClasses<span class="token punctuation">,</span> clazz<span class="token punctuation">,</span> n<span class="token punctuation">,</span> overridden<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>ExtensionLoader类型中cacheAdaptiveClass<br>Adaptive 机制，即扩展类的自适应机制。即其可以指定想要加载的扩展名，也可以不指定。若不指定，则直接加载默认的扩展类。即其会自动匹配，做到自适应。其是通过@Adaptive注解实现的。<br>自适应注解修饰的扩展同一个扩展名字只能有一个扩展实现类型, 扩展策略中提供的参数overridden是否允许覆盖扩展覆盖</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">cacheAdaptiveClass</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> clazz<span class="token punctuation">,</span> <span class="token keyword">boolean</span> overridden<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>cachedAdaptiveClass <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> overridden<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        	 <span class="token comment">//成员变量存储这个自适应扩展类型</span>
+            cachedAdaptiveClass <span class="token operator">=</span> clazz<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>cachedAdaptiveClass<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"More than 1 adaptive class found: "</span>
+                <span class="token operator">+</span> cachedAdaptiveClass<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token operator">+</span> <span class="token string">", "</span> <span class="token operator">+</span> clazz<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ExtensionLoader类型中cacheWrapperClass<br>Wrapper 机制，即扩展类的包装机制。就是对扩展类中的 SPI 接口方法进行增强，进行包装，是 AOP 思想的体现，是 Wrapper 设计模式的应用。一个 SPI 可以包含多个 Wrapper。这个也是可以同一个类型多个</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">cacheWrapperClass</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> clazz<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>cachedWrapperClasses <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            cachedWrapperClasses <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//缓存这个Wrapper类型的扩展</span>
+        cachedWrapperClasses<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>ExtensionLoader类型中cacheActivateClass<br>Activate用于激活扩展类的。 这个扩展类型可以出现多个比如过滤器可以同一个扩展名字多个过滤器实现,所以不需要有override判断<br>Activate 机制，即扩展类的激活机制。通过指定的条件来激活当前的扩展类。其是通过@Activate 注解实现的。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">cacheActivateClass</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> clazz<span class="token punctuation">,</span> String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Activate activate <span class="token operator">=</span> clazz<span class="token punctuation">.</span><span class="token function">getAnnotation</span><span class="token punctuation">(</span>Activate<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>activate <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//缓存Activate类型的扩展</span>
+            cachedActivates<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> activate<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment">// support com.alibaba.dubbo.common.extension.Activate</span>
+            com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>extension<span class="token punctuation">.</span>Activate oldActivate <span class="token operator">=</span> clazz<span class="token punctuation">.</span><span class="token function">getAnnotation</span><span class="token punctuation">(</span>com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>extension<span class="token punctuation">.</span>Activate<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>oldActivate <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                cachedActivates<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> oldActivate<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ExtensionLoader类型中的saveInExtensionClass方法</p>
+<p>  上面扩展对象加载了这么多最终的目的就是将这个扩展类型存放进结果集合extensionClasses中,扩展策略中提供的参数overridden是否允许覆盖扩展覆盖</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">saveInExtensionClass</span><span class="token punctuation">(</span>Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;&gt;</span> extensionClasses<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> clazz<span class="token punctuation">,</span> String name<span class="token punctuation">,</span> boolean overridden<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> c <span class="token operator">=</span> extensionClasses<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>c <span class="token operator">==</span> null <span class="token operator">||</span> overridden<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//上面扩展对象加载了这么多最终的目的就是将这个扩展类型存放进结果集合中</span>
+            extensionClasses<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> clazz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>c <span class="token operator">!=</span> clazz<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// duplicate implementation is unacceptable</span>
+            unacceptableExceptions<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            String duplicateMsg <span class="token operator">=</span> <span class="token string">"Duplicate extension "</span> <span class="token operator">+</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" name "</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">" on "</span> <span class="token operator">+</span> c<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" and "</span> <span class="token operator">+</span> clazz<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>duplicateMsg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token function">IllegalStateException</span><span class="token punctuation">(</span>duplicateMsg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h2 id="5-3-自适应扩展代理对象的代码生成与编译"><a href="#5-3-自适应扩展代理对象的代码生成与编译" class="headerlink" title="5.3 自适应扩展代理对象的代码生成与编译"></a>5.3 自适应扩展代理对象的代码生成与编译</h2><h3 id="5-3-1-自适应扩展对象的创建"><a href="#5-3-1-自适应扩展对象的创建" class="headerlink" title="5.3.1 自适应扩展对象的创建"></a>5.3.1 自适应扩展对象的创建</h3><p>Dubbo 的<strong>自适应扩展机制</strong>中如果 <strong>自己生成了自适应扩展的代理类</strong></p>
+<p>Dubbo 的自适应扩展为了做什么：<strong>在运行时动态调用扩展方法</strong>。以及怎么做的：生成扩展代理类。比如: 代理类中根据 URL 获取扩展名，使用 SPI 加载扩展类，并调用同名方法，返回执行结果。</p>
+<p>看了上一个章节,我们了解到了Dubbo是如何通过扫描目录来查询扩展实现类的这一次我们看下扩展类我们找到了之后,如果这个扩展类型未加上这个@Adaptive注解那么是如何创建这个类型的,接下来看createAdaptiveExtensionClass方法,这个方法是借助字节码工具来动态生成所需要的扩展类型的包装类型的代码,这个代码在编译时我们可能看不到,但是在Debug的时候,我们还是可以看到这个对象名字的,但是往往Debug的时候又进不到具体的代码位置,这里可以注意下</p>
+<p>当扩展点的方法被@Adaptive修饰时，在Dubbo初始化扩展点时会自动生成和编译一个动态的Adaptive类。</p>
+<p>下面我们可以以interface org.apache.dubbo.rpc.Protocol 这个协议扩展类型来看 协议扩展类型目前没有一个是带有自适应注解的</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> <span class="token function">createAdaptiveExtensionClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Adaptive Classes' ClassLoader should be the same with Real SPI interface classes' ClassLoader</span>
+        <span class="token comment">//获取加载器</span>
+        <span class="token class-name">ClassLoader</span> classLoader <span class="token operator">=</span> type<span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        	<span class="token comment">// //native配置 是否为本地镜像(可以参考官方文档:https://dubbo.apache.org/zh/docs/references/graalvm/support-graalv</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">NativeUtils</span><span class="token punctuation">.</span><span class="token function">isNative</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> classLoader<span class="token punctuation">.</span><span class="token function">loadClass</span><span class="token punctuation">(</span>type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"$Adaptive"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ignore<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token punctuation">}</span>
+        <span class="token comment">//创建一个代码生成器,来生成代码 详细内容我们就下一章来看</span>
+        <span class="token class-name">String</span> code <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AdaptiveClassCodeGenerator</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> cachedDefaultName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">generate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//获取编译器</span>
+        <span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>compiler<span class="token punctuation">.</span></span>Compiler</span> compiler <span class="token operator">=</span> extensionDirector<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span>
+    <span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>compiler<span class="token punctuation">.</span></span>Compiler</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAdaptiveExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//生成的代码进行编译</span>
+        <span class="token keyword">return</span> compiler<span class="token punctuation">.</span><span class="token function">compile</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> code<span class="token punctuation">,</span> classLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="5-4-为扩展对象的set方法注入自适应扩展对象"><a href="#5-4-为扩展对象的set方法注入自适应扩展对象" class="headerlink" title="5.4 为扩展对象的set方法注入自适应扩展对象"></a>5.4 为扩展对象的set方法注入自适应扩展对象</h2><p>在4.4.5小节中我们已经讲解了获取扩展类型实现类, 创建扩展对象</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">T</span> instance <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">T</span><span class="token punctuation">)</span> <span class="token function">getAdaptiveExtensionClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>接下来就让我们来看下为扩展对象的set方法注入自适应的扩展对象<br>调用方法代码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">   <span class="token comment">//注入扩展对象之前的回调方法</span>
+<span class="token function">injectExtension</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>ExtensionLoader类型的injectExtension方法具体代码如下:</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> T <span class="token function">injectExtension</span><span class="token punctuation">(</span>T instance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//如果注入器为空则直接返回当前对象</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>injector <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//获取当前对象的当前类的所有方法</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span>Method method <span class="token operator">:</span> instance<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getMethods</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            	<span class="token comment">//是否为set方法 不是的话则跳过,在这里合法的set方法满足3个条件:</span>
+            	<span class="token comment">//set开头,参数只有一个,public修饰</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isSetter</span><span class="token punctuation">(</span>method<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment">/**
+                 * Check {@link DisableInject} to see if we need auto injection for this property
+                 */</span>
+                 <span class="token comment">//方法上面是否有注解DisableInject修饰,这种情况也直接跳过</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>method<span class="token punctuation">.</span><span class="token function">isAnnotationPresent</span><span class="token punctuation">(</span>DisableInject<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment">//方法的参数如果是原生类型也跳过</span>
+                Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">&gt;</span> pt <span class="token operator">=</span> method<span class="token punctuation">.</span><span class="token function">getParameterTypes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>ReflectUtils<span class="token punctuation">.</span><span class="token function">isPrimitives</span><span class="token punctuation">(</span>pt<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                	<span class="token comment">//获取set方法对应的成员变量如setProtocol 属性为protocol</span>
+                    String property <span class="token operator">=</span> <span class="token function">getSetterProperty</span><span class="token punctuation">(</span>method<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment">//根据参数类型如Protocol和属性名字如protocol获取应该注入的对象</span>
+                    Object object <span class="token operator">=</span> injector<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span>pt<span class="token punctuation">,</span> property<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>object <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    	<span class="token comment">//执行对应对象和对应参数的这个方法</span>
+                        method<span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> object<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>Exception e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Failed to inject via method "</span> <span class="token operator">+</span> method<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                        <span class="token operator">+</span> <span class="token string">" of interface "</span> <span class="token operator">+</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">": "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>Exception e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5-4-1-获取注入对象"><a href="#5-4-1-获取注入对象" class="headerlink" title="5.4.1 获取注入对象"></a>5.4.1 获取注入对象</h3><p>这里我们主要来看下如何通过注入器找到需要注入的那个对象 调用代码如下:</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Object object <span class="token operator">=</span> injector<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span>pt<span class="token punctuation">,</span> property<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>  在前面看注入器扩展对象的获取的时候是会获取到ExtensionInjector扩展的一个自适应扩展注入器实现类型  AdaptiveExtensionInjector,这个地方对应的getInstance也是这个扩展里面的,我们来看下它的方法:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">T</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> type<span class="token punctuation">,</span> <span class="token class-name">String</span> name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   	<span class="token comment">//遍历所有的扩展注入器</span>
+       <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ExtensionInjector</span> injector <span class="token operator">:</span> injectors<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       	<span class="token comment">//遍历所有的扩展注入器,如果可以获取到扩展对象则直接返回</span>
+           <span class="token class-name">T</span> extension <span class="token operator">=</span> injector<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span>extension <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token keyword">return</span> extension<span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+       <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到上面代码按扩展注入器顺序来遍历的第一个找到的对象就直接返回了,</p>
+<p>  这个AdaptiveExtensionInjector在初始化的时候会获取所有的ExtensionInjector的扩展,非自适应的,它本身自适应的扩展,这里会获取非自适应的扩展列表一共有3个按顺序为:</p>
+<ul>
+<li>ScopeBeanExtensionInjector  </li>
+<li>SpiExtensionInjector </li>
+<li>SpringExtensionInjector</li>
+</ul>
+<p>接下来我们详细看下每种扩展注入器加载扩展对象的策略:</p>
+<h3 id="5-4-2-域模型中的Bean扩展注入器ScopeBeanExtensionInjector"><a href="#5-4-2-域模型中的Bean扩展注入器ScopeBeanExtensionInjector" class="headerlink" title="5.4.2 域模型中的Bean扩展注入器ScopeBeanExtensionInjector"></a>5.4.2 域模型中的Bean扩展注入器ScopeBeanExtensionInjector</h3><p>ScopeBeanExtensionInjector的getInstance方法:<br>每个域模型都会有个ScopeBeanFactory类型的对象用于存储共享对象,并且域模型之间按照层级子类型的Bean工厂可以从父域的Bean工厂中查询对象,</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">@Override
+    <span class="token keyword">public</span> <span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> T <span class="token function">getInstance</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> type<span class="token punctuation">,</span> String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> beanFactory<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ScopeBeanFactory的getBean方法<br>先从当前域空间查询对象,如果找不到对应类型的扩展对象则从父域工厂查询扩展对象</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">public</span> <span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> T <span class="token function">getBean</span><span class="token punctuation">(</span>String name<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//当前域下注册的扩展对象</span>
+        T bean <span class="token operator">=</span> <span class="token function">getBeanInternal</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>bean <span class="token operator">==</span> null <span class="token operator">&amp;&amp;</span> parent <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//父域中查找扩展对象</span>
+            <span class="token keyword">return</span> parent<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> bean<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ScopeBeanFactory的getBeanInternal方法<br>从当前域下找注册的参数类型的对象</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> <span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> T <span class="token function">getBeanInternal</span><span class="token punctuation">(</span>String name<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">checkDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// All classes are derived from java.lang.Object, cannot filter bean by it</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>type <span class="token operator">==</span> Object<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        List<span class="token operator">&lt;</span>BeanInfo<span class="token operator">&gt;</span> candidates <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        BeanInfo firstCandidate <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        <span class="token comment">//遍历列表查询</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>BeanInfo beanInfo <span class="token operator">:</span> registeredBeanInfos<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// if required bean type is same class/superclass/interface of the registered bean</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>type<span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>beanInfo<span class="token punctuation">.</span>instance<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">isEquals</span><span class="token punctuation">(</span>beanInfo<span class="token punctuation">.</span>name<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> <span class="token punctuation">(</span>T<span class="token punctuation">)</span> beanInfo<span class="token punctuation">.</span>instance<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token comment">// optimize for only one matched bean</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>firstCandidate <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        firstCandidate <span class="token operator">=</span> beanInfo<span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>candidates <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            candidates <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token generic-function"><span class="token function">ArrayList</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            candidates<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>firstCandidate<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                        candidates<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>beanInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// if bean name not matched and only single candidate</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>candidates <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>candidates<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> <span class="token punctuation">(</span>T<span class="token punctuation">)</span> candidates<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span>instance<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>candidates<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                List<span class="token operator">&lt;</span>String<span class="token operator">&gt;</span> candidateBeanNames <span class="token operator">=</span> candidates<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>beanInfo <span class="token operator">-&gt;</span> beanInfo<span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token function">ScopeBeanException</span><span class="token punctuation">(</span><span class="token string">"expected single matching bean but found "</span> <span class="token operator">+</span> candidates<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" candidates for type ["</span> <span class="token operator">+</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"]: "</span> <span class="token operator">+</span> candidateBeanNames<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>firstCandidate <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token punctuation">(</span>T<span class="token punctuation">)</span> firstCandidate<span class="token punctuation">.</span>instance<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="5-4-3-SPI扩展机制注入器SpiExtensionInjector"><a href="#5-4-3-SPI扩展机制注入器SpiExtensionInjector" class="headerlink" title="5.4.3 SPI扩展机制注入器SpiExtensionInjector"></a>5.4.3 SPI扩展机制注入器SpiExtensionInjector</h3><p>SPI是Dubbo自行实现的一套扩展机制,我们来看下它是如何查找扩展对象的</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">@Override
+    <span class="token keyword">public</span> <span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> T <span class="token function">getInstance</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> type<span class="token punctuation">,</span> String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    	<span class="token comment">//如果是一个标准的被@SPI注解修饰的扩展接口则满足条件</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>type<span class="token punctuation">.</span><span class="token function">isInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> type<span class="token punctuation">.</span><span class="token function">isAnnotationPresent</span><span class="token punctuation">(</span>SPI<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//使用扩展访问器来获取对应类型的扩展加载器</span>
+            ExtensionLoader<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> loader <span class="token operator">=</span> extensionAccessor<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>loader <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">//使用对应类型的扩展加载器来加载自适应扩展 这个加载的扩展可以参考4.4.6小节</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>loader<span class="token punctuation">.</span><span class="token function">getSupportedExtensions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> loader<span class="token punctuation">.</span><span class="token function">getAdaptiveExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="5-4-4-Spring扩展注入器"><a href="#5-4-4-Spring扩展注入器" class="headerlink" title="5.4.4 Spring扩展注入器"></a>5.4.4 Spring扩展注入器</h3><p>SpringExtensionInjector</p>
+<p>Spring扩展注入器主要是用来从Spring容器中查询当前类型的Bean是否存在的,如下代码直接看代码吧</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">@Override
+    @<span class="token function">SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> T <span class="token function">getInstance</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> type<span class="token punctuation">,</span> String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>context <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// ignore if spring context is not bound</span>
+            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">//check @SPI annotation ,类型需要满足SPI机制 @SPI修饰的接口</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>type<span class="token punctuation">.</span><span class="token function">isInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> type<span class="token punctuation">.</span><span class="token function">isAnnotationPresent</span><span class="token punctuation">(</span>SPI<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+		<span class="token comment">//从Spring容器中查询Bean</span>
+        T bean <span class="token operator">=</span> <span class="token function">getOptionalBean</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> name<span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>bean <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> bean<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">//logger.warn("No spring extension (bean) named:" + name + ", try to find an extension (bean) of type " + type.getName());</span>
+        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">private</span> <span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> T <span class="token function">getOptionalBean</span><span class="token punctuation">(</span>ListableBeanFactory beanFactory<span class="token punctuation">,</span> String name<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span>T<span class="token operator">&gt;</span> type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//要搜索的扩展名字为空就根据类型搜索</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//返回与给定类型（包括子类）匹配的bean的名称，对于FactoryBeans</span>
+            String<span class="token punctuation">[</span><span class="token punctuation">]</span> beanNamesForType <span class="token operator">=</span> beanFactory<span class="token punctuation">.</span><span class="token function">getBeanNamesForType</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>beanNamesForType <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>beanNamesForType<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment">//返回指定bean的实例，该实例可以是共享的，也可以是独立的。</span>
+                <span class="token comment">//根据Bean Name和类型 查询具体的扩展对象</span>
+                    <span class="token keyword">return</span> beanFactory<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span>beanNamesForType<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>beanNamesForType<span class="token punctuation">.</span>length <span class="token operator">&gt;</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token function">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Expect single but found "</span> <span class="token operator">+</span> beanNamesForType<span class="token punctuation">.</span>length <span class="token operator">+</span> <span class="token string">" beans in spring context: "</span> <span class="token operator">+</span>
+                        Arrays<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span>beanNamesForType<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//扩展名字不为空则直接通过名字搜索Bean</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>beanFactory<span class="token punctuation">.</span><span class="token function">containsBean</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> beanFactory<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/Dubbo/" rel="tag">Dubbo<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3/" rel="tag">Dubbo3<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Dubbo3源码解析<span class="tag-unordered list-count">23</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/07/10/dubbo/6-dubbo-de-spi-kuo-zhan-ji-zhi-zhi-pu-tong-kuo-zhan-dui-xiang-de-chuang-jian-yu-wrapper-ji-zhi-de-yuan-ma-jie-xi/"> 06-【Dubbo3.0.8源码解析系列】Dubbo的SPI扩展机制之普通扩展对象的创建与Wrapper机制的源码解析</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/"> 04-【Dubbo3.0.8源码解析系列】Dubbo的扩展机制</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

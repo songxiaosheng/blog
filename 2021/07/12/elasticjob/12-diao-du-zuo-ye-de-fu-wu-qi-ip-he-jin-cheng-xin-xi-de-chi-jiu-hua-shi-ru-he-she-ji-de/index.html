@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918062">
+<link rel="stylesheet" href="/css/style.css?v=1662168973089">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918062"></script>
+<script src="/js/core.js?v=1662168973089"></script>
 
 
 
@@ -48,149 +48,291 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>12-调度作业的服务器IP和进程信息的持久化是如何设计的?</h1>
+			<div class="info"><span class="date">2021年7月12日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">Elastic-Job2.1.5源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/elasticjob/12-调度作业的服务器IP和进程信息的持久化是如何设计的?.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="12-调度作业的服务器IP和进程信息的持久化是如何设计的"><a href="#12-调度作业的服务器IP和进程信息的持久化是如何设计的" class="headerlink" title="12-调度作业的服务器IP和进程信息的持久化是如何设计的?"></a>12-调度作业的服务器IP和进程信息的持久化是如何设计的?</h1><h2 id="12-1-作业服务器信息"><a href="#12-1-作业服务器信息" class="headerlink" title="12.1 作业服务器信息"></a>12.1 作业服务器信息</h2><p>作业服务器信息的持久化主要调用了如下两行代码:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">serverService<span class="token punctuation">.</span><span class="token function">persistOnline</span><span class="token punctuation">(</span>enabled<span class="token punctuation">)</span><span class="token punctuation">;</span>
+instanceService<span class="token punctuation">.</span><span class="token function">persistOnline</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>作业服务器信息上线需要两个节点:</p>
+<ul>
+<li>一个是用来存储实例启用/禁用状态的持久节点servers</li>
+<li>一个是可以表示进程上线，下线状态的临时节点instances</li>
+</ul>
+<p>我们先来看一下两者区别的表格：</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">持久实例节点servers</th>
+<th align="left">临时实例节点instances</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>节点路径</strong></td>
+<td align="left">{jobName}/servers/节点ip</td>
+<td align="left">{jobName}/instances/节点ip@-@进程id</td>
+</tr>
+<tr>
+<td align="left"><strong>Znode节点类型</strong></td>
+<td align="left">持久节点</td>
+<td align="left">临时节点</td>
+</tr>
+<tr>
+<td align="left"><strong>节点作用</strong></td>
+<td align="left">用于存储作业实例状态(启用/禁用)</td>
+<td align="left">标示作业进程是否正常启动(临时节点存在则进程正常启动,节点不存在则对应实例进程启动异常)</td>
+</tr>
+</tbody></table>
+<p>①持久实例节点servers</p>
+<p>持久节点是调用如下代码来进行写入的:</p>
+<pre class="line-numbers language-jjava" data-language="jjava"><code class="language-jjava">/**
+    * 持久化作业服务器上线信息.
+    * 
+    * @param enabled 作业是否启用
+    */
+   public void persistOnline(final boolean enabled) {
+       if (!JobRegistry.getInstance().isShutdown(jobName)) {
+           jobNodeStorage.fillJobNode(serverNode.getServerNode(JobRegistry.getInstance().getJobInstance(jobName).getIp()), enabled ? "" : ServerStatus.DISABLED.name());
+       }
+   }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>参数enabled设置服务器是否启用。enabled参数是上面一开始我们说到的轻量级作业配置LiteJobConfiguration中的disabled属性是否禁用服务器，当禁用配置为false的时候我们才会启用服务器状态，这里对应节点为/{jobName}/servers/{ip},存储数据如下:</p>
+<ul>
+<li>启用状态存储数据为:空</li>
+<li>禁用状态存储数据为:DISABLED</li>
+</ul>
+<p>通过这个节点可以有效的控制作业对应机器是否可以执行当前作业，这里servers节点为持久节点不用担心重启后重新修改配置,这样在作业运行时我们可以通过动态修改Zookeeper的servers节点下的实例信息来动态的修改作业实例的启用/禁用状态信息。</p>
+<p>② 临时实例节点instances</p>
+<p>临时节点的持久化是调用如下代码进行写入的:</p>
+<pre class="line-numbers language-none"><code class="language-none">/**
+     * 持久化作业运行实例上线相关信息.
+     */
+    public void persistOnline() {
+        jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstanceNode(), "");
+    }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>作业服务器每次启动时候会创建临时节点/{jobName}/instances/{jobInstanceId}，如果作业实例关闭的话,节点会自动被删除，通过这个节点我们可以用来观察当前作业下启动的进程有哪些，也就是说有哪个实例启动了作业进程,如果实例节点不存在则说明当前作业进程启动失败或者作业未连接上当前Zookeeper,我们可以通过查看instances下的临时实例节点来判断进程是否正常存在,这个状态是可以实时被观察到的,如果出现这样的情况可以优先排查作业进程是否启动成功。</p>
+<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/ElasticJob/" rel="tag">ElasticJob<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">ElasticJob源码解析<span class="tag-unordered list-count">11</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2021/07/11/elasticjob/11-ji-yu-zookeeper-fen-bu-shi-suo-shi-xian-xuan-ju-zuo-ye-zhu-jie-dian-yuan-li/"> 11-基于Zookeeper的分布式锁实现 选举 作业主节点</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918062">
+<link rel="stylesheet" href="/css/style.css?v=1662168973090">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918062"></script>
+<script src="/js/core.js?v=1662168973090"></script>
 
 
 
@@ -48,149 +48,327 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>11-基于Zookeeper的分布式锁实现 选举 作业主节点</h1>
+			<div class="info"><span class="date">2021年7月11日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">Elastic-Job2.1.5源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/elasticjob/11-基于Zookeeper分布式锁实现选举作业主节点原理.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="11-基于Zookeeper的分布式锁实现-选举-作业主节点"><a href="#11-基于Zookeeper的分布式锁实现-选举-作业主节点" class="headerlink" title="11 基于Zookeeper的分布式锁实现 选举 作业主节点"></a>11 基于Zookeeper的分布式锁实现 选举 作业主节点</h1><h2 id="11-1-Elastic-Job-既然去中心化为什么要选举主节点？"><a href="#11-1-Elastic-Job-既然去中心化为什么要选举主节点？" class="headerlink" title="11.1 Elastic-Job 既然去中心化为什么要选举主节点？"></a>11.1 Elastic-Job 既然去中心化为什么要选举主节点？</h2><p>Elastic-Job 定位为轻量级，去中心化，其任务调度由各自的机器驱动，各台机器之间通过Zookeeper去协调，Elastic-Job 为每个任务都创建一个JobScheduler作业调度对象,而在JobScheduler对象的初始化中会为每个Job选举一个主节点，记住这里不是为整个进程的所有作业创建一个全局的主节点，而是每个调度作业都会有一个主节点。</p>
+<p>那为什么需要为每个作业分别选举出来一个主节点呢？</p>
+<p>在一个任务执行过程中，有多个机器，每台机器上面都部署一个作业进程,调度系统在执行作业的时候不依赖物理机器的数量来决定作业执行的次数,而是使用逻辑分片的概念，做为调度中间件使用逻辑分片的概念第一可以方便解决物理机宕机问题,第二可以有效的进行作业的执行拆分,在分片的过程中一台机器上可以获取一个分片，也可以获取多个分片或者获取0个分片，通过为节点分配的分片项数量来控制当前节点是否执行作业，执行几次作业，那么如何去分配这些作业应该获取多少个分片项，哪些机器执行哪些分片呢，如果每台机器进程都参与分配分片，众口难调，很难决策出最终的结果，这样的话大家都参与岂不是乱了，这个时候就需要一个领导者来拍板。这个作业领导者在这里我们称为作业主节点。</p>
+<p>那如何在多个进程中选举出来一个进程实例来做为作业主节点呢？</p>
+<p>我们可以通过在Zookeeper上写入主节点的实例信息来进行标记主节点的信息，如果多个进程并行执行同时在Zookeeper上写入主节点标记，则会出现这样的逻辑，先判断Zookeeper上主节点不存在时再进行写入主节点标记，先判断再写入就会存在两步操作无法保证原子性操作，容易导致同时写入多个主节点，这个时候在分布式环境下可以使用分布式锁让多个进程进行排队，先获取锁的节点先执行主节点标记写入操作。接下来我们可以先了解下基于Zookeeper实现分布式锁的原理：</p>
+<h2 id="11-2-分布式锁选主的的执行过程："><a href="#11-2-分布式锁选主的的执行过程：" class="headerlink" title="11.2 分布式锁选主的的执行过程："></a>11.2 分布式锁选主的的执行过程：</h2><p>①　第1个客户端创建临时顺序节点。</p>
+<p>②　第1个客户端判断是否加锁，临时顺序节点编号为最小的节点归属的进程是哪一个，则哪个进程持有锁的节点，持有锁节点的进程可以来执行选主业务，选主的过程就是在Zookeeper对应作业leader/instance节点下写入当前实例信息来标记当前节点为主节点，执行完业务后释放锁则删除临时顺序节点让其他进程来获取锁。</p>
+<p>③　第2个客户端来的时候创建临时顺序节点。</p>
+<p>④　第2个客户端判断是否加锁,如果临时顺序节点编号为最小的那个则为持有锁开始执行选主业务，这个时候已经有主节点写入,则先判断是否主节点存在,发现主节点已经存在,则直接跳过选主过程，执行完业务后释放锁,则删除临时顺序节点让其他进程或者线程来获取锁。</p>
+<p>在节点创建的时候如果临时顺序节点编号不是最小那个则给上个节点增加监听器，如果上个客户端释放了锁,紧邻的这个临时顺序节点被通知到锁释放信息则获取锁执行业务。</p>
+<p>以上过程我们可以参考如下图所示,Zookeeper锁节点和实例信息如下图：</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/2b0d6289cc73983b99508f0dbe626d2b.png" alt="图片"></p>
+<p>图 6.5 分布式锁节点信息</p>
+<h2 id="11-3-避免羊群效应（-herd-effect）"><a href="#11-3-避免羊群效应（-herd-effect）" class="headerlink" title="11.3 避免羊群效应（ herd effect）"></a>11.3 避免羊群效应（ herd effect）</h2><p>把锁请求者按照后缀数字进行排队，后缀数字小的锁请求者先获取锁。如果所有的锁请求者都watch锁持有者，当代表锁请求者的znode 被删除以后，所有的锁请求者都会通知到，但是只有一个锁请求者能拿到锁。这就是羊群效应。为了避免羊群效应，每个锁请求者watch 它前面的锁请求者。每次锁被释放，只会有一个锁请求者会被通知到。这样做还让锁的分配具有公平性，锁定的分配遵循先到先得的原则。</p>
+<p>(4) Elastic-Job使用分布式锁实现的选主业务实现</p>
+<p>在Elastic-Job 中有两处需要leader节点来参与</p>
+<ul>
+<li>第一个是通过选主节点来进行分片，来执行作业</li>
+<li>第二个地方是选主节点来执行失效转移的作业</li>
+</ul>
+<p>那究竟如何选主节点呢？我们可以看leaderService的electLeader方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+* 选举主节点.
+*/</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">electLeader</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Elect a new leader now."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    jobNodeStorage<span class="token punctuation">.</span><span class="token function">executeInLeader</span><span class="token punctuation">(</span><span class="token class-name">LeaderNode</span><span class="token punctuation">.</span>LATCH<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">LeaderElectionExecutionCallback</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Leader election completed."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里使用JobNodeStorage来操作Zookeeper，选举成功之后会调用LeaderElectionExecutionCallback回调接口。</p>
+<p>JobNodeStorage类主要用来封装针对Zookeeper的操作，内部使用CoordinatorRegistryCenter对象来访问Zookeeper。现在我们来看看选举主节点的executeInLeader方法做了什么。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+* 在主节点执行操作.
+* 
+* @param latchNode 分布式锁使用的作业节点名称
+* @param callback 执行操作的回调
+*/</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">executeInLeader</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">String</span> latchNode<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token class-name">LeaderExecutionCallback</span> callback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token class-name">LeaderLatch</span> latch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LeaderLatch</span><span class="token punctuation">(</span><span class="token function">getClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> jobNodePath<span class="token punctuation">.</span><span class="token function">getFullPath</span><span class="token punctuation">(</span>latchNode<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        latch<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        latch<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        callback<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">Exception</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">handleException</span><span class="token punctuation">(</span>ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><em>try(){}catch(Exception){} ,try()是jdk1.7的语法糖针对具有关闭属性的资源可以不用手动调用关闭方法。</em></p>
+<p>这里选主节点的思路是这样的使用curator框架中的LeaderLatch选举工具，在多台机器中使用分布式锁的形式选主节点。</p>
+<p>了解了分布式锁的原理我们可以看下这里几行代码都做了什么操作：</p>
+<p>①　根据客户端对象和监听路径来创建主节点选举对象</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">LeaderLatch</span> latch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LeaderLatch</span><span class="token punctuation">(</span><span class="token function">getClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> jobNodePath<span class="token punctuation">.</span><span class="token function">getFullPath</span><span class="token punctuation">(</span>latchNode<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>②调用start方法开始选举获取锁</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">latch<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>③会阻塞当前线程，直到选主成功之后被唤醒。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">latch<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>④获取到锁成功后开始执行回调方法,这里执行对象是参数传递过来的LeaderExecutionCallback类型的对象</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">callback<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>⑤执行close</p>
+<p>这里没有明确写这个方法但是是用来try-with-resource语法糖之后也是存在的，对于LeaderLatch实例，无论是否选主成功，最后都应该调用close方法,从领导选举中删除此实例。如果这个实例是领导者，领导释放。要点：释放领导者的唯一方法是调用close（）。所有选主后的领导者匹配实例最终必须关闭来释放资源。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">leaderLatch<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>⑥分布式锁回调(回调方法里面执行作业选主逻辑)</p>
+<p>分布式锁的流程了解了让我们看看获取到锁后我们是如何来为作业实例机器来选个主节点的看下new LeaderElectionExecutionCallback()的具体实现：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">LeaderElectionExecutionCallback</span> <span class="token keyword">implements</span> <span class="token class-name">LeaderExecutionCallback</span> <span class="token punctuation">{</span>
+    
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">hasLeader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            jobNodeStorage<span class="token punctuation">.</span><span class="token function">fillEphemeralJobNode</span><span class="token punctuation">(</span><span class="token class-name">LeaderNode</span><span class="token punctuation">.</span>INSTANCE<span class="token punctuation">,</span> <span class="token class-name">JobRegistry</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getJobInstance</span><span class="token punctuation">(</span>jobName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getJobInstanceId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>1）判断是否有主节点</p>
+<p>主节点：leader/election/instance</p>
+<p>2）如果没有主节点则创建主节点</p>
+<p>主节点为leader/election/instance 值为作业的实例信息</p>
+<p>3)主节点下写入的进程实例信息是怎样的?</p>
+<p>在创建JobInstance对象的时候会根据机器IP@@进程id 生成个唯一标示作为实例id,比如192.168.1.1@-@2322</p>
+<pre class="line-numbers language-none"><code class="language-none">jobInstanceId = IpUtils.getIp() + DELIMITER + ManagementFactory.getRuntimeMXBean().getName().split("@")[0];<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>4)进程id信息的获取</p>
+<p>上面getName()方法获取到的值由两部分组成@前面是进程id@后面是主机名 例如：9820@hostname，获取@前面的即可获取进程id,拿到进程id后方便后期我们根据进程id查错。</p>
+<p>将整个选主过程梳理之后，由此我们明白了整个选主过程如下图：</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/1bbc89f3cfef87ec34d0c45ed417c27e.png" alt="图片"></p>
+<p>选主的过程是通过抢占分布式锁执行的，优先创建临时顺序节点进程优先获取到锁，获取锁的节点则执行选主逻辑，选主的最终结果是在主节点下的instance中写入当前实例信息，如果多个节点同时竞争分布式锁则未抢占到锁的节点也会创建临时顺序节点，同时监听比自己小的那一个临时顺序节点进入排队等待状态，等到前面的节点释放临时顺序节点（锁）的时候则开始获取到锁执行选主逻辑，由于前面的节点已经创建作业主节点成功了所以会直接跳过。</p>
+<p>查看更多原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/ElasticJob/" rel="tag">ElasticJob<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/ElasticJob%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">ElasticJob源码解析<span class="tag-unordered list-count">11</span></a>, <a class="tag-unordered list-link" href="/tags/Zookeeper%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" rel="tag">Zookeeper分布式锁<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" rel="tag">分布式锁<span class="tag-unordered list-count">1</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2021/07/12/elasticjob/12-diao-du-zuo-ye-de-fu-wu-qi-ip-he-jin-cheng-xin-xi-de-chi-jiu-hua-shi-ru-he-she-ji-de/"> 12-调度作业的服务器IP和进程信息的持久化是如何设计的?</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2021/07/10/elasticjob/10-diao-du-zuo-ye-de-jian-ting-qi-da-quan/"> 10- 调度作业的监听器大全</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

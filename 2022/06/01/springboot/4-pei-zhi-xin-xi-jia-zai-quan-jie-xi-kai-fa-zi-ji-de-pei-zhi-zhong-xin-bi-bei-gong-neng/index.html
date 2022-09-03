@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918055">
+<link rel="stylesheet" href="/css/style.css?v=1662168973071">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918055"></script>
+<script src="/js/core.js?v=1662168973071"></script>
 
 
 
@@ -48,149 +48,431 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>4-配置信息加载全解析-(开发自己的配置中心必备功能)</h1>
+			<div class="info"><span class="date">2022年6月1日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">SpringBoot2源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/springboot/4-配置信息加载全解析-(开发自己的配置中心必备功能).md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="4-配置信息加载全解析-开发自己的配置中心必备功能"><a href="#4-配置信息加载全解析-开发自己的配置中心必备功能" class="headerlink" title="4-配置信息加载全解析-(开发自己的配置中心必备功能)"></a>4-配置信息加载全解析-(开发自己的配置中心必备功能)</h1><h2 id="4-1-简介"><a href="#4-1-简介" class="headerlink" title="4.1 简介"></a>4.1 简介</h2><p>上一个博客中说了配置环境信息ConfigurableEnvironment的准备 但是并没有说细节这里来详细说下Spring的环境配置信息,方便为后续配置信息熟悉做准备 </p>
+<p> 我们先回顾一下:</p>
+<p>配置信息的准备过程,在上下文启动时候可能会需要一些基础的配置信息,这一步就是用来加载这些配置信息的</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">ConfigurableEnvironment</span> environment <span class="token operator">=</span> <span class="token function">prepareEnvironment</span><span class="token punctuation">(</span>listeners<span class="token punctuation">,</span> bootstrapContext<span class="token punctuation">,</span> applicationArguments<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>来看下逻辑代码:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">ConfigurableEnvironment</span> <span class="token function">prepareEnvironment</span><span class="token punctuation">(</span><span class="token class-name">SpringApplicationRunListeners</span> listeners<span class="token punctuation">,</span>
+      <span class="token class-name">DefaultBootstrapContext</span> bootstrapContext<span class="token punctuation">,</span> <span class="token class-name">ApplicationArguments</span> applicationArguments<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token comment">// Create and configure the environment</span>
+   <span class="token comment">//1:创建配置环境对象,</span>
+  <span class="token comment">//这个是根据前面我们推断出来的应用程序类型 来创建对应的可配置的环境对象webApplicationType有:SERVLET,REACTIVE和其他,他们分别对应的ConfigurableEnvironment实现类型为:ApplicationServletEnvironment,ApplicationReactiveWebEnvironment和ApplicationEnvironment</span>
+   <span class="token class-name">ConfigurableEnvironment</span> environment <span class="token operator">=</span> <span class="token function">getOrCreateEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//2: 配置环境对象</span>
+  <span class="token comment">//1)将命令行上的应用程序参数 添加到属性集合中PropertySources</span>
+   <span class="token function">configureEnvironment</span><span class="token punctuation">(</span>environment<span class="token punctuation">,</span> applicationArguments<span class="token punctuation">.</span><span class="token function">getSourceArgs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//3 所有配置转Spring配置,将命令行参数,JVM参数,环境变量参数添加到name为configurationProperties的SpringConfigurationPropertySources对象中,然后将其添加到属性集合中PropertySources</span>
+   <span class="token class-name">ConfigurationPropertySources</span><span class="token punctuation">.</span><span class="token function">attach</span><span class="token punctuation">(</span>environment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//4 广播environmentPrepared事件   如果我们想要实现这个时间则可以让Bean实现接口EnvironmentPostProcessor (开发配置中心时候可以用这个将自己配置中心的配置添加进来)</span>
+  <span class="token comment">//这里实现的广播事件有</span>
+  <span class="token comment">//RandomValuePropertySource自动装配，使得在加载配置文件时，可以解析${random.value}。</span>
+  <span class="token comment">//SystemEnvironmentPropertySourceEnvironmentPostProcessor 用来格式化系统资源</span>
+  <span class="token comment">//SpringApplicationJsonEnvironmentPostProcessor 指定的json配置转换解析配置的key为spring.application.json,SPRING_APPLICATION_JSON (可在命令行 JVM,环境变量中配置)</span>
+  <span class="token comment">//等等</span>
+   listeners<span class="token punctuation">.</span><span class="token function">environmentPrepared</span><span class="token punctuation">(</span>bootstrapContext<span class="token punctuation">,</span> environment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//5 移动“defaultProperties”属性源，使其成为给定属性中的最后一个源 默认配置优先级最低</span>
+   <span class="token class-name">DefaultPropertiesPropertySource</span><span class="token punctuation">.</span><span class="token function">moveToEnd</span><span class="token punctuation">(</span>environment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">state</span><span class="token punctuation">(</span><span class="token operator">!</span>environment<span class="token punctuation">.</span><span class="token function">containsProperty</span><span class="token punctuation">(</span><span class="token string">"spring.main.environment-prefix"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+         <span class="token string">"Environment prefix cannot be set via properties."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//6 将环境绑定到Spring应用程序。</span>
+   <span class="token function">bindToSpringApplication</span><span class="token punctuation">(</span>environment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  	<span class="token comment">//非定制环境吗</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>isCustomEnvironment<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token comment">//将给定环境转换为不尝试直接解析配置文件属性的应用程序环境。</span>
+      environment <span class="token operator">=</span> <span class="token function">convertEnvironment</span><span class="token punctuation">(</span>environment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+  <span class="token comment">//与第3步逻辑一样 </span>
+   <span class="token class-name">ConfigurationPropertySources</span><span class="token punctuation">.</span><span class="token function">attach</span><span class="token punctuation">(</span>environment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">return</span> environment<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>在详细说代码之前我们可以来看下Environment相关联的一些对象,这里只列举出来我们将要用到的,这里一共包含3个分类,环境,属性源,属性解析器, 在环境中使用属性解析器将配置文件转换为属性源,接下来可以看下对应的UML关系:</p>
+<p><img src="https://img-blog.csdnimg.cn/0dbac233d8c7426f90add562f7d1702b.png" alt="在这里插入图片描述"></p>
+<h2 id="4-2-创建一个ConfigurableEnvironment对象"><a href="#4-2-创建一个ConfigurableEnvironment对象" class="headerlink" title="4.2 创建一个ConfigurableEnvironment对象"></a>4.2 创建一个ConfigurableEnvironment对象</h2><h3 id="4-2-1-ConfigurableEnvironment对象简介"><a href="#4-2-1-ConfigurableEnvironment对象简介" class="headerlink" title="4.2.1 ConfigurableEnvironment对象简介"></a>4.2.1 ConfigurableEnvironment对象简介</h3><p>大多数（如果不是所有）环境类型都要实现的配置接口。提供用于设置活动和默认配置文件以及操纵基础属性源的工具。允许客户端通过ConfigurablePropertyResolver superinterface设置和验证所需的属性、自定义转换服务等。</p>
+<p>操纵属性来源</p>
+<p>属性来源可能被移除、重新排序或替换；可以使用从getPropertySources()返回的MutablePropertySources实例添加其他属性源。以下示例与ConfigurableEnvironment的StandardEnvironment实现相反，但通常适用于任何实现，尽管特定的默认属性源可能有所不同。</p>
+<p>示例：添加具有最高搜索优先级的新属性源</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">  <span class="token class-name">ConfigurableEnvironment</span> environment <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StandardEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token class-name">MutablePropertySources</span> propertySources <span class="token operator">=</span> environment<span class="token punctuation">.</span><span class="token function">getPropertySources</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> myMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  myMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"xyz"</span><span class="token punctuation">,</span> <span class="token string">"myValue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  propertySources<span class="token punctuation">.</span><span class="token function">addFirst</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">MapPropertySource</span><span class="token punctuation">(</span><span class="token string">"MY_MAP"</span><span class="token punctuation">,</span> myMap<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+<span class="token comment">//示例：删除默认系统属性属性源</span>
+  <span class="token class-name">MutablePropertySources</span> propertySources <span class="token operator">=</span> environment<span class="token punctuation">.</span><span class="token function">getPropertySources</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  propertySources<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token class-name">StandardEnvironment</span><span class="token punctuation">.</span>SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME<span class="token punctuation">)</span>
+  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>示例：出于测试目的模拟系统环境</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">MutablePropertySources</span> propertySources <span class="token operator">=</span> environment<span class="token punctuation">.</span><span class="token function">getPropertySources</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">MockPropertySource</span> mockEnvVars <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MockPropertySource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">withProperty</span><span class="token punctuation">(</span><span class="token string">"xyz"</span><span class="token punctuation">,</span> <span class="token string">"myValue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+propertySources<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token class-name">StandardEnvironment</span><span class="token punctuation">.</span>SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME<span class="token punctuation">,</span> mockEnvVars<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>当ApplicationContext正在使用环境时，在调用上下文的refresh（）方法之前执行任何此类PropertySource操作都很重要。这确保了所有属性源在容器引导过程中可用，包括属性占位符配置程序使用</p>
+<h3 id="4-2-2-ConfigurableEnvironment对象的创建"><a href="#4-2-2-ConfigurableEnvironment对象的创建" class="headerlink" title="4.2.2 ConfigurableEnvironment对象的创建"></a>4.2.2 ConfigurableEnvironment对象的创建</h3><p>如前面调用代码所示通过调用getOrCreateEnvironment()方法来创建ConfigurableEnvironment对象,如下代码所示环境信息是根据不同的应用程序来创建不同的环境信息对象</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">ConfigurableEnvironment</span> <span class="token function">getOrCreateEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>environment <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>environment<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+   <span class="token keyword">switch</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>webApplicationType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">case</span> SERVLET<span class="token operator">:</span>
+      <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ApplicationServletEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">case</span> REACTIVE<span class="token operator">:</span>
+      <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ApplicationReactiveWebEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">default</span><span class="token operator">:</span>
+      <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ApplicationEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li><p>ApplicationServletEnvironment<br> 基于Servlet的web应用程序要使用的环境实现。默认情况下，所有与web相关（基于servlet）的ApplicationContext类都会初始化实例。<br>提供ServletConfig、ServletContext和基于JNDI的PropertySource实例。有关详细信息，请参阅customizePropertySources方法文档。</p>
+</li>
+<li><p>ApplicationReactiveWebEnvironment<br>由基于反应的web应用程序使用的环境实现。默认情况下，所有与web相关（基于反应的）ApplicationContext类都会初始化实例。</p>
+</li>
+</ul>
+<p>这里我们以ApplicationEnvironment来进行说明:</p>
+<h3 id="4-2-3-ApplicationEnvironment的构造器执行过程"><a href="#4-2-3-ApplicationEnvironment的构造器执行过程" class="headerlink" title="4.2.3 ApplicationEnvironment的构造器执行过程"></a>4.2.3 ApplicationEnvironment的构造器执行过程</h3><p>ApplicationEnvironment并没有明确声明构造器 只有一个默认的无参构造器,但是它的父类型AbstractEnvironment做了一些通用的逻辑处理我们来看下AbstractEnvironment的构造器如下代码:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">AbstractEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">this</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">MutablePropertySources</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>这个构造器做了两个逻辑创建MutablePropertySources()类型对象和调用重载的构造器</p>
+<p>创建一个新的环境实例，在构造期间调用customizePropertySources（可变属性源），以允许子类根据需要贡献或操作PropertySources实例。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token class-name">AbstractEnvironment</span><span class="token punctuation">(</span><span class="token class-name">MutablePropertySources</span> propertySources<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">//创建的对象赋值给成员变量方便后续使用</span>
+   <span class="token keyword">this</span><span class="token punctuation">.</span>propertySources <span class="token operator">=</span> propertySources<span class="token punctuation">;</span>
+  <span class="token comment">//创建一个属性解析器 实现类型为PropertySourcesPropertyResolver</span>
+   <span class="token keyword">this</span><span class="token punctuation">.</span>propertyResolver <span class="token operator">=</span> <span class="token function">createPropertyResolver</span><span class="token punctuation">(</span>propertySources<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//用户自定义属性(如果我们要开发一个配置中心或者与配置相关的逻辑就可以重写这个逻辑来实现自己的配置添加)</span>
+   <span class="token function">customizePropertySources</span><span class="token punctuation">(</span>propertySources<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p>这个自定义属性customizePropertySources走的逻辑是StandardEnvironment中重写的方法:</p>
+<p>其实通过前面的UML继承关系我们可以看到这个StandardEnvironment类型是每个不同环境的父类型,这个标准的类型也是通用的逻辑,我们看下代码它做了什么?</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">customizePropertySources</span><span class="token punctuation">(</span><span class="token class-name">MutablePropertySources</span> propertySources<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">//将JVM属性封装在PropertiesPropertySource类型中然后添加到MutablePropertySources的CopyOnWriteArrayList类型中</span>
+   propertySources<span class="token punctuation">.</span><span class="token function">addLast</span><span class="token punctuation">(</span>
+         <span class="token keyword">new</span> <span class="token class-name">PropertiesPropertySource</span><span class="token punctuation">(</span>SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME<span class="token punctuation">,</span> <span class="token function">getSystemProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//环境变量信息添加到集合中</span>
+   propertySources<span class="token punctuation">.</span><span class="token function">addLast</span><span class="token punctuation">(</span>
+         <span class="token keyword">new</span> <span class="token class-name">SystemEnvironmentPropertySource</span><span class="token punctuation">(</span>SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME<span class="token punctuation">,</span> <span class="token function">getSystemEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用适用于任何标准Java环境的属性源自定义属性源集：</p>
+<ul>
+<li>系统属性 使用JVM参数指定</li>
+<li>系统环境 计算机中配置的变量(也可能是K8S环境指定的POD变量)</li>
+</ul>
+<p>这里重点说一下这个addLast方法这个属性最终存储在了MutablePropertySources的CopyOnWriteArrayList类型的变量中,这个列表顺序决定了属性的配置优先级,如果我们的属性集合在这个CopyOnWriteArrayList列表的前面则优先级会更高,根据以上配置所示我们可以知道,JVM参数的属性集合在环境变量之前,则JVM参数的优先级高于环境变量配置 </p>
+<p>JVM参数获取:getSystemProperties()</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> <span class="token function">getSystemProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">try</span> <span class="token punctuation">{</span>
+     <span class="token comment">//Java自带的语法 从System对象中获取系统属性</span>
+      <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token punctuation">)</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+   <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">AccessControlException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p>系统环境配置获取getSystemEnvironment()方法:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> <span class="token function">getSystemEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">suppressGetenvAccess</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">emptyMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+   <span class="token keyword">try</span> <span class="token punctuation">{</span>
+   <span class="token comment">//System自带的方法获取操作系统环境变量信息</span>
+      <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token punctuation">)</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getenv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+   <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">AccessControlException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+   <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="4-3-广播environmentPrepared事件"><a href="#4-3-广播environmentPrepared事件" class="headerlink" title="4.3 广播environmentPrepared事件"></a>4.3 广播environmentPrepared事件</h2><p>关于事件监听器的实现前面已经说过了比较简单这里主要看看实现了哪些环境加载的事件</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">listeners<span class="token punctuation">.</span><span class="token function">environmentPrepared</span><span class="token punctuation">(</span>bootstrapContext<span class="token punctuation">,</span> environment<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>  广播environmentPrepared事件   如果我们想要实现这个时间则可以让Bean实现接口EnvironmentPostProcessor (开发配置中心时候可以用这个将自己配置中心的配置添加进来)<br>这里实现的广播事件有</p>
+<ul>
+<li><p>RandomValuePropertySource自动装配，使得在加载配置文件时，可以解析${random.value}– </p>
+</li>
+<li><p>SystemEnvironmentPropertySourceEnvironmentPostProcessor 用来格式化系统资源</p>
+</li>
+<li><p>SpringApplicationJsonEnvironmentPostProcessor 指定的json配置转换解析配置的key spring.application.json,SPRING_APPLICATION_JSON (可在命令行 JVM,环境变量中配置)</p>
+</li>
+<li><p>CloudFoundryVcapEnvironmentPostProcessor 云平台的配置是否开启 spring.main.cloud-platform 如果开启则会用来解析vcap相关配置</p>
+</li>
+<li><p>ConfigDataEnvironmentPostProcessor 这个类型重点关注下 profiles 与默认配置文件application.properties文件的加载</p>
+</li>
+<li><p>DebugAgentEnvironmentPostProcessor  配置开关spring.reactor.debug-agent.enabled开的情况下,初始化启用Reactor调试代理（如果可用）。</p>
+</li>
+<li><p>IntegrationPropertiesEnvironmentPostProcessor spring.integration.开头的配置扫描</p>
+</li>
+</ul>
+<p>这里我们重点详细说下ConfigDataEnvironmentPostProcessor配置类型</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">postProcessEnvironment</span><span class="token punctuation">(</span><span class="token class-name">ConfigurableEnvironment</span> environment<span class="token punctuation">,</span> <span class="token class-name">SpringApplication</span> application<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token function">postProcessEnvironment</span><span class="token punctuation">(</span>environment<span class="token punctuation">,</span> application<span class="token punctuation">.</span><span class="token function">getResourceLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> application<span class="token punctuation">.</span><span class="token function">getAdditionalProfiles</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>调用重载的postProcessEnvironment方法如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">postProcessEnvironment</span><span class="token punctuation">(</span><span class="token class-name">ConfigurableEnvironment</span> environment<span class="token punctuation">,</span> <span class="token class-name">ResourceLoader</span> resourceLoader<span class="token punctuation">,</span>
+      <span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> additionalProfiles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>logger<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Post-processing environment to add config data"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token comment">//资源加载器 为明确传则创建一个默认的资源加载器DefaultResourceLoader</span>
+      resourceLoader <span class="token operator">=</span> <span class="token punctuation">(</span>resourceLoader <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">?</span> resourceLoader <span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">DefaultResourceLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token comment">//创建一个ConfigDataEnvironment对象</span>
+      <span class="token function">getConfigDataEnvironment</span><span class="token punctuation">(</span>environment<span class="token punctuation">,</span> resourceLoader<span class="token punctuation">,</span> additionalProfiles<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">processAndApply</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+   <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">UseLegacyConfigProcessingException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token class-name">LogMessage</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"Switching to legacy config file processing [%s]"</span><span class="token punctuation">,</span>
+            ex<span class="token punctuation">.</span><span class="token function">getConfigurationProperty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token function">configureAdditionalProfiles</span><span class="token punctuation">(</span>environment<span class="token punctuation">,</span> additionalProfiles<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token function">postProcessUsingLegacyApplicationListener</span><span class="token punctuation">(</span>environment<span class="token punctuation">,</span> resourceLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>创建一个配置环境ConfigDataEnvironment然后获取配置</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">ConfigDataEnvironment</span> <span class="token function">getConfigDataEnvironment</span><span class="token punctuation">(</span><span class="token class-name">ConfigurableEnvironment</span> environment<span class="token punctuation">,</span> <span class="token class-name">ResourceLoader</span> resourceLoader<span class="token punctuation">,</span>
+      <span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> additionalProfiles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ConfigDataEnvironment</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>logFactory<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>bootstrapContext<span class="token punctuation">,</span> environment<span class="token punctuation">,</span> resourceLoader<span class="token punctuation">,</span>
+         additionalProfiles<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>environmentUpdateListener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p>这里我们重点说一下processAndApply()处理所有贡献，并将任何新导入的属性源应用于环境。</p>
+<p>这个方法的使用我们是非常熟悉的就是</p>
+<ul>
+<li>作用：将不同的配置参数绑定在不同的环境spring.profiles.active配置</li>
+<li>默认使用application.properties、application-default.properties</li>
+</ul>
+<p>源码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">processAndApply</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">//配置导入器 ConfigDataImporter</span>
+   <span class="token class-name">ConfigDataImporter</span> importer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConfigDataImporter</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>logFactory<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>notFoundAction<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>resolvers<span class="token punctuation">,</span>
+         <span class="token keyword">this</span><span class="token punctuation">.</span>loaders<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//在注册表中注册特定类型。如果指定的类型已注册，但尚未作为单例获取，则将替换它。</span>
+   <span class="token function">registerBootstrapBinder</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>contributors<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> DENY_INACTIVE_BINDING<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//ConfigDataEnvironmentContractors的不可变树结构，用于处理导入。</span>
+   <span class="token class-name">ConfigDataEnvironmentContributors</span> contributors <span class="token operator">=</span> <span class="token function">processInitial</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>contributors<span class="token punctuation">,</span> importer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//在激活任何配置文件之前，创建新的ConfigDataActivationContext实例。</span>
+   <span class="token class-name">ConfigDataActivationContext</span> activationContext <span class="token operator">=</span> <span class="token function">createActivationContext</span><span class="token punctuation">(</span>
+         contributors<span class="token punctuation">.</span><span class="token function">getBinder</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token class-name">BinderOption</span><span class="token punctuation">.</span>FAIL_ON_BIND_TO_INACTIVE_SOURCE<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   contributors <span class="token operator">=</span> <span class="token function">processWithoutProfiles</span><span class="token punctuation">(</span>contributors<span class="token punctuation">,</span> importer<span class="token punctuation">,</span> activationContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   activationContext <span class="token operator">=</span> <span class="token function">withProfiles</span><span class="token punctuation">(</span>contributors<span class="token punctuation">,</span> activationContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   contributors <span class="token operator">=</span> <span class="token function">processWithProfiles</span><span class="token punctuation">(</span>contributors<span class="token punctuation">,</span> importer<span class="token punctuation">,</span> activationContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token function">applyToEnvironment</span><span class="token punctuation">(</span>contributors<span class="token punctuation">,</span> activationContext<span class="token punctuation">,</span> importer<span class="token punctuation">.</span><span class="token function">getLoadedLocations</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+         importer<span class="token punctuation">.</span><span class="token function">getOptionalLocations</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>查看原文,技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/SprigBoot%E6%BA%90%E7%A0%81/" rel="tag">SprigBoot源码<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/Spring/" rel="tag">Spring<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot<span class="tag-unordered list-count">6</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/06/01/springboot/6-beandefinition-de-reader-he-scanner/"> 6-BeanDefinition的Reader和Scanner</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/06/01/springboot/3-springapplication-de-run-qi-dong-fang-fa-de-quan-sheng-ming-zhou-qi-han-shu-yuan-ma/"> 3-SpringApplication的run启动方法的全生命周期函数源码</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

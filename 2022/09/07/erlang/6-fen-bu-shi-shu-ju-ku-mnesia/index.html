@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918017">
+<link rel="stylesheet" href="/css/style.css?v=1662168972933">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918017"></script>
+<script src="/js/core.js?v=1662168972933"></script>
 
 
 
@@ -48,149 +48,264 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>6-Mnesia分布式数据库</h1>
+			<div class="info"><span class="date">2022年9月7日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Erlang/">Erlang</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/erlang/6-分布式数据库Mnesia.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="6-Mnesia分布式数据库"><a href="#6-Mnesia分布式数据库" class="headerlink" title="6-Mnesia分布式数据库"></a>6-Mnesia分布式数据库</h1><p>Mnesia是一种用Erlang编写的数据库，它被用于高要求的电信应用程序，同时也是标准Erlang 分发套装的一部分。将它配置为内存复制后，就能在两个物理隔离的节点上实现快速的容错式数 据存储。它还支持事务，并有自己的查询语言。</p>
+<ul>
+<li>Mnesia的速度极快，</li>
+<li>可以保存任何类型的Erlang数据结构。它还是高度可定制的。</li>
+<li>数据表既 可以保存在内存里(为了速度)，也可以保存在磁盘上(为了持久性)。</li>
+<li>表还可以在不同机器之间 进行复制，从而实现容错行为。</li>
+</ul>
+<p>创建初始数据库</p>
+<pre class="line-numbers language-none"><code class="language-none">Eshell V12.3.2.1  (abort with ^G)
+1&gt; mnesia:create_schema([node()]).<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+<p>mnesia:create_schema(NodeList)会在NodeList(它必须是一个包含有效Erlang节点的 列表)里的所有节点上都初始化一个新的Mnesia数据库。这个案例给出的节点列表是[node()]， 也就是当前节点。Mnesia完成初始化并创建了一个名为Mnesia.nonode@nohost的目录结构来保 存数据库。</p>
+<p>也可以在启动Erlang时指向一个特定的数据库。</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token atom">erl</span> <span class="token operator">-</span><span class="token atom">mnesia</span> <span class="token atom">dir</span> <span class="token string">"/home/joe/some/path/to/Mnesia.company"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>在操作数据库之前，需要做如下操作：</p>
+<ul>
+<li>创建一个数据库架构(schema)，</li>
+<li>启动数据库，添加一些表定义并 </li>
+<li>停止数据库，</li>
+<li>然后再重启它。</li>
+</ul>
+<p>这些事只需要做一遍。下面是代码:</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token function">do_this_once</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span>
+<span class="token atom">mnesia</span><span class="token punctuation">:</span><span class="token function">create_schema</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token function">node</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token atom">mnesia</span><span class="token punctuation">:</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token atom">mnesia</span><span class="token punctuation">:</span><span class="token function">create_table</span><span class="token punctuation">(</span><span class="token atom">shop</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token atom">attributes</span><span class="token punctuation">,</span><span class="token function">record_info</span><span class="token punctuation">(</span><span class="token atom">fields</span><span class="token punctuation">,</span><span class="token atom">shop</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
+<span class="token atom">mnesia</span><span class="token punctuation">:</span><span class="token function">create_table</span><span class="token punctuation">(</span><span class="token atom">cost</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token atom">attributes</span><span class="token punctuation">,</span><span class="token atom">record</span> <span class="token function">info</span><span class="token punctuation">(</span><span class="token atom">fields</span><span class="token punctuation">,</span><span class="token atom">cost</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token atom">mnesia</span><span class="token punctuation">:</span><span class="token function">create_table</span><span class="token punctuation">(</span><span class="token atom">design</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token atom">attributes</span><span class="token punctuation">,</span><span class="token function">record_info</span><span class="token punctuation">(</span><span class="token atom">fields</span><span class="token punctuation">,</span><span class="token atom">design</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token atom">mnesia</span><span class="token punctuation">:</span><span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>事务操作：</p>
+<pre class="line-numbers language-none"><code class="language-none">do_something(...)-&gt;
+F = fun()-&gt;
+    %%...
+    mnesia:write(Row)
+    %%...或者...
+    mnesia:delete(Oid)
+    %%...或者...
+    qlc:e(Q)
+end,
+mnesia:transaction(F)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p> 构 建 完 fun 后 ， 调 用 mnesia:transaction(F)，它会执行fun里的表达式序列。</p>
+<p> Mnesia采用一种悲观锁定(pessimistic locking)的策略。每当Mnesia事务管理器访问一个表 时，都会根据上下文情况尝试锁定记录甚至整个表。如果它发现这可能导致死锁，就会立即中止 事务并撤销之前所做的改动。<br>如果因为其他进程正在访问数据而导致事务一开始就失败了，系统就会进行短时间的等待， 然后再次尝试执行事务。这么做的一种结果就是事务fun里的代码可能会被执行很多次。</p>
+<p>可以对Mnesia表进行多种方式的配置。首先，表可以位于内存或磁盘里(或者两者皆有)。 其次，表可以位于单台机器上，也可以在多台机器之间复制。</p>
+<ul>
+<li>内存表 <ul>
+<li>它们的速度非常快，但是里面的数据是易失的，所以如果机器崩溃或者你停止了DBMS， 数据就会丢失。</li>
+</ul>
+</li>
+<li>磁盘表<ul>
+<li>磁盘表应该不会受到系统崩溃的影响(前提是磁盘没有物理损坏)。 当Mnesia事务写入一个表并且这个表是保存在磁盘上时，实际上是事务数据首先被写入 了一个磁盘日志。这个磁盘日志会不断增长，里面的信息会每隔一段时间与数据库里的 其他数据合并，然后磁盘日志里的条目就会被清除。如果系统崩溃了，磁盘日志就会在下一次系统重启时进行一致性检查，任何未合并的日志条目会先添加到数据库里，然后 数据库才可用。任何一个事务成功时，数据都应该已经正确写入到磁盘日志里，如果系 统随后崩溃了，那么当它下次重启时，事务所做的改动应该会完好无损。</li>
+<li>如果系统在事务进行过程中崩溃了，那么它对数据库所做的改动应该会丢失。</li>
+</ul>
+</li>
+</ul>
+<p>使用内存表之前，需要做一些试验来看看物理内存是否能容纳整个表。如果物理内存装不下 内存表，系统就会频繁读写页面文件，这将会影响性能。<br>内存表是易失的，所以如果想构建一个容错式应用程序，就需要把内存表复制到磁盘上，或 者把它复制为第二台机器的内存或磁盘表，或者两者皆有。<br>创建表</p>
+<p>Name 它是表的名称(一个原子)。按惯例它是一个Erlang记录的名称，表里的各行是这个记录 的实例。</p>
+<ul>
+<li>{type, Type} 它指定了表的类型。Type是set、ordered_set或bag中的一个。这些类型与19.1节里描 述的类型含义相同。</li>
+<li>{disc_copies, NodeList} NodeList是一个Erlang节点列表，这些节点将保存表的磁盘副本。当我们使用这个选项 时，系统还会在执行这个操作的节点上创建一个表的内存副本。 你可以既在一个节点上保存disc_copies类型的副本表，又在另一个节点上保存该表的 不同类型。这种做法能满足以下要求:<ul>
+<li>读取操作非常快，并在内存里执行;</li>
+<li>写入操作在持久性存储介质里执行。</li>
+</ul>
+</li>
+<li>{ram_copies, NodeList} NodeList是一个Erlang节点列表，这些节点将保存表的内存副本。</li>
+<li>{disc_only_copies, NodeList} NodeList是一个Erlang节点列表，这些节点将只保存表的磁盘副本。这些表没有内存副 本，访问起来会比较慢。</li>
+<li>{attributes, AtomList} 2 这个列表包含表里各个值的列名。请注意，要创建一个包含Erlang记录xxx的表，可以用{attributes, record_info(fields, xxx)}这种语法(也可以显式指定一个记录字段 名列表)。</li>
+</ul>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/Erlang/" rel="tag">Erlang<span class="tag-unordered list-count">10</span></a>, <a class="tag-unordered list-link" href="/tags/Erlang%E8%AF%AD%E6%B3%95/" rel="tag">Erlang语法<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/Mnesia/" rel="tag">Mnesia<span class="tag-unordered list-count">1</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/"> 5-Erlang KEY VALUE数据存储 ETS</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/09/07/erlang/1-erlang-yu-fa-ji-chu/"> 1-Erlang 语法基础</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

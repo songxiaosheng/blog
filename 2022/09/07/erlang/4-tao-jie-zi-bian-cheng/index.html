@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918014">
+<link rel="stylesheet" href="/css/style.css?v=1662168972932">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918014"></script>
+<script src="/js/core.js?v=1662168972932"></script>
 
 
 
@@ -48,149 +48,416 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>4-套接字编程</h1>
+			<div class="info"><span class="date">2022年9月7日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Erlang/">Erlang</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/erlang/4-套接字编程.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="4-套接字编程"><a href="#4-套接字编程" class="headerlink" title="4-套接字编程"></a>4-套接字编程</h1><p>套接字编程有两个主要的库:gen_tcp用于编写TCP应用程序，gen_udp用于编写UDP应用 程序。</p>
+<h2 id="客户端程序"><a href="#客户端程序" class="headerlink" title="客户端程序"></a>客户端程序</h2><p>先来整个Demo看看</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token comment">%%%-------------------------------------------------------------------</span>
+<span class="token comment">%%% @author mac</span>
+<span class="token comment">%%% @copyright (C) 2022, &lt;COMPANY&gt;</span>
+<span class="token comment">%%% @doc</span>
+<span class="token comment">%%%</span>
+<span class="token comment">%%% @end</span>
+<span class="token comment">%%% Created : 03. 8月 2022 21:42</span>
+<span class="token comment">%%%-------------------------------------------------------------------</span>
+<span class="token operator">-</span><span class="token function">module</span><span class="token punctuation">(</span><span class="token atom">kc_socket_client</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+<span class="token operator">-</span><span class="token function">author</span><span class="token punctuation">(</span><span class="token string">"mac"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token comment">%% API</span>
+<span class="token operator">-</span><span class="token function">export</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token atom">get_url</span><span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token function">get_url</span><span class="token punctuation">(</span><span class="token variable">Host</span><span class="token punctuation">,</span> <span class="token variable">Port</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+<span class="token comment">%%   binary参数:告诉系统要以“二进制”模式打开套接字，并把所有数据用二进制型传 给应用程序。</span>
+<span class="token comment">%%  {packet,0}的意思是把未经修改的TCP数据直接传给应用程序。</span>
+  <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span> <span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token variable">Host</span><span class="token punctuation">,</span> <span class="token variable">Port</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token atom">binary</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">packet</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token comment">%%  发送给套接字，然后等待回</span>
+  <span class="token atom">ok</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">,</span> <span class="token string">"GET / HTTP /1.0\r\n\r\n"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token function">receive_data</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+<span class="token function">receive_data</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">,</span> <span class="token variable">SoFar</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+  <span class="token keyword">receive</span>
+<span class="token comment">%%    第三个参数是一个二进制型，原因是打开 套接字时使用了二进制模式</span>
+    <span class="token punctuation">{</span><span class="token atom">tcp</span><span class="token punctuation">,</span> <span class="token variable">Socket</span><span class="token punctuation">,</span> <span class="token variable">Bin</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+      <span class="token function">receive_data</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Bin</span> <span class="token punctuation">|</span> <span class="token variable">SoFar</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">{</span><span class="token atom">tcp_closed</span><span class="token punctuation">,</span> <span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+<span class="token comment">%%  tcp_closed这会在服务器完成数据发送时发生</span>
+<span class="token comment">%%  当所有片段都到达后，因为它们的保存顺序是错误的，所以反转reverser它们并连接所有片段</span>
+      <span class="token function">list_to_binary</span><span class="token punctuation">(</span><span class="token atom">lists</span><span class="token punctuation">:</span><span class="token function">reverse</span><span class="token punctuation">(</span><span class="token variable">SoFar</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">end</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="碎片问题："><a href="#碎片问题：" class="headerlink" title="碎片问题："></a>碎片问题：</h2><p>TCP套接字数据只不过是一个无差别的字节流。这些数据在传输过程中可以被打散成任意大小的片段，所以需要事先约定，这样才能知道多少数据代表一个请求或响应。</p>
+<p>在Erlang里使用了一种简单的约定，即每个逻辑请求或响应前面都会有一个N(1、2或4) 字节的长度计数。这就是gen_tcp:connect和gen_tcp:listen函数里参数{packet, N}的意思。<br>packet这个词在这里指的是应用程序请求或响应消息的长度，而不是网络上的实际数据包。需要 注意的是，客户端和服务器使用的packet参数必须一致。如果启动服务器时用了{packet,2}， 客户端用了{packet,4}，程序就会失败。用{packet,N}选项打开一个套接字后，无需担心数据碎片的问题。Erlang驱动会确保所有 13 碎片化的数据消息首先被重组成正确的长度，然后才会传给应用程序。</p>
+<h2 id="数据的编码与解码"><a href="#数据的编码与解码" class="headerlink" title="数据的编码与解码"></a>数据的编码与解码</h2><p>数据编码和解码。我们将用最简单的方式来编码和解码消息，也就是 用term_to_binary编码Erlang数据类型，然后用它的逆函数binary_to_term解码数据。</p>
+<p>请注意，客户端与服务器通信所需的打包约定和编码规则是由两行代码实现的，第一行是在 打开套接字时使用{packet,4}选项，第二行是用term_to_binary和它的逆函数来编码与解码数 据。<br>相比HTTP或XML这些基于文本的方法，打包和编码Erlang数据的便利性给了我们很大的优 势。使用Erlang内置函数term_to_binary和它的逆函数binary_to_term通常会比用XML数据的 同类操作快不止一个数量级，而且发送的数据也会少很多</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token comment">%%%-------------------------------------------------------------------</span>
+<span class="token comment">%%% @author mac</span>
+<span class="token comment">%%% @copyright (C) 2022, &lt;COMPANY&gt;</span>
+<span class="token comment">%%% @doc</span>
+<span class="token comment">%%%</span>
+<span class="token comment">%%% @end</span>
+<span class="token comment">%%% Created : 04. 8月 2022 21:46</span>
+<span class="token comment">%%%-------------------------------------------------------------------</span>
+<span class="token operator">-</span><span class="token function">module</span><span class="token punctuation">(</span><span class="token atom">kc_socket_server</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+<span class="token operator">-</span><span class="token function">author</span><span class="token punctuation">(</span><span class="token string">"mac"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token comment">%% API</span>
+<span class="token operator">-</span><span class="token function">export</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token atom">start_server</span><span class="token operator">/</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token function">start_server</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+  <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span> <span class="token variable">Listen</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token number">2345</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token atom">binary</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">packet</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">reuseaddr</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">active</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span> <span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">accept</span><span class="token punctuation">(</span><span class="token variable">Listen</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token variable">Listen</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+  <span class="token keyword">receive</span>
+    <span class="token punctuation">{</span><span class="token atom">tcp</span><span class="token punctuation">,</span> <span class="token variable">Socket</span><span class="token punctuation">,</span> <span class="token variable">Bin</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+      <span class="token atom">io</span><span class="token punctuation">:</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"Server receive binary = ~p~n"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Bin</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token variable">Str</span> <span class="token operator">=</span> <span class="token function">binary_to_term</span><span class="token punctuation">(</span><span class="token variable">Bin</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token atom">io</span><span class="token punctuation">:</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"Server （unpacked) ~p~n"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Str</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token variable">Reply</span> <span class="token operator">=</span> <span class="token atom">lib_misc</span><span class="token punctuation">:</span><span class="token function">string2value</span><span class="token punctuation">(</span><span class="token variable">Str</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token atom">io</span><span class="token punctuation">:</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"Server replying = ~p~n"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Reply</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">,</span> <span class="token function">term_to_binary</span><span class="token punctuation">(</span><span class="token variable">Reply</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">{</span><span class="token atom">tcp_closed</span><span class="token punctuation">,</span> <span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+      <span class="token atom">io</span><span class="token punctuation">:</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"Server socket closed ~n"</span><span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<ul>
+<li>{packet, 4}的意思是每个应用程序消息前部都有一个4字节的长度包头。然后gen_tcp:listen(..)会返 回{ok, Listen}或{error, Why}，但我们只关心能够打开套接字的返回值</li>
+<li>现在调用gen_tcp:accept(Listen)。在这个阶段，程序会挂起并等待一个连接。当我们收到连接时，这个函数就会返回变量Socket，它绑定了可以与连接客户端通信的套接字。</li>
+<li>在accept返回后立即调用gen_tcp:close(Listen)。这样就关闭了监听套接字，使服务器不再接收任何新连接。这么做不会影响现有连接，只会阻止新连接。</li>
+<li>解码输入数据(解编)。</li>
+<li>然后执行字符串。</li>
+<li>然后编码回复数据(编组)并把它发回套接字。</li>
+</ul>
+<h2 id="连接服务端的客户端代码："><a href="#连接服务端的客户端代码：" class="headerlink" title="连接服务端的客户端代码："></a>连接服务端的客户端代码：</h2><pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token comment">%%%-------------------------------------------------------------------</span>
+<span class="token comment">%%% @author mac</span>
+<span class="token comment">%%% @copyright (C) 2022, &lt;COMPANY&gt;</span>
+<span class="token comment">%%% @doc</span>
+<span class="token comment">%%%</span>
+<span class="token comment">%%% @end</span>
+<span class="token comment">%%% Created : 04. 8月 2022 22:06</span>
+<span class="token comment">%%%-------------------------------------------------------------------</span>
+<span class="token operator">-</span><span class="token function">module</span><span class="token punctuation">(</span><span class="token atom">kc_connect_server</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+<span class="token operator">-</span><span class="token function">author</span><span class="token punctuation">(</span><span class="token string">"mac"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token comment">%% API</span>
+<span class="token operator">-</span><span class="token function">export</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token atom">send</span><span class="token operator">/</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token function">send</span><span class="token punctuation">(</span><span class="token variable">Str</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+  <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span> <span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token string">"localhost"</span><span class="token punctuation">,</span> <span class="token number">2345</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token atom">binary</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token atom">packet</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token atom">ok</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">,</span> <span class="token function">term_to_binary</span><span class="token punctuation">(</span><span class="token variable">Str</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">receive</span>
+    <span class="token punctuation">{</span><span class="token atom">tcp</span><span class="token punctuation">,</span> <span class="token variable">Socket</span><span class="token punctuation">,</span> <span class="token variable">Bin</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+      <span class="token atom">io</span><span class="token punctuation">:</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"client received binary ~p~n"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Bin</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token variable">Val</span> <span class="token operator">=</span> <span class="token function">binary_to_term</span><span class="token punctuation">(</span><span class="token variable">Bin</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token atom">io</span><span class="token punctuation">:</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"client result =~p~n"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">Val</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span>
+  <span class="token keyword">end</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h2 id="顺序服务器模型和并行服务器模型编程"><a href="#顺序服务器模型和并行服务器模型编程" class="headerlink" title="顺序服务器模型和并行服务器模型编程"></a>顺序服务器模型和并行服务器模型编程</h2><ul>
+<li>顺序服务器一次只接收一个连接</li>
+<li>并行服务器同时接收多个连接</li>
+</ul>
+<h2 id="主动和被动套接字"><a href="#主动和被动套接字" class="headerlink" title="主动和被动套接字"></a>主动和被动套接字</h2><p>Erlang的套接字可以有三种打开模式:</p>
+<ul>
+<li>主动(active)、</li>
+<li>单次主动(active once)</li>
+<li>被动(passive)。</li>
+</ul>
+<p>通过在gen_tcp:connect(Address, Port, Options)或gen_tcp:listen(Port, Options) 的Options参数里加入{active, true | false | once}选项实现的。</p>
+<p>指定{active, true}就会创建一个主动套接字，指定{active, false}则是被动套接 字。{active, once}创建的套接字只会主动接收一个消息，接收完之后必须重新启用才能接收 下一个消息。</p>
+<p><strong>主动套接字</strong>：<br>当一个主动套接字被创建后，它会在收到数据时向控制进程发送{tcp, Socket, Data}消息。控制进程无法控制这些消息流。恶意的客户端可以向系统发送成千上万的消息，而它们都会被发往控制进程。控制进程无法阻止这些消息流。</p>
+<p><strong>被动套接字</strong><br>如果一个套接字是用被动模式打开的，控制进程就必须调用gen_tcp:recv(Socket, N)<br>来从这个套接字接收数据。然后它会尝试从套接字接收N个字节。如果N = 0，套接字就 会返回所有可用的字节。在这个案例里，服务器可以通过选择何时调用gen_tcp:recv来 控制客户端所发的消息流。</p>
+<p>我们可以用三种方式编写服 务器的消息接收循环。</p>
+<ul>
+<li>主动消息接收(非阻塞式)</li>
+<li>被动消息接收(阻塞式)</li>
+<li>混合消息接收(部分阻塞式)</li>
+</ul>
+<h3 id="主动消息接收-非阻塞式"><a href="#主动消息接收-非阻塞式" class="headerlink" title="主动消息接收(非阻塞式)"></a>主动消息接收(非阻塞式)</h3><pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span><span class="token variable">Listen</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token variable">Port</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">{</span><span class="token atom">active</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">}</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+ <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">accept</span><span class="token punctuation">(</span><span class="token variable">Listen</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token variable">Loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+<span class="token variable">Loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span>
+<span class="token keyword">receive</span>
+<span class="token punctuation">{</span><span class="token atom">tcp</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">,</span><span class="token variable">Data</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+<span class="token comment">%%对数据进行操作 </span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">{</span><span class="token atom">tcp_closed</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+<span class="token comment">%%%%</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token keyword">end</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这个进程无法控制通往服务器循环的消息流。如果客户端生成数据的速度快于服务器处理数 据的速度，系统就会遭受数据洪流的冲击:消息缓冲区会被塞满，系统可能会崩溃或表现异常。这种类型的服务器被称为非阻塞式服务器，因为它无法阻挡客户端。只有在确信服务器能跟上客户端的需求时才会编写非阻塞式服务器。</p>
+<h3 id="被动消息接收-阻塞式"><a href="#被动消息接收-阻塞式" class="headerlink" title="被动消息接收(阻塞式)"></a>被动消息接收(阻塞式)</h3><p>将编写一个阻塞式服务器。这个服务器通过设置{active, false}选项 用被动模式打开套接字。这个服务器不会因为某个过激的客户端试图用过量数据冲击它而崩溃。服务器循环里的代码会在每次想要接收数据时调用gen_tcp:recv。客户端会一直被阻塞， 直到服务器调用recv为止。请注意，操作系统有自己的缓冲设置，即使没有调用recv，客户端 也能在阻塞前发送少量数据。</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span><span class="token variable">Listen</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token variable">Port</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">{</span><span class="token atom">active</span><span class="token punctuation">,</span><span class="token boolean">false</span><span class="token punctuation">}</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">)</span> 
+<span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">accept</span><span class="token punctuation">(</span><span class="token variable">Listen</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token variable">Loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+<span class="token variable">Loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span>
+<span class="token keyword">case</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">recv</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">,</span><span class="token variable">N</span><span class="token punctuation">)</span><span class="token keyword">of</span>
+<span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span><span class="token variable">B</span><span class="token punctuation">}</span><span class="token operator">-</span><span class="token operator">&gt;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span> 对数据进行操作···
+    <span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">{</span><span class="token atom">error</span><span class="token punctuation">,</span><span class="token atom">closed</span><span class="token punctuation">}</span>
+<span class="token keyword">end</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当我们处于被动模式时， 只能等待来自单个套接字的数据。这对于编写那些必须等待来自多个套接字数据的服务器来说毫 无用处。</p>
+<h3 id="混合消息接收-部分阻塞式"><a href="#混合消息接收-部分阻塞式" class="headerlink" title="混合消息接收(部分阻塞式)"></a>混合消息接收(部分阻塞式)</h3><p>幸运的是，我们可以采用一种混合方式，既不是阻塞也不是非阻塞。用{active, once}选 项打开套接字。套接字在这个模式下虽然是主动的，但只针对一个消息。当控制进程收到一个消 息后，必须显式调用inet:setopts才能重启下一个消息的接收，在此之前系统会处于阻塞状态。 这种方法集合了前两种模式的优点，它的代码如下:</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span><span class="token variable">Listen</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token variable">Port</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">{</span><span class="token atom">active</span><span class="token punctuation">,</span><span class="token atom">once</span><span class="token punctuation">}</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">)</span> 
+<span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_tcp</span><span class="token punctuation">:</span><span class="token function">accept</span><span class="token punctuation">(</span><span class="token variable">Listen</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+    <span class="token keyword">receive</span>
+        <span class="token punctuation">{</span><span class="token atom">tcp</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">,</span><span class="token variable">Data</span><span class="token punctuation">}</span><span class="token operator">-</span><span class="token operator">&gt;</span>
+            <span class="token comment">%% ··对数据进行操作</span>
+            <span class="token comment">%%当你准备好启动下一个消息的接收时</span>
+        <span class="token atom">inet</span><span class="token punctuation">:</span><span class="token function">setopts</span><span class="token punctuation">(</span><span class="token variable">Sock</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token atom">active</span><span class="token punctuation">,</span><span class="token atom">once</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">{</span><span class="token atom">tcp_closed</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+<span class="token keyword">end</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>通过使用{active, once}选项，用户可以实现高级形式的流量控制(有时被称为流量整形)， 从而防止服务器被过多消息淹没。</p>
+<h3 id="找出连接的来源"><a href="#找出连接的来源" class="headerlink" title="找出连接的来源"></a>找出连接的来源</h3><p>假设编写了某种在线服务器，并且发现有人持续向网站发送垃圾信息。为了尽量防止这 种事发生，我们需要知道连接的来源。可以调用inet:peername(Socket)进行查看</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang">@<span class="token atom">spec</span> <span class="token atom">inet</span><span class="token punctuation">:</span><span class="token function">peername</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token variable">IP_Address</span><span class="token punctuation">,</span> <span class="token variable">Port</span><span class="token punctuation">}</span><span class="token punctuation">}</span> <span class="token punctuation">|</span> <span class="token punctuation">{</span><span class="token atom">error</span><span class="token punctuation">,</span> <span class="token variable">Why</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>它会返回连接另一端的IP地址和端口号，这样服务器就能看到是谁发起的连接。IP_Address 是一个由整数组成的元组，{N1,N2,N3,N4}代表IPv4地址，{K1,K2,K3,K4,K5,K6,K7,K8}代 表IPv6地址。这里的Ni是0到255之间的整数，Ki是0到65535之间的整数。</p>
+<h2 id="最简单的UDP服务器与客户端"><a href="#最简单的UDP服务器与客户端" class="headerlink" title="最简单的UDP服务器与客户端"></a>最简单的UDP服务器与客户端</h2><pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token function">server</span><span class="token punctuation">(</span><span class="token variable">Port</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span>
+<span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_udp</span><span class="token punctuation">:</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token variable">Port</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token atom">binary</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+
+<span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+    <span class="token keyword">receive</span>
+        <span class="token punctuation">{</span><span class="token atom">udp</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">,</span><span class="token variable">Host</span><span class="token punctuation">,</span><span class="token variable">Port</span><span class="token punctuation">,</span><span class="token variable">Bin</span><span class="token punctuation">}</span><span class="token operator">-</span>
+            <span class="token variable">BinRepty</span> <span class="token operator">=</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+            <span class="token atom">gen_udp</span><span class="token punctuation">:</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">,</span><span class="token variable">Host</span><span class="token punctuation">,</span><span class="token variable">Port</span><span class="token punctuation">,</span><span class="token variable">BinReply</span><span class="token punctuation">)</span> 
+            <span class="token function">loop</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span>
+<span class="token keyword">end</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这比TCP程序要容易一些，因为无需担心如何让进程接收“套接字关闭”的消息。请注意， 我们用binary模式打开了套接字，它告诉驱动要把所有消息以二进制数据的形式发送给控制进程。<br>接下来是客户端。这里有一个非常简单的客户端。它只是打开一个UDP套接字，向服务器发 送一个消息，等待回复(或者超时)，然后关闭套接字并返回服务器的返回值。</p>
+<pre class="line-numbers language-erlang" data-language="erlang"><code class="language-erlang"><span class="token function">client</span><span class="token punctuation">(</span><span class="token variable">Request</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span>
+    <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token atom">gen_udp</span><span class="token punctuation">:</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token atom">binary</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token atom">ok</span>  <span class="token operator">=</span> <span class="token atom">gen_udp</span><span class="token punctuation">:</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">,</span><span class="token string">"Localhost"</span><span class="token punctuation">,</span><span class="token number">4000</span><span class="token punctuation">,</span><span class="token variable">Request</span><span class="token punctuation">)</span>
+    <span class="token variable">Value</span> <span class="token operator">=</span> <span class="token keyword">receive</span>
+        <span class="token punctuation">{</span><span class="token atom">udp</span><span class="token punctuation">,</span><span class="token variable">Socket</span><span class="token punctuation">,</span><span class="token variable">_</span><span class="token punctuation">,</span><span class="token variable">_</span><span class="token punctuation">,</span><span class="token variable">Bin</span><span class="token punctuation">}</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+            <span class="token punctuation">{</span><span class="token atom">ok</span><span class="token punctuation">,</span><span class="token variable">Bin</span><span class="token punctuation">}</span>
+        <span class="token keyword">after</span> <span class="token number">2000</span><span class="token operator">-</span><span class="token operator">&gt;</span>
+            <span class="token atom">error</span>
+        <span class="token keyword">end</span><span class="token punctuation">,</span>
+    <span class="token atom">gen_udp</span><span class="token punctuation">:</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token variable">Socket</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token variable">Value</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>必须设置一个超时，因为UDP是不可靠的，我们可能会得不到回复。</p>
+<p>要注意的是，因为UDP是一种无连接协议，所以服务器无法通过拒绝读取来自某个客户端的 数据来阻挡它。服务器对谁是客户端一无所知。<br>大型UDP数据包可能会分段通过网络。当UDP数据经过网络上的路由器时，如果数据大小超 过了路由器允许的最大传输单元(Maximum Transfer Unit，简称MTU)大小，分段就会发生。通 常的建议是在调整UDP网络时从一个较小的数据包大小开始(比如大约500字节)，然后逐步增大 并测量吞吐量。如果吞吐量在某个时刻骤减，你就知道数据包太大了。<br>UDP数据包可以传输两次(这出乎一些人的意料之外)，所以在编写远程过程调用代码时一 定要小心。第二次查询得到的回复可能只是第一次查询回复的复制。为防止这类问题，可以修改 客户端代码来加入一个唯一的引用，然后检查服务器是否返回了这个引用。要生成一个唯一的引 用，需要调用Erlang的内置函数make_ref，它能确保返回一个全局唯一的引用。远程过程调用的 代码现在看起来就像这样:</p>
+<pre class="line-numbers language-none"><code class="language-none">client(Request)-&gt;
+    {ok,Socket} = gen_udp:open(0,[binary]),
+    Ref=make_ref（），%生成一个唯一的引用
+    B1 = term_to_binary({Ref,Request}),
+    ok = gen_udp:send(Socket,"localhost",4000,B1), 
+    wait_for_ref(Socket,Ref).
+
+wait_for_ref(Socket,Ref)-&gt;
+    receive
+        {udp,Socket,_,_,Bin}-
+        case binary_to_term(Bin)of
+            {Ref,Val}-
+        %%得到的是正确值
+                Val;
+            {_SomeOtherRef,}-&gt;
+        %%其他值则丢弃
+            wait_for_ref(Socket,Ref)
+        end;
+    after 1000-&gt;
+end.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>以上就是UDP的相关介绍。UDP经常用于有低延迟要求的在线游戏，对它们来说是否偶尔丢 包则无关紧要。</p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/Erlang/" rel="tag">Erlang<span class="tag-unordered list-count">10</span></a>, <a class="tag-unordered list-link" href="/tags/Erlang%E5%A5%97%E6%8E%A5%E5%AD%97/" rel="tag">Erlang套接字<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/Erlang%E8%AF%AD%E6%B3%95/" rel="tag">Erlang语法<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/%E5%A5%97%E6%8E%A5%E5%AD%97/" rel="tag">套接字<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程<span class="tag-unordered list-count">1</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/09/07/erlang/3-erlang-fen-bu-shi-bian-cheng/"> 3-Erlang分布式编程思想</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/"> 5-Erlang KEY VALUE数据存储 ETS</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918074">
+<link rel="stylesheet" href="/css/style.css?v=1662168973102">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918074"></script>
+<script src="/js/core.js?v=1662168973102"></script>
 
 
 
@@ -48,149 +48,475 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>【Linux】-2-内存问题排查常用命令</h1>
+			<div class="info"><span class="date">2016年9月7日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Linux/">Linux</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/linux/problem/2-linux内存相关命令.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="2-内存问题排查常用命令"><a href="#2-内存问题排查常用命令" class="headerlink" title="2-内存问题排查常用命令"></a>2-内存问题排查常用命令</h1><h2 id="free"><a href="#free" class="headerlink" title="free"></a>free</h2><p>free命令用来查看内存信息 先来看下帮助文档,可以看到free命令是一个用来展示内存剩余量和使用量的命令</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@iZ8lgm9icspkthZ ~<span class="token punctuation">]</span><span class="token comment"># man free &gt; 1.txt</span>
+<span class="token punctuation">[</span>root@iZ8lgm9icspkthZ ~<span class="token punctuation">]</span><span class="token comment"># cat 1.txt</span>
+FREE<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>                                                      User Commands                                                      FREE<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+NAME
+       <span class="token function">free</span> - Display amount of <span class="token function">free</span> and used memory <span class="token keyword">in</span> the system
+
+SYNOPSIS
+       <span class="token function">free</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span>
+
+DESCRIPTION
+       <span class="token function">free</span>  displays  the total amount of <span class="token function">free</span> and used physical and swap memory <span class="token keyword">in</span> the system, as well as the buffers and caches used
+       by the kernel. The information is gathered by parsing /proc/meminfo. The displayed columns are:
+
+       total  Total installed memory <span class="token punctuation">(</span>MemTotal and SwapTotal <span class="token keyword">in</span> /proc/meminfo<span class="token punctuation">)</span>
+
+       used   Used memory <span class="token punctuation">(</span>calculated as total - <span class="token function">free</span> - buffers - cache<span class="token punctuation">)</span>
+
+       <span class="token function">free</span>   Unused memory <span class="token punctuation">(</span>MemFree and SwapFree <span class="token keyword">in</span> /proc/meminfo<span class="token punctuation">)</span>
+
+       shared Memory used <span class="token punctuation">(</span>mostly<span class="token punctuation">)</span> by tmpfs <span class="token punctuation">(</span>Shmem <span class="token keyword">in</span> /proc/meminfo<span class="token punctuation">)</span>
+
+       buffers
+              Memory used by kernel buffers <span class="token punctuation">(</span>Buffers <span class="token keyword">in</span> /proc/meminfo<span class="token punctuation">)</span>
+
+       cache  Memory used by the page cache and slabs <span class="token punctuation">(</span>Cached and SReclaimable <span class="token keyword">in</span> /proc/meminfo<span class="token punctuation">)</span>
+
+       buff/cache
+              Sum of buffers and cache
+
+       available
+              Estimation of how much memory is available <span class="token keyword">for</span> starting new applications, without swapping. Unlike the data  provided  by
+              the cache or <span class="token function">free</span> fields, this field takes into account page cache and also that not all reclaimable memory slabs will be
+              reclaimed due to items being <span class="token keyword">in</span> use <span class="token punctuation">(</span>MemAvailable <span class="token keyword">in</span> /proc/meminfo,  available  on  kernels  <span class="token number">3.14</span>,  emulated  on  kernels
+              <span class="token number">2.6</span>.27+, otherwise the same as <span class="token function">free</span><span class="token punctuation">)</span>
+
+OPTIONS
+       -b, --bytes
+              Display the amount of memory <span class="token keyword">in</span> bytes.
+
+       -k, --kibi
+              Display the amount of memory <span class="token keyword">in</span> kibibytes.  This is the default.
+
+       -m, --mebi
+              Display the amount of memory <span class="token keyword">in</span> mebibytes.
+
+       -g, --gibi
+              Display the amount of memory <span class="token keyword">in</span> gibibytes.
+
+       --tebi Display the amount of memory <span class="token keyword">in</span> tebibytes.
+
+       --pebi Display the amount of memory <span class="token keyword">in</span> pebibytes.
+
+       --kilo Display the amount of memory <span class="token keyword">in</span> kilobytes. Implies --si.
+
+       --mega Display the amount of memory <span class="token keyword">in</span> megabytes. Implies --si.
+
+       --giga Display the amount of memory <span class="token keyword">in</span> gigabytes. Implies --si.
+
+       --tera Display the amount of memory <span class="token keyword">in</span> terabytes. Implies --si.
+
+       --peta Display the amount of memory <span class="token keyword">in</span> petabytes. Implies --si.
+
+       -h, --human
+              Show  all  output fields automatically scaled to shortest three digit unit and display the <span class="token function">units</span> of print out.  Following
+              <span class="token function">units</span> are used.
+
+                B <span class="token operator">=</span> bytes
+                K <span class="token operator">=</span> kibibyte
+                M <span class="token operator">=</span> mebibyte
+                G <span class="token operator">=</span> gibibyte
+                T <span class="token operator">=</span> tebibyte
+                P <span class="token operator">=</span> pebibyte
+
+              If unit is missing, and you have exbibyte of RAM or swap, the number is <span class="token keyword">in</span> tebibytes and columns  might  not  be  aligned
+              with header.
+
+       -w, --wide
+              Switch  to  the  wide  mode.  The  wide mode produces lines longer than <span class="token number">80</span> characters. In this mode buffers and cache are
+              reported <span class="token keyword">in</span> two separate columns.
+
+       -c, --count count
+              Display the result count times.  Requires the -s option.
+
+       -l, --lohi
+              Show detailed low and high memory statistics.
+
+       -s, --seconds delay
+              Continuously display the result delay  seconds apart.  You may actually specify any floating point number <span class="token keyword">for</span> delay using
+              either <span class="token builtin class-name">.</span> or , <span class="token keyword">for</span> decimal point.  usleep<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span> is used <span class="token keyword">for</span> microsecond resolution delay times.
+
+       --si   Use kilo, mega, giga etc <span class="token punctuation">(</span>power of <span class="token number">1000</span><span class="token punctuation">)</span> instead of kibi, mebi, gibi <span class="token punctuation">(</span>power of <span class="token number">1024</span><span class="token punctuation">)</span>.
+
+       -t, --total
+              Display a line showing the <span class="token function">column</span> totals.
+
+       --help Print help.
+
+       -V, --version
+              Display version information.
+
+FILES
+       /proc/meminfo
+              memory information
+
+BUGS
+       The value <span class="token keyword">for</span> the shared <span class="token function">column</span> is not available from kernels before <span class="token number">2.6</span>.32 and is displayed as zero.
+
+       Please send bug reports to
+              ⟨procps@freelists.org⟩
+
+SEE ALSO
+       ps<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>, slabtop<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>, top<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>, vmstat<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>.
+
+procps-ng                                                      <span class="token number">2016</span>-06-03                                                       FREE<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>可以看到free命令可以用来展示内存相关的信息比如空闲内存和已用内存，这些内存的详细信息包含了：</p>
+<p>物理内存，swap内存，buffers和caches。 这些主要来源于/proc/meminfo 我们也可以通过cat /proc/meminfo来查询详细的内容。</p>
+<p>我们可以通过各种参数来查询内存使用情况：</p>
+<p>这里分别以free -m和free -h命令为例：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@iZ8lgm9icspkthZ ~<span class="token punctuation">]</span><span class="token comment"># free -m</span>
+              total        used        <span class="token function">free</span>      shared  buff/cache   available
+Mem:           <span class="token number">3626</span>        <span class="token number">1664</span>         <span class="token number">170</span>          <span class="token number">42</span>        <span class="token number">1791</span>        <span class="token number">1672</span>
+Swap:             <span class="token number">0</span>           <span class="token number">0</span>           <span class="token number">0</span>
+<span class="token punctuation">[</span>root@iZ8lgm9icspkthZ ~<span class="token punctuation">]</span><span class="token comment"># free -h</span>
+              total        used        <span class="token function">free</span>      shared  buff/cache   available
+Mem:          <span class="token number">3</span>.5Gi       <span class="token number">1</span>.6Gi       168Mi        42Mi       <span class="token number">1</span>.7Gi       <span class="token number">1</span>.6Gi
+Swap:            0B          0B          0B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>关于每个字段更详细的解释可以看下man free命令的英文说明文档</p>
+<p>Buffers 是内核缓冲区用到的内存，对应的是 /proc/meminfo 中的 Buffers 值。<br>Cache 是内核页缓存和 Slab 用到的内存，对应的是 /proc/meminfo 中的 Cached 与 SReclaimable 之和。</p>
+<p>cache一般用于文件的读写缓存</p>
+<p>buffers一般用于磁盘的读写缓存</p>
+<p>关于cat /proc/meminfo 信息如下所示：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>root@iZ8lgm9icspkthZ ~<span class="token punctuation">]</span><span class="token comment"># cat /proc/meminfo</span>
+MemTotal:        <span class="token number">3713912</span> kB
+MemFree:          <span class="token number">173840</span> kB
+MemAvailable:    <span class="token number">1710764</span> kB
+Buffers:              <span class="token number">12</span> kB
+Cached:          <span class="token number">1733312</span> kB
+SwapCached:            <span class="token number">0</span> kB
+Active:          <span class="token number">2291788</span> kB
+Inactive:         <span class="token number">946400</span> kB
+Active<span class="token punctuation">(</span>anon<span class="token punctuation">)</span>:    <span class="token number">1507772</span> kB
+Inactive<span class="token punctuation">(</span>anon<span class="token punctuation">)</span>:    <span class="token number">40508</span> kB
+Active<span class="token punctuation">(</span>file<span class="token punctuation">)</span>:     <span class="token number">784016</span> kB
+Inactive<span class="token punctuation">(</span>file<span class="token punctuation">)</span>:   <span class="token number">905892</span> kB
+Unevictable:           <span class="token number">0</span> kB
+Mlocked:               <span class="token number">0</span> kB
+SwapTotal:             <span class="token number">0</span> kB
+SwapFree:              <span class="token number">0</span> kB
+Dirty:               <span class="token number">152</span> kB
+Writeback:             <span class="token number">0</span> kB
+AnonPages:       <span class="token number">1496880</span> kB
+Mapped:           <span class="token number">341156</span> kB
+Shmem:             <span class="token number">43416</span> kB
+KReclaimable:     <span class="token number">100896</span> kB
+Slab:             <span class="token number">213400</span> kB
+SReclaimable:     <span class="token number">100896</span> kB
+SUnreclaim:       <span class="token number">112504</span> kB
+KernelStack:       <span class="token number">14336</span> kB
+PageTables:        <span class="token number">18688</span> kB
+NFS_Unstable:          <span class="token number">0</span> kB
+Bounce:                <span class="token number">0</span> kB
+WritebackTmp:          <span class="token number">0</span> kB
+CommitLimit:     <span class="token number">1856956</span> kB
+Committed_AS:    <span class="token number">8273752</span> kB
+VmallocTotal:   <span class="token number">34359738367</span> kB
+VmallocUsed:           <span class="token number">0</span> kB
+VmallocChunk:          <span class="token number">0</span> kB
+Percpu:             <span class="token number">8624</span> kB
+HardwareCorrupted:     <span class="token number">0</span> kB
+AnonHugePages:    <span class="token number">741376</span> kB
+ShmemHugePages:        <span class="token number">0</span> kB
+ShmemPmdMapped:        <span class="token number">0</span> kB
+HugePages_Total:       <span class="token number">0</span>
+HugePages_Free:        <span class="token number">0</span>
+HugePages_Rsvd:        <span class="token number">0</span>
+HugePages_Surp:        <span class="token number">0</span>
+Hugepagesize:       <span class="token number">2048</span> kB
+Hugetlb:               <span class="token number">0</span> kB
+DirectMap4k:      <span class="token number">697016</span> kB
+DirectMap2M:     <span class="token number">3348480</span> kB
+DirectMap1G:           <span class="token number">0</span> kB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="top"><a href="#top" class="headerlink" title="top"></a>top</h2><p>关于top命令就非常强大了，这里仅仅通过man top来查看文档，然后抽取到关于内存信息的内容如下：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Linux Memory Types
+       For  our purposes there are three types of memory, and one is optional.  First is physical memory, a limited resource where code
+       and data must reside when executed or referenced.  Next is the optional swap file, where modified <span class="token punctuation">(</span>dirty<span class="token punctuation">)</span> memory  can  be  saved
+       and later retrieved <span class="token keyword">if</span> too many demands are made on physical memory.  Lastly we have virtual memory, a nearly unlimited resource
+       serving the following goals:
+
+          <span class="token number">1</span>. abstraction, <span class="token function">free</span> from physical memory addresses/limits
+          <span class="token number">2</span>. isolation, every process <span class="token keyword">in</span> a separate address space
+          <span class="token number">3</span>. sharing, a single mapping can serve multiple needs
+          <span class="token number">4</span>. flexibility, assign a virtual address to a <span class="token function">file</span>
+
+       Regardless of <span class="token function">which</span> of these forms memory may take, all are managed as pages <span class="token punctuation">(</span>typically <span class="token number">4096</span> bytes<span class="token punctuation">)</span> but expressed by default  <span class="token keyword">in</span>
+       <span class="token function">top</span> as KiB <span class="token punctuation">(</span>kibibyte<span class="token punctuation">)</span>.  The memory discussed under topic <span class="token variable"><span class="token variable">`</span>2c. MEMORY Usage' deals with physical memory and the swap <span class="token function">file</span> <span class="token keyword">for</span> the
+       system as a whole.  The memory reviewed <span class="token keyword">in</span> topic <span class="token variable">`</span></span><span class="token number">3</span>. FIELDS / Columns Display<span class="token string">' embraces all three memory types, but for individ‐
+       ual processes.
+
+       For each such process, every memory page is restricted to a single quadrant from the table below.  Both physical memory and vir‐
+       tual memory can include any of the four, while the swap file only includes #1 through #3.  The memory in quadrant #4, when modi‐
+       fied, acts as its own dedicated swap file.
+
+                                     Private | Shared
+                                 1           |          2
+            Anonymous  . stack               |
+                       . malloc()            |
+                       . brk()/sbrk()        | . POSIX shm*
+                       . mmap(PRIVATE, ANON) | . mmap(SHARED, ANON)
+                      -----------------------+----------------------
+                       . mmap(PRIVATE, fd)   | . mmap(SHARED, fd)
+          File-backed  . pgms/shared libs    |
+                                 3           |          4
+
+       The  following may help in interpreting process level memory values displayed as scalable columns and discussed under topic `3a.
+       DESCRIPTIONS of Fields'</span><span class="token builtin class-name">.</span>
+                 %MEM - simply RES divided by total physical memory
+          CODE - the `pgms' portion of quadrant <span class="token number">3</span>
+          DATA - the entire quadrant <span class="token number">1</span> portion of VIRT plus all
+                 explicit mmap file-backed pages of quadrant <span class="token number">3</span>
+          RES  - anything occupying physical memory which, beginning with
+                 Linux-4.5, is the <span class="token function">sum</span> of the following three fields:
+                 RSan - quadrant <span class="token number">1</span> pages, <span class="token function">which</span> include any
+                        former quadrant <span class="token number">3</span> pages <span class="token keyword">if</span> modified
+                 RSfd - quadrant <span class="token number">3</span> and quadrant <span class="token number">4</span> pages
+                 RSsh - quadrant <span class="token number">2</span> pages
+          RSlk - subset of RES <span class="token function">which</span> cannot be swapped out <span class="token punctuation">(</span>any quadrant<span class="token punctuation">)</span>
+          SHR  - subset of RES <span class="token punctuation">(</span>excludes <span class="token number">1</span>, includes all <span class="token number">2</span> <span class="token operator">&amp;</span> <span class="token number">4</span>, some <span class="token number">3</span><span class="token punctuation">)</span>
+          SWAP - potentially any quadrant except <span class="token number">4</span>
+          USED - simply the <span class="token function">sum</span> of RES and SWAP
+          VIRT - everything in-use and/or reserved <span class="token punctuation">(</span>all quadrants<span class="token punctuation">)</span>
+
+       Note: Even though program images and shared libraries are considered private to a process, they will be accounted <span class="token keyword">for</span> as  shared
+       <span class="token punctuation">(</span>SHR<span class="token punctuation">)</span> by the kernel.
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">2c. MEMORY Usage
+    This portion consists of two lines <span class="token function">which</span> may express values <span class="token keyword">in</span> kibibytes <span class="token punctuation">(</span>KiB<span class="token punctuation">)</span> through exbibytes <span class="token punctuation">(</span>EiB<span class="token punctuation">)</span> depending on the  scaling
+    factor enforced with the <span class="token variable"><span class="token variable">`</span>E' interactive command.
+
+    As a default, Line <span class="token number">1</span> reflects physical memory, classified as:
+        total, free, used and buff/cache
+
+    Line <span class="token number">2</span> reflects mostly virtual memory, classified as:
+        total, free, used and avail <span class="token punctuation">(</span>which is physical memory<span class="token punctuation">)</span>
+
+    The  avail  number  on  line  <span class="token number">2</span>  is  an estimation of physical memory available <span class="token keyword">for</span> starting new applications, without swapping.
+    Unlike the <span class="token function">free</span> field, it attempts to account <span class="token keyword">for</span> readily reclaimable page cache and memory slabs.  It is available  on  kernels
+    <span class="token number">3.14</span>, emulated on kernels <span class="token number">2.6</span>.27+, otherwise the same as free.
+
+    In the alternate memory display modes, two abbreviated summary lines are shown consisting of these elements:
+                   a    b          c
+        GiB Mem <span class="token builtin class-name">:</span> <span class="token number">18.7</span>/15.738   <span class="token punctuation">[</span> <span class="token punctuation">..</span>.
+        GiB Swap:  <span class="token number">0.0</span>/7.999    <span class="token punctuation">[</span> <span class="token punctuation">..</span>.
+
+    Where: a<span class="token punctuation">)</span> is the percentage used<span class="token punctuation">;</span> b<span class="token punctuation">)</span> is the total available<span class="token punctuation">;</span> and c<span class="token punctuation">)</span> is one of two visual graphs of those representations.
+
+    In  the  <span class="token keyword">case</span>  of  physical  memory, the percentage represents the total minus the estimated avail noted above.  The <span class="token variable">`</span></span>Mem<span class="token string">' graph
+    itself is divided between used and any remaining memory not otherwise accounted for by avail.  See topic 4b. SUMMARY  AREA  Com‐
+    mands and the `m'</span> <span class="token builtin class-name">command</span> <span class="token keyword">for</span> additional information on that special <span class="token number">4</span>-way toggle.
+
+    This table may <span class="token builtin class-name">help</span> <span class="token keyword">in</span> interpreting the scaled values displayed:
+        KiB <span class="token operator">=</span> kibibyte <span class="token operator">=</span> <span class="token number">1024</span> bytes
+        MiB <span class="token operator">=</span> mebibyte <span class="token operator">=</span> <span class="token number">1024</span> KiB <span class="token operator">=</span> <span class="token number">1,048</span>,576 bytes
+        GiB <span class="token operator">=</span> gibibyte <span class="token operator">=</span> <span class="token number">1024</span> MiB <span class="token operator">=</span> <span class="token number">1,073</span>,741,824 bytes
+        TiB <span class="token operator">=</span> tebibyte <span class="token operator">=</span> <span class="token number">1024</span> GiB <span class="token operator">=</span> <span class="token number">1,099</span>,511,627,776 bytes
+        PiB <span class="token operator">=</span> pebibyte <span class="token operator">=</span> <span class="token number">1024</span> TiB <span class="token operator">=</span> <span class="token number">1,125</span>,899,906,842,624 bytes
+        EiB <span class="token operator">=</span> exbibyte <span class="token operator">=</span> <span class="token number">1024</span> PiB <span class="token operator">=</span> <span class="token number">1,152</span>,921,504,606,846,976 bytes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="vmstat-1"><a href="#vmstat-1" class="headerlink" title="vmstat  1"></a>vmstat  1</h2><p>使用vmstat 1我们可以每秒打印下数据然后观察一下实时数据</p>
+<pre class="line-numbers language-none"><code class="language-none"># vmstat 1
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 3  0      0 3814360 249352 2314104    0    0     3    13   74   42  4  2 94  0  0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>bi是读磁盘</p>
+<p>bo是写磁盘</p>
+<p>性能优化要注意使用什么性能指标来衡量性能的好坏。</p>
+<p>比如如果是缓存我们可以使用缓存命中率，如果是QPS我们可以使用峰值QPS，响应RTT等</p>
+<p>直接IO虽然可以直接操作磁盘，不过有个坏处就是缓存利用不好</p>
+<p>内核提供的内存是虚拟内存，虚拟内存需要通过页表才能映射到物理内存</p>
+<p>进程首次访问内存通过缺页异常陷入内核分配内存</p>
+<p>栈内存由系统分配和管理，超过局部变量大小就会被回收一般情况下不会产生内存溢出</p>
+<p>堆内存由应用程序自己来分配</p>
+<p>被应用程序修改过还未写到磁盘的数据称为脏页，应用程序中通过系统调用fsync，把脏页同步到内存，也可以交给系统由内核线程pdflush负责脏页的刷新</p>
+<p>swap机制是将不常访问的内存先写入磁盘，然后释放内存，如果这些内存中的数据被访问的时候会将swap中的数据再放入内存。</p>
+<p>swap就是一块磁盘空间或者一个本地文件，swap当成文件来使用时包含两个操作换入和换出</p>
+<p>内存资源紧张的时候Linux通过直接内存回收和定期扫描的方式，来释放文件页和匿名页</p>
+<p>文件页回收：清空磁盘或者脏数据写会磁盘</p>
+<p>匿名页：通过swap换出到磁盘</p>
+<p>提示空间不足但是使用df 查看空间缺失充足的可能是索引节点空间不足需要使用df -i查看</p>
+<p>通过文件查看Cache和Swap</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">cat <span class="token operator">/</span>proc<span class="token operator">/</span>meminfo <span class="token operator">|</span> grep <span class="token operator">-</span><span class="token class-name">E</span> <span class="token string">"SReclaimable|Cached"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p> ![image-20220728080400405](/Users/mac/Library/Application Support/typora-user-images/image-20220728080400405.png)</p>
+<p>![image-20220728080406509](/Users/mac/Library/Application Support/typora-user-images/image-20220728080406509.png)</p>
+<p>![image-20220728080412252](/Users/mac/Library/Application Support/typora-user-images/image-20220728080412252.png)</p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/Linux%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" rel="tag">Linux问题排查<span class="tag-unordered list-count">4</span></a>, <a class="tag-unordered list-link" href="/tags/%E5%86%85%E5%AD%98/" rel="tag">内存<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/%E5%86%85%E5%AD%98%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="tag">内存问题排查常用命令<span class="tag-unordered list-count">1</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2016/09/07/linux/problem/1-cpu-ming-ling-bi-ji/"> 【Linux】-1-CPU问题排查常用命令</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2016/09/07/linux/problem/3-linux-ci-pan-xiang-guan-ming-ling/"> 【Linux】-3-磁盘问题排查常用命令</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

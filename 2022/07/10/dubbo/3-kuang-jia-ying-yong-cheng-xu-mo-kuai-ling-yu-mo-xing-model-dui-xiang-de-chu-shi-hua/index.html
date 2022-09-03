@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918053">
+<link rel="stylesheet" href="/css/style.css?v=1662168973065">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918053"></script>
+<script src="/js/core.js?v=1662168973065"></script>
 
 
 
@@ -48,149 +48,1234 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>03-【Dubbo3.0.8源码解析系列】框架,应用程序,模块领域模型Model对象的初始化</h1>
+			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">Dubbo3源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/3-框架,应用程序,模块领域模型Model对象的初始化.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<p>@<a href="%E7%9B%AE%E5%BD%95">TOC</a></p>
+<h1 id="3-框架-应用程序-模块领域模型Model对象的初始化"><a href="#3-框架-应用程序-模块领域模型Model对象的初始化" class="headerlink" title="3-框架,应用程序,模块领域模型Model对象的初始化"></a>3-框架,应用程序,模块领域模型Model对象的初始化</h1><p>在上一章中我们详细看了服务配置ServiceConfig类型的初始化,不过我们跳过了AbstractMethodConfig的构造器中创建模块模型对象的过程,那这一章我们就来看下模块模型对象的初始化过程:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">AbstractMethodConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token class-name">ApplicationModel</span><span class="token punctuation">.</span><span class="token function">defaultModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDefaultModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><strong>那为什么会在Dubbo3的新版本中加入这个域模型呢</strong>,主要有如下原因<br>之前dubbo都是只有一个作用域的，通过静态类 属性共享<br>增加域模型是为了:</p>
+<ol>
+<li>让Dubbo支持多应用的部署，这块一些大企业有诉求</li>
+<li>从架构设计上，解决静态属性资源共享、清理的问题</li>
+<li>分层模型将应用的管理和服务的管理分开</li>
+</ol>
+<p>可能比较抽象，可以具体点来看Dubbo3中在启动时候需要启动配置中心，元数据中心这个配置中心和元数据中心可以归应用模型来管理，Dubbo作为RPC框架有需要启动服务和引用服务，服务级别的管理就交给了这个模块模型来管理，分层次的管理方便我们理解和处理逻辑，父子级别的模型又方便了数据传递。</p>
+<p>了解过JVM类加载机制的同学应该就比较清楚 JVM类加载过程中的数据访问模型,子类加载器先去父类加载器去找不到则从子类型加载器中查找类型,Dubbo的分层模型类似这样一种机制,这一章先来简单了解下后面用到时候具体细说。</p>
+<h2 id="3-1-模型对象的关系"><a href="#3-1-模型对象的关系" class="headerlink" title="3.1 模型对象的关系"></a>3.1 模型对象的关系</h2><p>为了不增加复杂性,我们这里仅仅列出模型对象类型类型之间的继承关系如下所示:<br><img src="https://img-blog.csdnimg.cn/441d032466a94772aadb3d92b317d768.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5a6L5bCP55Sf55qE5Y2a5a6i,size_16,color_FFFFFF,t_70,g_se,x_16#pic_center" alt="在这里插入图片描述"></p>
+<center>图3.1 模型对象的继承关系</center>
+
+<p>模型对象一共有4个,公共的属性和操作放在了域模型类型中,下面我们来详细说下这几个模型类型:</p>
+<ul>
+<li><p><strong>ExtensionAccessor</strong> 扩展的统一访问器</p>
+<ul>
+<li>用于获取扩展加载管理器ExtensionDirector对象</li>
+<li><strong>获取扩展对象ExtensionLoader</strong></li>
+<li>根据扩展名字<strong>获取具体扩展对象</strong></li>
+<li>获取自适应扩展对象</li>
+<li>获取默认扩展对象</li>
+</ul>
+</li>
+<li><p><strong>ScopeModel</strong> 模型对象的公共抽象父类型</p>
+<ul>
+<li><pre><code>内部id用于表示模型树的层次结构
+</code></pre>
+</li>
+<li>公共模型名称，可以被用户设置</li>
+<li>描述信息</li>
+<li>类加载器管理</li>
+<li>父模型管理parent</li>
+<li>当前模型的所属域ExtensionScope有:<strong>FRAMEWORK(框架)</strong>,<strong>APPLICATION(应用)</strong>,<strong>MODULE(模块)</strong>,<strong>SELF(自给自足</strong>，为每个作用域创建一个实例，用于特殊的SPI扩展，如ExtensionInjector)</li>
+<li>具体的扩展加载程序管理器对象的管理:<strong>ExtensionDirector</strong></li>
+<li>域Bean工厂管理,一个内部共享的Bean工厂<strong>ScopeBeanFactory</strong></li>
+<li>等等</li>
+</ul>
+</li>
+<li><p><strong>FrameworkModel</strong> dubbo框架模型，可与多个应用程序共享</p>
+<ul>
+<li>FrameworkModel实例对象集合,allInstances</li>
+<li>所有ApplicationModel实例对象集合,applicationModels</li>
+<li>发布的ApplicationModel实例对象集合pubApplicationModels</li>
+<li>框架的服务存储库<strong>FrameworkServiceRepository</strong>类型对象(数据存储在内存中)</li>
+<li>内部的应用程序模型对象internalApplicationModel</li>
+</ul>
+</li>
+<li><p><strong>ApplicationModel</strong>  表示正在使用Dubbo的应用程序，并存储基本<strong>元数据信息</strong>，以便在RPC调用过程中使用。<br>ApplicationModel包括许多关于<strong>发布服务</strong>的ProviderModel和许多关于订阅服务的Consumer Model。</p>
+<ul>
+<li>ExtensionLoader、DubboBootstrap和这个类目前被设计为单例或静态（本身完全静态或使用一些静态字段）。因此，从它们返回的实例属于流程范围。如果想在一个进程中支持多个dubbo服务器，可能需要重构这三个类。</li>
+<li><strong>所有ModuleModel实例</strong>对象集合moduleModels</li>
+<li><strong>发布的ModuleModel实例</strong>对象集合pubModuleModels</li>
+<li><strong>环境信息Environment实例</strong>对象environment</li>
+<li><strong>配置管理ConfigManager实例</strong>对象configManager</li>
+<li><strong>服务存储库ServiceRepository实例</strong>对象serviceRepository</li>
+<li><strong>应用程序部署器ApplicationDeployer实例</strong>对象deployer</li>
+<li><strong>所属框架FrameworkModel实例</strong>对象frameworkModel</li>
+<li><strong>内部的模块模型ModuleModel实例</strong>对象internalModule</li>
+<li><strong>默认的模块模型ModuleModel实例</strong>对象defaultModule</li>
+</ul>
+</li>
+<li><p><strong>ModuleModel</strong> 服务模块的模型</p>
+<ul>
+<li><strong>所属应用程序模型ApplicationModel实例</strong>对象applicationModel</li>
+<li><strong>模块环境信息ModuleEnvironment实例</strong>对象moduleEnvironment</li>
+<li><strong>模块服务存储库ModuleServiceRepository实例</strong>对象serviceRepository</li>
+<li><strong>模块的服务配置管理ModuleConfigManager实例</strong>对象moduleConfigManager</li>
+<li><strong>模块部署器ModuleDeployer实例</strong>对象deployer用于导出和引用服务</li>
+</ul>
+</li>
+</ul>
+<p>了解了这几个模型对象的关系我们可以了解到这几个模型对象的管理层级从框架到应用程序,然后到模块的管理(FrameworkModel-&gt;ApplicationModel-&gt;ModuleModel),他们主要用来针对框架,应用程序,模块的<strong>存储</strong>,<strong>发布管理,</strong>,<strong>配置管理</strong></p>
+<p>看来Dubbo3 针对应用服务治理与运维这一块也是在努力尝试.</p>
+<h3 id="3-1-1-AbstractMethodConfig-配置对象中获取模型对象的调用"><a href="#3-1-1-AbstractMethodConfig-配置对象中获取模型对象的调用" class="headerlink" title="3.1.1 AbstractMethodConfig 配置对象中获取模型对象的调用"></a>3.1.1 AbstractMethodConfig 配置对象中获取模型对象的调用</h3><p>模块模型(ModuleModel)参数对象的创建<br>这个AbstractMethodConfig构造器在初始化的时候调调用了这么一行代码做为参数向父类型传递对象.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">ApplicationModel</span><span class="token punctuation">.</span><span class="token function">defaultModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDefaultModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>默认情况下使用ApplicationModel的静态方法获取默认的模型对象和默认的模块对象</p>
+<p><strong>ApplicationModel</strong>(应用程序领域模型)类型中获取默认模型对象的方法:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">ApplicationModel</span> <span class="token function">defaultModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">// should get from default FrameworkModel, avoid out of sync</span>
+       <span class="token keyword">return</span> <span class="token class-name">FrameworkModel</span><span class="token punctuation">.</span><span class="token function">defaultModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">defaultApplication</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里可以看到要想获取应用程序模型必须先通过框架领域模型来获取层级也是框架领域模型到应用程序领域模型</p>
+<h3 id="3-1-2-使用双重校验锁获取框架模型对象"><a href="#3-1-2-使用双重校验锁获取框架模型对象" class="headerlink" title="3.1.2 使用双重校验锁获取框架模型对象"></a>3.1.2 使用双重校验锁获取框架模型对象</h3><p>FrameworkModel(框架模型)的默认模型获取工厂方法defaultModel()</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+* 在源码的注释上有这么一句话:在销毁默认的 FrameworkModel 时， FrameworkModel.defaultModel() 
+*或ApplicationModel.defaultModel() 将返回一个损坏的模型
+*可能会导致不可预知的问题。建议：尽量避免使用默认模型。
+*/</span>
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">FrameworkModel</span> <span class="token function">defaultModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//双重校验锁的形式创建单例对象</span>
+       <span class="token class-name">FrameworkModel</span> instance <span class="token operator">=</span> defaultInstance<span class="token punctuation">;</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>globalLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           	<span class="token comment">//重置默认框架模型</span>
+               <span class="token function">resetDefaultFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span>defaultInstance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   defaultInstance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token punctuation">}</span>
+               instance <span class="token operator">=</span> defaultInstance<span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+       <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> <span class="token string">"Default FrameworkModel is null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="3-1-3-刷新重置默认框架模型对象"><a href="#3-1-3-刷新重置默认框架模型对象" class="headerlink" title="3.1.3 刷新重置默认框架模型对象"></a>3.1.3 刷新重置默认框架模型对象</h3><p>FrameworkModel中的重置默认框架模型resetDefaultFrameworkModel</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">resetDefaultFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//全局悲观锁,同一个时刻只能有一个线程执行重置操作</span>
+      <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>globalLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	<span class="token comment">//defaultInstance为当前成员变量FrameworkModel类型代表当前默认的FrameworkModel类型的实例对象</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>defaultInstance <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>defaultInstance<span class="token punctuation">.</span><span class="token function">isDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              <span class="token keyword">return</span><span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+          <span class="token class-name">FrameworkModel</span> oldDefaultFrameworkModel <span class="token operator">=</span> defaultInstance<span class="token punctuation">;</span>
+          <span class="token comment">//存在实例模型列表则直接从内存缓存中查后续不需要创建了</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>allInstances<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          	<span class="token comment">//当前存在的有FrameworkModel框架实例多个列表则取第一个为默认的</span>
+              defaultInstance <span class="token operator">=</span> allInstances<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+              defaultInstance <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>oldDefaultFrameworkModel <span class="token operator">!=</span> defaultInstance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              <span class="token keyword">if</span> <span class="token punctuation">(</span>LOGGER<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                  LOGGER<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Reset global default framework from "</span> <span class="token operator">+</span> <span class="token function">safeGetModelDesc</span><span class="token punctuation">(</span>oldDefaultFrameworkModel<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" to "</span> <span class="token operator">+</span> <span class="token function">safeGetModelDesc</span><span class="token punctuation">(</span>defaultInstance<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+              <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>上面单例做了很多的初始化操作,这里开始调用构造器来创建框架模型对象,如下代码:</p>
+<h2 id="3-2-创建FrameworkModel对象"><a href="#3-2-创建FrameworkModel对象" class="headerlink" title="3.2  创建FrameworkModel对象"></a>3.2  创建FrameworkModel对象</h2><p> FrameworkModel()构造器</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">FrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//调用父类型ScopeModel传递参数,这个构造器的第一个参数为空代表这是一个顶层的域模型,第二个代表了这个是框架FRAMEWORK域,第三个false不是内部域</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token class-name">ExtensionScope</span><span class="token punctuation">.</span>FRAMEWORK<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//内部id用于表示模型树的层次结构，如层次结构:</span>
+        <span class="token comment">//FrameworkModel（索引=1）-&gt;ApplicationModel（索引=2）-&gt;ModuleModel（索引=1，第一个用户模块）</span>
+        <span class="token comment">//这个index变量是static类型的为静态全局变量默认值从1开始,如果有多个框架模型对象则internalId编号从1开始依次递增</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setInternalId</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>index<span class="token punctuation">.</span><span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// register FrameworkModel instance early</span>
+        <span class="token comment">//将当前新创建的框架实例对象添加到容器中</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>globalLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//将当前框架模型实例添加到所有框架模型缓存对象中</span>
+            allInstances<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//如上面代码所示重置默认的框架模型对象,这里将会是缓存实例列表的第一个,新增了一个刷新默认实例对象</span>
+            <span class="token function">resetDefaultFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>LOGGER<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            LOGGER<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token function">getDesc</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" is created"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//初始化框架模型领域对象</span>
+        <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p> ExtensionScope.FRAMEWORK</p>
+<h3 id="3-2-1-初始化FrameworkModel"><a href="#3-2-1-初始化FrameworkModel" class="headerlink" title="3.2.1 初始化FrameworkModel"></a>3.2.1 初始化FrameworkModel</h3><p>FrameworkModel框架模型的初始化方法initialize()</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//这里初始化之前先调用下父类型ScopeModel的初始化方法我们在下面来看</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token comment">//使用TypeDefinitionBuilder的静态方法initBuilders来初始化类型构建器TypeBuilder类型集合</span>
+        <span class="token class-name">TypeDefinitionBuilder</span><span class="token punctuation">.</span><span class="token function">initBuilders</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token comment">//框架服务存储仓库对象,可以用于快速查询服务提供者信息</span>
+        serviceRepository <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FrameworkServiceRepository</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token comment">//获取ScopeModelInitializer类型(域模型初始化器)的扩展加载器ExtensionLoader,每个扩展类型都会创建一个扩展加载器缓存起来</span>
+        <span class="token class-name">ExtensionLoader</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">&gt;</span></span> initializerExtensionLoader <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//获取ScopeModelInitializer类型的支持的扩展集合,这里当前版本存在8个扩展类型实现</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">&gt;</span></span> initializers <span class="token operator">=</span> initializerExtensionLoader<span class="token punctuation">.</span><span class="token function">getSupportedExtensionInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//遍历这些扩展实现调用他们的initializeFrameworkModel方法来传递FrameworkModel类型对象,细节我们待会再详细说下</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ScopeModelInitializer</span> initializer <span class="token operator">:</span> initializers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            initializer<span class="token punctuation">.</span><span class="token function">initializeFrameworkModel</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+		<span class="token comment">//创建一个内部的ApplicationModel类型,细节下面说</span>
+        internalApplicationModel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ApplicationModel</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//创建ApplicationConfig类型对象同时传递应用程序模型对象internalApplicationModel</span>
+        <span class="token comment">//获取ConfigManager类型对象,然后设置添加当前应用配置对象</span>
+       internalApplicationModel<span class="token punctuation">.</span><span class="token function">getApplicationConfigManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setApplication</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token class-name">ApplicationConfig</span><span class="token punctuation">(</span>internalApplicationModel<span class="token punctuation">,</span> <span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_INTERNAL_APPLICATION<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//设置公开的模块名字为常量DUBBO_INTERNAL_APPLICATION</span>
+        internalApplicationModel<span class="token punctuation">.</span><span class="token function">setModelName</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_INTERNAL_APPLICATION<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>继续上面代码的调用链路,我们来看<br>FrameworkModel的super.initialize();方法 调用父类型ScopeModel的initialize()方法</p>
+<h3 id="3-2-2-初始化ScopeModel"><a href="#3-2-2-初始化ScopeModel" class="headerlink" title="3.2.2 初始化ScopeModel"></a>3.2.2 初始化ScopeModel</h3><p>ScopeModel类型的初始化方法initialize():</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//初始化ExtensionDirector是一个作用域扩展加载程序管理器。</span>
+		<span class="token comment">//ExtensionDirector支持多个级别，子级可以继承父级的扩展实例。</span>
+		<span class="token comment">//查找和创建扩展实例的方法类似于Java classloader。</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>extensionDirector <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ExtensionDirector</span><span class="token punctuation">(</span>parent <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">?</span> parent<span class="token punctuation">.</span><span class="token function">getExtensionDirector</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span> scope<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//这个参考了Spring的生命周期回调思想,添加一个扩展初始化的前后调用的处理器,在扩展初始化之前或之后调用的后处理器,参数类型为ExtensionPostProcessor</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>extensionDirector<span class="token punctuation">.</span><span class="token function">addExtensionPostProcessor</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ScopeModelAwareExtensionProcessor</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//创建一个内部共享的域工厂对象,用于注册Bean,创建Bean,获取Bean,初始化Bean等</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ScopeBeanFactory</span><span class="token punctuation">(</span>parent <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">?</span> parent<span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span> extensionDirector<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//使用数据结构链表,创建销毁监听器容器,一般用于关闭进程,重置应用程序对象等操作时候调用</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>destroyListeners <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//使用ConcurrentHashMap属性集合</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>attributes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//使用ConcurrentHashSet存储当前域下的类加载器</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>classLoaders <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Add Framework's ClassLoader by default</span>
+        <span class="token comment">//将当前类的加载器存入加载器集合classLoaders中</span>
+        <span class="token class-name">ClassLoader</span> dubboClassLoader <span class="token operator">=</span> <span class="token class-name">ScopeModel</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>dubboClassLoader <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">addClassLoader</span><span class="token punctuation">(</span>dubboClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="3-2-3-初始类型定义构建器"><a href="#3-2-3-初始类型定义构建器" class="headerlink" title="3.2.3 初始类型定义构建器"></a>3.2.3 初始类型定义构建器</h3><p>TypeDefinitionBuilder的初始化类型构造器方法initBuilders</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">initBuilders</span><span class="token punctuation">(</span><span class="token class-name">FrameworkModel</span> model<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">TypeBuilder</span><span class="token punctuation">&gt;</span></span> tbs <span class="token operator">=</span> model<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">TypeBuilder</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSupportedExtensionInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        BUILDERS <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>tbs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h4 id="3-2-3-1-服务存储仓库对象的创建"><a href="#3-2-3-1-服务存储仓库对象的创建" class="headerlink" title="3.2.3.1 服务存储仓库对象的创建"></a>3.2.3.1 服务存储仓库对象的创建</h4><p>FrameworkServiceRepository对象的初始化</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">FrameworkServiceRepository</span><span class="token punctuation">(</span><span class="token class-name">FrameworkModel</span> frameworkModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>frameworkModel <span class="token operator">=</span> frameworkModel<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="3-2-4-域模型初始化器的获取与初始化回调"><a href="#3-2-4-域模型初始化器的获取与初始化回调" class="headerlink" title="3.2.4  域模型初始化器的获取与初始化回调"></a>3.2.4  域模型初始化器的获取与初始化回调</h3><p>域模型初始化器的获取与初始化(ScopeModelInitializer类型和initializeFrameworkModel方法)<br>加载到的ScopeModelInitializer类型的SPI扩展实现</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">ExtensionLoader</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">&gt;</span></span> initializerExtensionLoader <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//获取ScopeModelInitializer类型的支持的扩展集合,这里当前版本存在8个扩展类型实现</span>
+    <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">&gt;</span></span> initializers <span class="token operator">=</span> initializerExtensionLoader<span class="token punctuation">.</span><span class="token function">getSupportedExtensionInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//遍历这些扩展实现调用他们的initializeFrameworkModel方法来传递FrameworkModel类型对象,细节我们待会再详细说下</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ScopeModelInitializer</span> initializer <span class="token operator">:</span> initializers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        initializer<span class="token punctuation">.</span><span class="token function">initializeFrameworkModel</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>通过Debug查到域模型初始化器的SPI扩展类型有如下8个:</p>
+<p><img src="https://img-blog.csdnimg.cn/b5bbd0c7b9fa4c9294e20c5d7504c1f1.png" alt="在这里插入图片描述"></p>
+<p>这里我随机找两个说一下吧:<br>容错域模型初始化器:ClusterScopeModelInitializer的initializeFrameworkModel方法:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ClusterScopeModelInitializer</span> <span class="token keyword">implements</span> <span class="token class-name">ScopeModelInitializer</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initializeFrameworkModel</span><span class="token punctuation">(</span><span class="token class-name">FrameworkModel</span> frameworkModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">ScopeBeanFactory</span> beanFactory <span class="token operator">=</span> frameworkModel<span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        beanFactory<span class="token punctuation">.</span><span class="token function">registerBean</span><span class="token punctuation">(</span><span class="token class-name">RouterSnapshotSwitcher</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CommonScopeModelInitializer</span> <span class="token keyword">implements</span> <span class="token class-name">ScopeModelInitializer</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initializeFrameworkModel</span><span class="token punctuation">(</span><span class="token class-name">FrameworkModel</span> frameworkModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">ScopeBeanFactory</span> beanFactory <span class="token operator">=</span> frameworkModel<span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        beanFactory<span class="token punctuation">.</span><span class="token function">registerBean</span><span class="token punctuation">(</span><span class="token class-name">FrameworkExecutorRepository</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ConfigScopeModelInitializer</span> <span class="token keyword">implements</span> <span class="token class-name">ScopeModelInitializer</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initializeFrameworkModel</span><span class="token punctuation">(</span><span class="token class-name">FrameworkModel</span> frameworkModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        frameworkModel<span class="token punctuation">.</span><span class="token function">addDestroyListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FrameworkModelCleaner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="3-2-5-将内部应用配置对象创建与添加至应用模型中"><a href="#3-2-5-将内部应用配置对象创建与添加至应用模型中" class="headerlink" title="3.2.5 将内部应用配置对象创建与添加至应用模型中"></a>3.2.5 将内部应用配置对象创建与添加至应用模型中</h3><p>创建ApplicationConfig对象让后将其添加至应用模型中<br>内部应用程序模型,这里为应用配置管理器设置一个应用配置对象,将这个应用配置的模块名字配置名字设置为DUBBO_INTERNAL_APPLICATION,应用配置记录着我们常见的应用配置信息,如下面表格所示:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//获取ConfigManager类型对象,然后设置添加当前应用配置对象</span>
+  internalApplicationModel<span class="token punctuation">.</span><span class="token function">getApplicationConfigManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setApplication</span><span class="token punctuation">(</span>
+       <span class="token keyword">new</span> <span class="token class-name">ApplicationConfig</span><span class="token punctuation">(</span>internalApplicationModel<span class="token punctuation">,</span> <span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_INTERNAL_APPLICATION<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//设置公开的模块名字为常量DUBBO_INTERNAL_APPLICATION</span>
+   internalApplicationModel<span class="token punctuation">.</span><span class="token function">setModelName</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_INTERNAL_APPLICATION<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>   来自官网目前版本的配置解释:<br>   官网当前的配置描述知道到了元数据类型,后面我再补充几个</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>对应URL参数</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>缺省值</th>
+<th>作用</th>
+<th>描述</th>
+<th>兼容性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>name</td>
+<td>application</td>
+<td>string</td>
+<td>必填</td>
+<td></td>
+<td>服务治理</td>
+<td>当前应用名称，用于注册中心计算应用间依赖关系，注意：消费者和提供者应用名不要一样，此参数不是匹配条件，你当前项目叫什么名字就填什么，和提供者消费者角色无关，比如：kylin应用调用了morgan应用的服务，则kylin项目配成kylin，morgan项目配成morgan，可能kylin也提供其它服务给别人使用，但kylin项目永远配成kylin，这样注册中心将显示kylin依赖于morgan</td>
+<td>1.0.16以上版本</td>
+</tr>
+<tr>
+<td>version</td>
+<td>application.version</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>当前应用的版本</td>
+<td>2.2.0以上版本</td>
+</tr>
+<tr>
+<td>owner</td>
+<td>owner</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>应用负责人，用于服务治理，请填写负责人公司邮箱前缀</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>organization</td>
+<td>organization</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>组织名称(BU或部门)，用于注册中心区分服务来源，此配置项建议不要使用autoconfig，直接写死在配置中，比如china,intl,itu,crm,asc,dw,aliexpress等</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>architecture</td>
+<td>architecture</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>用于服务分层对应的架构。如，intl、china。不同的架构使用不同的分层。</td>
+<td>2.0.7以上版本</td>
+</tr>
+<tr>
+<td>environment</td>
+<td>environment</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>应用环境，如：develop/test/product，不同环境使用不同的缺省值，以及作为只用于开发测试功能的限制条件</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>compiler</td>
+<td>compiler</td>
+<td>string</td>
+<td>可选</td>
+<td>javassist</td>
+<td>性能优化</td>
+<td>Java字节码编译器，用于动态类的生成，可选：jdk或javassist</td>
+<td>2.1.0以上版本</td>
+</tr>
+<tr>
+<td>logger</td>
+<td>logger</td>
+<td>string</td>
+<td>可选</td>
+<td>slf4j</td>
+<td>性能优化</td>
+<td>日志输出方式，可选：slf4j,jcl,log4j,log4j2,jdk</td>
+<td>2.2.0以上版本</td>
+</tr>
+<tr>
+<td>metadata-type</td>
+<td>metadata-type</td>
+<td>String</td>
+<td>可选</td>
+<td>local</td>
+<td>服务治理</td>
+<td>metadata 传递方式，是以 Provider 视角而言的，Consumer 侧配置无效，可选值有：remote - Provider 把 metadata 放到远端注册中心，Consumer 从注册中心获取local - Provider 把 metadata 放在本地，Consumer 从 Provider 处直接获取</td>
+<td>2.7.6以上版本</td>
+</tr>
+</tbody></table>
+<p>当前在Dubbo3.0.7中还有一些的配置我下面列举下:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>对应URL参数</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>缺省值</th>
+<th>作用</th>
+<th>描述</th>
+<th>兼容性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>register-consumer</td>
+<td>register-consumer</td>
+<td>boolean</td>
+<td>可选</td>
+<td>false</td>
+<td>服务治理</td>
+<td>是否注册使用者实例，默认为false。</td>
+<td></td>
+</tr>
+<tr>
+<td>register-mode</td>
+<td>register-mode</td>
+<td>string</td>
+<td>可选</td>
+<td>all</td>
+<td>服务治理</td>
+<td>将interface/instance/all 地址注册到注册中心，默认为all。</td>
+<td></td>
+</tr>
+<tr>
+<td>enable-empty-protection</td>
+<td>enable-empty-protection</td>
+<td>boolean</td>
+<td>可选</td>
+<td>true</td>
+<td>服务治理</td>
+<td>在空地址通知上启用空保护，默认为true</td>
+<td></td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>protocol</td>
+<td>string</td>
+<td>可选</td>
+<td>dubbo</td>
+<td>服务治理</td>
+<td>此应用程序的首选协议（名称）</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="3-3-创建ApplicationModel对象"><a href="#3-3-创建ApplicationModel对象" class="headerlink" title="3.3 创建ApplicationModel对象"></a>3.3 创建ApplicationModel对象</h2><p>ApplicationModel对象的初始化调用<br> 在前面 3.2.4 FrameworkModel框架模型的初始化方法initialize() 章节中,我们看到了代码ApplicationModel对象的初始化调用如下代码,这里我们来详细说一下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">internalApplicationModel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ApplicationModel</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       internalApplicationModel<span class="token punctuation">.</span><span class="token function">getApplicationConfigManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setApplication</span><span class="token punctuation">(</span>
+           <span class="token keyword">new</span> <span class="token class-name">ApplicationConfig</span><span class="token punctuation">(</span>internalApplicationModel<span class="token punctuation">,</span> <span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_INTERNAL_APPLICATION<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       internalApplicationModel<span class="token punctuation">.</span><span class="token function">setModelName</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_INTERNAL_APPLICATION<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="3-3-1-ApplicationModel的构造器"><a href="#3-3-1-ApplicationModel的构造器" class="headerlink" title="3.3.1 ApplicationModel的构造器"></a>3.3.1 ApplicationModel的构造器</h3><p>ApplicationModel(FrameworkModel frameworkModel, boolean isInternal)<br>刚刚3.2.9那个地方我们看到了使用代码<strong>new ApplicationModel(this, true)</strong> 来创建对象这里我们详细看下代码细节:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">ApplicationModel</span><span class="token punctuation">(</span><span class="token class-name">FrameworkModel</span> frameworkModel<span class="token punctuation">,</span> <span class="token keyword">boolean</span> isInternal<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//调用父类型ScopeModel传递参数,这个构造器的传递没与前面看到的FrameworkModel构造器的中的调用参数有些不同第一个参数我们为frameworkModel代表父域模型,第二个参数标记域为应用程序级别APPLICATION,第三个参数我们传递的为true代表为内部域</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>frameworkModel<span class="token punctuation">,</span> <span class="token class-name">ExtensionScope</span><span class="token punctuation">.</span>APPLICATION<span class="token punctuation">,</span> isInternal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>frameworkModel<span class="token punctuation">,</span> <span class="token string">"FrameworkModel can not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//应用程序域成员变量记录frameworkModel对象</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>frameworkModel <span class="token operator">=</span> frameworkModel<span class="token punctuation">;</span>
+        <span class="token comment">//frameworkModel对象添加当前应用程序域对象</span>
+        frameworkModel<span class="token punctuation">.</span><span class="token function">addApplication</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>LOGGER<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            LOGGER<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token function">getDesc</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" is created"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//初始化应用程序</span>
+        <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h4 id="3-3-1-1-将ApplicationModel添加至FrameworkModel容器中"><a href="#3-3-1-1-将ApplicationModel添加至FrameworkModel容器中" class="headerlink" title="3.3.1.1 将ApplicationModel添加至FrameworkModel容器中"></a>3.3.1.1 将ApplicationModel添加至FrameworkModel容器中</h4><p>FrameworkModel的添加应用程序方法addApplication:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">addApplication</span><span class="token punctuation">(</span><span class="token class-name">ApplicationModel</span> applicationModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// can not add new application if it's destroying</span>
+        <span class="token comment">//检查FrameworkModel对象是否已经被标记为销毁状态,如果已经被销毁了则抛出异常无需执行逻辑</span>
+        <span class="token function">checkDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>instLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//如果还未添加过当前参数传递应用模型</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>applicationModels<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            	<span class="token comment">//为当前应用模型生成内部id</span>
+                applicationModel<span class="token punctuation">.</span><span class="token function">setInternalId</span><span class="token punctuation">(</span><span class="token function">buildInternalId</span><span class="token punctuation">(</span><span class="token function">getInternalId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> appIndex<span class="token punctuation">.</span><span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//添加到成员变量集合applicationModels中</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>applicationModels<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//如果非内部的则也向公开应用模型集合pubApplicationModels中添加一下</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>applicationModel<span class="token punctuation">.</span><span class="token function">isInternal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>pubApplicationModels<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token function">resetDefaultAppModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>内部id生成算法buildInternalId方法代码如下:<br>看代码胜过,文字解释</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token class-name">String</span> <span class="token function">buildInternalId</span><span class="token punctuation">(</span><span class="token class-name">String</span> parentInternalId<span class="token punctuation">,</span> <span class="token keyword">long</span> childIndex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">// FrameworkModel    1</span>
+       <span class="token comment">// ApplicationModel  1.1</span>
+       <span class="token comment">// ModuleModel       1.1.1</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">hasText</span><span class="token punctuation">(</span>parentInternalId<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span> parentInternalId <span class="token operator">+</span> <span class="token string">"."</span> <span class="token operator">+</span> childIndex<span class="token punctuation">;</span>
+       <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span> <span class="token string">""</span> <span class="token operator">+</span> childIndex<span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p> <strong>重置默认的应用模型对象</strong><br>FrameworkModel 重置默认的应用模型对象 resetDefaultAppModel()方法<br>与默认框架模型设置方式类似取集合的第一个,这里应用模型需要使用公开的应用模型的第一个做为默认应用模型,代码如下所示:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">resetDefaultAppModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>instLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>defaultAppModel <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>defaultAppModel<span class="token punctuation">.</span><span class="token function">isDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">//取第一个公开的应用模型做为默认应用模型</span>
+            <span class="token class-name">ApplicationModel</span> oldDefaultAppModel <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>defaultAppModel<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>pubApplicationModels<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>defaultAppModel <span class="token operator">=</span> pubApplicationModels<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>defaultAppModel <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>defaultInstance <span class="token operator">==</span> <span class="token keyword">this</span> <span class="token operator">&amp;&amp;</span> oldDefaultAppModel <span class="token operator">!=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>defaultAppModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>LOGGER<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    LOGGER<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Reset global default application from "</span> <span class="token operator">+</span> <span class="token function">safeGetModelDesc</span><span class="token punctuation">(</span>oldDefaultAppModel<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" to "</span> <span class="token operator">+</span> <span class="token function">safeGetModelDesc</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>defaultAppModel<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="3-3-2-初始化ApplicationModel"><a href="#3-3-2-初始化ApplicationModel" class="headerlink" title="3.3.2 初始化ApplicationModel"></a>3.3.2 初始化ApplicationModel</h3><p>ApplicationModel的初始化initialize()方法<br>在前面<strong>3.2.10 ApplicationModel的构造器ApplicationModel(FrameworkModel frameworkModel, boolean isInternal)</strong> 中的最后一行开始初始化应用模型我们还未详细说明下面可以来看下</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//这个是调用域模型来初始化基础信息如扩展访问器等,可以参考 3.2.5 ScopeModel类型的初始化方法initialize()章节</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//创建一个内部的模块模型对象</span>
+        internalModule <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ModuleModel</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//创建一个独立服务存储对象</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>serviceRepository <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServiceRepository</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token comment">//获取应用程序初始化监听器ApplicationInitListener扩展</span>
+        <span class="token class-name">ExtensionLoader</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ApplicationInitListener</span><span class="token punctuation">&gt;</span></span> extensionLoader <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">ApplicationInitListener</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//如果存在应用程序初始化监听器扩展则执行这个初始化方法,在当前的版本还未看到有具体的扩展实现类型</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> listenerNames <span class="token operator">=</span> extensionLoader<span class="token punctuation">.</span><span class="token function">getSupportedExtensions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> listenerName <span class="token operator">:</span> listenerNames<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            extensionLoader<span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span>listenerName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+		<span class="token comment">//初始化扩展(这个是应用程序生命周期的方法调用,这里调用初始化方法</span>
+        <span class="token function">initApplicationExts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        
+		<span class="token comment">//获取域模型初始化器扩展对象列表,然后执行初始化方法</span>
+        <span class="token class-name">ExtensionLoader</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">&gt;</span></span> initializerExtensionLoader <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">&gt;</span></span> initializers <span class="token operator">=</span> initializerExtensionLoader<span class="token punctuation">.</span><span class="token function">getSupportedExtensionInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ScopeModelInitializer</span> initializer <span class="token operator">:</span> initializers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            initializer<span class="token punctuation">.</span><span class="token function">initializeApplicationModel</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="3-3-4-initApplicationExts-初始化应用程序扩展方法"><a href="#3-3-4-initApplicationExts-初始化应用程序扩展方法" class="headerlink" title="3.3.4 initApplicationExts()  初始化应用程序扩展方法"></a>3.3.4 initApplicationExts()  初始化应用程序扩展方法</h3><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">initApplicationExts</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token comment">//这个扩展实现一共有两个可以看下面那个图扩展类型为ConfigManager和Environment</span>
+     <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ApplicationExt</span><span class="token punctuation">&gt;</span></span> exts <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">ApplicationExt</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSupportedExtensionInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ApplicationExt</span> ext <span class="token operator">:</span> exts<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         ext<span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+ <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://img-blog.csdnimg.cn/a8785d4bf0584ddf9b6d2462bdb77b1b.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5a6L5bCP55Sf55qE5Y2a5a6i,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
+<h4 id="3-3-4-1-ConfigManager类型的initialize方法"><a href="#3-3-4-1-ConfigManager类型的initialize方法" class="headerlink" title="3.3.4.1 ConfigManager类型的initialize方法"></a>3.3.4.1 ConfigManager类型的initialize方法</h4><p>先简单说下ConfigManager的作用,无锁配置管理器（通过ConcurrentHashMap），用于快速读取操作。写入操作锁带有配置类型的子配置映射，用于安全检查和添加新配置。<br>其实ConfigManager实现类中并没有这个初始化方法initialize,不过ConfigManager的父类型AbstractConfigManager中是有initialize方法的,如下所示:</p>
+<p>AbstractConfigManager的初始化方法initialize</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IllegalStateException</span> <span class="token punctuation">{</span>
+    	<span class="token comment">//乐观锁判断是否初始化过</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>initialized<span class="token punctuation">.</span><span class="token function">compareAndSet</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//从模块环境中获取组合配置,目前Environment中有6种重要的配置,我们后面详细说</span>
+        <span class="token class-name">CompositeConfiguration</span> configuration <span class="token operator">=</span> scopeModel<span class="token punctuation">.</span><span class="token function">getModelEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// dubbo.config.mode获取配置模式,配置模式对应枚举类型ConfigMode,目前有这么几个STRICT,OVERRIDE,OVERRIDE_ALL,OVERRIDE_IF_ABSENT,IGNORE,这个配置决定了属性覆盖的顺序,当有同一个配置key多次出现时候,以最新配置为准,还是以最老的那个配置为准,还是配置重复则抛出异常,默认值为严格模式STRICT重复则抛出异常</span>
+        <span class="token class-name">String</span> configModeStr <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">)</span> configuration<span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token class-name">ConfigKeys</span><span class="token punctuation">.</span>DUBBO_CONFIG_MODE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">hasText</span><span class="token punctuation">(</span>configModeStr<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>configMode <span class="token operator">=</span> <span class="token class-name">ConfigMode</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>configModeStr<span class="token punctuation">.</span><span class="token function">toUpperCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">String</span> msg <span class="token operator">=</span> <span class="token string">"Illegal '"</span> <span class="token operator">+</span> <span class="token class-name">ConfigKeys</span><span class="token punctuation">.</span>DUBBO_CONFIG_MODE <span class="token operator">+</span> <span class="token string">"' config value ["</span> <span class="token operator">+</span> configModeStr <span class="token operator">+</span> <span class="token string">"], available values "</span> <span class="token operator">+</span> <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token class-name">ConfigMode</span><span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// dubbo.config.ignore-duplicated-interface</span>
+        <span class="token comment">//忽略重复的接口（服务/引用）配置。默认值为false</span>
+        <span class="token class-name">String</span> ignoreDuplicatedInterfaceStr <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">)</span> configuration
+            <span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token class-name">ConfigKeys</span><span class="token punctuation">.</span>DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>ignoreDuplicatedInterfaceStr <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>ignoreDuplicatedInterface <span class="token operator">=</span> <span class="token class-name">Boolean</span><span class="token punctuation">.</span><span class="token function">parseBoolean</span><span class="token punctuation">(</span>ignoreDuplicatedInterfaceStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// print 打印配置信息</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        map<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token class-name">ConfigKeys</span><span class="token punctuation">.</span>DUBBO_CONFIG_MODE<span class="token punctuation">,</span> configMode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        map<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token class-name">ConfigKeys</span><span class="token punctuation">.</span>DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>ignoreDuplicatedInterface<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Config settings: "</span> <span class="token operator">+</span> map<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h4 id="3-3-4-2-Environment类型的initialize方法"><a href="#3-3-4-2-Environment类型的initialize方法" class="headerlink" title="3.3.4.2 Environment类型的initialize方法"></a>3.3.4.2 Environment类型的initialize方法</h4><p>这是一个与环境配置有关系的类型,我们先来简单了解下它的初始化方法,后期再详细说明:</p>
+<p>Environment类型的initialize方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IllegalStateException</span> <span class="token punctuation">{</span>
+   	<span class="token comment">//乐观锁判断是否进行过初始化</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>initialized<span class="token punctuation">.</span><span class="token function">compareAndSet</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       	<span class="token comment">//PropertiesConfiguration从系统属性和dubbo.properties中获取配置</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>propertiesConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PropertiesConfiguration</span><span class="token punctuation">(</span>scopeModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//SystemConfiguration获取的是JVM参数 启动命令中-D指定的</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>systemConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SystemConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//EnvironmentConfiguration是从环境变量中获取的配置</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>environmentConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">EnvironmentConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//外部的Global配置config-center global/default config</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>externalConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InmemoryConfiguration</span><span class="token punctuation">(</span><span class="token string">"ExternalConfig"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//外部的应用配置如:config-center中的应用配置</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>appExternalConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InmemoryConfiguration</span><span class="token punctuation">(</span><span class="token string">"AppExternalConfig"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//本地应用配置 , 如Spring Environment/PropertySources/application.properties</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>appConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InmemoryConfiguration</span><span class="token punctuation">(</span><span class="token string">"AppConfig"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token comment">//服务迁移配置加载 dubbo2升级dubbo3的一些配置</span>
+           <span class="token function">loadMigrationRule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span>
+<span class="token comment">//服务迁移配置加载 JVM  &gt; env &gt;  代码路径dubbo-migration.yaml</span>
+   <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadMigrationRule</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//文件路径配置的key dubbo.migration.file</span>
+    <span class="token comment">// JVM参数中获取</span>
+       <span class="token class-name">String</span> path <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_MIGRATION_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">//env环境变量中获取</span>
+           path <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getenv</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_MIGRATION_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token comment">//类路径下获取文件dubbo-migration.yaml</span>
+               path <span class="token operator">=</span> <span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DEFAULT_DUBBO_MIGRATION_FILE<span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+       <span class="token keyword">this</span><span class="token punctuation">.</span>localMigrationRule <span class="token operator">=</span> <span class="token class-name">ConfigUtils</span><span class="token punctuation">.</span><span class="token function">loadMigrationRule</span><span class="token punctuation">(</span>scopeModel<span class="token punctuation">.</span><span class="token function">getClassLoaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>ConfigUtils中读取迁移规则配置文件loadMigrationRule</strong><br>这个我们不细说了,贴一下代码感兴趣可以了解下,这个代码主要是读取文件到内存字符串:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">String</span> <span class="token function">loadMigrationRule</span><span class="token punctuation">(</span><span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClassLoader</span><span class="token punctuation">&gt;</span></span> classLoaders<span class="token punctuation">,</span> <span class="token class-name">String</span> fileName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token class-name">String</span> rawRule <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">checkFileNameExist</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">try</span> <span class="token punctuation">{</span>
+               <span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token class-name">FileInputStream</span> input <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileInputStream</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   <span class="token keyword">return</span> <span class="token function">readString</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token punctuation">}</span>
+           <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Failed to load "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">" file from "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">"(ignore this file): "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+
+       <span class="token keyword">try</span> <span class="token punctuation">{</span>
+           <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClassLoader</span><span class="token punctuation">&gt;</span></span> classLoadersToLoad <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           classLoadersToLoad<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token class-name">ClassUtils</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           classLoadersToLoad<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>classLoaders<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> urls <span class="token operator">:</span> <span class="token class-name">ClassLoaderResourceLoader</span><span class="token punctuation">.</span><span class="token function">loadResources</span><span class="token punctuation">(</span>fileName<span class="token punctuation">,</span> classLoadersToLoad<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token keyword">for</span> <span class="token punctuation">(</span>URL url <span class="token operator">:</span> urls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   <span class="token class-name">InputStream</span> is <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">openStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token keyword">if</span> <span class="token punctuation">(</span>is <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                       <span class="token keyword">return</span> <span class="token function">readString</span><span class="token punctuation">(</span>is<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token punctuation">}</span>
+               <span class="token punctuation">}</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Failed to load "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">" file from "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">"(ignore this file): "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token keyword">return</span> rawRule<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+
+   <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">String</span> <span class="token function">readString</span><span class="token punctuation">(</span><span class="token class-name">InputStream</span> is<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token class-name">StringBuilder</span> stringBuilder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">char</span><span class="token punctuation">[</span><span class="token punctuation">]</span> buffer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">char</span><span class="token punctuation">[</span><span class="token number">10</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+       <span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token class-name">BufferedReader</span> reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BufferedReader</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InputStreamReader</span><span class="token punctuation">(</span>is<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">int</span> n<span class="token punctuation">;</span>
+           <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>n <span class="token operator">=</span> reader<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   buffer <span class="token operator">=</span> <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">copyOf</span><span class="token punctuation">(</span>buffer<span class="token punctuation">,</span> n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token punctuation">}</span>
+               stringBuilder<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               buffer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">char</span><span class="token punctuation">[</span><span class="token number">10</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Read migration file error."</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+
+       <span class="token keyword">return</span> stringBuilder<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+
+   <span class="token comment">/**
+    * check if the fileName can be found in filesystem
+    *
+    * @param fileName
+    * @return
+    */</span>
+   <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">checkFileNameExist</span><span class="token punctuation">(</span><span class="token class-name">String</span> fileName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token class-name">File</span> file <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">return</span> file<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="3-4-创建ModuleModel对象"><a href="#3-4-创建ModuleModel对象" class="headerlink" title="3.4 创建ModuleModel对象"></a>3.4 创建ModuleModel对象</h2><p>前面ApplicationModel对象初始化的时候创建了ModuleModel如下代码:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">internalModule <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ModuleModel</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这里我们来看下这个它所对应的构造器</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">ModuleModel</span><span class="token punctuation">(</span><span class="token class-name">ApplicationModel</span> applicationModel<span class="token punctuation">,</span> <span class="token keyword">boolean</span> isInternal<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//调用ScopeModel传递3个参数父模型,模型域为模块域,是否为内部模型参数为true</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">,</span> <span class="token class-name">ExtensionScope</span><span class="token punctuation">.</span>MODULE<span class="token punctuation">,</span> isInternal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">,</span> <span class="token string">"ApplicationModel can not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//初始化成员变量applicationModel</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>applicationModel <span class="token operator">=</span> applicationModel<span class="token punctuation">;</span>
+        <span class="token comment">//将模块模型添加至应用模型中</span>
+        applicationModel<span class="token punctuation">.</span><span class="token function">addModule</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> isInternal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>LOGGER<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            LOGGER<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token function">getDesc</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" is created"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+		<span class="token comment">//初始化模块模型</span>
+        <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>serviceRepository<span class="token punctuation">,</span> <span class="token string">"ModuleServiceRepository can not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>moduleConfigManager<span class="token punctuation">,</span> <span class="token string">"ModuleConfigManager can not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">assertTrue</span><span class="token punctuation">(</span>moduleConfigManager<span class="token punctuation">.</span><span class="token function">isInitialized</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"ModuleConfigManager can not be initialized"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// notify application check state</span>
+        <span class="token comment">//获取应用程序发布对象,通知检查状态</span>
+        <span class="token class-name">ApplicationDeployer</span> applicationDeployer <span class="token operator">=</span> applicationModel<span class="token punctuation">.</span><span class="token function">getDeployer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>applicationDeployer <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            applicationDeployer<span class="token punctuation">.</span><span class="token function">notifyModuleChanged</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token class-name">DeployState</span><span class="token punctuation">.</span>PENDING<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="3-4-1-将模块模型添加至应用模型中"><a href="#3-4-1-将模块模型添加至应用模型中" class="headerlink" title="3.4.1 将模块模型添加至应用模型中"></a>3.4.1 将模块模型添加至应用模型中</h3><p>如上面代码所示调用如下代码将模块模型添加到应用模型中:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">applicationModel<span class="token punctuation">.</span><span class="token function">addModule</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> isInternal<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这里我们来看下添加过程</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">
+<span class="token keyword">void</span> <span class="token function">addModule</span><span class="token punctuation">(</span><span class="token class-name">ModuleModel</span> moduleModel<span class="token punctuation">,</span> <span class="token keyword">boolean</span> isInternal<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//加锁</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>moduleLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//不存在则添加</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>moduleModels<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>moduleModel<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            	<span class="token comment">//检查应用模型是否已销毁</span>
+                <span class="token function">checkDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//添加至模块模型成员变量中</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>moduleModels<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>moduleModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//设置模块模型内部id,这个内部id生成过程与上面将应用模型添加到框架模型中的方式是一致的</span>
+                <span class="token comment">//可以参考 3.3.2 将ApplicationModel添加至FrameworkModel容器中</span>
+                moduleModel<span class="token punctuation">.</span><span class="token function">setInternalId</span><span class="token punctuation">(</span><span class="token function">buildInternalId</span><span class="token punctuation">(</span><span class="token function">getInternalId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> moduleIndex<span class="token punctuation">.</span><span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//如果不是内部模型则添加到公开模块模型中</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isInternal<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    pubModuleModels<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>moduleModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="3-4-2-初始化模块模型"><a href="#3-4-2-初始化模块模型" class="headerlink" title="3.4.2 初始化模块模型"></a>3.4.2 初始化模块模型</h3><p>前面ModuleModel构造器中通过initialize()方法来进行初始化操作如下代码:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    	<span class="token comment">//调用域模型ScopeModel的初始化,可以参考 3.2.5 ScopeModel类型的初始化方法initialize()章节</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//创建模块服务存储库对象</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>serviceRepository <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ModuleServiceRepository</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//创建模块配置管理对象</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>moduleConfigManager <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ModuleConfigManager</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//初始化模块配置管理对象</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>moduleConfigManager<span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+		<span class="token comment">//初始化模块配置扩展</span>
+        <span class="token function">initModuleExt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		
+		<span class="token comment">//初始化域模型扩展</span>
+        <span class="token class-name">ExtensionLoader</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">&gt;</span></span> initializerExtensionLoader <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ScopeModelInitializer</span><span class="token punctuation">&gt;</span></span> initializers <span class="token operator">=</span> initializerExtensionLoader<span class="token punctuation">.</span><span class="token function">getSupportedExtensionInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ScopeModelInitializer</span> initializer <span class="token operator">:</span> initializers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            initializer<span class="token punctuation">.</span><span class="token function">initializeModuleModel</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="3-4-2-1-模块服务存储库的创建"><a href="#3-4-2-1-模块服务存储库的创建" class="headerlink" title="3.4.2.1 模块服务存储库的创建"></a>3.4.2.1 模块服务存储库的创建</h4><p>ModuleServiceRepository是模块模型中用来存储服务的通过如下代码调用</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//创建模块服务存储库对象</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>serviceRepository <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ModuleServiceRepository</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这里我们来看下模块服务存储库的构造器代码:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">ModuleServiceRepository</span><span class="token punctuation">(</span><span class="token class-name">ModuleModel</span> moduleModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//初始化模块模型</span>
+       <span class="token keyword">this</span><span class="token punctuation">.</span>moduleModel <span class="token operator">=</span> moduleModel<span class="token punctuation">;</span>
+       <span class="token comment">//</span>
+       frameworkServiceRepository <span class="token operator">=</span> <span class="token class-name">ScopeModelUtil</span><span class="token punctuation">.</span><span class="token function">getFrameworkModel</span><span class="token punctuation">(</span>moduleModel<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getServiceRepository</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ModuleServiceRepository存储库中使用框架存储库frameworkServiceRepository来间接存储<br>这里我们看下怎么通过模块模型获取框架服务存储库frameworkServiceRepository:通过代码</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">ScopeModelUtil</span><span class="token punctuation">.</span><span class="token function">getFrameworkModel</span><span class="token punctuation">(</span>moduleModel<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getServiceRepository</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>ScopeModelUtil工具类获取getFrameworkModel代码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">FrameworkModel</span> <span class="token function">getFrameworkModel</span><span class="token punctuation">(</span><span class="token class-name">ScopeModel</span> scopeModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>scopeModel <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token class-name">FrameworkModel</span><span class="token punctuation">.</span><span class="token function">defaultModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//通过成员变量获取(构造器初始化的时候将FrameworkModel赋值给了ApplicationModel的成员变量</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>scopeModel <span class="token keyword">instanceof</span> <span class="token class-name">ApplicationModel</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        	<span class="token comment">//直接获取</span>
+            <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">ApplicationModel</span><span class="token punctuation">)</span> scopeModel<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>scopeModel <span class="token keyword">instanceof</span> <span class="token class-name">ModuleModel</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">ModuleModel</span> moduleModel <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">ModuleModel</span><span class="token punctuation">)</span> scopeModel<span class="token punctuation">;</span>
+            <span class="token comment">//间接通过ApplicationModel获取,不越级获取</span>
+            <span class="token keyword">return</span> moduleModel<span class="token punctuation">.</span><span class="token function">getApplicationModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>scopeModel <span class="token keyword">instanceof</span> <span class="token class-name">FrameworkModel</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">FrameworkModel</span><span class="token punctuation">)</span> scopeModel<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Unable to get FrameworkModel from "</span> <span class="token operator">+</span> scopeModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="3-4-2-2-模块配置管理器对象的创建与初始化"><a href="#3-4-2-2-模块配置管理器对象的创建与初始化" class="headerlink" title="3.4.2.2 模块配置管理器对象的创建与初始化"></a>3.4.2.2 模块配置管理器对象的创建与初始化</h4><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//创建模块配置管理对象</span>
+       <span class="token keyword">this</span><span class="token punctuation">.</span>moduleConfigManager <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ModuleConfigManager</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//初始化模块配置管理对象</span>
+       <span class="token keyword">this</span><span class="token punctuation">.</span>moduleConfigManager<span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ModuleConfigManager的构造器代码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">ModuleConfigManager</span><span class="token punctuation">(</span><span class="token class-name">ModuleModel</span> moduleModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token comment">//向抽象的配置管理器AbstractConfigManager传递参数</span>
+	<span class="token comment">//模块模型参数,模块支持的配置类型集合</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>moduleModel<span class="token punctuation">,</span> <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">asList</span><span class="token punctuation">(</span><span class="token class-name">ModuleConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token class-name">ServiceConfigBase</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token class-name">ReferenceConfigBase</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token class-name">ProviderConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//获取应用程序配置管理器</span>
+        applicationConfigManager <span class="token operator">=</span> moduleModel<span class="token punctuation">.</span><span class="token function">getApplicationModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getApplicationConfigManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ModuleConfigManager类型的初始化方法代码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IllegalStateException</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>initialized<span class="token punctuation">.</span><span class="token function">compareAndSet</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//获取组合配置对象</span>
+        <span class="token class-name">CompositeConfiguration</span> configuration <span class="token operator">=</span> scopeModel<span class="token punctuation">.</span><span class="token function">getModelEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// dubbo.config.mode</span>
+        <span class="token comment">//3.3.4.1提到过这里再重复一次 dubbo.config.mode获取配置模式,配置模式对应枚举类型ConfigMode,目前有这么几个STRICT,OVERRIDE,OVERRIDE_ALL,OVERRIDE_IF_ABSENT,IGNORE,这个配置决定了属性覆盖的顺序,当有同一个配置key多次出现时候,以最新配置为准,还是以最老的那个配置为准,还是配置重复则抛出异常,默认值为严格模式STRICT重复则抛出异常</span>
+        <span class="token class-name">String</span> configModeStr <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">)</span> configuration<span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token class-name">ConfigKeys</span><span class="token punctuation">.</span>DUBBO_CONFIG_MODE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">hasText</span><span class="token punctuation">(</span>configModeStr<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>configMode <span class="token operator">=</span> <span class="token class-name">ConfigMode</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>configModeStr<span class="token punctuation">.</span><span class="token function">toUpperCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">String</span> msg <span class="token operator">=</span> <span class="token string">"Illegal '"</span> <span class="token operator">+</span> <span class="token class-name">ConfigKeys</span><span class="token punctuation">.</span>DUBBO_CONFIG_MODE <span class="token operator">+</span> <span class="token string">"' config value ["</span> <span class="token operator">+</span> configModeStr <span class="token operator">+</span> <span class="token string">"], available values "</span> <span class="token operator">+</span> <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token class-name">ConfigMode</span><span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// dubbo.config.ignore-duplicated-interface</span>
+        <span class="token comment">//忽略重复的接口（服务/引用）配置。默认值为false</span>
+        <span class="token class-name">String</span> ignoreDuplicatedInterfaceStr <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">)</span> configuration
+            <span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token class-name">ConfigKeys</span><span class="token punctuation">.</span>DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>ignoreDuplicatedInterfaceStr <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>ignoreDuplicatedInterface <span class="token operator">=</span> <span class="token class-name">Boolean</span><span class="token punctuation">.</span><span class="token function">parseBoolean</span><span class="token punctuation">(</span>ignoreDuplicatedInterfaceStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// print 打印配置信息到控制台</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        map<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token class-name">ConfigKeys</span><span class="token punctuation">.</span>DUBBO_CONFIG_MODE<span class="token punctuation">,</span> configMode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        map<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token class-name">ConfigKeys</span><span class="token punctuation">.</span>DUBBO_CONFIG_IGNORE_DUPLICATED_INTERFACE<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>ignoreDuplicatedInterface<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Config settings: "</span> <span class="token operator">+</span> map<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="3-4-2-3-模块配置扩展的初始化"><a href="#3-4-2-3-模块配置扩展的初始化" class="headerlink" title="3.4.2.3 模块配置扩展的初始化"></a>3.4.2.3 模块配置扩展的初始化</h4><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token function">initModuleExt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">initModuleExt</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token comment">//目前这里的扩展只支持有一个类型ModuleEnvironment</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ModuleExt</span><span class="token punctuation">&gt;</span></span> exts <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">ModuleExt</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSupportedExtensionInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ModuleExt</span> ext <span class="token operator">:</span> exts<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            ext<span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>ModuleEnvironment的初始化</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IllegalStateException</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>orderedPropertiesConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">OrderedPropertiesConfiguration</span><span class="token punctuation">(</span>moduleModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>OrderedPropertiesConfiguration对象的创建</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">OrderedPropertiesConfiguration</span><span class="token punctuation">(</span><span class="token class-name">ModuleModel</span> moduleModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>moduleModel <span class="token operator">=</span> moduleModel<span class="token punctuation">;</span>
+        <span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        properties <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//有序的配置提供器扩展获取</span>
+        <span class="token class-name">ExtensionLoader</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">OrderedPropertiesProvider</span><span class="token punctuation">&gt;</span></span> propertiesProviderExtensionLoader <span class="token operator">=</span> moduleModel<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">OrderedPropertiesProvider</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> propertiesProviderNames <span class="token operator">=</span> propertiesProviderExtensionLoader<span class="token punctuation">.</span><span class="token function">getSupportedExtensions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>propertiesProviderNames<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">OrderedPropertiesProvider</span><span class="token punctuation">&gt;</span></span> orderedPropertiesProviders <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> propertiesProviderName <span class="token operator">:</span> propertiesProviderNames<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            orderedPropertiesProviders<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>propertiesProviderExtensionLoader<span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span>propertiesProviderName<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">//order the propertiesProvider according the priority descending</span>
+        <span class="token comment">//根据优先级进行排序,值越小优先级越高</span>
+        orderedPropertiesProviders<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">-&gt;</span> b<span class="token punctuation">.</span><span class="token function">priority</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> a<span class="token punctuation">.</span><span class="token function">priority</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+        <span class="token comment">//override the properties. 目前没看到有具体的扩展实现</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">OrderedPropertiesProvider</span> orderedPropertiesProvider <span class="token operator">:</span> orderedPropertiesProviders<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            properties<span class="token punctuation">.</span><span class="token function">putAll</span><span class="token punctuation">(</span>orderedPropertiesProvider<span class="token punctuation">.</span><span class="token function">initProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/Dubbo/" rel="tag">Dubbo<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3/" rel="tag">Dubbo3<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Dubbo3源码解析<span class="tag-unordered list-count">23</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/07/10/dubbo/4-dubbo-de-spi-kuo-zhan-ji-zhi-yu-extensionloader-dui-xiang-de-chuang-jian-yuan-ma-jie-xi/"> 04-【Dubbo3.0.8源码解析系列】Dubbo的扩展机制</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/07/10/dubbo/2-qi-dong-fu-wu-qian-fu-wu-pei-zhi-serviceconfig-lei-xing-shi-ru-he-chu-shi-hua-de/"> 02-【Dubbo3.0.8源码解析系列】ServiceConfig对象的建模</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918050">
+<link rel="stylesheet" href="/css/style.css?v=1662168973062">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918050"></script>
+<script src="/js/core.js?v=1662168973063"></script>
 
 
 
@@ -48,149 +48,694 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>09-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加应用程序的配置信息ApplicationConfig</h1>
+			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">Dubbo3源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/9-Dubbo启动器DubboBootstrap添加应用程序的配置信息ApplicationConfig.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="9-Dubbo启动器DubboBootstrap添加应用程序的配置信息ApplicationConfig"><a href="#9-Dubbo启动器DubboBootstrap添加应用程序的配置信息ApplicationConfig" class="headerlink" title="9-Dubbo启动器DubboBootstrap添加应用程序的配置信息ApplicationConfig"></a>9-Dubbo启动器DubboBootstrap添加应用程序的配置信息ApplicationConfig</h1><h2 id="9-1-简介"><a href="#9-1-简介" class="headerlink" title="9.1 简介"></a>9.1 简介</h2><p>先贴个代码用来参考:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">DubboBootstrap</span> bootstrap <span class="token operator">=</span> <span class="token class-name">DubboBootstrap</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+bootstrap<span class="token punctuation">.</span><span class="token function">application</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ApplicationConfig</span><span class="token punctuation">(</span><span class="token string">"dubbo-demo-api-provider"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">registry</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegistryConfig</span><span class="token punctuation">(</span><span class="token string">"zookeeper://127.0.0.1:2181"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">protocol</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProtocolConfig</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">service</span><span class="token punctuation">(</span>service<span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上个博客我们说了启动器对象的创建,启动器对象在启动之前是要初始化一些配置信息的,这里我们来看这一行代码:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">bootstrap<span class="token punctuation">.</span><span class="token function">application</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ApplicationConfig</span><span class="token punctuation">(</span><span class="token string">"dubbo-demo-api-provider"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="9-2-应用程序ApplicationConfig的配置信息"><a href="#9-2-应用程序ApplicationConfig的配置信息" class="headerlink" title="9.2 应用程序ApplicationConfig的配置信息"></a>9.2 应用程序ApplicationConfig的配置信息</h2><p>ApplicationConfig的构造器比较简单就是为他的成员变量name赋值来标识这个应用程序的名字<br>下面我们直接参考下官网的配置表格:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>对应URL参数</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>缺省值</th>
+<th>作用</th>
+<th>描述</th>
+<th>兼容性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>name</td>
+<td>application</td>
+<td>string</td>
+<td><strong>必填</strong></td>
+<td></td>
+<td>服务治理</td>
+<td>当前应用名称，用于注册中心计算应用间依赖关系，注意：消费者和提供者应用名不要一样，此参数不是匹配条件，你当前项目叫什么名字就填什么，和提供者消费者角色无关，比如：kylin应用调用了morgan应用的服务，则kylin项目配成kylin，morgan项目配成morgan，可能kylin也提供其它服务给别人使用，但kylin项目永远配成kylin，这样注册中心将显示kylin依赖于morgan</td>
+<td>1.0.16以上版本</td>
+</tr>
+<tr>
+<td>version</td>
+<td>application.version</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>当前应用的版本</td>
+<td>2.2.0以上版本</td>
+</tr>
+<tr>
+<td>owner</td>
+<td>owner</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>应用负责人，用于服务治理，请填写负责人公司邮箱前缀</td>
+<td>2.0.5以上版本</td>
+</tr>
+<tr>
+<td>organization</td>
+<td>organization</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>组织名称(BU或部门)，用于注册中心区分服务来源，此配置项建议不要使用autoconfig，直接写死在配置中，比如china,intl,itu,crm,asc,dw,aliexpress等</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>architecture</td>
+<td>architecture</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>用于服务分层对应的架构。如，intl、china。不同的架构使用不同的分层。</td>
+<td>2.0.7以上版本</td>
+</tr>
+<tr>
+<td>environment</td>
+<td>environment</td>
+<td>string</td>
+<td>可选</td>
+<td></td>
+<td>服务治理</td>
+<td>应用环境，如：develop/test/product，不同环境使用不同的缺省值，以及作为只用于开发测试功能的限制条件</td>
+<td>2.0.0以上版本</td>
+</tr>
+<tr>
+<td>compiler</td>
+<td>compiler</td>
+<td>string</td>
+<td>可选</td>
+<td>javassist</td>
+<td>性能优化</td>
+<td>Java字节码编译器，用于动态类的生成，可选：jdk或javassist</td>
+<td>2.1.0以上版本</td>
+</tr>
+<tr>
+<td>logger</td>
+<td>logger</td>
+<td>string</td>
+<td>可选</td>
+<td>slf4j</td>
+<td>性能优化</td>
+<td>日志输出方式，可选：slf4j,jcl,log4j,log4j2,jdk</td>
+<td>2.2.0以上版本</td>
+</tr>
+<tr>
+<td>metadata-type</td>
+<td>metadata-type</td>
+<td>String</td>
+<td>可选</td>
+<td>local</td>
+<td>服务治理</td>
+<td>metadata 传递方式，是以 Provider 视角而言的，Consumer 侧配置无效，可选值有： remote - Provider 把 metadata 放到远端注册中心，Consumer 从注册中心获取 local - Provider 把 metadata 放在本地，Consumer 从 Provider 处直接获取</td>
+<td>2.7.6以上版本</td>
+</tr>
+</tbody></table>
+<p>官网的配置很详细了上面有一些属性是值得注意的比如这个name,compiler,logger,metadata-type 我们可能要多看下默认值是什么,方便我们在使用过程中遇到问题的排查</p>
+<p>常用的属性参考官网的表格已经足够了,不过上面的属性不是列举了所有的属性,后续应该官方文档回更新:<br>我这里把缺失的一些属性列举出来:</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>registries</td>
+<td>List<registryconfig></registryconfig></td>
+<td>应用级注册中心列表</td>
+</tr>
+<tr>
+<td>registryIds</td>
+<td>String</td>
+<td>注册中心id列表</td>
+</tr>
+<tr>
+<td>monitor</td>
+<td>MonitorConfig</td>
+<td>应用级监控配置</td>
+</tr>
+<tr>
+<td>dumpDirectory</td>
+<td>String</td>
+<td>保存线程转储的目录</td>
+</tr>
+<tr>
+<td>qosEnable</td>
+<td>Boolean</td>
+<td>是否启用qos</td>
+</tr>
+<tr>
+<td>qosHost</td>
+<td>String</td>
+<td>要侦听的qos主机地址</td>
+</tr>
+<tr>
+<td>qosPort</td>
+<td>Integer</td>
+<td>要侦听的qos端口</td>
+</tr>
+<tr>
+<td>qosAcceptForeignIp</td>
+<td>Boolean</td>
+<td>qos是否接收外部IP</td>
+</tr>
+<tr>
+<td>parameters</td>
+<td>Map&lt;String, String&gt;</td>
+<td>自定义参数</td>
+</tr>
+<tr>
+<td>shutwait</td>
+<td>String</td>
+<td>应用程序关闭时间</td>
+</tr>
+<tr>
+<td>hostname</td>
+<td>String</td>
+<td>主机名</td>
+</tr>
+<tr>
+<td>registerConsumer</td>
+<td>Boolean</td>
+<td>用于控制是否将实例注册到注册表。仅当实例是纯消费者时才设置为“false”。</td>
+</tr>
+<tr>
+<td>repository</td>
+<td>String</td>
+<td>没找到哪里用了</td>
+</tr>
+<tr>
+<td>enableFileCache</td>
+<td>Boolean</td>
+<td>是否开启本地文件缓存</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>String</td>
+<td>此应用程序的首选协议（名称）适用于难以确定哪个是首选协议的地方</td>
+</tr>
+<tr>
+<td>metadataServiceProtocol</td>
+<td>String</td>
+<td>用于点对点的元数据传输的协议</td>
+</tr>
+<tr>
+<td>metadataServicePort</td>
+<td>Integer</td>
+<td>元数据服务端口号，用于服务发现</td>
+</tr>
+<tr>
+<td>livenessProbe</td>
+<td>String</td>
+<td>Liveness 存活探针 用于设置qos中探测器的扩展</td>
+</tr>
+<tr>
+<td>readinessProbe</td>
+<td>String</td>
+<td>Readiness 就绪探针</td>
+</tr>
+<tr>
+<td>startupProbe</td>
+<td>String</td>
+<td>Startup 启动探针</td>
+</tr>
+<tr>
+<td>registerMode</td>
+<td>String</td>
+<td>注册模式,实例级,接口集,所有</td>
+</tr>
+<tr>
+<td>enableEmptyProtection</td>
+<td>Boolean</td>
+<td>接收到的空url地址列表和空保护被禁用，将清除当前可用地址</td>
+</tr>
+</tbody></table>
+<p>这里我们先来简单了解下这个实体类型的基本配置,直接看配置可能不太好理解,后面我们讲到每个配置的时候可以回来参考一下</p>
+<h2 id="应用程序配置对象添加到启动器中的配置管理器中"><a href="#应用程序配置对象添加到启动器中的配置管理器中" class="headerlink" title="应用程序配置对象添加到启动器中的配置管理器中"></a>应用程序配置对象添加到启动器中的配置管理器中</h2><p>了解了配置信息再回过头来看下这个配置信息如何存放到启动器里面的:</p>
+<p>我们的Demo调用代码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">DubboBootstrap</span> bootstrap <span class="token operator">=</span> <span class="token class-name">DubboBootstrap</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+bootstrap<span class="token punctuation">.</span><span class="token function">application</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ApplicationConfig</span><span class="token punctuation">(</span><span class="token string">"dubbo-demo-api-provider"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>DubboBootstrap的application方法设置一个应用程序配置ApplicationConfig对象</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">DubboBootstrap</span> <span class="token function">application</span><span class="token punctuation">(</span><span class="token class-name">ApplicationConfig</span> applicationConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//将启动器构造器中初始化的默认应用程序模型对象传递给配置对象</span>
+       applicationConfig<span class="token punctuation">.</span><span class="token function">setScopeModel</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//将配置信息添加到配置管理器中</span>
+       configManager<span class="token punctuation">.</span><span class="token function">setApplication</span><span class="token punctuation">(</span>applicationConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ConfigManager配置管理器的setApplication方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@DisableInject</span>
+  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setApplication</span><span class="token punctuation">(</span><span class="token class-name">ApplicationConfig</span> application<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">addConfig</span><span class="token punctuation">(</span>application<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ConfigManager配置管理器的addConfig方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractConfig</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">T</span> <span class="token function">addConfig</span><span class="token punctuation">(</span><span class="token class-name">AbstractConfig</span> config<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>config <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">// ignore MethodConfig</span>
+        <span class="token comment">//检查当前配置管理器支持管理的配置对象</span>
+        <span class="token comment">//目前支持的配置有ApplicationConfig,MonitorConfig,MetricsConfig,SslConfig,</span>
+        <span class="token comment">//ProtocolConfig,RegistryConfig,ConfigCenterConfig,MetadataReportConfig</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isSupportConfigType</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Unsupported config type: "</span> <span class="token operator">+</span> config<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+		
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> scopeModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            config<span class="token punctuation">.</span><span class="token function">setScopeModel</span><span class="token punctuation">(</span>scopeModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+		
+		<span class="token comment">//缓存中是否存在</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">AbstractConfig</span><span class="token punctuation">&gt;</span></span> configsMap <span class="token operator">=</span> configsCache<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span><span class="token function">getTagName</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> type <span class="token operator">-&gt;</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// fast check duplicated equivalent config before write lock</span>
+        <span class="token comment">//不是服务级配置则直接从缓存中读取到配置之后直接返回</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>config <span class="token keyword">instanceof</span> <span class="token class-name">ReferenceConfigBase</span> <span class="token operator">||</span> config <span class="token keyword">instanceof</span> <span class="token class-name">ServiceConfigBase</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">AbstractConfig</span> value <span class="token operator">:</span> configsMap<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>value<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">T</span><span class="token punctuation">)</span> value<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// lock by config type</span>
+        <span class="token comment">//添加配置</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>configsMap<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">T</span><span class="token punctuation">)</span> <span class="token function">addIfAbsent</span><span class="token punctuation">(</span>config<span class="token punctuation">,</span> configsMap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>ConfigManager配置管理器的addIfAbsent方法:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">C</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractConfig</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">C</span> <span class="token function">addIfAbsent</span><span class="token punctuation">(</span><span class="token class-name">C</span> config<span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">C</span><span class="token punctuation">&gt;</span></span> configsMap<span class="token punctuation">)</span>
+        <span class="token keyword">throws</span> <span class="token class-name">IllegalStateException</span> <span class="token punctuation">{</span>
+		<span class="token comment">//配置信息为空直接返回</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>config <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> configsMap <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> config<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// find by value</span>
+        <span class="token comment">//根据配置规则判断,配置存在则返回</span>
+        <span class="token class-name">Optional</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">C</span><span class="token punctuation">&gt;</span></span> prevConfig <span class="token operator">=</span> <span class="token function">findDuplicatedConfig</span><span class="token punctuation">(</span>configsMap<span class="token punctuation">,</span> config<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>prevConfig<span class="token punctuation">.</span><span class="token function">isPresent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> prevConfig<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+		
+		<span class="token comment">//生成配置key</span>
+        <span class="token class-name">String</span> key <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>key <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">do</span> <span class="token punctuation">{</span>
+                <span class="token comment">// generate key if id is not set</span>
+                key <span class="token operator">=</span> <span class="token function">generateConfigId</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span>configsMap<span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+		<span class="token comment">//不相同的配置key重复则抛出异常</span>
+        <span class="token class-name">C</span> existedConfig <span class="token operator">=</span> configsMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>existedConfig <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">isEquals</span><span class="token punctuation">(</span>existedConfig<span class="token punctuation">,</span> config<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">String</span> type <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSimpleName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"Duplicate %s found, there already has one default %s or more than two %ss have the same id, "</span> <span class="token operator">+</span>
+                    <span class="token string">"you can try to give each %s a different id, override previous config with later config. id: %s, prev: %s, later: %s"</span><span class="token punctuation">,</span>
+                type<span class="token punctuation">,</span> type<span class="token punctuation">,</span> type<span class="token punctuation">,</span> type<span class="token punctuation">,</span> key<span class="token punctuation">,</span> existedConfig<span class="token punctuation">,</span> config<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// override existed config if any</span>
+        <span class="token comment">//将配置对象存入configsMap对象中,configsMap来源于configsCache</span>
+        configsMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> config<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> config<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/Dubbo/" rel="tag">Dubbo<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3/" rel="tag">Dubbo3<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Dubbo3源码解析<span class="tag-unordered list-count">23</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/07/10/dubbo/10-dubbo-qi-dong-qi-dubbobootstrap-tian-jia-zhu-ce-zhong-xin-pei-zhi-xin-xi-registryconfig/"> 10-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加注册中心配置信息RegistryConfig</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/07/10/dubbo/8-dubbo-qi-dong-qi-dubbobootstrap-jie-zhu-shuang-chong-xiao-yan-suo-de-dan-li-mo-shi-jin-xing-dui-xiang-de-chu-shi-hua/"> 08-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap借助双重校验锁的单例模式进行对象的初始化</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

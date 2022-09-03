@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918042">
+<link rel="stylesheet" href="/css/style.css?v=1662168973034">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918042"></script>
+<script src="/js/core.js?v=1662168973034"></script>
 
 
 
@@ -48,149 +48,831 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1></h1>
+			<div class="info"><span class="date">2022年8月20日</span>•songxiaosheng 
+			
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/24-Dubbo3应用级服务发现逻辑.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
+		<article class="post">
+			<h1 id="24-Dubbo应用级服务发现"><a href="#24-Dubbo应用级服务发现" class="headerlink" title="24 Dubbo应用级服务发现"></a>24 Dubbo应用级服务发现</h1><h2 id="24-1-简介"><a href="#24-1-简介" class="headerlink" title="24.1 简介"></a>24.1 简介</h2><p>这里我们要看的是MigrationInvoker类型的refreshServiceDiscoveryInvoker方法：根据应用级服务发现，创建应用级的服务调用器，这里有很多逻辑和接口级服务发现类似，不过与接口级调用的invoker对象不同的是应用级的粒度会比较大一些这一步不会去注意去订阅各个服务接口，只会订阅服务提供者的应用。</p>
+<p>默认情况下如果没有配置强制走接口级或者应用级的服务配置，接口级逻辑和应用级服务订阅都会走，这里我们可以直接来看代码吧：<br>MigrationInvoker类型的refreshServiceDiscoveryInvoker方法</p>
+<h2 id="24-2-刷新服务发现调用器Invoker"><a href="#24-2-刷新服务发现调用器Invoker" class="headerlink" title="24.2 刷新服务发现调用器Invoker"></a>24.2 刷新服务发现调用器Invoker</h2><p>下面这个入口代码和接口级的Invoker对象创建类似，唯一不同的是接口级Invoker对象的创建调用的是registryProtocol对象（InterfaceCompatibleRegistryProtocol类型）的getInvoker方法，而这里调用了getServiceDiscoveryInvoker</p>
+<p>MigrationInvoker类型的refreshServiceDiscoveryInvoker方法代码如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">refreshServiceDiscoveryInvoker</span><span class="token punctuation">(</span><span class="token class-name">CountDownLatch</span> latch<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">clearListener</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">needRefresh</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Re-subscribing instance addresses, current interface "</span> <span class="token operator">+</span> type<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>serviceDiscoveryInvoker <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              serviceDiscoveryInvoker<span class="token punctuation">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+          <span class="token comment">//registryProtocol类型为：InterfaceCompatibleRegistryProtocol</span>
+          serviceDiscoveryInvoker <span class="token operator">=</span> registryProtocol<span class="token punctuation">.</span><span class="token function">getServiceDiscoveryInvoker</span><span class="token punctuation">(</span>cluster<span class="token punctuation">,</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token function">setListener</span><span class="token punctuation">(</span>serviceDiscoveryInvoker<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+          latch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>reportService<span class="token punctuation">.</span><span class="token function">hasReporter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              reportService<span class="token punctuation">.</span><span class="token function">reportConsumptionStatus</span><span class="token punctuation">(</span>
+                  reportService<span class="token punctuation">.</span><span class="token function">createConsumptionReport</span><span class="token punctuation">(</span>consumerUrl<span class="token punctuation">.</span><span class="token function">getServiceInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> consumerUrl<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"app"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>step <span class="token operator">==</span> APPLICATION_FIRST<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              <span class="token function">calcPreferredInvoker</span><span class="token punctuation">(</span>rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>InterfaceCompatibleRegistryProtocol类型的getServiceDiscoveryInvoker方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">getServiceDiscoveryInvoker</span><span class="token punctuation">(</span><span class="token class-name">Cluster</span> cluster<span class="token punctuation">,</span> <span class="token class-name">Registry</span> registry<span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> type<span class="token punctuation">,</span> <span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//注册中心Registry类型对象获取 ，</span>
+      <span class="token comment">//这里获取到的是ListenerRegistryWrapper 类型，其中包装了ServiceDiscoveryRegistry类型</span>
+      registry <span class="token operator">=</span> <span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">getRegistryUrl</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//服务发现注册目录对象创建  这里具体逻辑就不说了</span>
+      <span class="token class-name">DynamicDirectory</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> directory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServiceDiscoveryRegistryDirectory</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//开始创建invoker</span>
+      <span class="token keyword">return</span> <span class="token function">doCreateInvoker</span><span class="token punctuation">(</span>directory<span class="token punctuation">,</span> cluster<span class="token punctuation">,</span> registry<span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>调用InterfaceCompatibleRegistryProtocol类型的父类型RegistryProtocol的doCreateInvoker方法：</p>
+<p>下面这个代码接口级服务发现逻辑我中我们已经说过了代码是一样的RegistryProtocol的doCreateInvoker方法：</p>
+<p>大部分逻辑是一样的 唯一有两个对象是不同的：</p>
+<ul>
+<li>应用级：registry类型服务发现的类型ServiceDiscoveryRegistry 接口级为：ZookeeperRegistry类型</li>
+<li>应用级：ServiceDiscoveryRegistryDirectory  接口级为：RegistryDirectory 类型</li>
+</ul>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">doCreateInvoker</span><span class="token punctuation">(</span><span class="token class-name">DynamicDirectory</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> directory<span class="token punctuation">,</span> <span class="token class-name">Cluster</span> cluster<span class="token punctuation">,</span> <span class="token class-name">Registry</span> registry<span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        directory<span class="token punctuation">.</span><span class="token function">setRegistry</span><span class="token punctuation">(</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        directory<span class="token punctuation">.</span><span class="token function">setProtocol</span><span class="token punctuation">(</span>protocol<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// all attributes of REFER_KEY</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> parameters <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>directory<span class="token punctuation">.</span><span class="token function">getConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getParameters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">URL</span> urlToRegistry <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServiceConfigURL</span><span class="token punctuation">(</span>
+            parameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>PROTOCOL_KEY<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> CONSUMER <span class="token operator">:</span> parameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>PROTOCOL_KEY<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            parameters<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>REGISTER_IP_KEY<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token function">getPath</span><span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            parameters
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        urlToRegistry <span class="token operator">=</span> urlToRegistry<span class="token punctuation">.</span><span class="token function">setScopeModel</span><span class="token punctuation">(</span>directory<span class="token punctuation">.</span><span class="token function">getConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getScopeModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        urlToRegistry <span class="token operator">=</span> urlToRegistry<span class="token punctuation">.</span><span class="token function">setServiceModel</span><span class="token punctuation">(</span>directory<span class="token punctuation">.</span><span class="token function">getConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getServiceModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>directory<span class="token punctuation">.</span><span class="token function">isShouldRegister</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            directory<span class="token punctuation">.</span><span class="token function">setRegisteredConsumerUrl</span><span class="token punctuation">(</span>urlToRegistry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//这一行逻辑会走到ServiceDiscoveryRegistry  不过应用级消费者是无需注册服务数据的</span>
+            registry<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span>directory<span class="token punctuation">.</span><span class="token function">getRegisteredConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        directory<span class="token punctuation">.</span><span class="token function">buildRouterChain</span><span class="token punctuation">(</span>urlToRegistry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//发起订阅</span>
+        directory<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token function">toSubscribeUrl</span><span class="token punctuation">(</span>urlToRegistry<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">ClusterInvoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> cluster<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>directory<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>ServiceDiscoveryRegistry类型的subscribe方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>moduleModel<span class="token punctuation">.</span><span class="token function">getModelEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">convert</span><span class="token punctuation">(</span><span class="token class-name">Boolean</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token class-name">Constants</span><span class="token punctuation">.</span>ENABLE_CONFIGURATION_LISTEN<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          enableConfigurationListen <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+          <span class="token comment">//为ConsumerConfigurationListener类型中的listeners列表添加监听器： 监听器类型为ServiceDiscoveryRegistryDirectory</span>
+          <span class="token function">getConsumerConfigurationListener</span><span class="token punctuation">(</span>moduleModel<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNotifyListener</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          referenceConfigurationListener <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReferenceConfigurationListener</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>moduleModel<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+          enableConfigurationListen <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token comment">//调用父类类型DynamicDirectory的订阅方法subscribe 开始开启订阅逻辑 这个逻辑与接口级的逻辑是一样的</span>
+      <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre><code>//调用父类类型DynamicDirectory的订阅方法subscribe 开始开启订阅逻辑 这个逻辑与接口级的逻辑是一样的
+    super.subscribe(url);
+</code></pre>
+<p>为了理解起来更直观我重复贴一下代码来重新看一遍：<br>DynamicDirectory的订阅方法subscribe方法如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">setSubscribeUrl</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//这里先走ListenerRegistryWrapper的subscribe逻辑再走包装的ServiceDiscoveryRegistry类型的逻辑</span>
+    registry<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接下来的subscribe会先走ListenerRegistryWrapper的subscribe逻辑再走包装的ServiceDiscoveryRegistry类型的逻辑<br>接下来直接看下核心的一些代码：</p>
+<p>ListenerRegistryWrapper类型的subscribe方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">NotifyListener</span> listener<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">try</span> <span class="token punctuation">{</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span>registry <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               registry<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>listeners<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token class-name">RuntimeException</span> exception <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+               <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">RegistryServiceListener</span> registryListener <span class="token operator">:</span> listeners<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   <span class="token keyword">if</span> <span class="token punctuation">(</span>registryListener <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                       <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                           registryListener<span class="token punctuation">.</span><span class="token function">onSubscribe</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                       <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">RuntimeException</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                           logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>t<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                           exception <span class="token operator">=</span> t<span class="token punctuation">;</span>
+                       <span class="token punctuation">}</span>
+                   <span class="token punctuation">}</span>
+               <span class="token punctuation">}</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span>exception <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   <span class="token keyword">throw</span> exception<span class="token punctuation">;</span>
+               <span class="token punctuation">}</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>ServiceDiscoveryRegistry类型的subscribe方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">NotifyListener</span> listener<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">//前面是否注册shouldRegister为false这里是是否订阅shouldSubscribe方法结果为true</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">shouldSubscribe</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// Should Not Subscribe</span>
+           <span class="token keyword">return</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token comment">//执行订阅逻辑</span>
+       <span class="token function">doSubscribe</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>从这里开始要进入应用级服务订阅的路基了继续往下看</p>
+<p>ServiceDiscoveryRegistry类型的doSubscribe方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">doSubscribe</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">NotifyListener</span> listener<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        url <span class="token operator">=</span> <span class="token function">addRegistryClusterKey</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//服务发现类型为ZookeeperServiceDiscovery</span>
+        serviceDiscovery<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">boolean</span> check <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>CHECK_KEY<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">String</span> key <span class="token operator">=</span> <span class="token class-name">ServiceNameMapping</span><span class="token punctuation">.</span><span class="token function">buildMappingKey</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//应用级服务发现悲观锁先加上一把</span>
+        <span class="token class-name">Lock</span> mappingLock <span class="token operator">=</span> serviceNameMapping<span class="token punctuation">.</span><span class="token function">getMappingLock</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            mappingLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> subscribedServices <span class="token operator">=</span> serviceNameMapping<span class="token punctuation">.</span><span class="token function">getCachedMapping</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token class-name">MappingListener</span> mappingListener <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DefaultMappingListener</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> subscribedServices<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//注意注意这行代码超级重要 当前是服务接口要找到服务的应用名字 将会查询映射信息对应节点：</span>
+                <span class="token comment">///dubbo/mapping/link.elastic.dubbo.entity.DemoService</span>
+                <span class="token comment">//这里最终获取到的应用服务提供者名字集合为dubbo-demo-api-provider</span>
+                subscribedServices <span class="token operator">=</span> serviceNameMapping<span class="token punctuation">.</span><span class="token function">getAndListen</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> url<span class="token punctuation">,</span> mappingListener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                mappingListeners<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">getProtocolServiceKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> mappingListener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Cannot find app mapping for service "</span> <span class="token operator">+</span> url<span class="token punctuation">.</span><span class="token function">getServiceInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">", will not migrate."</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>subscribedServices<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"No interface-apps mapping found in local cache, stop subscribing, will automatically wait for mapping listener callback: "</span> <span class="token operator">+</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//                if (check) {</span>
+<span class="token comment">//                    throw new IllegalStateException("Should has at least one way to know which services this interface belongs to, subscription url: " + url);</span>
+<span class="token comment">//                }</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">//执行订阅url的逻辑</span>
+            <span class="token function">subscribeURLs</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> listener<span class="token punctuation">,</span> subscribedServices<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            mappingLock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>接下来看<br> 服务发现类型为ZookeeperServiceDiscovery的subscribe方法，不过这里封装在父类型里面了，调用其父类型AbstractServiceDiscovery的subscribe方法</p>
+<p> 先看父类型AbstractServiceDiscovery的subscribe方法<br> </p><pre class="line-numbers language-none"><code class="language-none">public void subscribe(URL url, NotifyListener listener) {
+  //这个metadataInfo类型为MetadataInfo
+      metadataInfo.addSubscribedURL(url);
+  }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><p></p>
+<p>MetadataInfo类型的addSubscribedURL方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">addSubscribedURL</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>subscribedServiceURLs <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           subscribedServiceURLs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentSkipListMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token comment">//下面将其url添加到subscribedServiceURLs成员变量里面就结束了</span>
+       <span class="token function">addURL</span><span class="token punctuation">(</span>subscribedServiceURLs<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>前面服务发现的subscribe并没有做什么逻辑性质的操作仅仅是将url放到了成员变量里面，接下来继续看ServiceDiscoveryRegistry类型的doSubscribe方法：</p>
+<p>通过服务接口信息查询应用名字 对应注册中心路径为：dubbo/mapping/link.elastic.dubbo.entity.DemoService<br>对应代码MetadataServiceNameMapping类型的getAndListen方法：</p>
+<p>下面这个代码比较长，我们重点看一行代码<br><code> mappingServices = (new AsyncMappingTask(listener, subscribedURL, false)).call();</code></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">getAndListen</span><span class="token punctuation">(</span><span class="token class-name">URL</span> registryURL<span class="token punctuation">,</span> <span class="token class-name">URL</span> subscribedURL<span class="token punctuation">,</span> <span class="token class-name">MappingListener</span> listener<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">String</span> key <span class="token operator">=</span> <span class="token class-name">ServiceNameMapping</span><span class="token punctuation">.</span><span class="token function">buildMappingKey</span><span class="token punctuation">(</span>subscribedURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// use previously cached services.</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> mappingServices <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getCachedMapping</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Asynchronously register listener in case previous cache does not exist or cache expired.</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>mappingServices<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Local cache mapping is empty"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//重点看这个同步调用获取注册中心的路径信息 call方法在父类型AbstractServiceNameMapping中</span>
+                mappingServices <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">AsyncMappingTask</span><span class="token punctuation">(</span>listener<span class="token punctuation">,</span> subscribedURL<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment">// ignore</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>mappingServices<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">String</span> registryServices <span class="token operator">=</span> registryURL<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>SUBSCRIBED_SERVICE_NAMES_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>registryServices<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>subscribedURL<span class="token punctuation">.</span><span class="token function">getServiceInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" mapping to "</span> <span class="token operator">+</span> registryServices <span class="token operator">+</span> <span class="token string">" instructed by registry subscribed-services."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    mappingServices <span class="token operator">=</span> <span class="token function">parseServices</span><span class="token punctuation">(</span>registryServices<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>mappingServices<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">putCachedMapping</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> mappingServices<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token class-name">ExecutorService</span> executorService <span class="token operator">=</span> applicationModel<span class="token punctuation">.</span><span class="token function">getFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token class-name">FrameworkExecutorRepository</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getMappingRefreshingExecutor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            executorService<span class="token punctuation">.</span><span class="token function">submit</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">AsyncMappingTask</span><span class="token punctuation">(</span>listener<span class="token punctuation">,</span> subscribedURL<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> mappingServices<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接下来看MetadataServiceNameMapping类型的父类型AbstractServiceNameMapping的call方法<br>同样道理这里主要关注getAndListen方法即可</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+          <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>mappingListeners<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> mappedServices <span class="token operator">=</span> <span class="token function">emptySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+              <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                  <span class="token comment">//这个缓存的key与服务接口和分组有关这里我没配置分组那就只有接口了 key为link.elastic.dubbo.entity.DemoService</span>
+                  <span class="token class-name">String</span> mappingKey <span class="token operator">=</span> <span class="token class-name">ServiceNameMapping</span><span class="token punctuation">.</span><span class="token function">buildMappingKey</span><span class="token punctuation">(</span>subscribedURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                  <span class="token keyword">if</span> <span class="token punctuation">(</span>listener <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                      <span class="token comment">//这里获取到的应用名字为：dubbo-demo-api-provider</span>
+                      mappedServices <span class="token operator">=</span> <span class="token function">toTreeSet</span><span class="token punctuation">(</span><span class="token function">getAndListen</span><span class="token punctuation">(</span>subscribedURL<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                      <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">MappingListener</span><span class="token punctuation">&gt;</span></span> listeners <span class="token operator">=</span> mappingListeners<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span>mappingKey<span class="token punctuation">,</span> _k <span class="token operator">-&gt;</span> <span class="token keyword">new</span> <span class="token class-name">HashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                      listeners<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>mappedServices<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                          <span class="token keyword">if</span> <span class="token punctuation">(</span>notifyAtFirstTime<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                              <span class="token comment">// guarantee at-least-once notification no matter what kind of underlying meta server is used.</span>
+                              <span class="token comment">// listener notification will also cause updating of mapping cache.</span>
+                              listener<span class="token punctuation">.</span><span class="token function">onEvent</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">MappingChangedEvent</span><span class="token punctuation">(</span>mappingKey<span class="token punctuation">,</span> mappedServices<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                          <span class="token punctuation">}</span>
+                      <span class="token punctuation">}</span>
+                  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                      mappedServices <span class="token operator">=</span> <span class="token function">get</span><span class="token punctuation">(</span>subscribedURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>mappedServices<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                          <span class="token class-name">AbstractServiceNameMapping</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">putCachedMapping</span><span class="token punctuation">(</span>mappingKey<span class="token punctuation">,</span> mappedServices<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                      <span class="token punctuation">}</span>
+                  <span class="token punctuation">}</span>
+              <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                  logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Failed getting mapping info from remote center. "</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+              <span class="token punctuation">}</span>
+              <span class="token keyword">return</span> mappedServices<span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后看AbstractServiceNameMapping的getAndListen方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">getAndListen</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">MappingListener</span> mappingListener<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">String</span> serviceInterface <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getServiceInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// randomly pick one metadata report is ok for it's guaranteed all metadata report will have the same mapping data.</span>
+        <span class="token class-name">String</span> registryCluster <span class="token operator">=</span> <span class="token function">getRegistryCluster</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">MetadataReport</span> metadataReport <span class="token operator">=</span> metadataReportInstance<span class="token punctuation">.</span><span class="token function">getMetadataReport</span><span class="token punctuation">(</span>registryCluster<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>metadataReport <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">emptySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> metadataReport<span class="token punctuation">.</span><span class="token function">getServiceAppMapping</span><span class="token punctuation">(</span>serviceInterface<span class="token punctuation">,</span> mappingListener<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>ZookeeperMetadataReport类型的getServiceAppMapping方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">getServiceAppMapping</span><span class="token punctuation">(</span><span class="token class-name">String</span> serviceKey<span class="token punctuation">,</span> <span class="token class-name">MappingListener</span> listener<span class="token punctuation">,</span> <span class="token class-name">URL</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token class-name">String</span> path <span class="token operator">=</span> <span class="token function">buildPathKey</span><span class="token punctuation">(</span>DEFAULT_MAPPING_GROUP<span class="token punctuation">,</span> serviceKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token class-name">MappingDataListener</span> mappingDataListener <span class="token operator">=</span> casListenerMap<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> _k <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+           <span class="token class-name">MappingDataListener</span> newMappingListener <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MappingDataListener</span><span class="token punctuation">(</span>serviceKey<span class="token punctuation">,</span> path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           zkClient<span class="token punctuation">.</span><span class="token function">addDataListener</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> newMappingListener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token keyword">return</span> newMappingListener<span class="token punctuation">;</span>
+       <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       mappingDataListener<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span>listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//这个拼装后的路径为：/dubbo/mapping/link.elastic.dubbo.entity.DemoService</span>
+       <span class="token comment">//这里获取到的应用名字为：dubbo-demo-api-provider</span>
+       <span class="token keyword">return</span> <span class="token function">getAppNames</span><span class="token punctuation">(</span>zkClient<span class="token punctuation">.</span><span class="token function">getContent</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里贴个图展示下映射数据：<br><a href="https://blog.elastic.link/img/dubbo/24-mapping.png"></a></p>
+<p>有了应用名字开始订阅服务提供者<br>ServiceDiscoveryRegistry类型的subscribeURLs方法<br>代码如下所示：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">subscribeURLs</span><span class="token punctuation">(</span><span class="token class-name">URL</span> url<span class="token punctuation">,</span> <span class="token class-name">NotifyListener</span> listener<span class="token punctuation">,</span> <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> serviceNames<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        serviceNames <span class="token operator">=</span> <span class="token function">toTreeSet</span><span class="token punctuation">(</span>serviceNames<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> serviceNamesKey <span class="token operator">=</span> <span class="token function">toStringKeys</span><span class="token punctuation">(</span>serviceNames<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> protocolServiceKey <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getProtocolServiceKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"Trying to subscribe from apps %s for service key %s, "</span><span class="token punctuation">,</span> serviceNamesKey<span class="token punctuation">,</span> protocolServiceKey<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// register ServiceInstancesChangedListener</span>
+        <span class="token class-name">Lock</span> appSubscriptionLock <span class="token operator">=</span> <span class="token function">getAppSubscription</span><span class="token punctuation">(</span>serviceNamesKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment">//再来一把url订阅的悲观锁</span>
+            appSubscriptionLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">ServiceInstancesChangedListener</span> serviceInstancesChangedListener <span class="token operator">=</span> serviceListeners<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>serviceNamesKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>serviceInstancesChangedListener <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                serviceInstancesChangedListener <span class="token operator">=</span> serviceDiscovery<span class="token punctuation">.</span><span class="token function">createListener</span><span class="token punctuation">(</span>serviceNames<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                serviceInstancesChangedListener<span class="token punctuation">.</span><span class="token function">setUrl</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//这个应用名字为：dubbo-demo-api-provider</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> serviceName <span class="token operator">:</span> serviceNames<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment">//这个代码调用的是curator 框架的方法 通过应用名字节点查询节点下面的所有服务提供者的应用信息待会截图看</span>
+                    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ServiceInstance</span><span class="token punctuation">&gt;</span></span> serviceInstances <span class="token operator">=</span> serviceDiscovery<span class="token punctuation">.</span><span class="token function">getInstances</span><span class="token punctuation">(</span>serviceName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>serviceInstances<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token comment">//发现了存在服务提供者则触发监听器开始进行应用发现通知</span>
+                        serviceInstancesChangedListener<span class="token punctuation">.</span><span class="token function">onEvent</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ServiceInstancesChangedEvent</span><span class="token punctuation">(</span>serviceName<span class="token punctuation">,</span> serviceInstances<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+                serviceListeners<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>serviceNamesKey<span class="token punctuation">,</span> serviceInstancesChangedListener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>serviceInstancesChangedListener<span class="token punctuation">.</span><span class="token function">isDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                serviceInstancesChangedListener<span class="token punctuation">.</span><span class="token function">setUrl</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                listener<span class="token punctuation">.</span><span class="token function">addServiceListener</span><span class="token punctuation">(</span>serviceInstancesChangedListener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                serviceInstancesChangedListener<span class="token punctuation">.</span><span class="token function">addListenerAndNotify</span><span class="token punctuation">(</span>protocolServiceKey<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                serviceDiscovery<span class="token punctuation">.</span><span class="token function">addServiceInstancesChangedListener</span><span class="token punctuation">(</span>serviceInstancesChangedListener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"Listener of %s has been destroyed by another thread."</span><span class="token punctuation">,</span> serviceNamesKey<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                serviceListeners<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>serviceNamesKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            appSubscriptionLock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>查询到的应用信息：</p>
+<pre class="line-numbers language-none"><code class="language-none">DefaultServiceInstance{
+    serviceName='dubbo-demo-api-provider', 
+    host='192.168.1.169', port=20880, 
+    enabled=true, healthy=true, 
+    metadata={
+        dubbo.endpoints=[{"port":20880,"protocol":"dubbo"}], 
+        dubbo.metadata-service.url-params={"connections":"1","version":"1.0.0","dubbo":"2.0.2","release":"3.0.10","side":"provider","port":"20880","protocol":"dubbo"}, 
+        dubbo.metadata.revision=af365a420dba83941ddf2087b998a1d2, 
+        dubbo.metadata.storage-type=local, timestamp=1661078418865}}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里展示图注册中心的数据：<br> <a href="https://blog.elastic.link/img/dubbo/24-application.png"></a></p>
+<p>ServiceInstancesChangedListener类型的时间通知方法onEvent</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onEvent</span><span class="token punctuation">(</span><span class="token class-name">ServiceInstancesChangedEvent</span> event<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>destroyed<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token operator">!</span><span class="token function">accept</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">isRetryAndExpired</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token function">doOnEvent</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>继续看ServiceInstancesChangedListener类型的时间通知方法的doOnEvent</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">doOnEvent</span><span class="token punctuation">(</span><span class="token class-name">ServiceInstancesChangedEvent</span> event<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>destroyed<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token operator">!</span><span class="token function">accept</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">isRetryAndExpired</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//刷新内存数据</span>
+        <span class="token function">refreshInstance</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span>event<span class="token punctuation">.</span><span class="token function">getServiceInstances</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">ServiceInstance</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> revisionToInstances <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Set</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> localServiceToRevisions <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// grouping all instances of this app(service name) by revision</span>
+          <span class="token comment">//刷新内存数据</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">ServiceInstance</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> entry <span class="token operator">:</span> allInstances<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ServiceInstance</span><span class="token punctuation">&gt;</span></span> instances <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ServiceInstance</span> instance <span class="token operator">:</span> instances<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">String</span> revision <span class="token operator">=</span> <span class="token function">getExportedServicesRevision</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>revision <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> EMPTY_REVISION<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>revision<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Find instance without valid service metadata: "</span> <span class="token operator">+</span> instance<span class="token punctuation">.</span><span class="token function">getAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ServiceInstance</span><span class="token punctuation">&gt;</span></span> subInstances <span class="token operator">=</span> revisionToInstances<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span>revision<span class="token punctuation">,</span> r <span class="token operator">-&gt;</span> <span class="token keyword">new</span> <span class="token class-name">LinkedList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                subInstances<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// get MetadataInfo with revision</span>
+        <span class="token comment">//重点看这里</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">ServiceInstance</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> entry <span class="token operator">:</span> revisionToInstances<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">String</span> revision <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ServiceInstance</span><span class="token punctuation">&gt;</span></span> subInstances <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//这里对应ZookeeperServiceDiscovery类型</span>
+            <span class="token class-name">MetadataInfo</span> metadata <span class="token operator">=</span> serviceDiscovery<span class="token punctuation">.</span><span class="token function">getRemoteMetadata</span><span class="token punctuation">(</span>revision<span class="token punctuation">,</span> subInstances<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//解析元数据 最终结果存在localServiceToRevisions变量中 key为协议 值为服务接口与服务元数据信息</span>
+            <span class="token function">parseMetadata</span><span class="token punctuation">(</span>revision<span class="token punctuation">,</span> metadata<span class="token punctuation">,</span> localServiceToRevisions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// update metadata into each instance, in case new instance created.</span>
+            <span class="token comment">//为每个实例更新其元数据信息</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ServiceInstance</span> tmpInstance <span class="token operator">:</span> subInstances<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">MetadataInfo</span> originMetadata <span class="token operator">=</span> tmpInstance<span class="token punctuation">.</span><span class="token function">getServiceMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>originMetadata <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> <span class="token operator">!</span><span class="token class-name">Objects</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>originMetadata<span class="token punctuation">.</span><span class="token function">getRevision</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> metadata<span class="token punctuation">.</span><span class="token function">getRevision</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    tmpInstance<span class="token punctuation">.</span><span class="token function">setServiceMetadata</span><span class="token punctuation">(</span>metadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">int</span> emptyNum <span class="token operator">=</span> <span class="token function">hasEmptyMetadata</span><span class="token punctuation">(</span>revisionToInstances<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>emptyNum <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">// retry every 10 seconds</span>
+            hasEmptyMetadata <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>retryPermission<span class="token punctuation">.</span><span class="token function">tryAcquire</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>retryFuture <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>retryFuture<span class="token punctuation">.</span><span class="token function">isDone</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment">// cancel last retryFuture because only one retryFuture will be canceled at destroy().</span>
+                    retryFuture<span class="token punctuation">.</span><span class="token function">cancel</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                retryFuture <span class="token operator">=</span> scheduler<span class="token punctuation">.</span><span class="token function">schedule</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">AddressRefreshRetryTask</span><span class="token punctuation">(</span>retryPermission<span class="token punctuation">,</span> event<span class="token punctuation">.</span><span class="token function">getServiceName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">10_000L</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Address refresh try task submitted"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">// return if all metadata is empty, this notification will not take effect.</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>emptyNum <span class="token operator">==</span> revisionToInstances<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Address refresh failed because of Metadata Server failure, wait for retry or new address refresh event."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        hasEmptyMetadata <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token punctuation">&lt;</span><span class="token class-name">Set</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> protocolRevisionsToUrls <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> newServiceUrls <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Set</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> entry <span class="token operator">:</span> localServiceToRevisions<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">String</span> protocol <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>protocolServiceKey<span class="token punctuation">,</span> revisions<span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+                <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Set</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> revisionsToUrls <span class="token operator">=</span> protocolRevisionsToUrls<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span>protocol<span class="token punctuation">,</span> k <span class="token operator">-&gt;</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">Object</span> urls <span class="token operator">=</span> revisionsToUrls<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>revisions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>urls <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    urls <span class="token operator">=</span> <span class="token function">getServiceUrlsCache</span><span class="token punctuation">(</span>revisionToInstances<span class="token punctuation">,</span> revisions<span class="token punctuation">,</span> protocol<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    revisionsToUrls<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>revisions<span class="token punctuation">,</span> urls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                newServiceUrls<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>protocolServiceKey<span class="token punctuation">,</span> urls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>serviceUrls <span class="token operator">=</span> newServiceUrls<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">notifyAddressChanged</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ZookeeperServiceDiscovery类型的getRemoteMetadata方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">MetadataInfo</span> <span class="token function">getRemoteMetadata</span><span class="token punctuation">(</span><span class="token class-name">String</span> revision<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ServiceInstance</span><span class="token punctuation">&gt;</span></span> instances<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token class-name">MetadataInfo</span> metadata <span class="token operator">=</span> metaCacheManager<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>revision<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//缓存的元数据为空将从元数据中心远端获取</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>metadata <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> metadata <span class="token operator">!=</span> <span class="token class-name">MetadataInfo</span><span class="token punctuation">.</span>EMPTY<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           metadata<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">// metadata loaded from cache</span>
+           <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"MetadataInfo for revision="</span> <span class="token operator">+</span> revision <span class="token operator">+</span> <span class="token string">", "</span> <span class="token operator">+</span> metadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+           <span class="token keyword">return</span> metadata<span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+
+      <span class="token comment">//这里将从元数据中心获取数据</span>
+       <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>metaCacheManager<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token comment">// try to load metadata from remote.</span>
+           <span class="token keyword">int</span> triedTimes <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+           <span class="token comment">//失败则重试3次</span>
+           <span class="token keyword">while</span> <span class="token punctuation">(</span>triedTimes <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token comment">//根据版本号查询元数据 发起一次RPC请求</span>
+               metadata <span class="token operator">=</span> <span class="token class-name">MetadataUtils</span><span class="token punctuation">.</span><span class="token function">getRemoteMetadata</span><span class="token punctuation">(</span>revision<span class="token punctuation">,</span> instances<span class="token punctuation">,</span> metadataReport<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+               <span class="token keyword">if</span> <span class="token punctuation">(</span>metadata <span class="token operator">!=</span> <span class="token class-name">MetadataInfo</span><span class="token punctuation">.</span>EMPTY<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">// succeeded</span>
+                <span class="token comment">//前面RPC请求元数据成功接下来开始初始化</span>
+                   metadata<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token keyword">break</span><span class="token punctuation">;</span>
+               <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><span class="token comment">// failed</span>
+                   <span class="token keyword">if</span> <span class="token punctuation">(</span>triedTimes <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                       <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                           logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Retry the "</span> <span class="token operator">+</span> triedTimes <span class="token operator">+</span> <span class="token string">" times to get metadata for revision="</span> <span class="token operator">+</span> revision<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                       <span class="token punctuation">}</span>
+                   <span class="token punctuation">}</span>
+                   triedTimes<span class="token operator">++</span><span class="token punctuation">;</span>
+                   <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                       <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                   <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                   <span class="token punctuation">}</span>
+               <span class="token punctuation">}</span>
+           <span class="token punctuation">}</span>
+
+           <span class="token keyword">if</span> <span class="token punctuation">(</span>metadata <span class="token operator">==</span> <span class="token class-name">MetadataInfo</span><span class="token punctuation">.</span>EMPTY<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Failed to get metadata for revision after 3 retries, revision="</span> <span class="token operator">+</span> revision<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+               <span class="token comment">//缓存查询到的元数据到元数据缓存管理器中</span>
+               metaCacheManager<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>revision<span class="token punctuation">,</span> metadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+       <span class="token keyword">return</span> metadata<span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>MetadataUtils类型的getRemoteMetadata方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">MetadataInfo</span> <span class="token function">getRemoteMetadata</span><span class="token punctuation">(</span><span class="token class-name">String</span> revision<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ServiceInstance</span><span class="token punctuation">&gt;</span></span> instances<span class="token punctuation">,</span> <span class="token class-name">MetadataReport</span> metadataReport<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">//随机轮训一台主机查询它的应用实例信息</span>
+        <span class="token class-name">ServiceInstance</span> instance <span class="token operator">=</span> <span class="token function">selectInstance</span><span class="token punctuation">(</span>instances<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//元数据提供者存储的位置默认为本地存储local 消费者从提供者那里拿，</span>
+        <span class="token comment">//remote - Provider 把 metadata 放到远端注册中心，Consumer 从注册中心获取；</span>
+        <span class="token comment">//local - Provider 把 metadata 放在本地，Consumer 从 Provider 处直接获取；</span>
+        <span class="token comment">//这个配置可以看链接：https://dubbo.apache.org/zh/docs3-v2/java-sdk/reference-manual/config/properties/</span>
+        <span class="token class-name">String</span> metadataType <span class="token operator">=</span> <span class="token class-name">ServiceInstanceMetadataUtils</span><span class="token punctuation">.</span><span class="token function">getMetadataStorageType</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">MetadataInfo</span> metadataInfo<span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Instance "</span> <span class="token operator">+</span> instance<span class="token punctuation">.</span><span class="token function">getAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" is using metadata type "</span> <span class="token operator">+</span> metadataType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">//remote - Provider 把 metadata 放到远端注册中心，Consumer 从注册中心获取；</span>
+            <span class="token comment">//local - Provider 把 metadata 放在本地，Consumer 从 Provider 处直接获取；</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>REMOTE_METADATA_STORAGE_TYPE<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>metadataType<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment">//这里走的是remote配置</span>
+                metadataInfo <span class="token operator">=</span> <span class="token class-name">MetadataUtils</span><span class="token punctuation">.</span><span class="token function">getMetadata</span><span class="token punctuation">(</span>revision<span class="token punctuation">,</span> instance<span class="token punctuation">,</span> metadataReport<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment">// change the instance used to communicate to avoid all requests route to the same instance</span>
+                <span class="token class-name">ProxyHolder</span> proxyHolder <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token comment">//手动调用服务提供者内置的MetadataService Dubbo服务</span>
+                    proxyHolder <span class="token operator">=</span> <span class="token class-name">MetadataUtils</span><span class="token punctuation">.</span><span class="token function">referProxy</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment">//发起RPC调用 调用提供者的提供的元数据请求RPC接口</span>
+                    metadataInfo <span class="token operator">=</span> proxyHolder<span class="token punctuation">.</span><span class="token function">getProxy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getMetadataInfo</span><span class="token punctuation">(</span><span class="token class-name">ServiceInstanceMetadataUtils</span><span class="token punctuation">.</span><span class="token function">getExportedServicesRevision</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                    <span class="token class-name">MetadataUtils</span><span class="token punctuation">.</span><span class="token function">destroyProxy</span><span class="token punctuation">(</span>proxyHolder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Failed to get app metadata for revision "</span> <span class="token operator">+</span> revision <span class="token operator">+</span> <span class="token string">" for type "</span> <span class="token operator">+</span> metadataType <span class="token operator">+</span> <span class="token string">" from instance "</span> <span class="token operator">+</span> instance<span class="token punctuation">.</span><span class="token function">getAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            metadataInfo <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>metadataInfo <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            metadataInfo <span class="token operator">=</span> <span class="token class-name">MetadataInfo</span><span class="token punctuation">.</span>EMPTY<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> metadataInfo<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>  MetadataUtils类型的referProxy</p>
+  <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">ProxyHolder</span> <span class="token function">referProxy</span><span class="token punctuation">(</span><span class="token class-name">ServiceInstance</span> instance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token class-name">MetadataServiceURLBuilder</span> builder<span class="token punctuation">;</span>
+     <span class="token class-name">ExtensionLoader</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">MetadataServiceURLBuilder</span><span class="token punctuation">&gt;</span></span> loader <span class="token operator">=</span> instance<span class="token punctuation">.</span><span class="token function">getApplicationModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+         <span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">MetadataServiceURLBuilder</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+     <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> metadata <span class="token operator">=</span> instance<span class="token punctuation">.</span><span class="token function">getMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token comment">// METADATA_SERVICE_URLS_PROPERTY_NAME is a unique key exists only on instances of spring-cloud-alibaba.</span>
+     <span class="token class-name">String</span> dubboUrlsForJson <span class="token operator">=</span> metadata<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>METADATA_SERVICE_URLS_PROPERTY_NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token comment">//</span>
+     <span class="token keyword">if</span> <span class="token punctuation">(</span>metadata<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>dubboUrlsForJson<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         builder <span class="token operator">=</span> loader<span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span><span class="token class-name">StandardMetadataServiceURLBuilder</span><span class="token punctuation">.</span>NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+         builder <span class="token operator">=</span> loader<span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span><span class="token class-name">SpringCloudMetadataServiceURLBuilder</span><span class="token punctuation">.</span>NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+     <span class="token comment">//默认的builder类型为StandardMetadataServiceURLBuilder 将远数据对象转url配置</span>
+     <span class="token comment">//例如：dubbo://192.168.1.169:20880/org.apache.dubbo.metadata.MetadataService?connections=1&amp;corethreads=2&amp;dubbo=2.0.2&amp;group=dubbo-demo-api-provider&amp;port=20880&amp;protocol=dubbo&amp;release=3.0.10&amp;retries=0&amp;side=provider&amp;threadpool=cached&amp;threads=100&amp;timeout=5000&amp;version=1.0.0</span>
+     <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> urls <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>urls<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Introspection service discovery mode is enabled "</span>
+             <span class="token operator">+</span> instance <span class="token operator">+</span> <span class="token string">", but no metadata service can build from it."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+
+     <span class="token class-name">URL</span> url <span class="token operator">=</span> urls<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+     <span class="token comment">// Simply rely on the first metadata url, as stated in MetadataServiceURLBuilder.</span>
+     <span class="token class-name">ApplicationModel</span> applicationModel <span class="token operator">=</span> instance<span class="token punctuation">.</span><span class="token function">getApplicationModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token class-name">ModuleModel</span> internalModel <span class="token operator">=</span> applicationModel<span class="token punctuation">.</span><span class="token function">getInternalModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token class-name">ConsumerModel</span> consumerModel <span class="token operator">=</span> applicationModel<span class="token punctuation">.</span><span class="token function">getInternalModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">registerInternalConsumer</span><span class="token punctuation">(</span><span class="token class-name">MetadataService</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+     <span class="token class-name">Protocol</span> protocol <span class="token operator">=</span> applicationModel<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">Protocol</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAdaptiveExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+     url<span class="token punctuation">.</span><span class="token function">setServiceModel</span><span class="token punctuation">(</span>consumerModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token comment">//!!!! 重点看这一行与普通的服务一样这里默认也是使用DubboProtocol来引用元数据服务</span>
+     <span class="token class-name">Invoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">MetadataService</span><span class="token punctuation">&gt;</span></span> invoker <span class="token operator">=</span> protocol<span class="token punctuation">.</span><span class="token function">refer</span><span class="token punctuation">(</span><span class="token class-name">MetadataService</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+     <span class="token class-name">ProxyFactory</span> proxyFactory <span class="token operator">=</span> applicationModel<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">ProxyFactory</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAdaptiveExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+     <span class="token comment">//为其将要调用的invoker生成对应代理对象</span>
+     <span class="token class-name">MetadataService</span> metadataService <span class="token operator">=</span> proxyFactory<span class="token punctuation">.</span><span class="token function">getProxy</span><span class="token punctuation">(</span>invoker<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+     consumerModel<span class="token punctuation">.</span><span class="token function">getServiceMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setTarget</span><span class="token punctuation">(</span>metadataService<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     consumerModel<span class="token punctuation">.</span><span class="token function">getServiceMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addAttribute</span><span class="token punctuation">(</span>PROXY_CLASS_REF<span class="token punctuation">,</span> metadataService<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     consumerModel<span class="token punctuation">.</span><span class="token function">setProxyObject</span><span class="token punctuation">(</span>metadataService<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     consumerModel<span class="token punctuation">.</span><span class="token function">initMethodModels</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+     <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ProxyHolder</span><span class="token punctuation">(</span>consumerModel<span class="token punctuation">,</span> metadataService<span class="token punctuation">,</span> internalModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>metadata的init方法初始化从提供者那里获取到的元数据</p>
+<pre class="line-numbers language-none"><code class="language-none">public void init() {
+       if (!initiated.compareAndSet(false, true)) {
+           return;
+       }
+       if (CollectionUtils.isNotEmptyMap(services)) {
+           //遍历所有的服务信息然后初始化 ServiceInfo
+           services.forEach((_k, serviceInfo) -&gt; {
+               serviceInfo.init();
+               // create duplicate serviceKey(without protocol)-&gt;serviceInfo mapping to support metadata search when protocol is not specified on consumer side.
+               if (subscribedServices == null) {
+                   subscribedServices = new HashMap&lt;&gt;();
+               }
+               Set&lt;ServiceInfo&gt; serviceInfos = subscribedServices.computeIfAbsent(serviceInfo.getServiceKey(), _key -&gt; new HashSet&lt;&gt;());
+               serviceInfos.add(serviceInfo);
+           });
+       }
+   }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>ServiceInfo类型的init方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">//初始化matchKey变量 格式为：service + group + version + protocol</span>
+            <span class="token function">buildMatchKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//初始化服务keyserviceKey 格式为：service + group + version</span>
+            <span class="token function">buildServiceKey</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> group<span class="token punctuation">,</span> version<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// init method params</span>
+            <span class="token comment">//初始化与方法匹配的参数</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>methodParams <span class="token operator">=</span> <span class="token class-name">URLParam</span><span class="token punctuation">.</span><span class="token function">initMethodParameters</span><span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// Actually, consumer params is empty after deserialized on the consumer side, so no need to initialize.</span>
+            <span class="token comment">// Check how InstanceAddressURL operates on consumer url for more detail.</span>
+<span class="token comment">//            this.consumerMethodParams = URLParam.initMethodParameters(consumerParams);</span>
+            <span class="token comment">// no need to init numbers for it's only for cache purpose</span>
+        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>ServiceDiscoveryRegistryDirectory接收订阅到的服务的通知方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">notify</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> instanceUrls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isDestroyed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+       <span class="token comment">// Set the context of the address notification thread.</span>
+       <span class="token class-name">RpcServiceContext</span><span class="token punctuation">.</span><span class="token function">getServiceContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setConsumerUrl</span><span class="token punctuation">(</span><span class="token function">getConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">//  3.x added for extend URL address</span>
+       <span class="token class-name">ExtensionLoader</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">AddressListener</span><span class="token punctuation">&gt;</span></span> addressListenerExtensionLoader <span class="token operator">=</span> <span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getOrDefaultModuleModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">AddressListener</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">AddressListener</span><span class="token punctuation">&gt;</span></span> supportedListeners <span class="token operator">=</span> addressListenerExtensionLoader<span class="token punctuation">.</span><span class="token function">getActivateExtension</span><span class="token punctuation">(</span><span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>supportedListeners <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>supportedListeners<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">AddressListener</span> addressListener <span class="token operator">:</span> supportedListeners<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               instanceUrls <span class="token operator">=</span> addressListener<span class="token punctuation">.</span><span class="token function">notify</span><span class="token punctuation">(</span>instanceUrls<span class="token punctuation">,</span> <span class="token function">getConsumerUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token punctuation">}</span>
+       <span class="token punctuation">}</span>
+
+       <span class="token function">refreshOverrideAndInvoker</span><span class="token punctuation">(</span>instanceUrls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">refreshOverrideAndInvoker</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> instanceUrls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">// mock zookeeper://xxx?mock=return null</span>
+      <span class="token function">refreshInvoker</span><span class="token punctuation">(</span>instanceUrls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">refreshInvoker</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> invokerUrls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Assert</span><span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>invokerUrls<span class="token punctuation">,</span> <span class="token string">"invokerUrls should not be null, use EMPTY url to clear current addresses."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>originalUrls <span class="token operator">=</span> invokerUrls<span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>invokerUrls<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span> <span class="token operator">&amp;&amp;</span> EMPTY_PROTOCOL<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>invokerUrls<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Received url with EMPTY protocol, will clear all available addresses."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>forbidden <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token comment">// Forbid to access</span>
+            routerChain<span class="token punctuation">.</span><span class="token function">setInvokers</span><span class="token punctuation">(</span><span class="token class-name">BitList</span><span class="token punctuation">.</span><span class="token function">emptyList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">destroyAllInvokers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Close all invokers</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>forbidden <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span> <span class="token comment">// Allow accessing</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>invokerUrls<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Received empty url list, will ignore for protection purpose."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">// use local reference to avoid NPE as this.urlInvokerMap will be set null concurrently at destroyAllInvokers().</span>
+            <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Invoker</span><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> localUrlInvokerMap <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>urlInvokerMap<span class="token punctuation">;</span>
+            <span class="token comment">// can't use local reference as oldUrlInvokerMap's mappings might be removed directly at toInvokers().</span>
+            <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Invoker</span><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> oldUrlInvokerMap <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>localUrlInvokerMap <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment">// the initial capacity should be set greater than the maximum number of entries divided by the load factor to avoid resizing.</span>
+                oldUrlInvokerMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">round</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">+</span> localUrlInvokerMap<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> DEFAULT_HASHMAP_LOAD_FACTOR<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                localUrlInvokerMap<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>oldUrlInvokerMap<span class="token operator">::</span><span class="token function">put</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">//主要这一行做一些协议的过滤与实例禁用数据的过滤得到最终结果需要的调用器</span>
+            <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Invoker</span><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> newUrlInvokerMap <span class="token operator">=</span> <span class="token function">toInvokers</span><span class="token punctuation">(</span>oldUrlInvokerMap<span class="token punctuation">,</span> invokerUrls<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">// Translate url list to Invoker map</span>
+            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Refreshed invoker size "</span> <span class="token operator">+</span> newUrlInvokerMap<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmptyMap</span><span class="token punctuation">(</span>newUrlInvokerMap<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Cannot create invokers from url address list (total "</span> <span class="token operator">+</span> invokerUrls<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">")"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Invoker</span><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> newInvokers <span class="token operator">=</span> <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">unmodifiableList</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>newUrlInvokerMap<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setInvokers</span><span class="token punctuation">(</span>multiGroup <span class="token operator">?</span> <span class="token keyword">new</span> <span class="token class-name">BitList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token function">toMergeInvokerList</span><span class="token punctuation">(</span>newInvokers<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">BitList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>newInvokers<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// pre-route and build cache</span>
+            routerChain<span class="token punctuation">.</span><span class="token function">setInvokers</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getInvokers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>urlInvokerMap <span class="token operator">=</span> newUrlInvokerMap<span class="token punctuation">;</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>oldUrlInvokerMap <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token function">destroyUnusedInvokers</span><span class="token punctuation">(</span>oldUrlInvokerMap<span class="token punctuation">,</span> newUrlInvokerMap<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Close the unused Invoker</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"destroyUnusedInvokers error. "</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// notify invokers refreshed</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">invokersChanged</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Invoker</span><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> <span class="token function">toInvokers</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Invoker</span><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> oldUrlInvokerMap<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">&gt;</span></span> urls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Invoker</span><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> newUrlInvokerMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>urls <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token number">1</span> <span class="token operator">:</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>urls<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">0.75f</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>urls <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> urls<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> newUrlInvokerMap<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>URL url <span class="token operator">:</span> urls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">InstanceAddressURL</span> instanceAddressURL <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">InstanceAddressURL</span><span class="token punctuation">)</span> url<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>EMPTY_PROTOCOL<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>instanceAddressURL<span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getOrDefaultFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">Protocol</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">hasExtension</span><span class="token punctuation">(</span>instanceAddressURL<span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Unsupported protocol "</span> <span class="token operator">+</span> instanceAddressURL<span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+                    <span class="token string">" in notified url: "</span> <span class="token operator">+</span> instanceAddressURL <span class="token operator">+</span> <span class="token string">" from registry "</span> <span class="token operator">+</span> <span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+                    <span class="token string">" to consumer "</span> <span class="token operator">+</span> <span class="token class-name">NetUtils</span><span class="token punctuation">.</span><span class="token function">getLocalHost</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">", supported protocol: "</span> <span class="token operator">+</span>
+                    <span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getOrDefaultFrameworkModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">Protocol</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSupportedExtensions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            instanceAddressURL<span class="token punctuation">.</span><span class="token function">setProviderFirstParams</span><span class="token punctuation">(</span>providerFirstParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// Override provider urls if needed</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>enableConfigurationListen<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                instanceAddressURL <span class="token operator">=</span> <span class="token function">overrideWithConfigurator</span><span class="token punctuation">(</span>instanceAddressURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token class-name">Invoker</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> invoker <span class="token operator">=</span> oldUrlInvokerMap <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token keyword">null</span> <span class="token operator">:</span> oldUrlInvokerMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>instanceAddressURL<span class="token punctuation">.</span><span class="token function">getAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>invoker <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> <span class="token function">urlChanged</span><span class="token punctuation">(</span>invoker<span class="token punctuation">,</span> instanceAddressURL<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// Not in the cache, refer again</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">boolean</span> enabled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>instanceAddressURL<span class="token punctuation">.</span><span class="token function">hasParameter</span><span class="token punctuation">(</span>DISABLED_KEY<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        enabled <span class="token operator">=</span> <span class="token operator">!</span>instanceAddressURL<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>DISABLED_KEY<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                        enabled <span class="token operator">=</span> instanceAddressURL<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span>ENABLED_KEY<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>enabled<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        invoker <span class="token operator">=</span> protocol<span class="token punctuation">.</span><span class="token function">refer</span><span class="token punctuation">(</span>serviceType<span class="token punctuation">,</span> instanceAddressURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Failed to refer invoker for interface:"</span> <span class="token operator">+</span> serviceType <span class="token operator">+</span> <span class="token string">",url:("</span> <span class="token operator">+</span> instanceAddressURL <span class="token operator">+</span> <span class="token string">")"</span> <span class="token operator">+</span> t<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>invoker <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// Put new invoker in cache</span>
+                    newUrlInvokerMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>instanceAddressURL<span class="token punctuation">.</span><span class="token function">getAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> invoker<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                newUrlInvokerMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>instanceAddressURL<span class="token punctuation">.</span><span class="token function">getAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> invoker<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                oldUrlInvokerMap<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>instanceAddressURL<span class="token punctuation">.</span><span class="token function">getAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> invoker<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> newUrlInvokerMap<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+			<br>
 			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">

@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662168918048">
+<link rel="stylesheet" href="/css/style.css?v=1662168973061">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662168918048"></script>
+<script src="/js/core.js?v=1662168973061"></script>
 
 
 
@@ -48,149 +48,830 @@
         </ul>
     </div>
 </div>
-        <div class="content home">
+        <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>开源组件调研，分析，评测</h1>
-			<div class="search">
-				<form id="search_form" action_e="https://cn.bing.com/search?q=site:https://blog.elastic.link" onsubmit="return search();">
-					<input autocomplete='off' id="search_value" name="q" type="search" placeholder="在这里输入搜索关键词">
-					<input class="submit" type="submit" value="搜索">
-				</form>
+			<h1>14-【Dubbo3.0.8源码解析系列】Dubbo配置加载全解析</h1>
+			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">Dubbo3源码</a>》
+				
+				
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/14-Dubbo配置加载全解析.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				
 			</div>
+			
 		</div>
 	</div>
 	<div class="container">
-		<div class="category">
-			
-				
-						
-				
-					<a class="category-item" href="/categories/JDK%E6%BA%90%E7%A0%81/">
-						<div class="cover"><img  data-sizes="auto"
-							data-src="true" class="lazyload" alt="JDK源码"></div>
-						<div class="title">JDK源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Kafka%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Kafka源码</h1></div>
-						<div class="title">Kafka源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Linux网络源码</h1></div>
-						<div class="title">Linux网络源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/AI/">
-						<div class="cover red"><h1>AI</h1></div>
-						<div class="title">AI</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/escoked/">
-						<div class="cover red"><h1>escoked</h1></div>
-						<div class="title">escoked</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/kubernetes/">
-						<div class="cover red"><h1>kubernetes</h1></div>
-						<div class="title">kubernetes</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Rebar3/">
-						<div class="cover red"><h1>Rebar3</h1></div>
-						<div class="title">Rebar3</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Linux/">
-						<div class="cover red"><h1>Linux</h1></div>
-						<div class="title">Linux</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/SpringBoot2%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>SpringBoot2源码</h1></div>
-						<div class="title">SpringBoot2源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Erlang/">
-						<div class="cover red"><h1>Erlang</h1></div>
-						<div class="title">Erlang</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Elastic-Job2-1-5%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Elastic-Job2.1.5源码</h1></div>
-						<div class="title">Elastic-Job2.1.5源码</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">
-						<div class="cover red"><h1>算法问题</h1></div>
-						<div class="title">算法问题</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Zookeeper%E7%89%88%E6%9C%AC3-6-2%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97/">
-						<div class="cover red"><h1>Zookeeper版本3.6.2源码系列</h1></div>
-						<div class="title">Zookeeper版本3.6.2源码系列</div>
-					</a>
-				 
-			
-				
-						
-				 
-					<a class="category-item" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">
-						<div class="cover red"><h1>Dubbo3源码</h1></div>
-						<div class="title">Dubbo3源码</div>
-					</a>
-				 
-			
+		<article class="post">
+			<h1 id="14-Dubbo配置加载全解析"><a href="#14-Dubbo配置加载全解析" class="headerlink" title="14-Dubbo配置加载全解析"></a>14-Dubbo配置加载全解析</h1><h2 id="14-1-回到启动器的初始化过程"><a href="#14-1-回到启动器的初始化过程" class="headerlink" title="14.1 回到启动器的初始化过程"></a>14.1 回到启动器的初始化过程</h2><p>在应用程序启动的时候会调用发布器的启动方法 ,然后调用初始化方法,在发布器DefaultApplicationDeployer中的初始化方法initialize() 如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>initialized<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">// Ensure that the initialization is completed when concurrent calls</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>startLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>initialized<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">// register shutdown hook</span>
+            <span class="token function">registerShutdownHook</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token function">startConfigCenter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token function">loadApplicationConfigs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token function">initModuleDeployers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// @since 2.7.8</span>
+            <span class="token function">startMetadataCenter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            initialized <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token function">getIdentifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" has been initialized!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>初始化过程中会先启动配置中心配置信息处理,然后 调用加载初始化应用程序配置方法loadApplicationConfigs();进行配置加载<br>关于配置的官方文档链接为 <a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docs/references/configuration/overview/">配置概述</a></p>
+<p>Dubbo框架的配置项比较繁多，为了更好地管理各种配置，将其按照用途划分为不同的组件，最终所有配置项都会汇聚到URL中，传递给后续处理模块。</p>
+<p><strong>常用配置组件如下</strong>：</p>
+<ul>
+<li>application: Dubbo应用配置</li>
+<li>registry: 注册中心</li>
+<li>protocol: 服务提供者RPC协议</li>
+<li>config-center: 配置中心</li>
+<li>metadata-report: 元数据中心</li>
+<li>service: 服务提供者配置</li>
+<li>reference: 远程服务引用配置</li>
+<li>provider: service的默认配置或分组配置</li>
+<li>consumer: reference的默认配置或分组配置</li>
+<li>module: 模块配置</li>
+<li>monitor: 监控配置</li>
+<li>metrics: 指标配置</li>
+<li>ssl: SSL/TLS配置</li>
+</ul>
+<p>配置还有几个比较重要的点:</p>
+<p><strong>配置来源</strong><br>从Dubbo支持的配置来源说起，默认有6种配置来源：</p>
+<ul>
+<li>JVM System Properties，JVM -D 参数</li>
+<li>System environment，JVM进程的环境变量</li>
+<li>Externalized Configuration，外部化配置，从配置中心读取</li>
+<li>Application Configuration，应用的属性配置，从Spring应用的Environment中提取”dubbo”打头的属性集</li>
+<li>API / XML /注解等编程接口采集的配置可以被理解成配置来源的一种，是直接面向用户编程的配置采集方式</li>
+<li>从classpath读取配置文件 dubbo.properties</li>
+</ul>
+<p><strong>覆盖关系</strong><br>下图展示了配置覆盖关系的优先级，从上到下优先级依次降低： <img src="https://img-blog.csdnimg.cn/18cf6220e520433896b0fcf467d8652b.png" alt="在这里插入图片描述"></p>
+<p><strong>配置方式</strong> </p>
+<ul>
+<li>Java API配置</li>
+<li>XML配置</li>
+<li>Annotation配置</li>
+<li>属性配置</li>
+</ul>
+<p>配置虽然非常多,但是我们掌握一下配置加载的原理,再了解下官网的文档说明路径应该基础的配置搞定是没问题的,更深入的配置很多参数还是需要了解下源码的.</p>
+<h2 id="14-2-配置信息的初始化回顾"><a href="#14-2-配置信息的初始化回顾" class="headerlink" title="14.2 配置信息的初始化回顾"></a>14.2 配置信息的初始化回顾</h2><p>前面我们在讲ModuleModel对象的创建的时候ModuleModel模型中包含了一个成员变量为ModuleEnvironment 代表当前的模块环境和ModuleConfigManager配置管理器<br>而ModuleModel模型对象的父模型对象ApplicationModel中包含了一个成员变量Environment环境和ConfigManager配置管理器.</p>
+<p>在回顾调用过程之前我们先看下模型,配置管理器和环境与配置之间的关系如下图:<br>  <img src="https://img-blog.csdnimg.cn/68afdb26551649e2af103c67e96511e5.png" alt="在这里插入图片描述"></p>
+<p>在ModuleConfigManager对象初始化方法initialize()中创建了模块配置管理器:ModuleConfigManager<br>如下代码所示:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+  <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>serviceRepository <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ModuleServiceRepository</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>moduleConfigManager <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ModuleConfigManager</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>moduleConfigManager<span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>ModuleEnvironment环境信息对象也会在配置管理器创建的时候被调用到:<br>如下代码所示:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+  <span class="token keyword">public</span> <span class="token class-name">ModuleEnvironment</span> <span class="token function">getModelEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>moduleEnvironment <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          moduleEnvironment <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">ModuleEnvironment</span><span class="token punctuation">)</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span><span class="token class-name">ModuleExt</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+              <span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span><span class="token class-name">ModuleEnvironment</span><span class="token punctuation">.</span>NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">return</span> moduleEnvironment<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在扩展对象ExtensionLoader进行对象ModuleEnvironment创建之后会对对象进行初始化调用 initExtension(instance)方法 初始化的时候调用如下代码:<br>ExtensionLoader中的初始化方法如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">initExtension</span><span class="token punctuation">(</span><span class="token class-name">T</span> instance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token keyword">instanceof</span> <span class="token class-name">Lifecycle</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token class-name">Lifecycle</span> lifecycle <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">Lifecycle</span><span class="token punctuation">)</span> instance<span class="token punctuation">;</span>
+          lifecycle<span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="14-3-属性加载"><a href="#14-3-属性加载" class="headerlink" title="14.3 属性加载"></a>14.3 属性加载</h2><h3 id="14-3-1-Environment中属性的初始化方法"><a href="#14-3-1-Environment中属性的初始化方法" class="headerlink" title="14.3.1 Environment中属性的初始化方法"></a>14.3.1 Environment中属性的初始化方法</h3><p> 这个初始化方法对应ModuleEnvironment的父类型Environment中的初始化方法如下:initialize()</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IllegalStateException</span> <span class="token punctuation">{</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span>initialized<span class="token punctuation">.</span><span class="token function">compareAndSet</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       	<span class="token comment">//加载在JVM或者环境变量指定的dubbo.properties配置文件 配置的key为dubbo.properties.file ,如果未指定则查找类路径下的dubbo.properties</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>propertiesConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PropertiesConfiguration</span><span class="token punctuation">(</span>scopeModel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//系统JVM参数的配置无需我们来加载到内存,系统已经加载好了放到了System中,我们只需System.getProperty(key)来调用</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>systemConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SystemConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//系统环境变量的配置,无需我们来加载到内存,系统已经加载好了放到了System中,我们只需System.getenv(key)来获取就可以</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>environmentConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">EnvironmentConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//从远程配置中心的全局配置获取对应配置</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>externalConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InmemoryConfiguration</span><span class="token punctuation">(</span><span class="token string">"ExternalConfig"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//从远程配置中心的应用配置获取对应配置</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>appExternalConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InmemoryConfiguration</span><span class="token punctuation">(</span><span class="token string">"AppExternalConfig"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//应用内的配置比如:  Spring Environment/PropertySources/application.properties</span>
+           <span class="token keyword">this</span><span class="token punctuation">.</span>appConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InmemoryConfiguration</span><span class="token punctuation">(</span><span class="token string">"AppConfig"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token comment">//加载迁移配置,用户在JVM参数或者环境变量中指定的dubbo.migration.file,如果用户未指定测尝试加载类路径下的dubbo-migration.yaml</span>
+           <span class="token function">loadMigrationRule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="14-4-2-属性变量说明"><a href="#14-4-2-属性变量说明" class="headerlink" title="14.4.2  属性变量说明"></a>14.4.2  属性变量说明</h3><p> 前面我们已经基本上介绍了各个属性的含义下面用一个表格列举一下方便查看:</p>
+<table>
+<thead>
+<tr>
+<th>属性变量名</th>
+<th>属性类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>propertiesConfiguration</td>
+<td>PropertiesConfiguration</td>
+<td>dubbo.properties文件中的属性</td>
+</tr>
+<tr>
+<td>systemConfiguration</td>
+<td>SystemConfiguration</td>
+<td>JVM参数 启动进程时指定的 (-D)配置</td>
+</tr>
+<tr>
+<td>environmentConfiguration</td>
+<td>EnvironmentConfiguration</td>
+<td>环境变量中的配置</td>
+</tr>
+<tr>
+<td>externalConfiguration</td>
+<td>InmemoryConfiguration</td>
+<td>外部配置全局配置 例如配置中心中 config-center global/default config</td>
+</tr>
+<tr>
+<td>appExternalConfiguration</td>
+<td>InmemoryConfiguration</td>
+<td>外部的应用配置 例如配置中心中执行的当前应用的配置 config-center app config</td>
+</tr>
+<tr>
+<td>appConfiguration</td>
+<td>InmemoryConfiguration</td>
+<td>来自应用中的配置例如:Spring Environment/PropertySources/application.properties</td>
+</tr>
+<tr>
+<td>globalConfiguration</td>
+<td>CompositeConfiguration</td>
+<td>前面6个配置属性放到一起就是这个</td>
+</tr>
+<tr>
+<td>globalConfigurationMaps</td>
+<td>List&lt;Map&lt;String, String&gt;&gt;</td>
+<td>最前面的6个属性转换为map放到一起就是这个可以理解为将全局配置globalConfiguration转换成了列表 这个列表顺序在这里是:SystemConfiguration -&gt; EnvironmentConfiguration -&gt; AppExternalConfiguration -&gt; ExternalConfiguration  -&gt; AppConfiguration -&gt; AbstractConfig -&gt; PropertiesConfiguration</td>
+</tr>
+<tr>
+<td>defaultDynamicGlobalConfiguration</td>
+<td>CompositeConfiguration</td>
+<td>这个也是一个组合配置将defaultDynamicConfiguration动态配置(来自配置中心的配置)和全局配置添加到了自己的配置列表中 列表顺序为defaultDynamicConfiguration -&gt; globalConfiguration</td>
+</tr>
+<tr>
+<td>localMigrationRule</td>
+<td>String</td>
+<td>,用户在JVM参数或者环境变量中指定的dubbo.migration.file,如果用户未指定测尝试加载类路径下的dubbo-migration.yaml</td>
+</tr>
+</tbody></table>
+<p>关于每个配置信息这里还是来了解下细节,方便大家了解原理.</p>
+<h3 id="14-3-3-dubbo-properties配置文件加载解析原理"><a href="#14-3-3-dubbo-properties配置文件加载解析原理" class="headerlink" title="14.3.3 dubbo.properties配置文件加载解析原理"></a>14.3.3 dubbo.properties配置文件加载解析原理</h3><p>如前面所示:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//加载在JVM或者环境变量指定的dubbo.properties配置文件 配置的key为dubbo.properties.file ,如果未指定则查找类路径下的dubbo.properties</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>propertiesConfiguration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PropertiesConfiguration</span><span class="token punctuation">(</span>scopeModel<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>下面就直接提构造器的PropertiesConfiguration代码了:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">PropertiesConfiguration</span><span class="token punctuation">(</span><span class="token class-name">ScopeModel</span> scopeModel<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>scopeModel <span class="token operator">=</span> scopeModel<span class="token punctuation">;</span>
+        <span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    	<span class="token comment">//配置获取的过程是借助工具类ConfigUtils来获取的</span>
+        properties <span class="token operator">=</span> <span class="token class-name">ConfigUtils</span><span class="token punctuation">.</span><span class="token function">getProperties</span><span class="token punctuation">(</span>scopeModel<span class="token punctuation">.</span><span class="token function">getClassLoaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>继续看ConfigUtils的getProperties方法:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">Properties</span> <span class="token function">getProperties</span><span class="token punctuation">(</span><span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClassLoader</span><span class="token punctuation">&gt;</span></span> classLoaders<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//这个配置的KEY是dubbo.properties.file System.getProperty是从JVM参数中获取配置的 一般情况下我们在启动Java进程的时候会指定Dubbo配置文件 如配置:</span>
+		<span class="token comment">//-Ddubbo.properties.file=/dubbo.properties</span>
+        <span class="token class-name">String</span> path <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_PROPERTIES_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//优先级最高的JVM参数拿不到数据则从 环境变量中获取,这个配置key也是dubbo.properties.file  System.getenv是从环境变量中获取数据</span>
+        <span class="token comment">//例如我们在环境变量中配置 dubbo.properties.file=/dubbo.properties</span>
+            path <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getenv</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_PROPERTIES_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            	<span class="token comment">//如果在JVM参数和环境变量都拿不到这个配置文件的路径我们就用默认的吧</span>
+            	<span class="token comment">//默认的路径是类路径下的资源文件 这个路径是: dubbo.properties </span>
+                path <span class="token operator">=</span> <span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DEFAULT_DUBBO_PROPERTIES<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token class-name">ConfigUtils</span><span class="token punctuation">.</span><span class="token function">loadProperties</span><span class="token punctuation">(</span>classLoaders<span class="token punctuation">,</span> path<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>路径获取之后加载详细的配置内容:</p>
+<p>ConfigUtils的loadProperties代码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">ConfigUtils</span><span class="token punctuation">.</span><span class="token function">loadProperties</span><span class="token punctuation">(</span>classLoaders<span class="token punctuation">,</span> path<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>代码如下:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">Properties</span> <span class="token function">loadProperties</span><span class="token punctuation">(</span><span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClassLoader</span><span class="token punctuation">&gt;</span></span> classLoaders<span class="token punctuation">,</span> <span class="token class-name">String</span> fileName<span class="token punctuation">,</span> <span class="token keyword">boolean</span> allowMultiFile<span class="token punctuation">,</span> <span class="token keyword">boolean</span> optional<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Properties</span> properties <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// add scene judgement in windows environment Fix 2557</span>
+        <span class="token comment">//检查文件是否存在 直接加载配置文件如果加载到了配置文件则直接返回</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">checkFileNameExist</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token class-name">FileInputStream</span> input <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileInputStream</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    properties<span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                    input<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Failed to load "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">" file from "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">"(ignore this file): "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> properties<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+		<span class="token comment">//为什么会有下面的逻辑呢,如果仅仅使用上面的加载方式只能加载到本系统下的配置文件,无法加载封装在jar中的根路径的配置</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span>java<span class="token punctuation">.</span>net<span class="token punctuation">.</span>URL<span class="token punctuation">&gt;</span></span> set <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClassLoader</span><span class="token punctuation">&gt;</span></span> classLoadersToLoad <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            classLoadersToLoad<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token class-name">ClassUtils</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            classLoadersToLoad<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>classLoaders<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//这个方法loadResources在扩展加载的时候说过</span>
+            set <span class="token operator">=</span> <span class="token class-name">ClassLoaderResourceLoader</span><span class="token punctuation">.</span><span class="token function">loadResources</span><span class="token punctuation">(</span>fileName<span class="token punctuation">,</span> classLoadersToLoad<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">LinkedHashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>a<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+                a<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span> a<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Fail to load "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">" file: "</span> <span class="token operator">+</span> t<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>set<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>optional<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"No "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">" found on the class path."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> properties<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>allowMultiFile<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>set<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">String</span> errMsg <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"only 1 %s file is expected, but %d dubbo.properties files found on class path: %s"</span><span class="token punctuation">,</span>
+                    fileName<span class="token punctuation">,</span> set<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> set<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span>errMsg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">// fall back to use method getResourceAsStream</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                properties<span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token class-name">ClassUtils</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getResourceAsStream</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Failed to load "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">" file from "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">"(ignore this file): "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> properties<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"load "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">" properties file from "</span> <span class="token operator">+</span> set<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>java<span class="token punctuation">.</span>net<span class="token punctuation">.</span>URL url <span class="token operator">:</span> set<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token class-name">Properties</span> p <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">InputStream</span> input <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">openStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>input <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                        p<span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        properties<span class="token punctuation">.</span><span class="token function">putAll</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                            input<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Fail to load "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">" file from "</span> <span class="token operator">+</span> url <span class="token operator">+</span> <span class="token string">"(ignore this file): "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> properties<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>完整的配置加载流程这里用简单的话描述下:</p>
+<ul>
+<li>项目内配置查询<ul>
+<li>路径查询<ul>
+<li>从JVM参数中获取配置的 dubbo.properties.file配置文件路径</li>
+<li>如果前面未获取到路径则从环境变量参数中获取配置的dubbo.properties.file配置文件路径</li>
+<li>如果前面未获取到路径则使用默认路径dubbo.propertie</li>
+</ul>
+</li>
+<li>配置加载<ul>
+<li>将路径转为FileInputStream 然后使用Properties加载</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>依赖中的配置扫描查询<ul>
+<li>使用类加载器扫描所有资源URL</li>
+<li>url转InputStream 如 url.openStream() 然后使用Properties加载</li>
+</ul>
+</li>
+</ul>
+<h3 id="14-3-4-加载JVM参数的配置"><a href="#14-3-4-加载JVM参数的配置" class="headerlink" title="14.3.4 加载JVM参数的配置"></a>14.3.4 加载JVM参数的配置</h3><p>这里我们继续看SystemConfiguration配置的加载<br>这个直接看下代码就可以了:</p>
+<p>这个类型仅仅是使用System.getProperty来获取JVM配置即可</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"> <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SystemConfiguration</span> <span class="token keyword">implements</span> <span class="token class-name">Configuration</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">Object</span> <span class="token function">getInternalProperty</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">getProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token punctuation">)</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="14-3-5-加载环境变量参数的配置"><a href="#14-3-5-加载环境变量参数的配置" class="headerlink" title="14.3.5 加载环境变量参数的配置"></a>14.3.5 加载环境变量参数的配置</h3><p>这里我们来看EnvironmentConfiguration,这里我们直接来看代码:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">EnvironmentConfiguration</span> <span class="token keyword">implements</span> <span class="token class-name">Configuration</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">Object</span> <span class="token function">getInternalProperty</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">String</span> value <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getenv</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            value <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getenv</span><span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">toOSStyleKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> value<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">getProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getenv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="14-3-6-内存配置的封装-InmemoryConfiguration"><a href="#14-3-6-内存配置的封装-InmemoryConfiguration" class="headerlink" title="14.3.6 内存配置的封装:InmemoryConfiguration"></a>14.3.6 内存配置的封装:InmemoryConfiguration</h3><p>这里我们看下InmemoryConfiguration的设计,这个直接看代码吧内部使用了一个LinkedHashMap来存储配置</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">InmemoryConfiguration</span> <span class="token keyword">implements</span> <span class="token class-name">Configuration</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">String</span> name<span class="token punctuation">;</span>
+
+    <span class="token comment">// stores the configuration key-value pairs</span>
+    <span class="token keyword">private</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> store <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">InmemoryConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">InmemoryConfiguration</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">InmemoryConfiguration</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> properties<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setProperties</span><span class="token punctuation">(</span>properties<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">Object</span> <span class="token function">getInternalProperty</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> store<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/**
+     * Add one property into the store, the previous value will be replaced if the key exists
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addProperty</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        store<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/**
+     * Add a set of properties into the store
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addProperties</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> properties<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>properties <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>store<span class="token punctuation">.</span><span class="token function">putAll</span><span class="token punctuation">(</span>properties<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/**
+     * set store
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setProperties</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> properties<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>properties <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>store <span class="token operator">=</span> properties<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">getProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> store<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="14-3-7-Dubbo迁移新版本的配置文件加载dubbo-migration-yaml"><a href="#14-3-7-Dubbo迁移新版本的配置文件加载dubbo-migration-yaml" class="headerlink" title="14.3.7 Dubbo迁移新版本的配置文件加载dubbo-migration.yaml"></a>14.3.7 Dubbo迁移新版本的配置文件加载dubbo-migration.yaml</h3><p>关于配置迁移文件的用法可以看下这个Dubbo官方的<a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docs/v3.0/advanced/migration-invoker/">地址迁移规则说明</a></p>
+<p>这个配置文件的文件名字为:dubbo-migration.yaml</p>
+<p>这个和14.3.4加载JVM参数配置的过程是相似的细节可以看14.3.4节</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadMigrationRule</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token comment">//JVM参数的dubbo.migration.file配置</span>
+      <span class="token class-name">String</span> path <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_MIGRATION_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//环境变量的dubbo.migration.file配置</span>
+          path <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getenv</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DUBBO_MIGRATION_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token comment">//默认的迁移配置文件 dubbo-migration.yaml</span>
+              path <span class="token operator">=</span> <span class="token class-name">CommonConstants</span><span class="token punctuation">.</span>DEFAULT_DUBBO_MIGRATION_FILE<span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>localMigrationRule <span class="token operator">=</span> <span class="token class-name">ConfigUtils</span><span class="token punctuation">.</span><span class="token function">loadMigrationRule</span><span class="token punctuation">(</span>scopeModel<span class="token punctuation">.</span><span class="token function">getClassLoaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+<h2 id="14-4-初始化加载应用配置"><a href="#14-4-初始化加载应用配置" class="headerlink" title="14.4 初始化加载应用配置"></a>14.4 初始化加载应用配置</h2><p>加载配置涉及到了配置优先级的处理,</p>
+<p>下面来看加载配置代码 loadApplicationConfigs()方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadApplicationConfigs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">//发布器还是不处理配置加载的逻辑还是交给配置管理器</span>
+        configManager<span class="token punctuation">.</span><span class="token function">loadConfigs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>配置管理器加载配置:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">loadConfigs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">// application config has load before starting config center</span>
+       <span class="token comment">// load dubbo.applications.xxx</span>
+       <span class="token comment">//加载应用配置</span>
+       <span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">ApplicationConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">// load dubbo.monitors.xxx</span>
+       <span class="token comment">//加载监控配置</span>
+       <span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">MonitorConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">// load dubbo.metrics.xxx</span>
+       <span class="token comment">//加载指标监控配置</span>
+       <span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">MetricsConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">// load multiple config types:</span>
+       <span class="token comment">// load dubbo.protocols.xxx</span>
+       <span class="token comment">//加载协议配置</span>
+       <span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">ProtocolConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">// load dubbo.registries.xxx</span>
+       <span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">RegistryConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">// load dubbo.metadata-report.xxx</span>
+       <span class="token comment">//加载元数据配置</span>
+       <span class="token function">loadConfigsOfTypeFromProps</span><span class="token punctuation">(</span><span class="token class-name">MetadataReportConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">// config centers has bean loaded before starting config center</span>
+       <span class="token comment">//loadConfigsOfTypeFromProps(ConfigCenterConfig.class);</span>
+	
+	<span class="token comment">//刷新配置</span>
+       <span class="token function">refreshAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">//检查配置</span>
+       <span class="token function">checkConfigs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token comment">// set model name</span>
+       <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isBlank</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">.</span><span class="token function">getModelName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           applicationModel<span class="token punctuation">.</span><span class="token function">setModelName</span><span class="token punctuation">(</span>applicationModel<span class="token punctuation">.</span><span class="token function">getApplicationName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p> 技术<strong>咨询</strong>与<strong>支持</strong>,可以扫描<strong>微信公众号</strong>进行回复咨询<br><img src="https://img-blog.csdnimg.cn/20210523134648783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NvbmdqdW55YW4=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+
+			<br>
+			<a class="tag-unordered list-link" href="/tags/Dubbo/" rel="tag">Dubbo<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3/" rel="tag">Dubbo3<span class="tag-unordered list-count">23</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Dubbo3源码解析<span class="tag-unordered list-count">23</span></a>
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/07/10/dubbo/15-dubbo-de-san-da-zhong-xin-zhi-yuan-shu-ju-zhong-xin-yuan-ma-jie-xi/"> 15-【Dubbo3.0.8源码解析系列】Dubbo的三大中心之元数据中心源码解析</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/07/10/dubbo/13-dubbo-de-san-da-zhong-xin-zhi-pei-zhi-zhong-xin-yuan-ma-jie-xi/"> 13-【Dubbo3.0.8源码解析系列】Dubbo的三大中心之配置中心</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
 		</div>
+	</div>
+	<div class="container comment">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
 	</div>
 </div>
 		<div class="footer">
