@@ -201,33 +201,6 @@
   </entry>
   
   <entry>
-    <title>1-Erlang 语法基础</title>
-    <link href="https://blog.elastic.link/2022/09/07/erlang/1-erlang-yu-fa-ji-chu/"/>
-    <id>https://blog.elastic.link/2022/09/07/erlang/1-erlang-yu-fa-ji-chu/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-19T14:33:30.433Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-语法基础&quot;&gt;&lt;a href=&quot;#1-语法基础&quot; class=&quot;headerlink&quot; title=&quot;1-语法基础&quot;&gt;&lt;/a&gt;1-语法基础&lt;/h1&gt;&lt;h2 id=&quot;shell终端&quot;&gt;&lt;a href=&quot;#shell终端&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
-    
-  </entry>
-  
-  <entry>
     <title>1-过五关斩六将开发属于自己的jdk版本</title>
     <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
     <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
@@ -251,6 +224,33 @@
     <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
     
     <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>1-Erlang 语法基础</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/1-erlang-yu-fa-ji-chu/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/1-erlang-yu-fa-ji-chu/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-19T14:33:30.433Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-语法基础&quot;&gt;&lt;a href=&quot;#1-语法基础&quot; class=&quot;headerlink&quot; title=&quot;1-语法基础&quot;&gt;&lt;/a&gt;1-语法基础&lt;/h1&gt;&lt;h2 id=&quot;shell终端&quot;&gt;&lt;a href=&quot;#shell终端&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
     
   </entry>
   
