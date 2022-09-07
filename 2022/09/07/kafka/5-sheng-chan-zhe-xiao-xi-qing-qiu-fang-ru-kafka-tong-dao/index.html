@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662518006014">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662518006014"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</h1>
+			<div class="info"><span class="date">2022年9月7日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Kafka%E6%BA%90%E7%A0%81/">Kafka源码</a>》
+				
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/kafka/5-生产者消息请求放入Kafka通道.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<p>消息请求放入Kafka通道</p>
+<ul>
+<li>开始调用sendProducerData方法</li>
+<li><strong>集群信息查询：</strong>MetadataCache中获取集群元数据信息Cluster</li>
+<li>获取准备发送数据的分区列表，记录累加器中获取准备准备发送数据的主题分区<ul>
+<li>查询遍历缓存的主题分区与批处理队列集合ConcurrentMap&lt;TopicPartition, Deque<producerbatch>&gt; batches<ul>
+<li>从主题分区信息中获取leader节点信息：Node leader</li>
+<li>根据批处理队列Deque<producerbatch> 中的第一个元素判断是否需要发送如果需要发送则将leader节点对象添加到准备发送节点集合Set<node> readyNodes中然后将其返回</node></producerbatch></li>
+</ul>
+</producerbatch></li>
+</ul>
+</li>
+<li><strong>无leader主题分区更新元数据：</strong>如果存在主题分区对应的leader为空则强制更新无leader的主题分区对应的元数据</li>
+<li>遍历准备发送数据的节点集合Set<node> readyNodes<ul>
+<li>连接移除或者无法正常建立连接的节点则直接移除</li>
+<li>如果连接状态建立正常则直接返回true继续</li>
+<li>如果还未建立连接状态则执行initiateConnect方法开始建立连接<ul>
+<li>调用Selectable selector的connect方法<ul>
+<li>配置SocketChannel<ul>
+<li>configureBlocking(false)</li>
+<li>socket.setKeepAlive(true);</li>
+<li>socket.setSendBufferSize(sendBufferSize);</li>
+<li>socket.setReceiveBufferSize(receiveBufferSize);</li>
+<li>socket.setTcpNoDelay(true);</li>
+</ul>
+</li>
+<li>channel.connect(address);</li>
+<li>registerChannel(id, socketChannel, SelectionKey.OP_CONNECT);<ul>
+<li>socketChannel.register(nioSelector, interestedOps);</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</node></li>
+<li>将请求添加到飞行窗口</li>
+<li>如果需要保证消息顺序性则将分区先放进<strong>muted<strong><strong>的</strong></strong>Set****集合中</strong></li>
+<li><strong>inFlightBatches<strong><strong>飞行窗口已经过期的消息处理</strong></strong>delivery.timeout.ms****配置</strong></li>
+<li><strong>batches****中已经过期的消息处理</strong></li>
+<li>过期消息处理</li>
+<li>传感器更新发送之前的请求数据指标</li>
+<li>计算超时时间pollTimeout</li>
+<li>查询和计算最小API版本minUsedMagic</li>
+<li>封装请求信息到 ClientRequest</li>
+<li>KafkaClient调用send方法发送ClientRequest</li>
+<li>NetworkClient的doSend执行发送逻辑</li>
+<li>封装请求头信息RequestHeader+数据转Send类型对象</li>
+<li>封装请求信息到InFlightRequest类型对象并添加到<strong>inFlightRequests</strong></li>
+<li>获取当前kafka节点对应的的KafkaChannel将NetworkSend待发数据放入通道</li>
+<li>TransportLayer触发SelectionKey的interestOps设置<strong>OP_WRITE</strong></li>
+<li>结束</li>
+</ul>
+
+			<br>
+			
+			
+			<a class="tag-unordered list-link" href="/tags/Kafka/" rel="tag">Kafka<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Kafka%E6%BA%90%E7%A0%81/" rel="tag">Kafka源码<span class="tag-unordered list-count">14</span></a>
+
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"> 【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"> 【Apache Kafka 3.2源码解析系列】-执行IO事件</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

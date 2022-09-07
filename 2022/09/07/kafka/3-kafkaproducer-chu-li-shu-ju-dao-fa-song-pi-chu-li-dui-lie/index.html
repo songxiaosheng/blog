@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662518006014">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662518006014"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列</h1>
+			<div class="info"><span class="date">2022年9月7日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Kafka%E6%BA%90%E7%A0%81/">Kafka源码</a>》
+				
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/kafka/3-KafkaProducer处理数据到发送批处理队列.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<p>KafkaProducer处理数据到发送批处理队列</p>
+<ul>
+<li>开始</li>
+<li>封装消息的TOPIC、KEY 、MESSAGE到 ProducerRecord类型对象</li>
+<li>调用KafkaProducer类型的 send方法<ul>
+<li>执行拦截器 ProducerInterceptors的的 onSend方法</li>
+<li>调用KafkaProducer类型的 doSend方法<ul>
+<li>如果生产者sender对象已经关闭则抛出异常直接结束</li>
+<li>本地MetadataCache缓存中查询集群信息Cluster waitOnMetadata方法<ul>
+<li>invalidTopics过滤</li>
+<li>本地内存集群信息Cluster缓存中获取Topic的分区数这个时候本地是没有分区的</li>
+<li>**更新元数据:**调用ProducerMetadata的requestUpdate 改变标记变量needUpdate = true;与请求版本号等待网络IO的执行来更新元数据</li>
+<li><strong>唤醒IO执行元数据请求：</strong>调用Sender对象的wakeup()方法唤醒网络IO <ul>
+<li>调用到NetworkClient的wakeup()，<ul>
+<li>再调用Selectable的wakeup()<ul>
+<li>java.nio.channels.Selector nioSelector的wakeup()<ul>
+<li>mac电脑执行KQueueSelectorImpl的wakeup()执行逻辑<ul>
+<li>执行IOUtil.write1(fd1, (byte)0); 这个是个native方法</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>等待元数据的IO请求结果：</strong>调用ProducerMetadata类型的awaitUpdate等待60秒（配置为max.block.ms默认60秒）obj.wait等待元数据请求（IO线程会拉取元数据）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>IO线程</strong>：拉取元数据Metadata中的handleMetadataResponse方法处理元数据的响应将数据放到本地缓存</li>
+<li><strong>IO线程：</strong>调用生产者元数据对象的notifyAll方法唤醒发送线程</li>
+<li><strong>序列化KEY:</strong> 调用keySerializer的serialize方法序列化KEY</li>
+<li>**序列化VALUE: **调用valueSerializer对象的serialize方法序列化VALUE</li>
+<li><strong>对KEY执行分区计算：</strong>调用分区器Partitioner的partition方法对KEY进行分区默认是Hash取模</li>
+<li>发送记录大小校验<ul>
+<li>预估发送数据大小计算方式为： magic + keySize + valueSize</li>
+<li>发送的数据长度不能超过请求大小max.request.size配置</li>
+<li>发送的数据长度不能超过内存大小buffer.memory配置</li>
+</ul>
+</li>
+<li>数据存放在记录累加器RecordAccumulator中（内存池与内存队列批量发送使用）<ul>
+<li>为当前主题分区TopicPartition创建对应的批处理队列Deque<producerbatch></producerbatch></li>
+<li><strong>批处理队列与分区信息映射关系存储</strong>：映射结果存放在分区记录器的成员变量ConcurrentMap&lt;TopicPartition, Deque<producerbatch>&gt; batches中</producerbatch></li>
+<li>内存池分配：调用BufferPool类型对象free的allocate方法 （使用ByteBuffer来创建的）</li>
+<li>将请求加入批处理队列中：创建批处理对象ProducerBatch</li>
+<li>将数据通过ByteBufferOutputStream写入ByteBuffer中</li>
+<li>封装结果到RecordAccumulator.RecordAppendResult类型中</li>
+</ul>
+</li>
+<li><strong>唤醒网络IO：</strong> 批处理已满或者首次创建批处理对象则调用Sender类型的wakeup方法唤醒网络IO<ul>
+<li>Sender类型的wakeup<ul>
+<li>KafkaClient的wakeup<ul>
+<li>Selectable类型的wakeup<ul>
+<li>java.nio.channels.Selector的wakeup<ul>
+<li>mac电脑执行KQueueSelectorImpl的wakeup()执行逻辑<ul>
+<li>IOUtil.write1(fd1, (byte)0);</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>返回一个Future对象可以同步等待结果</li>
+<li>结束</li>
+</ul>
+<p>KafkaProducer类型的doSend方法如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">Future</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RecordMetadata</span><span class="token punctuation">&gt;</span></span> <span class="token function">doSend</span><span class="token punctuation">(</span><span class="token class-name">ProducerRecord</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">K</span><span class="token punctuation">,</span> <span class="token class-name">V</span><span class="token punctuation">&gt;</span></span> record<span class="token punctuation">,</span> <span class="token class-name">Callback</span> callback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">TopicPartition</span> tp <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token function">throwIfProducerClosed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// first make sure the metadata for the topic is available</span>
+        <span class="token class-name">ClusterAndWaitTime</span> clusterAndWaitTime<span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            clusterAndWaitTime <span class="token operator">=</span> <span class="token function">waitOnMetadata</span><span class="token punctuation">(</span>record<span class="token punctuation">.</span><span class="token function">topic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> record<span class="token punctuation">.</span><span class="token function">partition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> maxBlockTimeMs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">KafkaException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>metadata<span class="token punctuation">.</span><span class="token function">isClosed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">KafkaException</span><span class="token punctuation">(</span><span class="token string">"Producer closed while send in progress"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">long</span> remainingWaitMs <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> maxBlockTimeMs <span class="token operator">-</span> clusterAndWaitTime<span class="token punctuation">.</span>waitedOnMetadataMs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Cluster</span> cluster <span class="token operator">=</span> clusterAndWaitTime<span class="token punctuation">.</span>cluster<span class="token punctuation">;</span>
+        <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> serializedKey<span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            serializedKey <span class="token operator">=</span> keySerializer<span class="token punctuation">.</span><span class="token function">serialize</span><span class="token punctuation">(</span>record<span class="token punctuation">.</span><span class="token function">topic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> record<span class="token punctuation">.</span><span class="token function">headers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> record<span class="token punctuation">.</span><span class="token function">key</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ClassCastException</span> cce<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">SerializationException</span><span class="token punctuation">(</span><span class="token string">"Can't convert key of class "</span> <span class="token operator">+</span> record<span class="token punctuation">.</span><span class="token function">key</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+                    <span class="token string">" to class "</span> <span class="token operator">+</span> producerConfig<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>KEY_SERIALIZER_CLASS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+                    <span class="token string">" specified in key.serializer"</span><span class="token punctuation">,</span> cce<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> serializedValue<span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            serializedValue <span class="token operator">=</span> valueSerializer<span class="token punctuation">.</span><span class="token function">serialize</span><span class="token punctuation">(</span>record<span class="token punctuation">.</span><span class="token function">topic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> record<span class="token punctuation">.</span><span class="token function">headers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> record<span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ClassCastException</span> cce<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">SerializationException</span><span class="token punctuation">(</span><span class="token string">"Can't convert value of class "</span> <span class="token operator">+</span> record<span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+                    <span class="token string">" to class "</span> <span class="token operator">+</span> producerConfig<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token class-name">ProducerConfig</span><span class="token punctuation">.</span>VALUE_SERIALIZER_CLASS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+                    <span class="token string">" specified in value.serializer"</span><span class="token punctuation">,</span> cce<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">int</span> partition <span class="token operator">=</span> <span class="token function">partition</span><span class="token punctuation">(</span>record<span class="token punctuation">,</span> serializedKey<span class="token punctuation">,</span> serializedValue<span class="token punctuation">,</span> cluster<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        tp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TopicPartition</span><span class="token punctuation">(</span>record<span class="token punctuation">.</span><span class="token function">topic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> partition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">setReadOnly</span><span class="token punctuation">(</span>record<span class="token punctuation">.</span><span class="token function">headers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Header</span><span class="token punctuation">[</span><span class="token punctuation">]</span> headers <span class="token operator">=</span> record<span class="token punctuation">.</span><span class="token function">headers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">int</span> serializedSize <span class="token operator">=</span> <span class="token class-name">AbstractRecords</span><span class="token punctuation">.</span><span class="token function">estimateSizeInBytesUpperBound</span><span class="token punctuation">(</span>apiVersions<span class="token punctuation">.</span><span class="token function">maxUsableProduceMagic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                compressionType<span class="token punctuation">,</span> serializedKey<span class="token punctuation">,</span> serializedValue<span class="token punctuation">,</span> headers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">ensureValidRecordSize</span><span class="token punctuation">(</span>serializedSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">long</span> timestamp <span class="token operator">=</span> record<span class="token punctuation">.</span><span class="token function">timestamp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> record<span class="token punctuation">.</span><span class="token function">timestamp</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Sending record {} with callback {} to topic {} partition {}"</span><span class="token punctuation">,</span> record<span class="token punctuation">,</span> callback<span class="token punctuation">,</span> record<span class="token punctuation">.</span><span class="token function">topic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> partition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// producer callback will make sure to call both 'callback' and interceptor callback</span>
+        <span class="token class-name">Callback</span> interceptCallback <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InterceptorCallback</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>callback<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>interceptors<span class="token punctuation">,</span> tp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>transactionManager <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> transactionManager<span class="token punctuation">.</span><span class="token function">isTransactional</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            transactionManager<span class="token punctuation">.</span><span class="token function">maybeAddPartitionToTransaction</span><span class="token punctuation">(</span>tp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">RecordAccumulator<span class="token punctuation">.</span>RecordAppendResult</span> result <span class="token operator">=</span> accumulator<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>tp<span class="token punctuation">,</span> timestamp<span class="token punctuation">,</span> serializedKey<span class="token punctuation">,</span>
+                serializedValue<span class="token punctuation">,</span> headers<span class="token punctuation">,</span> interceptCallback<span class="token punctuation">,</span> remainingWaitMs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span>batchIsFull <span class="token operator">||</span> result<span class="token punctuation">.</span>newBatchCreated<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Waking up the sender since topic {} partition {} is either full or getting a new batch"</span><span class="token punctuation">,</span> record<span class="token punctuation">.</span><span class="token function">topic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> partition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>sender<span class="token punctuation">.</span><span class="token function">wakeup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">.</span>future<span class="token punctuation">;</span>
+        <span class="token comment">// handling exceptions and record the errors;</span>
+        <span class="token comment">// for API exceptions return them in the future,</span>
+        <span class="token comment">// for other exceptions throw directly</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ApiException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Exception occurred during message send:"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>callback <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+            callback<span class="token punctuation">.</span><span class="token function">onCompletion</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>errors<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>interceptors<span class="token punctuation">.</span><span class="token function">onSendError</span><span class="token punctuation">(</span>record<span class="token punctuation">,</span> tp<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">FutureFailure</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>errors<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>interceptors<span class="token punctuation">.</span><span class="token function">onSendError</span><span class="token punctuation">(</span>record<span class="token punctuation">,</span> tp<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">InterruptException</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">BufferExhaustedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>errors<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>metrics<span class="token punctuation">.</span><span class="token function">sensor</span><span class="token punctuation">(</span><span class="token string">"buffer-exhausted-records"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>interceptors<span class="token punctuation">.</span><span class="token function">onSendError</span><span class="token punctuation">(</span>record<span class="token punctuation">,</span> tp<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">KafkaException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>errors<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>interceptors<span class="token punctuation">.</span><span class="token function">onSendError</span><span class="token punctuation">(</span>record<span class="token punctuation">,</span> tp<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// we notify interceptor about all exceptions, since onSend is called before anything else in this method</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>interceptors<span class="token punctuation">.</span><span class="token function">onSendError</span><span class="token punctuation">(</span>record<span class="token punctuation">,</span> tp<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+			<br>
+			
+			
+			<a class="tag-unordered list-link" href="/tags/Kafka/" rel="tag">Kafka<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Kafka%E6%BA%90%E7%A0%81/" rel="tag">Kafka源码<span class="tag-unordered list-count">14</span></a>
+
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/09/07/kafka/13-xiao-fei-zhe-poll-cong-fu-wu-duan-la-qu-shu-ju/"> 【Apache Kafka 3.2源码解析系列】-消费者Poll从服务端拉取数据</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"> 【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

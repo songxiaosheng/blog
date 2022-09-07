@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>【Apache Kafka 3.2源码解析系列】-处理Poll的IO返回结果 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1662518006015">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1662518006015"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>【Apache Kafka 3.2源码解析系列】-处理Poll的IO返回结果</h1>
+			<div class="info"><span class="date">2022年9月7日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Kafka%E6%BA%90%E7%A0%81/">Kafka源码</a>》
+				
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/kafka/7-消费者和生产者处理IO结果.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<p>处理Poll的IO返回结果</p>
+<ul>
+<li><p>开始</p>
+</li>
+<li><p>handleCompletedSends处理完成的发送请求</p>
+<ul>
+<li>handleCompletedSends处理完成的请求遍历Selector的completedSends然后遍历</li>
+<li>根据完成发送的node信息查询对应飞行窗口inFlightRequests中最后一个请求InFlightRequest<ul>
+<li>如果最新的请求expectResponse为false则在*inFlightRequests中将最新请求从请求队列中移出</li>
+<li>封装响应数据ClientResponse到responses集合中List<clientresponse></clientresponse></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>handleCompletedReceives处理完成的接收请求</p>
+<ul>
+<li>循环遍历selector的completedReceives中的NetworkReceive列表</li>
+<li>获取飞行窗口中对应节点node的内存队列中最老的请求数据NetworkClient.InFlightRequest  </li>
+<li>解析响应数据parseStructMaybeUpdateThrottleTimeMetrics和parseResponse</li>
+<li>如果是内部请求并且是元数据请求则走内部处理逻辑</li>
+<li>如果是内部请求并且是ApiVersionsResponse类型则走api版本处理逻辑</li>
+<li>其他请求将响应加入List<clientresponse> responses集合中</clientresponse></li>
+</ul>
+</li>
+<li><p>handleDisconnections处理失去连接的请求</p>
+<ul>
+<li><p>遍历Selector的 Map&lt;String, ChannelState&gt; disconnected 集合</p>
+<ul>
+<li><p>processDisconnection处理失去连接的逻辑</p>
+</li>
+<li><p>updateReconnectBackoff 退避指数计算处理</p>
+</li>
+<li><p>从缓存apiVersions和nodesNeedingApiVersionsFetch中移除当前失去连接的节点 </p>
+</li>
+<li><p>根据失去连接的情况来处理：</p>
+<ul>
+<li><p>AUTHENTICATION_FAILED  更新异常结果打印日志</p>
+</li>
+<li><p>AUTHENTICATE  打印原因</p>
+</li>
+<li><p>NOT_CONNECTED 		打印原因	</p>
+</li>
+<li><p>清理当前节点对应飞行窗口InFlightRequests中的请求队列中的数据</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>如果失去连接数大于0则标记请求更新元数据变量needUpdate为true下次io时候请求新的元数据</p>
+</li>
+</ul>
+</li>
+<li><p>handleConnections 处理新连接</p>
+<ul>
+<li>遍历selector中的List<string> connected列表<ul>
+<li>切换节点连接状态为ConnectionState.READY</li>
+<li>重置异常authenticationException为null</li>
+<li>重置连接回退指数数据resetReconnectBackoff</li>
+</ul>
+</string></li>
+</ul>
+</li>
+<li><p>handleInitiateApiVersionRequests 处理API versions信息查询的请求</p>
+<ul>
+<li>遍历前面handleCompletedReceives的响应结果中nodesNeedingApiVersionsFetch集合数据（apiVersionsResponse.error() != Errors.NONE满足这个条件时候会产生）<ul>
+<li>生成ApiVersionsRequest请求将其放在请求队列中等待io执行请求服务端</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>handleTimedOutRequests 处理具有超时请求的节点</p>
+<ul>
+<li>遍历飞行窗口中，所有节点对应的队列中的所有请求<ul>
+<li><p>记录存在超时记录的节点id到List<string> nodeIds 超时判断条件为now - request.sendTimeMs  &gt; request.requestTimeoutMs</string></p>
+</li>
+<li><p>selector主动关闭与当前超时节点的连接</p>
+<ul>
+<li>获取当前节点的KafkaChannel主动调用关闭方法closed</li>
+</ul>
+</li>
+<li><p>本地执行处理失去连接的逻辑processDisconnection</p>
+</li>
+<li><p>如果失去连接数大于0则标记请求更新元数据变量needUpdate为true下次io时候请求新的元数据</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>completeResponses  完成响应结果的处理开始调用回调方法</p>
+<ul>
+<li>遍历本地处理逻辑处理的所有响应List<clientresponse> responses 前面已经将响应信息存放在了这里<ul>
+<li>调用每个response的response.onComplete();方法</li>
+<li>触发回调方法RequestCompletionHandler callback</li>
+</ul>
+</clientresponse></li>
+</ul>
+</li>
+</ul>
+<p>•</p>
+<p>•</p>
+<p>•</p>
+<p>•</p>
+<p>•</p>
+<p>•</p>
+<p>•</p>
+<p>•</p>
+<p>•</p>
+<p>•</p>
+
+			<br>
+			
+			
+			<a class="tag-unordered list-link" href="/tags/Kafka/" rel="tag">Kafka<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Kafka%E6%BA%90%E7%A0%81/" rel="tag">Kafka源码<span class="tag-unordered list-count">14</span></a>
+
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"> 【Apache Kafka 3.2源码解析系列】-执行IO事件</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/"> 【Apache Kafka 3.2源码解析系列】-消费者例子拉取数据</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

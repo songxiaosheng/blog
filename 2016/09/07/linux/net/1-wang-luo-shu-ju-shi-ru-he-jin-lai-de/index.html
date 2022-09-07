@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662257741736">
+<link rel="stylesheet" href="/css/style.css?v=1662518006064">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662257741736"></script>
+<script src="/js/core.js?v=1662518006064"></script>
 
 
 
@@ -244,7 +244,7 @@ err <span class="token operator">=</span> <span class="token function">igb_reque
     <span class="token function">or_softirq_pending</span><span class="token punctuation">(</span><span class="token number">1UL</span> <span class="token operator">&lt;&lt;</span> nr<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>Linux 在硬中断里只完成简单必要的工作，剩下的大部分的处理都是转交给软中断的。通过 上面代码可以看到，硬中断处理过程真的是非常短。只是记录了一个寄存器，修改了一下下 CPU 的 poll_list，然后发出个软中断。就这么简单，硬中断工作就算是完成了。</p>
+<p>Linux 在硬中断里只完成简单必要的工作，剩下的大部分的处理都是转交给软中断的。通过 上面代码可以看到，硬中断处理过程真的是非常短。只是记录了一个寄存器，修改了一下CPU 的 poll_list，然后发出个软中断。就这么简单，硬中断工作就算是完成了。</p>
 <h2 id="ksoftirqd-内核线程处理软中断"><a href="#ksoftirqd-内核线程处理软中断" class="headerlink" title="ksoftirqd 内核线程处理软中断"></a>ksoftirqd 内核线程处理软中断</h2><ul>
 <li>为每个CPU启动软中断内核线程ksoftirqd/0(cpu0)、ksoftirqd/1(cpu1)</li>
 <li>判断softirq_pending标志、执行_do_soft_irq <ul>
@@ -2052,6 +2052,10 @@ Tcp 连接的内存开销并不大， 单纯 socket 也就是 3.3 KB 左右。�
     
 
     
+        
+    
+
+    
          <!-- 先找到与当前文字相同的目录 -->
             
             
@@ -2068,10 +2072,6 @@ Tcp 连接的内存开销并不大， 单纯 socket 也就是 3.3 KB 左右。�
                     
                 
             
-        
-    
-
-    
         
     
 

@@ -255,6 +255,429 @@
   </entry>
   
   <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:12:34.791Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-Kaka知识全解析&quot;&gt;&lt;a href=&quot;#1-Kaka知识全解析&quot; class=&quot;headerlink&quot; title=&quot;1-Kaka知识全解析&quot;&gt;&lt;/a&gt;1-Kaka知识全解析&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-2-从一个生产者的Demo出发</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:13:50.487Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;从一个生产者的Demo出发&quot;&gt;&lt;a href=&quot;#从一个生产者的Demo出发&quot; class=&quot;headerlink&quot; title=&quot;从一个生产者的Demo出发&quot;&gt;&lt;/a&gt;从一个生产者的Demo出发&lt;/h1&gt;&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-06T23:36:57.732Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消费者订阅TOPIC</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/10-xiao-fei-zhe-ding-yue-topic/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/10-xiao-fei-zhe-ding-yue-topic/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:16:14.297Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;开始&lt;/li&gt;
+&lt;li&gt;调用订阅方法KafkaConsumer的subscribe&lt;/li&gt;
+&lt;li&gt;消费者获取轻量级锁然后检测消费者状态是否正常&lt;/li&gt;
+&lt;li&gt;groupId为空则抛出异常&lt;/li&gt;
+&lt;li&gt;topic为空则执行取消订阅逻辑&lt;/li&gt;
+&lt;l</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消费者尝试更新分配元数据updateAssignmentMetadataIfNeeded</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:16:34.773Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;•开始&lt;/p&gt;
+&lt;p&gt;•消费者协调器</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消费者执行轮询消息poll方法</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:16:49.163Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;开始&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;调用KafkaConsumer的poll方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;获取轻量级锁然后检测消费者开启状态&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;消费者监控指标KafkaConsumerMetrics记录poll</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消费者Poll从服务端拉取数据</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/13-xiao-fei-zhe-poll-cong-fu-wu-duan-la-qu-shu-ju/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/13-xiao-fei-zhe-poll-cong-fu-wu-duan-la-qu-shu-ju/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:17:09.818Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;•开始&lt;/p&gt;
+&lt;p&gt;•Fetcher的sendFetches()为我们分配了分区的任何节点设置一个fetch请求，前提是这些节点没有正在进行的fetch或挂起的fetch数据。&lt;/p&gt;
+&lt;p&gt;•prepareFetchRequests准备请求数据FetchRequestD</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:34:14.804Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;KafkaProducer处理数据到发送批处理队列&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开始&lt;/li&gt;
+&lt;li&gt;封装消息的TOPIC、KEY 、MESSAGE到 ProducerRecord类型对象&lt;/li&gt;
+&lt;li&gt;调用KafkaProducer类型的</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:37:39.459Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Send发送者线程的主限循环逻辑&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开始Sender类型的run方法&lt;/li&gt;
+&lt;li&gt;while</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-07T02:32:07.955Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;消息请求放入Kafka通道&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开始调用sendProducerData方法&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;集群信息查询：&lt;/strong&gt;MetadataCache中获取集群元数据信息Cluster&lt;/li&gt;
+&lt;li&gt;获取准备发送数据的分区列表，</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-执行IO事件</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:14:58.496Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;执行IO事件&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开始  &lt;/li&gt;
+&lt;li&gt;发送者线程主循环中KafkaClient.</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-处理Poll的IO返回结果</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:15:08.035Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;处理Poll的IO返回结果&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;开始&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;handleCompletedSends处理完成的发送请求&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;handleCompletedSends处理完成的请求遍历Selector的comple</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消费者例子拉取数据</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:15:34.517Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;开始&lt;/li&gt;
+&lt;li&gt;属性Properties初始化&lt;/li&gt;
+&lt;li&gt;KafkaConsumer类型生产者对象创建&lt;/li&gt;
+&lt;li&gt;消费者订阅topic&lt;/li&gt;
+&lt;li&gt;消费者调用poll命令拉取数据ConsumerRecords&lt;/li&gt;
+&lt;li&gt;消费</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消费者KafkaConsumer对象的初始化</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:15:56.906Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;开始&lt;/li&gt;
+&lt;li&gt;Properties配置转Map&amp;lt;String, Object&amp;gt;&lt;/li&gt;
+&lt;li&gt;Map&amp;lt;String,</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
     <title>1-Rebar3 从一个例子入门</title>
     <link href="https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/"/>
     <id>https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</id>
@@ -340,6 +763,19 @@
   
   <entry>
     <title></title>
+    <link href="https://blog.elastic.link/2022/09/05/linux/mm/pagecache/"/>
+    <id>https://blog.elastic.link/2022/09/05/linux/mm/pagecache/</id>
+    <published>2022-09-04T23:16:56.440Z</published>
+    <updated>2022-09-04T23:19:21.317Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
     <link href="https://blog.elastic.link/2022/08/27/dubbo/26-rpc-diao-yong-guo-cheng/"/>
     <id>https://blog.elastic.link/2022/08/27/dubbo/26-rpc-diao-yong-guo-cheng/</id>
     <published>2022-08-27T10:58:00.262Z</published>
@@ -418,161 +854,10 @@
   
   <entry>
     <title></title>
-    <link href="https://blog.elastic.link/2022/08/26/kafka/13-xiao-fei-zhe-poll-cong-fu-wu-duan-la-qu-shu-ju/"/>
-    <id>https://blog.elastic.link/2022/08/26/kafka/13-xiao-fei-zhe-poll-cong-fu-wu-duan-la-qu-shu-ju/</id>
-    <published>2022-08-26T00:37:34.253Z</published>
-    <updated>2022-08-26T00:38:52.495Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;•开始&lt;/p&gt;
-&lt;p&gt;•Fetcher的sendFetches()为我们分配了分区的任何节点设置一个fetch请求，前提是这些节点没有正在进行的fetch或挂起的fetch数据。&lt;/p&gt;
-&lt;p&gt;•prepareFetchRequests准备请求数据FetchRequestD</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/26/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/"/>
-    <id>https://blog.elastic.link/2022/08/26/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/</id>
-    <published>2022-08-26T00:35:32.666Z</published>
-    <updated>2022-08-26T00:38:47.404Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;开始&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;调用KafkaConsumer的poll方法&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;获取轻量级锁然后检测消费者开启状态&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;消费者监控指标KafkaConsumerMetrics记录poll</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/26/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/"/>
-    <id>https://blog.elastic.link/2022/08/26/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/</id>
-    <published>2022-08-26T00:35:01.270Z</published>
-    <updated>2022-08-26T00:38:42.427Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;•开始&lt;/p&gt;
-&lt;p&gt;•消费者协调器</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/26/kafka/10-xiao-fei-zhe-ding-yue-topic/"/>
-    <id>https://blog.elastic.link/2022/08/26/kafka/10-xiao-fei-zhe-ding-yue-topic/</id>
-    <published>2022-08-26T00:33:37.309Z</published>
-    <updated>2022-08-26T00:38:36.706Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;开始&lt;/li&gt;
-&lt;li&gt;调用订阅方法KafkaConsumer的subscribe&lt;/li&gt;
-&lt;li&gt;消费者获取轻量级锁然后检测消费者状态是否正常&lt;/li&gt;
-&lt;li&gt;groupId为空则抛出异常&lt;/li&gt;
-&lt;li&gt;topic为空则执行取消订阅逻辑&lt;/li&gt;
-&lt;l</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/26/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/08/26/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/</id>
-    <published>2022-08-26T00:31:47.842Z</published>
-    <updated>2022-08-26T00:38:29.956Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;开始&lt;/li&gt;
-&lt;li&gt;Properties配置转Map&amp;lt;String, Object&amp;gt;&lt;/li&gt;
-&lt;li&gt;Map&amp;lt;String,</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/26/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/"/>
-    <id>https://blog.elastic.link/2022/08/26/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/</id>
-    <published>2022-08-26T00:30:54.622Z</published>
-    <updated>2022-08-26T00:38:24.393Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;开始&lt;/li&gt;
-&lt;li&gt;属性Properties初始化&lt;/li&gt;
-&lt;li&gt;KafkaConsumer类型生产者对象创建&lt;/li&gt;
-&lt;li&gt;消费者订阅topic&lt;/li&gt;
-&lt;li&gt;消费者调用poll命令拉取数据ConsumerRecords&lt;/li&gt;
-&lt;li&gt;消费</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
     <link href="https://blog.elastic.link/2022/08/25/ai/04-shen-du-xue-xi/"/>
     <id>https://blog.elastic.link/2022/08/25/ai/04-shen-du-xue-xi/</id>
     <published>2022-08-25T04:53:54.745Z</published>
-    <updated>2022-09-02T04:24:03.020Z</updated>
+    <updated>2022-09-06T04:37:11.039Z</updated>
     
     
       
@@ -580,175 +865,6 @@
         
         
     <summary type="html">&lt;h2 id=&quot;深度学习概述要点&quot;&gt;&lt;a href=&quot;#深度学习概述要点&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/25/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"/>
-    <id>https://blog.elastic.link/2022/08/25/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/</id>
-    <published>2022-08-25T00:27:40.658Z</published>
-    <updated>2022-08-26T00:29:33.475Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;执行IO事件&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始  &lt;/li&gt;
-&lt;li&gt;发送者线程主循环中KafkaClient.</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/25/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
-    <id>https://blog.elastic.link/2022/08/25/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
-    <published>2022-08-25T00:25:57.393Z</published>
-    <updated>2022-08-26T00:29:38.652Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;消息请求放入Kafka通道&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始&lt;/li&gt;
-&lt;li&gt;MetadataCache中获取集群元数据信息Cluster&lt;/li&gt;
-&lt;li&gt;查询未发消息中无leader的topic然后请求其元数据&lt;/li&gt;
-&lt;li&gt;移除无法正常建立连接的节点&lt;/li&gt;
-&lt;</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/25/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"/>
-    <id>https://blog.elastic.link/2022/08/25/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/</id>
-    <published>2022-08-25T00:25:10.257Z</published>
-    <updated>2022-08-25T00:26:04.423Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;Send发送者线程的主限循环逻辑&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始&lt;/li&gt;
-&lt;li&gt;while</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/25/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"/>
-    <id>https://blog.elastic.link/2022/08/25/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/</id>
-    <published>2022-08-25T00:23:08.383Z</published>
-    <updated>2022-08-31T00:14:26.768Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;KafkaProducer处理数据到发送批处理队列&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始&lt;/li&gt;
-&lt;li&gt;封装消息的TOPIC、KEY 、MESSAGE到 ProducerRecord类型对象&lt;/li&gt;
-&lt;li&gt;调用KafkaProducer类型的</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/25/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/08/25/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
-    <published>2022-08-25T00:15:54.425Z</published>
-    <updated>2022-09-01T00:02:10.367Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/25/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/"/>
-    <id>https://blog.elastic.link/2022/08/25/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/</id>
-    <published>2022-08-25T00:14:01.534Z</published>
-    <updated>2022-08-31T23:53:50.411Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;从一个生产者的Demo出发&quot;&gt;&lt;a href=&quot;#从一个生产者的Demo出发&quot; class=&quot;headerlink&quot; title=&quot;从一个生产者的Demo出发&quot;&gt;&lt;/a&gt;从一个生产者的Demo出发&lt;/h1&gt;&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot;</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/23/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/"/>
-    <id>https://blog.elastic.link/2022/08/23/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/</id>
-    <published>2022-08-23T00:21:11.921Z</published>
-    <updated>2022-08-26T00:38:16.172Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;处理Poll的IO返回结果&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;开始&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;handleCompletedSends处理完成的发送请求&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;handleCompletedSends处理完成的请求遍历Selector的comple</summary>
         
       
     
@@ -1226,64 +1342,6 @@ kind: Deployment&lt;span</summary>
         
         
     <summary type="html">&lt;h1 id=&quot;15-Dubbo的三大中心之元数据中心源码解析&quot;&gt;&lt;a href=&quot;#15-Dubbo的三大中心之元数据中心源码解析&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>14-【Dubbo3.0.8源码解析系列】Dubbo配置加载全解析</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/14-dubbo-pei-zhi-jia-zai-quan-jie-xi/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/14-dubbo-pei-zhi-jia-zai-quan-jie-xi/</id>
-    <published>2022-07-10T12:25:14.000Z</published>
-    <updated>2022-07-23T06:21:01.740Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;14-Dubbo配置加载全解析&quot;&gt;&lt;a href=&quot;#14-Dubbo配置加载全解析&quot; class=&quot;headerlink&quot; title=&quot;14-Dubbo配置加载全解析&quot;&gt;&lt;/a&gt;14-Dubbo配置加载全解析&lt;/h1&gt;&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>13-【Dubbo3.0.8源码解析系列】Dubbo的三大中心之配置中心</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/13-dubbo-de-san-da-zhong-xin-zhi-pei-zhi-zhong-xin-yuan-ma-jie-xi/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/13-dubbo-de-san-da-zhong-xin-zhi-pei-zhi-zhong-xin-yuan-ma-jie-xi/</id>
-    <published>2022-07-10T12:25:13.000Z</published>
-    <updated>2022-07-23T06:20:57.804Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;13-Dubbo的三大中心之配置中心&quot;&gt;&lt;a href=&quot;#13-Dubbo的三大中心之配置中心&quot; class=&quot;headerlink&quot; title=&quot;13-Dubbo的三大中心之配置中心&quot;&gt;&lt;/a&gt;13-Dubbo的三大中心之配置中心&lt;/h1&gt;&lt;h2</summary>
         
       
     
