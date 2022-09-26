@@ -176,35 +176,6 @@
   </entry>
   
   <entry>
-    <title>6-Mnesia分布式数据库</title>
-    <link href="https://blog.elastic.link/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/"/>
-    <id>https://blog.elastic.link/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/</id>
-    <published>2022-09-07T12:25:02.000Z</published>
-    <updated>2022-08-11T14:20:48.738Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;6-Mnesia分布式数据库&quot;&gt;&lt;a href=&quot;#6-Mnesia分布式数据库&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
-    
-    <category term="Mnesia" scheme="https://blog.elastic.link/tags/Mnesia/"/>
-    
-  </entry>
-  
-  <entry>
     <title>5-Erlang KEY VALUE数据存储 ETS</title>
     <link href="https://blog.elastic.link/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/"/>
     <id>https://blog.elastic.link/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/</id>
@@ -232,6 +203,35 @@
     <category term="Erlangets" scheme="https://blog.elastic.link/tags/Erlangets/"/>
     
     <category term="ets" scheme="https://blog.elastic.link/tags/ets/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>6-Mnesia分布式数据库</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-08-11T14:20:48.738Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;6-Mnesia分布式数据库&quot;&gt;&lt;a href=&quot;#6-Mnesia分布式数据库&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Mnesia" scheme="https://blog.elastic.link/tags/Mnesia/"/>
     
   </entry>
   
@@ -432,6 +432,34 @@
   </entry>
   
   <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消费者尝试更新分配元数据updateAssignmentMetadataIfNeeded</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:16:34.773Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;•开始&lt;/p&gt;
+&lt;p&gt;•消费者协调器</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-消费者执行轮询消息poll方法</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/</id>
@@ -451,34 +479,6 @@
 &lt;li&gt;&lt;p&gt;获取轻量级锁然后检测消费者开启状态&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;&lt;p&gt;消费者监控指标KafkaConsumerMetrics记录poll</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消费者尝试更新分配元数据updateAssignmentMetadataIfNeeded</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:16:34.773Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;•开始&lt;/p&gt;
-&lt;p&gt;•消费者协调器</summary>
         
       
     
@@ -584,21 +584,20 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-执行IO事件</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/</id>
+    <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:14:58.496Z</updated>
+    <updated>2022-09-23T00:49:28.320Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;执行IO事件&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始  &lt;/li&gt;
-&lt;li&gt;发送者线程主循环中KafkaClient.</summary>
+    <summary type="html">&lt;p&gt;Send对象用来存储请求头和目的地&lt;/p&gt;
+&lt;p&gt;飞行请求集合用来存储详细的数据&lt;/p&gt;
+&lt;h2 id=&quot;发送器Sender类型的的sendProducerData-模版方法&quot;&gt;&lt;a href=&quot;#发送器Sender类型的的sendProducerData-模版方法&quot;</summary>
         
       
     
@@ -614,20 +613,21 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
+    <title>【Apache Kafka 3.2源码解析系列】-执行IO事件</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-23T00:49:28.320Z</updated>
+    <updated>2022-09-05T23:14:58.496Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;Send对象用来存储请求头和目的地&lt;/p&gt;
-&lt;p&gt;飞行请求集合用来存储详细的数据&lt;/p&gt;
-&lt;h2 id=&quot;发送器Sender类型的的sendProducerData-模版方法&quot;&gt;&lt;a href=&quot;#发送器Sender类型的的sendProducerData-模版方法&quot;</summary>
+    <summary type="html">&lt;p&gt;执行IO事件&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开始  &lt;/li&gt;
+&lt;li&gt;发送者线程主循环中KafkaClient.</summary>
         
       
     
