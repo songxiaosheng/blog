@@ -143,37 +143,6 @@
   </entry>
   
   <entry>
-    <title>5-Erlang KEY VALUE数据存储 ETS</title>
-    <link href="https://blog.elastic.link/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/"/>
-    <id>https://blog.elastic.link/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/</id>
-    <published>2022-09-07T12:25:02.000Z</published>
-    <updated>2022-08-11T14:21:03.517Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;5-Erlang-KEY-VALUE数据存储-ETS&quot;&gt;&lt;a href=&quot;#5-Erlang-KEY-VALUE数据存储-ETS&quot; class=&quot;headerlink&quot; title=&quot;5-Erlang KEY VALUE数据存储</summary>
-        
-      
-    
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
-    
-    <category term="Erlangets" scheme="https://blog.elastic.link/tags/Erlangets/"/>
-    
-    <category term="ets" scheme="https://blog.elastic.link/tags/ets/"/>
-    
-  </entry>
-  
-  <entry>
     <title>4-套接字编程</title>
     <link href="https://blog.elastic.link/2022/09/07/erlang/4-tao-jie-zi-bian-cheng/"/>
     <id>https://blog.elastic.link/2022/09/07/erlang/4-tao-jie-zi-bian-cheng/</id>
@@ -203,6 +172,37 @@
     <category term="套接字" scheme="https://blog.elastic.link/tags/%E5%A5%97%E6%8E%A5%E5%AD%97/"/>
     
     <category term="网络编程" scheme="https://blog.elastic.link/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>5-Erlang KEY VALUE数据存储 ETS</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-08-11T14:21:03.517Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;5-Erlang-KEY-VALUE数据存储-ETS&quot;&gt;&lt;a href=&quot;#5-Erlang-KEY-VALUE数据存储-ETS&quot; class=&quot;headerlink&quot; title=&quot;5-Erlang KEY VALUE数据存储</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Erlangets" scheme="https://blog.elastic.link/tags/Erlangets/"/>
+    
+    <category term="ets" scheme="https://blog.elastic.link/tags/ets/"/>
     
   </entry>
   
@@ -345,18 +345,18 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
+    <title>【Apache Kafka 3.2源码解析系列】-2-从一个生产者的Demo出发</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-06T23:36:57.732Z</updated>
+    <updated>2022-09-05T23:13:50.487Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
+    <summary type="html">&lt;h1 id=&quot;从一个生产者的Demo出发&quot;&gt;&lt;a href=&quot;#从一个生产者的Demo出发&quot; class=&quot;headerlink&quot; title=&quot;从一个生产者的Demo出发&quot;&gt;&lt;/a&gt;从一个生产者的Demo出发&lt;/h1&gt;&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot;</summary>
         
       
     
@@ -372,18 +372,18 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-2-从一个生产者的Demo出发</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/</id>
+    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:13:50.487Z</updated>
+    <updated>2022-09-06T23:36:57.732Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;从一个生产者的Demo出发&quot;&gt;&lt;a href=&quot;#从一个生产者的Demo出发&quot; class=&quot;headerlink&quot; title=&quot;从一个生产者的Demo出发&quot;&gt;&lt;/a&gt;从一个生产者的Demo出发&lt;/h1&gt;&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot;</summary>
+    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
         
       
     
