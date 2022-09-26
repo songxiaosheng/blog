@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1664200894940">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1664200894940"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1></h1>
+			<div class="info"><span class="date">2022年9月8日</span>•songxiaosheng 
+			
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/ai/05-深度学习的神经网络.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h2 id="深度学习框架下的神经网络深度信念网络要点"><a href="#深度学习框架下的神经网络深度信念网络要点" class="headerlink" title="深度学习框架下的神经网络深度信念网络要点"></a>深度学习框架下的神经网络深度信念网络要点</h2><ul>
+<li>深度信念网络是一种生成模型，能够建立输入和输出的联合概率分布；</li>
+<li>受限玻尔兹曼机是构成深度信念网络的基本单元，是由可见层和隐藏层构成的神经网络；</li>
+<li>受限玻尔兹曼机的训练方法是对比散度法，通过可见层和隐藏层的多轮交互实现；</li>
+<li>深度神经网络的通用训练方式是无监督逐层预训练和有监督微调的结合。</li>
+</ul>
+<h2 id="深度学习框架下的神经网络卷积神经网络要点"><a href="#深度学习框架下的神经网络卷积神经网络要点" class="headerlink" title="深度学习框架下的神经网络卷积神经网络要点"></a>深度学习框架下的神经网络卷积神经网络要点</h2><ul>
+<li>卷积神经网络是应用了卷积运算的神经网络，适用于处理网格化数据；</li>
+<li>卷积神经网络具有稀疏感知性、参数共享性和平移不变性；</li>
+<li>卷积神经网络的结构包括交替出现的卷积层、激活层和池化层，以及作为输出的全连接层；</li>
+<li>卷积神经网络的作用是逐层提取输入对象的特征。</li>
+</ul>
+<h2 id="深度学习框架下的神经网络循环神经网络要点"><a href="#深度学习框架下的神经网络循环神经网络要点" class="headerlink" title="深度学习框架下的神经网络循环神经网络要点"></a>深度学习框架下的神经网络循环神经网络要点</h2><ul>
+<li>循环神经网络是具有记忆的神经网络，适用于处理序列化数据</li>
+<li>循环神经网络引入反馈结构，能够在时间上共享参数，从而具有记忆；</li>
+<li>循环神经网络的扩展包括双向循环网络和深度循环网络；</li>
+<li>递归神经网络能够处理具有层次化结构的数据，可以看成循环神经网络的推广。</li>
+</ul>
+<h2 id="深度学习框架下的神经网络生成式对抗网络要点"><a href="#深度学习框架下的神经网络生成式对抗网络要点" class="headerlink" title="深度学习框架下的神经网络生成式对抗网络要点"></a>深度学习框架下的神经网络生成式对抗网络要点</h2><ul>
+<li>生成式对抗网络是一类运行在零和博弈框架下的无监督学习算法，由生成器和判别器构成；</li>
+<li>生成器的目的是精确模拟真实数据的分布判别器的目的是精确区分真实数据和生成数据；</li>
+<li>生成式对抗网络的主要优点是超越了传统神经网络分类和特征提取的功能，能够按照真实数据的特点生成新的数据</li>
+<li>生成式对抗网络的主要问题是理论基础的缺失。</li>
+</ul>
+<h2 id="深度学习框架下的神经网络-长短期记忆网络要-点"><a href="#深度学习框架下的神经网络-长短期记忆网络要-点" class="headerlink" title="深度学习框架下的神经网络|长短期记忆网络要 点"></a>深度学习框架下的神经网络|长短期记忆网络要 点</h2><ul>
+<li>长短期记忆网络可以实现任意长度的记忆，对信息进行长期而精确的跟踪；</li>
+<li>长短期记忆单元的组成包括记忆模块、输入门、遗忘门和输出门；</li>
+<li>长短期记忆网络根据当前的输入、当前的记忆和前一时刻的输出确定当前的输出；</li>
+<li>长短期记忆网络能够解决梯度弥散的问题。</li>
+</ul>
+
+			<br>
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

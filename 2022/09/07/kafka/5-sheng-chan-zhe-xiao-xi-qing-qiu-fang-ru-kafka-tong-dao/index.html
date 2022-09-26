@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662518006014">
+<link rel="stylesheet" href="/css/style.css?v=1664200894956">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662518006014"></script>
+<script src="/js/core.js?v=1664200894956"></script>
 
 
 
@@ -75,11 +75,277 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			<p>消息请求放入Kafka通道</p>
+			<p>Send对象用来存储请求头和目的地</p>
+<p>飞行请求集合用来存储详细的数据</p>
+<h2 id="发送器Sender类型的的sendProducerData-模版方法"><a href="#发送器Sender类型的的sendProducerData-模版方法" class="headerlink" title="发送器Sender类型的的sendProducerData 模版方法"></a>发送器Sender类型的的sendProducerData 模版方法</h2><p>当前方法的代码大纲如下：</p>
+<ul>
+<li>元数据相关：<ul>
+<li>集群信息缓存查询</li>
+<li>主题分区缓存查询</li>
+<li>无leader主题分区更新元数据</li>
+</ul>
+</li>
+<li>批处理数据相关：<ul>
+<li>遍历准备发送数据的节点</li>
+<li>批处理记录的创建</li>
+<li>所有请求添加到飞行窗口</li>
+</ul>
+</li>
+<li>批处理关联网络通道<ul>
+<li>遍历批处理batches列表<ul>
+<li>请求依次放入对应IO通道KafkaChannel</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>下面是发送器Sender类型的的sendProducerData 模版方法源码直接看的话会比较枯燥可以结合代码大纲进行了解，主要分为三大部分：<strong>元数据处理</strong>，<strong>批处理记录与飞行窗口处理</strong>，<strong>批处理存放到对应网络通道</strong>：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">long</span> <span class="token function">sendProducerData</span><span class="token punctuation">(</span><span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">//-------------------------------元数据处理开始-------------------------------------//</span>
+  <span class="token comment">//**集群信息查询：**MetadataCache中获取集群元数据信息Cluster</span>
+    <span class="token class-name">Cluster</span> cluster <span class="token operator">=</span> metadata<span class="token punctuation">.</span><span class="token function">fetch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// get the list of partitions with data ready to send</span>
+  <span class="token comment">//获取准备发送数据的分区列表，记录累加器中获取准备准备发送数据的主题分区</span>
+    <span class="token class-name">RecordAccumulator<span class="token punctuation">.</span>ReadyCheckResult</span> result <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span>cluster<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// if there are any partitions whose leaders are not known yet, force metadata update</span>
+  <span class="token comment">//**无leader主题分区更新元数据：**如果存在主题分区对应的leader为空则强制更新无leader的主题分区对应的元数据</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>result<span class="token punctuation">.</span>unknownLeaderTopics<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// The set of topics with unknown leader contains topics with leader election pending as well as</span>
+        <span class="token comment">// topics which may have expired. Add the topic again to metadata to ensure it is included</span>
+        <span class="token comment">// and request metadata update, since there are messages to send to the topic.</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> topic <span class="token operator">:</span> result<span class="token punctuation">.</span>unknownLeaderTopics<span class="token punctuation">)</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>topic<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Requesting metadata update due to unknown leader topics from the batched records: {}"</span><span class="token punctuation">,</span>
+            result<span class="token punctuation">.</span>unknownLeaderTopics<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">.</span><span class="token function">requestUpdate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// remove any nodes we aren't ready to send to</span>
+  <span class="token comment">//遍历准备发送数据的节点集合Set&lt;Node&gt; readyNodes</span>
+    <span class="token class-name">Iterator</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Node</span><span class="token punctuation">&gt;</span></span> iter <span class="token operator">=</span> result<span class="token punctuation">.</span>readyNodes<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> notReadyTimeout <span class="token operator">=</span> <span class="token class-name">Long</span><span class="token punctuation">.</span>MAX_VALUE<span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>iter<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Node</span> node <span class="token operator">=</span> iter<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>client<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            iter<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            notReadyTimeout <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>notReadyTimeout<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>client<span class="token punctuation">.</span><span class="token function">pollDelayMs</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+ <span class="token comment">//-------------------------------元数据处理结束-------------------------------------//</span>
+ 
+ 
+  <span class="token comment">//-----------------------------批处理记录与飞行窗口处理开始----------------------------//</span>
+  <span class="token comment">// create produce requests</span>
+  <span class="token comment">//RecordAccumulator记录累加器调用drain方法从批处理队列中排出所有映射节点对应的可以进行发送消息的批处理队列</span>
+    <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> batches <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">drain</span><span class="token punctuation">(</span>cluster<span class="token punctuation">,</span> result<span class="token punctuation">.</span>readyNodes<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>maxRequestSize<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//将所有请求添加到飞行窗口 </span>
+   <span class="token comment">//这个方法遍历所有的批处理记录将批处理存放在飞行窗口集合中</span>
+  <span class="token comment">//飞行集合： Map&lt;TopicPartition, List&lt;ProducerBatch&gt;&gt; inFlightBatches</span>
+    <span class="token function">addToInflightBatches</span><span class="token punctuation">(</span>batches<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>guaranteeMessageOrder<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Mute all the partitions drained</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span></span> batchList <span class="token operator">:</span> batches<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ProducerBatch</span> batch <span class="token operator">:</span> batchList<span class="token punctuation">)</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">mutePartition</span><span class="token punctuation">(</span>batch<span class="token punctuation">.</span>topicPartition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    accumulator<span class="token punctuation">.</span><span class="token function">resetNextBatchExpiryTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//遍历inFlightBatches集合 查看消息是否超过了deliveryTimeoutMs</span>
+  <span class="token comment">//把超时的消息从飞行集合中移除，然后存放到expiredInflightBatches集合中</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span></span> expiredInflightBatches <span class="token operator">=</span> <span class="token function">getExpiredInflightBatches</span><span class="token punctuation">(</span>now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//遍历原始的批处理集合batches： ConcurrentMap&lt;TopicPartition, Deque&lt;ProducerBatch&gt;&gt;查看消息是否超过了deliveryTimeoutMs</span>
+  <span class="token comment">//把超时的批处理消息从批处理集合中移除然后放到expiredBatches集合中</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span></span> expiredBatches <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">expiredBatches</span><span class="token punctuation">(</span>now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//待发送的飞行集合中的过期消息和批处理中的过期消息都放到一个集合中</span>
+    expiredBatches<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>expiredInflightBatches<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Reset the producer id if an expired batch has previously been sent to the broker. Also update the metrics</span>
+    <span class="token comment">// for expired batches. see the documentation of @TransactionState.resetProducerId to understand why</span>
+    <span class="token comment">// we need to reset the producer id here.</span>
+  <span class="token comment">//</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>expiredBatches<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Expired {} batches in accumulator"</span><span class="token punctuation">,</span> expiredBatches<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ProducerBatch</span> expiredBatch <span class="token operator">:</span> expiredBatches<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">String</span> errorMessage <span class="token operator">=</span> <span class="token string">"Expiring "</span> <span class="token operator">+</span> expiredBatch<span class="token punctuation">.</span>recordCount <span class="token operator">+</span> <span class="token string">" record(s) for "</span> <span class="token operator">+</span> expiredBatch<span class="token punctuation">.</span>topicPartition
+            <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> <span class="token punctuation">(</span>now <span class="token operator">-</span> expiredBatch<span class="token punctuation">.</span>createdMs<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" ms has passed since batch creation"</span><span class="token punctuation">;</span>
+        <span class="token function">failBatch</span><span class="token punctuation">(</span>expiredBatch<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> NO_TIMESTAMP<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">TimeoutException</span><span class="token punctuation">(</span>errorMessage<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>transactionManager <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> expiredBatch<span class="token punctuation">.</span><span class="token function">inRetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// This ensures that no new batches are drained until the current in flight batches are fully resolved.</span>
+            transactionManager<span class="token punctuation">.</span><span class="token function">markSequenceUnresolved</span><span class="token punctuation">(</span>expiredBatch<span class="token punctuation">.</span>topicPartition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    sensors<span class="token punctuation">.</span><span class="token function">updateProduceRequestMetrics</span><span class="token punctuation">(</span>batches<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// If we have any nodes that are ready to send + have sendable data, poll with 0 timeout so this can immediately</span>
+    <span class="token comment">// loop and try sending more data. Otherwise, the timeout will be the smaller value between next batch expiry</span>
+    <span class="token comment">// time, and the delay time for checking data availability. Note that the nodes may have data that isn't yet</span>
+    <span class="token comment">// sendable due to lingering, backing off, etc. This specifically does not include nodes with sendable data</span>
+    <span class="token comment">// that aren't ready to send since they would cause busy looping.</span>
+    <span class="token keyword">long</span> pollTimeout <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>result<span class="token punctuation">.</span>nextReadyCheckDelayMs<span class="token punctuation">,</span> notReadyTimeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    pollTimeout <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>pollTimeout<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>accumulator<span class="token punctuation">.</span><span class="token function">nextExpiryTimeMs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    pollTimeout <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>pollTimeout<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>result<span class="token punctuation">.</span>readyNodes<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Nodes with data ready to send: {}"</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>readyNodes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// if some partitions are already ready to be sent, the select time would be 0;</span>
+        <span class="token comment">// otherwise if some partition already has some data accumulated but not ready yet,</span>
+        <span class="token comment">// the select time will be the time difference between now and its linger expiry time;</span>
+        <span class="token comment">// otherwise the select time will be the time difference between now and the metadata expiry time;</span>
+        pollTimeout <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token comment">//---------------------------批处理记录与飞行窗口处理结束----------------------------//</span>
+  
+  
+  <span class="token comment">//-----------------------------批处理存放到对应网络通道开始----------------------------// </span>
+    <span class="token function">sendProduceRequests</span><span class="token punctuation">(</span>batches<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//-----------------------------批处理存放到对应网络通道结束----------------------------//</span>
+  
+    <span class="token keyword">return</span> pollTimeout<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="批处理消息存放到网络通道中"><a href="#批处理消息存放到网络通道中" class="headerlink" title="批处理消息存放到网络通道中"></a>批处理消息存放到网络通道中</h2><p>前面对用户待发消息的批处理队列进行了处理得到最终需要发送的批处理消息集合然后遍历每个节点对应的批处理集合，将其存放在网络通道中等后续IO逻辑执行的时候将Kafka通道中存放的消息发送出去</p>
+<p>Sender类型的sendProduceRequests方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">sendProduceRequests</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> collated<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> entry <span class="token operator">:</span> collated<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token function">sendProduceRequest</span><span class="token punctuation">(</span>now<span class="token punctuation">,</span> entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> acks<span class="token punctuation">,</span> requestTimeoutMs<span class="token punctuation">,</span> entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>单个节点的批处理列表进行处理为其创建网络请求对象然后存放到网络通道</p>
+<p>Sender类型的sendProduceRequest方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">sendProduceRequest</span><span class="token punctuation">(</span><span class="token keyword">long</span> now<span class="token punctuation">,</span> <span class="token keyword">int</span> destination<span class="token punctuation">,</span> <span class="token keyword">short</span> acks<span class="token punctuation">,</span> <span class="token keyword">int</span> timeout<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span></span> batches<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>batches<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+		<span class="token comment">//内存记录内部通过字节缓冲区ByteBuffer来对记录进行存储（ByteBuffer有两种一种是堆字节缓冲，直接是直接内存字节缓冲区） 这里内存记录使用堆缓冲区HeapByteBuffer</span>
+    <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">TopicPartition</span><span class="token punctuation">,</span> <span class="token class-name">MemoryRecords</span><span class="token punctuation">&gt;</span></span> produceRecordsByPartition <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>batches<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+    <span class="token keyword">final</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">TopicPartition</span><span class="token punctuation">,</span> <span class="token class-name">ProducerBatch</span><span class="token punctuation">&gt;</span></span> recordsByPartition <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>batches<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// find the minimum magic version used when creating the record sets</span>
+    <span class="token keyword">byte</span> minUsedMagic <span class="token operator">=</span> apiVersions<span class="token punctuation">.</span><span class="token function">maxUsableProduceMagic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ProducerBatch</span> batch <span class="token operator">:</span> batches<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>batch<span class="token punctuation">.</span><span class="token function">magic</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> minUsedMagic<span class="token punctuation">)</span>
+            minUsedMagic <span class="token operator">=</span> batch<span class="token punctuation">.</span><span class="token function">magic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+   <span class="token comment">//遍历批处理队列</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ProducerBatch</span> batch <span class="token operator">:</span> batches<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">TopicPartition</span> tp <span class="token operator">=</span> batch<span class="token punctuation">.</span>topicPartition<span class="token punctuation">;</span>
+        <span class="token class-name">MemoryRecords</span> records <span class="token operator">=</span> batch<span class="token punctuation">.</span><span class="token function">records</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// down convert if necessary to the minimum magic used. In general, there can be a delay between the time</span>
+        <span class="token comment">// that the producer starts building the batch and the time that we send the request, and we may have</span>
+        <span class="token comment">// chosen the message format based on out-dated metadata. In the worst case, we optimistically chose to use</span>
+        <span class="token comment">// the new message format, but found that the broker didn't support it, so we need to down-convert on the</span>
+        <span class="token comment">// client before sending. This is intended to handle edge cases around cluster upgrades where brokers may</span>
+        <span class="token comment">// not all support the same message format version. For example, if a partition migrates from a broker</span>
+        <span class="token comment">// which is supporting the new magic version to one which doesn't, then we will need to convert.</span>
+        <span class="token comment">//版本兼容处理</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>records<span class="token punctuation">.</span><span class="token function">hasMatchingMagic</span><span class="token punctuation">(</span>minUsedMagic<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            records <span class="token operator">=</span> batch<span class="token punctuation">.</span><span class="token function">records</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">downConvert</span><span class="token punctuation">(</span>minUsedMagic<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> time<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">records</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      
+       <span class="token comment">//主题分区-内存记录映射 key：主题分区,value: 内存记录</span>
+        produceRecordsByPartition<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>tp<span class="token punctuation">,</span> records<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//主题分区-批处理映射  key：主题分区，value: 生产者批处理</span>
+        recordsByPartition<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>tp<span class="token punctuation">,</span> batch<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+  	<span class="token comment">//事务逻辑</span>
+    <span class="token class-name">String</span> transactionalId <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>transactionManager <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> transactionManager<span class="token punctuation">.</span><span class="token function">isTransactional</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        transactionalId <span class="token operator">=</span> transactionManager<span class="token punctuation">.</span><span class="token function">transactionalId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  
+  <span class="token comment">//请求构建器 用于创建生产者请求对象ProduceRequest</span>
+    <span class="token class-name">ProduceRequest<span class="token punctuation">.</span>Builder</span> requestBuilder <span class="token operator">=</span> <span class="token class-name">ProduceRequest<span class="token punctuation">.</span>Builder</span><span class="token punctuation">.</span><span class="token function">forMagic</span><span class="token punctuation">(</span>minUsedMagic<span class="token punctuation">,</span> acks<span class="token punctuation">,</span> timeout<span class="token punctuation">,</span>
+            produceRecordsByPartition<span class="token punctuation">,</span> transactionalId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">RequestCompletionHandler</span> callback <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RequestCompletionHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onComplete</span><span class="token punctuation">(</span><span class="token class-name">ClientResponse</span> response<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">handleProduceResponse</span><span class="token punctuation">(</span>response<span class="token punctuation">,</span> recordsByPartition<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+		
+  <span class="token comment">//客户端请求对象创建 ClientRequest类型对象</span>
+    <span class="token class-name">String</span> nodeId <span class="token operator">=</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span>destination<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">ClientRequest</span> clientRequest <span class="token operator">=</span> client<span class="token punctuation">.</span><span class="token function">newClientRequest</span><span class="token punctuation">(</span>nodeId<span class="token punctuation">,</span> requestBuilder<span class="token punctuation">,</span> now<span class="token punctuation">,</span> acks <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">,</span>
+            requestTimeoutMs<span class="token punctuation">,</span> callback<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+    client<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>clientRequest<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    log<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Sent produce request to {}: {}"</span><span class="token punctuation">,</span> nodeId<span class="token punctuation">,</span> requestBuilder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>KafkaClient 是一个封装客户端的一个接口，仅有的实现类型为NetworkClient</p>
+<p>NetworkClient的send方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">send</span><span class="token punctuation">(</span><span class="token class-name">ClientRequest</span> request<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">doSend</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>队列消息为待发送节点</p>
+<p>NetworkClient的doSend方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">doSend</span><span class="token punctuation">(</span><span class="token class-name">ClientRequest</span> clientRequest<span class="token punctuation">,</span> <span class="token keyword">boolean</span> isInternalRequest<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//发送之前的连接状态验证</span>
+    <span class="token function">ensureActive</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//节点id获取</span>
+    <span class="token class-name">String</span> nodeId <span class="token operator">=</span> clientRequest<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">////验证网络连接状态，飞行集合状态...</span>
+    <span class="token class-name">AbstractRequest<span class="token punctuation">.</span>Builder</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> builder <span class="token operator">=</span> clientRequest<span class="token punctuation">.</span><span class="token function">requestBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token comment">//版本兼容处理 ...</span>
+        <span class="token comment">// The call to build may also throw UnsupportedVersionException, if there are essential</span>
+        <span class="token comment">// fields that cannot be represented in the chosen version.</span>
+        <span class="token function">doSend</span><span class="token punctuation">(</span>clientRequest<span class="token punctuation">,</span> isInternalRequest<span class="token punctuation">,</span> now<span class="token punctuation">,</span> builder<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span>version<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">UnsupportedVersionException</span> unsupportedVersionException<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// If the version is not supported, skip sending the request over the wire.</span>
+      <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">doSend</span><span class="token punctuation">(</span><span class="token class-name">ClientRequest</span> clientRequest<span class="token punctuation">,</span> <span class="token keyword">boolean</span> isInternalRequest<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">,</span> <span class="token class-name">AbstractRequest</span> request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">String</span> destination <span class="token operator">=</span> clientRequest<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//请求头处理</span>
+    <span class="token class-name">RequestHeader</span> header <span class="token operator">=</span> clientRequest<span class="token punctuation">.</span><span class="token function">makeHeader</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">version</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//省略掉debug日志代码...</span>
+    <span class="token comment">//目的地和请求头转发送对象 序列化转换为网络发送实体对象NetworkSend类型</span>
+    <span class="token class-name">Send</span> send <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">toSend</span><span class="token punctuation">(</span>destination<span class="token punctuation">,</span> header<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//封装目的地，请求头，消息记录，发送时间等信息到飞行请求对象中</span>
+    <span class="token class-name">InFlightRequest</span> inFlightRequest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InFlightRequest</span><span class="token punctuation">(</span>
+            clientRequest<span class="token punctuation">,</span>
+            header<span class="token punctuation">,</span>
+            isInternalRequest<span class="token punctuation">,</span>
+            request<span class="token punctuation">,</span>
+            send<span class="token punctuation">,</span>
+            now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//将待发请求都放到飞行管理器中中InFlightRequests类型为飞行管理器，</span>
+   <span class="token comment">//内部的飞行集合为requests对象类型为ap&lt;String, Deque&lt;NetworkClient.InFlightRequest&gt;&gt; key为destination也就是节点id，值</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>inFlightRequests<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>inFlightRequest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    selector<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>send<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+<p>最后对上面代码做一个总结：</p>
+<p>消息请求放入Kafka通道</p>
 <ul>
 <li>开始调用sendProducerData方法</li>
 <li><strong>集群信息查询：</strong>MetadataCache中获取集群元数据信息Cluster</li>
-<li>获取准备发送数据的分区列表，记录累加器中获取准备准备发送数据的主题分区<ul>
+<li><strong>主题分区查询：</strong>获取准备发送数据的分区列表，记录累加器中获取准备准备发送数据的主题分区<ul>
 <li>查询遍历缓存的主题分区与批处理队列集合ConcurrentMap&lt;TopicPartition, Deque<producerbatch>&gt; batches<ul>
 <li>从主题分区信息中获取leader节点信息：Node leader</li>
 <li>根据批处理队列Deque<producerbatch> 中的第一个元素判断是否需要发送如果需要发送则将leader节点对象添加到准备发送节点集合Set<node> readyNodes中然后将其返回</node></producerbatch></li>
@@ -88,10 +354,10 @@
 </ul>
 </li>
 <li><strong>无leader主题分区更新元数据：</strong>如果存在主题分区对应的leader为空则强制更新无leader的主题分区对应的元数据</li>
-<li>遍历准备发送数据的节点集合Set<node> readyNodes<ul>
+<li><strong>遍历准备发送数据的节点</strong>：集合Set<node> readyNodes<ul>
 <li>连接移除或者无法正常建立连接的节点则直接移除</li>
 <li>如果连接状态建立正常则直接返回true继续</li>
-<li>如果还未建立连接状态则执行initiateConnect方法开始建立连接<ul>
+<li>如果还未建立连接状态则执行initiateConnect方法设置连接IO事件SelectionKey.OP_CONNECT<ul>
 <li>调用Selectable selector的connect方法<ul>
 <li>配置SocketChannel<ul>
 <li>configureBlocking(false)</li>
@@ -103,7 +369,22 @@
 </li>
 <li>channel.connect(address);</li>
 <li>registerChannel(id, socketChannel, SelectionKey.OP_CONNECT);<ul>
-<li>socketChannel.register(nioSelector, interestedOps);</li>
+<li>socketChannel.register(nioSelector, interestedOps); 这里仅仅执行了事件的添加并未执行网络IO<ul>
+<li>interestedOps存放在SelectorImpl类型的INTERESTOPS对象中</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ChannelBuilder进行调用buildChannel方法进行构建KafkaChannel<ul>
+<li>创建PlaintextTransportLayer类型对象</li>
+<li>创建PlaintextAuthenticator类型对象</li>
+<li>创建KafkaChannel类型对象</li>
+</ul>
+</li>
+<li>将KafkaChannel对象绑定在SelectionKey对象中</li>
+<li>将节点id nodeConnectionId与KafkaChannel存入通道集合Map&lt;String, KafkaChannel&gt; channels</li>
+<li>IdleExpiryManager 连接过期管理器对当前连接进行管理<ul>
+<li>将连接的connectionId和连接创建时间存入IdleExpiryManager的LRU集合中Map&lt;String, Long&gt; lruConnections</li>
 </ul>
 </li>
 </ul>
@@ -112,21 +393,51 @@
 </li>
 </ul>
 </node></li>
-<li>将请求添加到飞行窗口</li>
-<li>如果需要保证消息顺序性则将分区先放进<strong>muted<strong><strong>的</strong></strong>Set****集合中</strong></li>
-<li><strong>inFlightBatches<strong><strong>飞行窗口已经过期的消息处理</strong></strong>delivery.timeout.ms****配置</strong></li>
-<li><strong>batches****中已经过期的消息处理</strong></li>
-<li>过期消息处理</li>
-<li>传感器更新发送之前的请求数据指标</li>
-<li>计算超时时间pollTimeout</li>
-<li>查询和计算最小API版本minUsedMagic</li>
-<li>封装请求信息到 ClientRequest</li>
+<li><strong>批处理记录的创建：</strong>RecordAccumulator记录累加器调用<strong>drain方法</strong>进行记录的创建<ul>
+<li>遍历当前所有准备好的节点集合Set<node> readyNodes;<ul>
+<li>从元数据中获取当前节点id的分区信息：List<partitioninfo> parts，然后循环分区数据<ul>
+<li>开始创建主题分区对象TopicPartition</li>
+<li>获取当前分区对应的批处理队列Deque<producerbatch> 从集合ConcurrentMap&lt;TopicPartition, Deque<producerbatch>&gt; batches中获取</producerbatch></producerbatch></li>
+<li>获取第一个ProducerBatch</li>
+<li>batch.close();</li>
+<li>将批处理存放在List<producerbatch> ready集合中</producerbatch></li>
+<li>最终放到节点id映射批处理集合中进行返回：Map&lt;Integer, List<producerbatch>&gt; batches</producerbatch></li>
+</ul>
+</partitioninfo></li>
+</ul>
+</node></li>
+</ul>
+</li>
+<li><strong>所有请求添加到飞行窗口</strong>：将所有请求添加到飞行窗口addToInflightBatches(batches);<ul>
+<li>遍历批量处理列表</li>
+<li>获取当前分区的飞行窗口批处理列表，如果不存在则创建一个List<producerbatch> inflightBatchList</producerbatch></li>
+<li>飞行窗口中存放当前分区的批处理列表 Map&lt;TopicPartition, List<producerbatch>&gt; inFlightBatches</producerbatch></li>
+</ul>
+</li>
+<li><strong>遍历批处理batches列表：</strong>发送的请求处理<strong>调用</strong>sendProduceRequests方法**开始遍历批处理batches列表 每个节点对应的每个批处理队列Map&lt;Integer, List<producerbatch>&gt; batches <ul>
+<li>处理当前节点的批处理队列 List<producerbatch> batches</producerbatch></li>
+<li>遍历当前节点的批处理队列 List<producerbatch> batches<ul>
+<li>处理当前批处理消息ProducerBatch batch</li>
+<li>KafkaClient创建请求对象<strong>ClientRequest</strong></li>
 <li>KafkaClient调用send方法发送ClientRequest</li>
-<li>NetworkClient的doSend执行发送逻辑</li>
-<li>封装请求头信息RequestHeader+数据转Send类型对象</li>
-<li>封装请求信息到InFlightRequest类型对象并添加到<strong>inFlightRequests</strong></li>
-<li>获取当前kafka节点对应的的KafkaChannel将NetworkSend待发数据放入通道</li>
+<li>调用NetworkClient的doSend执行发送逻辑<ul>
+<li>根据版本、ACK、和分区内存数据等变量<strong>创建ProduceRequest对象</strong></li>
+<li>创建<strong>请求头RequestHeader</strong></li>
+<li>将节点id destination变量和请求头RequestHeader对象封装为<strong>NetworkSend对象</strong></li>
+<li>再将数据封装为<strong>InFlightRequest inFlightRequest对象</strong></li>
+<li>将其添加到<strong>InFlightRequests inFlightRequests集合中</strong></li>
+<li>调用Selectable的send方法<ul>
+<li>获取当前连接的KafkaChannel</li>
+<li>将待发送的任务NetworkSend对象存放在KafkaChannel通道中</li>
 <li>TransportLayer触发SelectionKey的interestOps设置<strong>OP_WRITE</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</producerbatch></li>
+</ul>
+</producerbatch></li>
 <li>结束</li>
 </ul>
 
@@ -167,18 +478,8 @@
     
 
     
-        
-    
-
-    
          <!-- 先找到与当前文字相同的目录 -->
             
-            
-                 
-                
-            
-                 
-                
             
                  
                 
@@ -251,24 +552,10 @@
 
                         
 
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
-                                <a href="/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"> 【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</a>
+                                <a href="/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"> 【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列</a>
                             </div>
                         
 
@@ -313,6 +600,20 @@
                         
 
                     
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
                 
             
                  
@@ -327,6 +628,16 @@
                  
                 
             
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
         
     
 

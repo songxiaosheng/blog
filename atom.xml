@@ -6,7 +6,7 @@
   <link href="https://blog.elastic.link/atom.xml" rel="self"/>
   
   <link href="https://blog.elastic.link/"/>
-  <updated>2022-07-28T15:07:44.399Z</updated>
+  <updated>2022-09-23T00:15:46.229Z</updated>
   <id>https://blog.elastic.link/</id>
   
   <author>
@@ -15,6 +15,69 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/09/15/linux/net/2-wang-luo-pai-cha/"/>
+    <id>https://blog.elastic.link/2022/09/15/linux/net/2-wang-luo-pai-cha/</id>
+    <published>2022-09-15T00:15:32.346Z</published>
+    <updated>2022-09-23T00:15:46.229Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;TCP 连接的建立是一个从 Client 侧调用 connect()， 到 Server 侧 accept() 成功返回的过程。你可以看到，在整个 TCP 建立连接的过程中，各</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/09/08/ai/05-shen-du-xue-xi-de-shen-jing-wang-luo/"/>
+    <id>https://blog.elastic.link/2022/09/08/ai/05-shen-du-xue-xi-de-shen-jing-wang-luo/</id>
+    <published>2022-09-08T04:32:22.021Z</published>
+    <updated>2022-09-26T04:27:26.927Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;深度学习框架下的神经网络深度信念网络要点&quot;&gt;&lt;a href=&quot;#深度学习框架下的神经网络深度信念网络要点&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/09/08/linux/io/pagecache/"/>
+    <id>https://blog.elastic.link/2022/09/08/linux/io/pagecache/</id>
+    <published>2022-09-07T23:11:36.120Z</published>
+    <updated>2022-09-07T23:22:30.201Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;一个问题往往牵扯到操作系统的很多模块，比如说，当系统出现 load 飙高的问 题时，可能是 Page Cache 引起的;也可能是锁冲突太厉害，物理资源(CPU、内存、磁盘 I/O、网络</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>2-Erlang并发编程思想</title>
@@ -228,33 +291,6 @@
   </entry>
   
   <entry>
-    <title>1-过五关斩六将开发属于自己的jdk版本</title>
-    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
-    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-03T02:10:53.586Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
-    
-    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
-    
-  </entry>
-  
-  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/</id>
@@ -294,33 +330,6 @@
         
         
     <summary type="html">&lt;h1 id=&quot;从一个生产者的Demo出发&quot;&gt;&lt;a href=&quot;#从一个生产者的Demo出发&quot; class=&quot;headerlink&quot; title=&quot;从一个生产者的Demo出发&quot;&gt;&lt;/a&gt;从一个生产者的Demo出发&lt;/h1&gt;&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-06T23:36:57.732Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
         
       
     
@@ -464,7 +473,7 @@
     <link href="https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:34:14.804Z</updated>
+    <updated>2022-09-09T00:01:37.662Z</updated>
     
     
       
@@ -491,52 +500,20 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:37:39.459Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;Send发送者线程的主限循环逻辑&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始Sender类型的run方法&lt;/li&gt;
-&lt;li&gt;while</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-07T02:32:07.955Z</updated>
+    <updated>2022-09-23T00:49:28.320Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;消息请求放入Kafka通道&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始调用sendProducerData方法&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;集群信息查询：&lt;/strong&gt;MetadataCache中获取集群元数据信息Cluster&lt;/li&gt;
-&lt;li&gt;获取准备发送数据的分区列表，</summary>
+    <summary type="html">&lt;p&gt;Send对象用来存储请求头和目的地&lt;/p&gt;
+&lt;p&gt;飞行请求集合用来存储详细的数据&lt;/p&gt;
+&lt;h2 id=&quot;发送器Sender类型的的sendProducerData-模版方法&quot;&gt;&lt;a href=&quot;#发送器Sender类型的的sendProducerData-模版方法&quot;</summary>
         
       
     
@@ -678,6 +655,63 @@
   </entry>
   
   <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-06T23:36:57.732Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:37:39.459Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Send发送者线程的主限循环逻辑&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开始Sender类型的run方法&lt;/li&gt;
+&lt;li&gt;while</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
     <title>1-Rebar3 从一个例子入门</title>
     <link href="https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/"/>
     <id>https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</id>
@@ -701,6 +735,33 @@
     <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
     
     <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>1-过五关斩六将开发属于自己的jdk版本</title>
+    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
+    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-03T02:10:53.586Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
+    
+    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
     
   </entry>
   
@@ -766,8 +827,17 @@
     <link href="https://blog.elastic.link/2022/09/05/linux/mm/pagecache/"/>
     <id>https://blog.elastic.link/2022/09/05/linux/mm/pagecache/</id>
     <published>2022-09-04T23:16:56.440Z</published>
-    <updated>2022-09-04T23:19:21.317Z</updated>
+    <updated>2022-09-09T00:00:41.853Z</updated>
     
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;![image-20220909075133155](/Users/mac/Library/Application Support/typora-user-images/image-20220909075133155.png)&lt;/p&gt;
+&lt;p&gt;凡是私有的内存都会体现在</summary>
+        
+      
     
     
     
@@ -857,7 +927,7 @@
     <link href="https://blog.elastic.link/2022/08/25/ai/04-shen-du-xue-xi/"/>
     <id>https://blog.elastic.link/2022/08/25/ai/04-shen-du-xue-xi/</id>
     <published>2022-08-25T04:53:54.745Z</published>
-    <updated>2022-09-06T04:37:11.039Z</updated>
+    <updated>2022-09-07T04:36:47.999Z</updated>
     
     
       
@@ -1255,93 +1325,6 @@ kind: Deployment&lt;span</summary>
         
         
     <summary type="html">&lt;h1 id=&quot;18-Dubbo3元数据服务MetadataService的导出&quot;&gt;&lt;a href=&quot;#18-Dubbo3元数据服务MetadataService的导出&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>17-【Dubbo3.0.8源码解析系列】Dubbo服务提供者的双注册原理</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/17-dubbo3-ying-yong-ji-zhu-ce-zhi-fu-wu-ti-gong-zhe-de-shuang-zhu-ce-yuan-li/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/17-dubbo3-ying-yong-ji-zhu-ce-zhi-fu-wu-ti-gong-zhe-de-shuang-zhu-ce-yuan-li/</id>
-    <published>2022-07-10T12:25:17.000Z</published>
-    <updated>2022-07-23T06:21:13.514Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;17-Dubbo服务提供者的双注册原理&quot;&gt;&lt;a href=&quot;#17-Dubbo服务提供者的双注册原理&quot; class=&quot;headerlink&quot; title=&quot;17-Dubbo服务提供者的双注册原理&quot;&gt;&lt;/a&gt;17-Dubbo服务提供者的双注册原理&lt;/h1&gt;&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>16-【Dubbo3.0.8源码解析系列】模块发布器发布服务全过程</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/16-mo-kuai-fa-bu-qi-fa-bu-fu-wu-quan-guo-cheng/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/16-mo-kuai-fa-bu-qi-fa-bu-fu-wu-quan-guo-cheng/</id>
-    <published>2022-07-10T12:25:16.000Z</published>
-    <updated>2022-07-23T06:28:19.531Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;16-模块发布器发布服务全过程&quot;&gt;&lt;a href=&quot;#16-模块发布器发布服务全过程&quot; class=&quot;headerlink&quot; title=&quot;16-模块发布器发布服务全过程&quot;&gt;&lt;/a&gt;16-模块发布器发布服务全过程&lt;/h1&gt;&lt;h2 id=&quot;16-1-简介&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>15-【Dubbo3.0.8源码解析系列】Dubbo的三大中心之元数据中心源码解析</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/15-dubbo-de-san-da-zhong-xin-zhi-yuan-shu-ju-zhong-xin-yuan-ma-jie-xi/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/15-dubbo-de-san-da-zhong-xin-zhi-yuan-shu-ju-zhong-xin-yuan-ma-jie-xi/</id>
-    <published>2022-07-10T12:25:15.000Z</published>
-    <updated>2022-07-23T06:21:05.461Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;15-Dubbo的三大中心之元数据中心源码解析&quot;&gt;&lt;a href=&quot;#15-Dubbo的三大中心之元数据中心源码解析&quot; class=&quot;headerlink&quot;</summary>
         
       
     

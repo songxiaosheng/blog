@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1662518006024">
+<link rel="stylesheet" href="/css/style.css?v=1664200894960">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1662518006024"></script>
+<script src="/js/core.js?v=1664200894960"></script>
 
 
 
@@ -73,7 +73,11 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			
+			<p>![image-20220909075133155](/Users/mac/Library/Application Support/typora-user-images/image-20220909075133155.png)</p>
+<p>凡是私有的内存都会体现在 /proc/meminfo 中的 AnonPages 这一项，凡 是共享的内存都会体现在 Cached 这一项，匿名共享的则还会体现在 Shmem 这一项。</p>
+<p>进程直接读写的都是虚拟地址，虚拟地址最终会通过 Paging(分页)来转换为物理内存 的地址，Paging 这个过程是由内核来完成的。<br>进程的内存类型可以从 anon(匿名)与 file(文件)、private(私有)与 shared(共 享)这四项来区分为 4 种不同的类型，进程相关的所有内存都是这几种方式的不同组 合。<br>查看进程内存时，可以先使用 top 来看系统中各个进程的内存使用概况，再使用 pmap 去观察某个进程的内存细节。</p>
+<p>如果 RES 太高而 SHR 不高，那可能是堆内存泄漏;如果 SHR 很 高，那可能是 tmpfs/shm 之类的数据在持续增长，如果 VIRT 很高而 RES 很小，那可能 是进程不停地在申请内存，但是却没有对这些内存进行任何的读写操作，即虚拟地址空间 存在内存泄漏。</p>
+
 			<br>
 			
 		</article>
