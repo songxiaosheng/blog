@@ -264,6 +264,33 @@
   </entry>
   
   <entry>
+    <title>1-过五关斩六将开发属于自己的jdk版本</title>
+    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
+    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-03T02:10:53.586Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
+    
+    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
     <title>1-Erlang 语法基础</title>
     <link href="https://blog.elastic.link/2022/09/07/erlang/1-erlang-yu-fa-ji-chu/"/>
     <id>https://blog.elastic.link/2022/09/07/erlang/1-erlang-yu-fa-ji-chu/</id>
@@ -291,29 +318,86 @@
   </entry>
   
   <entry>
-    <title>1-过五关斩六将开发属于自己的jdk版本</title>
-    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
-    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
+    <title>1-Rebar3 从一个例子入门</title>
+    <link href="https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/"/>
+    <id>https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-03T02:10:53.586Z</updated>
+    <updated>2022-07-19T14:43:13.982Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;h1 id=&quot;1-Rebar3-从一个例子入门&quot;&gt;&lt;a href=&quot;#1-Rebar3-从一个例子入门&quot; class=&quot;headerlink&quot; title=&quot;1-Rebar3 从一个例子入门&quot;&gt;&lt;/a&gt;1-Rebar3 从一个例子入门&lt;/h1&gt;&lt;h2</summary>
         
       
     
     
     
-    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
+    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
     
     
-    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
     
-    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
+    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2-Rebar3 基本配置</title>
+    <link href="https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/"/>
+    <id>https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-21T14:05:37.247Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;基本配置&quot;&gt;&lt;a href=&quot;#基本配置&quot; class=&quot;headerlink&quot; title=&quot;基本配置&quot;&gt;&lt;/a&gt;基本配置&lt;/h1&gt;&lt;p&gt;下面列举一些常见的配置项，如果对所有配置项感兴趣可以去看官网&lt;/p&gt;
+&lt;h2 id=&quot;环境配置&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>3-Rebar3 命令</title>
+    <link href="https://blog.elastic.link/2022/09/07/rebar3/3-rebar3-ming-ling-xing/"/>
+    <id>https://blog.elastic.link/2022/09/07/rebar3/3-rebar3-ming-ling-xing/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-07-23T06:18:36.470Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;命令&quot;&gt;&lt;a href=&quot;#命令&quot; class=&quot;headerlink&quot; title=&quot;命令&quot;&gt;&lt;/a&gt;命令&lt;/h1&gt;&lt;p&gt;每个 Rebar3 命令的用法。&lt;/p&gt;
+&lt;p&gt;每个命令代表一个任务，它运行一个或多个提供者来完成任务。&lt;/p&gt;
+&lt;h2</summary>
+        
+      
+    
+    
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
     
   </entry>
   
@@ -735,90 +819,6 @@
     <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
     
     <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>1-Rebar3 从一个例子入门</title>
-    <link href="https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/"/>
-    <id>https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-19T14:43:13.982Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-Rebar3-从一个例子入门&quot;&gt;&lt;a href=&quot;#1-Rebar3-从一个例子入门&quot; class=&quot;headerlink&quot; title=&quot;1-Rebar3 从一个例子入门&quot;&gt;&lt;/a&gt;1-Rebar3 从一个例子入门&lt;/h1&gt;&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>2-Rebar3 基本配置</title>
-    <link href="https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/"/>
-    <id>https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-21T14:05:37.247Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;基本配置&quot;&gt;&lt;a href=&quot;#基本配置&quot; class=&quot;headerlink&quot; title=&quot;基本配置&quot;&gt;&lt;/a&gt;基本配置&lt;/h1&gt;&lt;p&gt;下面列举一些常见的配置项，如果对所有配置项感兴趣可以去看官网&lt;/p&gt;
-&lt;h2 id=&quot;环境配置&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>3-Rebar3 命令</title>
-    <link href="https://blog.elastic.link/2022/09/07/rebar3/3-rebar3-ming-ling-xing/"/>
-    <id>https://blog.elastic.link/2022/09/07/rebar3/3-rebar3-ming-ling-xing/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-23T06:18:36.470Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;命令&quot;&gt;&lt;a href=&quot;#命令&quot; class=&quot;headerlink&quot; title=&quot;命令&quot;&gt;&lt;/a&gt;命令&lt;/h1&gt;&lt;p&gt;每个 Rebar3 命令的用法。&lt;/p&gt;
-&lt;p&gt;每个命令代表一个任务，它运行一个或多个提供者来完成任务。&lt;/p&gt;
-&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
     
   </entry>
   
