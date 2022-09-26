@@ -80,38 +80,6 @@
   </entry>
   
   <entry>
-    <title>2-Erlang并发编程思想</title>
-    <link href="https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/"/>
-    <id>https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/</id>
-    <published>2022-09-07T12:25:02.000Z</published>
-    <updated>2022-07-28T15:07:44.399Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;部分内容摘抄自《Erlang程序设计第2版》&lt;/p&gt;
-&lt;h1 id=&quot;Erlang的并发概念&quot;&gt;&lt;a href=&quot;#Erlang的并发概念&quot; class=&quot;headerlink&quot; title=&quot;Erlang的并发概念&quot;&gt;&lt;/a&gt;Erlang的并发概念&lt;/h1&gt;&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
-    
-    <category term="Erlang并发" scheme="https://blog.elastic.link/tags/Erlang%E5%B9%B6%E5%8F%91/"/>
-    
-    <category term="并发编程" scheme="https://blog.elastic.link/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
     <title>3-Erlang分布式编程思想</title>
     <link href="https://blog.elastic.link/2022/09/07/erlang/3-erlang-fen-bu-shi-bian-cheng/"/>
     <id>https://blog.elastic.link/2022/09/07/erlang/3-erlang-fen-bu-shi-bian-cheng/</id>
@@ -143,18 +111,19 @@
   </entry>
   
   <entry>
-    <title>4-套接字编程</title>
-    <link href="https://blog.elastic.link/2022/09/07/erlang/4-tao-jie-zi-bian-cheng/"/>
-    <id>https://blog.elastic.link/2022/09/07/erlang/4-tao-jie-zi-bian-cheng/</id>
+    <title>2-Erlang并发编程思想</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/</id>
     <published>2022-09-07T12:25:02.000Z</published>
-    <updated>2022-08-11T14:19:25.003Z</updated>
+    <updated>2022-07-28T15:07:44.399Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;4-套接字编程&quot;&gt;&lt;a href=&quot;#4-套接字编程&quot; class=&quot;headerlink&quot; title=&quot;4-套接字编程&quot;&gt;&lt;/a&gt;4-套接字编程&lt;/h1&gt;&lt;p&gt;套接字编程有两个主要的库:gen_tcp用于编写TCP应用程序，gen_udp用于编写UDP应用</summary>
+    <summary type="html">&lt;p&gt;部分内容摘抄自《Erlang程序设计第2版》&lt;/p&gt;
+&lt;h1 id=&quot;Erlang的并发概念&quot;&gt;&lt;a href=&quot;#Erlang的并发概念&quot; class=&quot;headerlink&quot; title=&quot;Erlang的并发概念&quot;&gt;&lt;/a&gt;Erlang的并发概念&lt;/h1&gt;&lt;h2</summary>
         
       
     
@@ -167,11 +136,9 @@
     
     <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
     
-    <category term="Erlang套接字" scheme="https://blog.elastic.link/tags/Erlang%E5%A5%97%E6%8E%A5%E5%AD%97/"/>
+    <category term="Erlang并发" scheme="https://blog.elastic.link/tags/Erlang%E5%B9%B6%E5%8F%91/"/>
     
-    <category term="套接字" scheme="https://blog.elastic.link/tags/%E5%A5%97%E6%8E%A5%E5%AD%97/"/>
-    
-    <category term="网络编程" scheme="https://blog.elastic.link/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    <category term="并发编程" scheme="https://blog.elastic.link/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -236,6 +203,39 @@
   </entry>
   
   <entry>
+    <title>4-套接字编程</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/4-tao-jie-zi-bian-cheng/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/4-tao-jie-zi-bian-cheng/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-08-11T14:19:25.003Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;4-套接字编程&quot;&gt;&lt;a href=&quot;#4-套接字编程&quot; class=&quot;headerlink&quot; title=&quot;4-套接字编程&quot;&gt;&lt;/a&gt;4-套接字编程&lt;/h1&gt;&lt;p&gt;套接字编程有两个主要的库:gen_tcp用于编写TCP应用程序，gen_udp用于编写UDP应用</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Erlang套接字" scheme="https://blog.elastic.link/tags/Erlang%E5%A5%97%E6%8E%A5%E5%AD%97/"/>
+    
+    <category term="套接字" scheme="https://blog.elastic.link/tags/%E5%A5%97%E6%8E%A5%E5%AD%97/"/>
+    
+    <category term="网络编程" scheme="https://blog.elastic.link/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
     <title>K8S简介</title>
     <link href="https://blog.elastic.link/2022/09/07/k8s/k8s-yuan-ma/1-k8s-yuan-ma-ru-men/"/>
     <id>https://blog.elastic.link/2022/09/07/k8s/k8s-yuan-ma/1-k8s-yuan-ma-ru-men/</id>
@@ -291,6 +291,33 @@
   </entry>
   
   <entry>
+    <title>1-过五关斩六将开发属于自己的jdk版本</title>
+    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
+    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-03T02:10:53.586Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
+    
+    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/</id>
@@ -303,6 +330,33 @@
         
         
     <summary type="html">&lt;h1 id=&quot;1-Kaka知识全解析&quot;&gt;&lt;a href=&quot;#1-Kaka知识全解析&quot; class=&quot;headerlink&quot; title=&quot;1-Kaka知识全解析&quot;&gt;&lt;/a&gt;1-Kaka知识全解析&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-06T23:36:57.732Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
         
       
     
@@ -469,6 +523,36 @@
   </entry>
   
   <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:37:39.459Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Send发送者线程的主限循环逻辑&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开始Sender类型的run方法&lt;/li&gt;
+&lt;li&gt;while</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/</id>
@@ -500,35 +584,6 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-23T00:49:28.320Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;Send对象用来存储请求头和目的地&lt;/p&gt;
-&lt;p&gt;飞行请求集合用来存储详细的数据&lt;/p&gt;
-&lt;h2 id=&quot;发送器Sender类型的的sendProducerData-模版方法&quot;&gt;&lt;a href=&quot;#发送器Sender类型的的sendProducerData-模版方法&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-执行IO事件</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/</id>
@@ -544,6 +599,35 @@
 &lt;ul&gt;
 &lt;li&gt;开始  &lt;/li&gt;
 &lt;li&gt;发送者线程主循环中KafkaClient.</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-23T00:49:28.320Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Send对象用来存储请求头和目的地&lt;/p&gt;
+&lt;p&gt;飞行请求集合用来存储详细的数据&lt;/p&gt;
+&lt;h2 id=&quot;发送器Sender类型的的sendProducerData-模版方法&quot;&gt;&lt;a href=&quot;#发送器Sender类型的的sendProducerData-模版方法&quot;</summary>
         
       
     
@@ -655,63 +739,6 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-06T23:36:57.732Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:37:39.459Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;Send发送者线程的主限循环逻辑&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始Sender类型的run方法&lt;/li&gt;
-&lt;li&gt;while</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
     <title>1-Rebar3 从一个例子入门</title>
     <link href="https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/"/>
     <id>https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</id>
@@ -735,33 +762,6 @@
     <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
     
     <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>1-过五关斩六将开发属于自己的jdk版本</title>
-    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
-    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-03T02:10:53.586Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
-    
-    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
     
   </entry>
   
