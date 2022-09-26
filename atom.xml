@@ -372,33 +372,6 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-06T23:36:57.732Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-消费者订阅TOPIC</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/10-xiao-fei-zhe-ding-yue-topic/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/10-xiao-fei-zhe-ding-yue-topic/</id>
@@ -479,6 +452,33 @@
 &lt;li&gt;&lt;p&gt;获取轻量级锁然后检测消费者开启状态&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;&lt;p&gt;消费者监控指标KafkaConsumerMetrics记录poll</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-06T23:36:57.732Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
         
       
     
@@ -584,35 +584,6 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-23T00:49:28.320Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;Send对象用来存储请求头和目的地&lt;/p&gt;
-&lt;p&gt;飞行请求集合用来存储详细的数据&lt;/p&gt;
-&lt;h2 id=&quot;发送器Sender类型的的sendProducerData-模版方法&quot;&gt;&lt;a href=&quot;#发送器Sender类型的的sendProducerData-模版方法&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-执行IO事件</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/</id>
@@ -628,6 +599,35 @@
 &lt;ul&gt;
 &lt;li&gt;开始  &lt;/li&gt;
 &lt;li&gt;发送者线程主循环中KafkaClient.</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-23T00:49:28.320Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Send对象用来存储请求头和目的地&lt;/p&gt;
+&lt;p&gt;飞行请求集合用来存储详细的数据&lt;/p&gt;
+&lt;h2 id=&quot;发送器Sender类型的的sendProducerData-模版方法&quot;&gt;&lt;a href=&quot;#发送器Sender类型的的sendProducerData-模版方法&quot;</summary>
         
       
     
