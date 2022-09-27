@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		
-<title>中间件源码</title>
+<title>38  外观数列 - 中间件源码</title>
 <meta charset="utf-8" />
 <meta name="keywords" content="" />
 <meta
@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1664287466778">
+<link rel="stylesheet" href="/css/style.css?v=1664287537163">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1664287466778"></script>
+<script src="/js/core.js?v=1664287537163"></script>
 
 
 
@@ -61,9 +61,11 @@
         <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1></h1>
-			<div class="info"><span class="date">2022年8月13日</span>•songxiaosheng 
+			<h1>38  外观数列</h1>
+			<div class="info"><span class="date">2016年9月7日</span>•songxiaosheng 
 			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">算法问题</a>》
+				
 				<!-- 
 					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/leetcode/38-外观数列.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
 				 -->
@@ -73,15 +75,7 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			<hr>
-<p>title: 38  外观数列<br>date: 2016-09-07 20:25:00<br>author: songxiaosheng</p>
-<h1 id="img-x2F-source-x2F-images-x2F-xxx-jpg"><a href="#img-x2F-source-x2F-images-x2F-xxx-jpg" class="headerlink" title="img: /source/images/xxx.jpg"></a>img: /source/images/xxx.jpg</h1><p>top: false<br>hide: false<br>cover: false</p>
-<h1 id="coverImg-x2F-images-x2F-1-jpg"><a href="#coverImg-x2F-images-x2F-1-jpg" class="headerlink" title="coverImg: /images/1.jpg"></a>coverImg: /images/1.jpg</h1><p>password: 8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92<br>toc: true<br>mathjax: false<br>summary: 动态规划， 外观数列<br>categories: 算法问题<br>tags:</p>
-<ul>
-<li>动态规划</li>
-<li>外观数列</li>
-</ul>
-<h1 id="外观数列"><a href="#外观数列" class="headerlink" title="外观数列"></a>外观数列</h1><p>给定一个正整数 n ，输出外观数列的第 n 项。</p>
+			<h1 id="外观数列"><a href="#外观数列" class="headerlink" title="外观数列"></a>外观数列</h1><p>给定一个正整数 n ，输出外观数列的第 n 项。</p>
 <p>「外观数列」是一个整数序列，从数字 1 开始，序列中的每一项都是对前一项的描述。</p>
 <p>你可以将其视作是由递归公式定义的数字字符串序列：</p>
 <p>countAndSay(1) = “1”<br>countAndSay(n) 是对 countAndSay(n-1) 的描述，然后转换成另一个数字字符串。<br>前五项如下：</p>
@@ -146,6 +140,10 @@
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 			<br>
 			
+			
+			<a class="tag-unordered list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/%E5%A4%96%E8%A7%82%E6%95%B0%E5%88%97/" rel="tag">外观数列<span class="tag-unordered list-count">1</span></a>
+
+			
 		</article>
 	</div>
 	<div class="other">
@@ -153,31 +151,215 @@
 			<nav class="post-nav">
 
     
-
+        
     
 
     
-
+        
     
 
     
-
+        
     
 
     
-
+        
     
 
     
-
+        
     
 
     
-
+        
     
 
     
+        
+    
 
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2016/09/07/leetcode/36-you-xiao-de-shu-du/"> 34 有效的数独</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2016/09/07/leetcode/39-zu-he-zong-he/"> 39 组合总和</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
     
 
 </nav> 

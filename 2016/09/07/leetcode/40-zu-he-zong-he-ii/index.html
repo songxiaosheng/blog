@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		
-<title>中间件源码</title>
+<title>40. 组合总和 II - 中间件源码</title>
 <meta charset="utf-8" />
 <meta name="keywords" content="" />
 <meta
@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1664287466776">
+<link rel="stylesheet" href="/css/style.css?v=1664287537164">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1664287466776"></script>
+<script src="/js/core.js?v=1664287537164"></script>
 
 
 
@@ -61,9 +61,11 @@
         <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1></h1>
-			<div class="info"><span class="date">2022年8月14日</span>•songxiaosheng 
+			<h1>40. 组合总和 II</h1>
+			<div class="info"><span class="date">2016年9月7日</span>•songxiaosheng 
 			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">算法问题</a>》
+				
 				<!-- 
 					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/leetcode/40-组合总和 II.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
 				 -->
@@ -73,15 +75,7 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			<hr>
-<p>title: 40. 组合总和 II<br>date: 2016-09-07 20:25:00<br>author: songxiaosheng</p>
-<h1 id="img-x2F-source-x2F-images-x2F-xxx-jpg"><a href="#img-x2F-source-x2F-images-x2F-xxx-jpg" class="headerlink" title="img: /source/images/xxx.jpg"></a>img: /source/images/xxx.jpg</h1><p>top: false<br>hide: false<br>cover: false</p>
-<h1 id="coverImg-x2F-images-x2F-1-jpg"><a href="#coverImg-x2F-images-x2F-1-jpg" class="headerlink" title="coverImg: /images/1.jpg"></a>coverImg: /images/1.jpg</h1><p>password: 8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92<br>toc: true<br>mathjax: false<br>summary: 组合总和 II、回溯算法<br>categories: 算法问题<br>tags:</p>
-<ul>
-<li>组合总和 II</li>
-<li>回溯算法</li>
-</ul>
-<h1 id="40-组合总和-II"><a href="#40-组合总和-II" class="headerlink" title="40. 组合总和 II"></a>40. 组合总和 II</h1><p>给定一个候选人编号的集合 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。</p>
+			<h1 id="40-组合总和-II"><a href="#40-组合总和-II" class="headerlink" title="40. 组合总和 II"></a>40. 组合总和 II</h1><p>给定一个候选人编号的集合 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。</p>
 <p>candidates 中的每个数字在每个组合中只能使用 一次 。</p>
 <p>注意：解集不能包含重复的组合。 </p>
 <p>示例 1:</p>
@@ -138,6 +132,10 @@
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 			<br>
 			
+			
+			<a class="tag-unordered list-link" href="/tags/%E5%9B%9E%E6%BA%AF%E7%AE%97%E6%B3%95/" rel="tag">回溯算法<span class="tag-unordered list-count">2</span></a>, <a class="tag-unordered list-link" href="/tags/%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C-II/" rel="tag">组合总和 II<span class="tag-unordered list-count">1</span></a>
+
+			
 		</article>
 	</div>
 	<div class="other">
@@ -145,31 +143,210 @@
 			<nav class="post-nav">
 
     
-
+        
     
 
     
-
+        
     
 
     
-
+        
     
 
     
-
+        
     
 
     
-
+        
     
 
     
-
+        
     
 
     
+        
+    
 
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2016/09/07/leetcode/39-zu-he-zong-he/"> 39 组合总和</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
     
 
 </nav> 
