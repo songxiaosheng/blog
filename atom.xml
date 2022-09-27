@@ -50,7 +50,7 @@
     <link href="https://blog.elastic.link/2022/09/08/ai/05-shen-du-xue-xi-de-shen-jing-wang-luo/"/>
     <id>https://blog.elastic.link/2022/09/08/ai/05-shen-du-xue-xi-de-shen-jing-wang-luo/</id>
     <published>2022-09-08T04:32:22.021Z</published>
-    <updated>2022-09-26T14:52:40.970Z</updated>
+    <updated>2022-09-26T23:49:49.066Z</updated>
     
     
       
@@ -73,11 +73,11 @@
   </entry>
   
   <entry>
-    <title></title>
+    <title>【Linux网络】-IO问题排查</title>
     <link href="https://blog.elastic.link/2022/09/08/linux/io/pagecache/"/>
     <id>https://blog.elastic.link/2022/09/08/linux/io/pagecache/</id>
     <published>2022-09-07T23:11:36.120Z</published>
-    <updated>2022-09-07T23:22:30.201Z</updated>
+    <updated>2022-09-27T14:01:20.344Z</updated>
     
     
       
@@ -90,6 +90,12 @@
     
     
     
+    <category term="Linux网络源码" scheme="https://blog.elastic.link/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Linux源码" scheme="https://blog.elastic.link/tags/Linux%E6%BA%90%E7%A0%81/"/>
+    
+    <category term="IO" scheme="https://blog.elastic.link/tags/IO/"/>
     
   </entry>
   
@@ -305,6 +311,33 @@
   </entry>
   
   <entry>
+    <title>1-过五关斩六将开发属于自己的jdk版本</title>
+    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
+    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-03T02:10:53.586Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
+    
+    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/</id>
@@ -510,36 +543,6 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:37:39.459Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;Send发送者线程的主限循环逻辑&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始Sender类型的run方法&lt;/li&gt;
-&lt;li&gt;while</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/</id>
@@ -571,11 +574,41 @@
   </entry>
   
   <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-05T23:37:39.459Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Send发送者线程的主限循环逻辑&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开始Sender类型的run方法&lt;/li&gt;
+&lt;li&gt;while</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-23T00:49:28.320Z</updated>
+    <updated>2022-09-27T00:16:02.001Z</updated>
     
     
       
@@ -806,33 +839,6 @@
     <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
     
     <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>1-过五关斩六将开发属于自己的jdk版本</title>
-    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
-    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-03T02:10:53.586Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
-    
-    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
     
   </entry>
   

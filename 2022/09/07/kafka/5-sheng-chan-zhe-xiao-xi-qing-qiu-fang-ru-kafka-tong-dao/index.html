@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1664204228045">
+<link rel="stylesheet" href="/css/style.css?v=1664287303108">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1664204228045"></script>
+<script src="/js/core.js?v=1664287303108"></script>
 
 
 
@@ -92,10 +92,9 @@
 </ul>
 </li>
 <li>批处理关联网络通道<ul>
-<li>遍历批处理batches列表<ul>
-<li>请求依次放入对应IO通道KafkaChannel</li>
-</ul>
-</li>
+<li>遍历批处理batches列表转换为内存记录列表</li>
+<li>将本批次的内存记录列表数据放入飞行集合中</li>
+<li>请求头信息放入对应IO通道KafkaChannel</li>
 </ul>
 </li>
 </ul>
@@ -311,14 +310,13 @@
 
 
 
-
-
+<p>NetworkClient的doSend方法</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">doSend</span><span class="token punctuation">(</span><span class="token class-name">ClientRequest</span> clientRequest<span class="token punctuation">,</span> <span class="token keyword">boolean</span> isInternalRequest<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">,</span> <span class="token class-name">AbstractRequest</span> request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token class-name">String</span> destination <span class="token operator">=</span> clientRequest<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
    <span class="token comment">//请求头处理</span>
     <span class="token class-name">RequestHeader</span> header <span class="token operator">=</span> clientRequest<span class="token punctuation">.</span><span class="token function">makeHeader</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">version</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token comment">//省略掉debug日志代码...</span>
-    <span class="token comment">//目的地和请求头转发送对象 序列化转换为网络发送实体对象NetworkSend类型</span>
+    <span class="token comment">//目的地和请求头转发送对象 序列化为NetworkSend类型的网络发送实体对象</span>
     <span class="token class-name">Send</span> send <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">toSend</span><span class="token punctuation">(</span>destination<span class="token punctuation">,</span> header<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token comment">//封装目的地，请求头，消息记录，发送时间等信息到飞行请求对象中</span>
     <span class="token class-name">InFlightRequest</span> inFlightRequest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InFlightRequest</span><span class="token punctuation">(</span>
@@ -336,10 +334,43 @@
 
 
 
+<p>kafka Selector类型的的send方法队列给定的请求</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">send</span><span class="token punctuation">(</span><span class="token class-name">Send</span> send<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">String</span> connectionId <span class="token operator">=</span> send<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//获取当前连接id的通道 Selector中的channels中缓存 每个连接id都会对应一个KafkaChannel</span>
+    <span class="token class-name">KafkaChannel</span> channel <span class="token operator">=</span> <span class="token function">openOrClosingChannelOrFail</span><span class="token punctuation">(</span>connectionId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+    <span class="token comment">//连接已经关闭就无需发送</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>closingChannels<span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span>connectionId<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// ensure notification via `disconnected`, leave channel in the state in which closing was triggered</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>failedSends<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>connectionId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment">//将待发送的数据放入KafkaChannel</span>
+            channel<span class="token punctuation">.</span><span class="token function">setSend</span><span class="token punctuation">(</span>send<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token comment">//....</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
+<p>KafkaChannel的setSend方法设置待发送数据</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setSend</span><span class="token punctuation">(</span><span class="token class-name">Send</span> send<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>send <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Attempt to begin a send operation with prior send operation still in progress, connection id is "</span> <span class="token operator">+</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>send <span class="token operator">=</span> send<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>transportLayer<span class="token punctuation">.</span><span class="token function">addInterestOps</span><span class="token punctuation">(</span><span class="token class-name">SelectionKey</span><span class="token punctuation">.</span>OP_WRITE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<p>NetworkSend类型的待发数据中存储的是请求目的地和请求头数据，而真实的数据是在飞行窗口中存储着的</p>
+<p>PlaintextTransportLayer类型的addInterestOps添加写事件</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addInterestOps</span><span class="token punctuation">(</span><span class="token keyword">int</span> ops<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    key<span class="token punctuation">.</span><span class="token function">interestOps</span><span class="token punctuation">(</span>key<span class="token punctuation">.</span><span class="token function">interestOps</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">|</span> ops<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>切换当前事件为写事件，等待IO逻辑来执行事件</p>
 <p>最后对上面代码做一个总结：</p>
 <p>消息请求放入Kafka通道</p>
 <ul>
@@ -478,6 +509,10 @@
     
 
     
+        
+    
+
+    
          <!-- 先找到与当前文字相同的目录 -->
             
             
@@ -575,7 +610,7 @@
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
-                                <a href="/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"> 【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列</a>
+                                <a href="/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"> 【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</a>
                             </div>
                         
 
@@ -634,10 +669,6 @@
                  
                 
             
-        
-    
-
-    
         
     
 
