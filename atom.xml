@@ -100,6 +100,37 @@
   </entry>
   
   <entry>
+    <title>3-Erlang分布式编程思想</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/3-erlang-fen-bu-shi-bian-cheng/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/3-erlang-fen-bu-shi-bian-cheng/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-08-01T14:32:50.391Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;编写分布式应用程序的原因&quot;&gt;&lt;a href=&quot;#编写分布式应用程序的原因&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Erlang分布式" scheme="https://blog.elastic.link/tags/Erlang%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+    <category term="分布式" scheme="https://blog.elastic.link/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
     <title>2-Erlang并发编程思想</title>
     <link href="https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/"/>
     <id>https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/</id>
@@ -128,37 +159,6 @@
     <category term="Erlang并发" scheme="https://blog.elastic.link/tags/Erlang%E5%B9%B6%E5%8F%91/"/>
     
     <category term="并发编程" scheme="https://blog.elastic.link/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>3-Erlang分布式编程思想</title>
-    <link href="https://blog.elastic.link/2022/09/07/erlang/3-erlang-fen-bu-shi-bian-cheng/"/>
-    <id>https://blog.elastic.link/2022/09/07/erlang/3-erlang-fen-bu-shi-bian-cheng/</id>
-    <published>2022-09-07T12:25:02.000Z</published>
-    <updated>2022-08-01T14:32:50.391Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;编写分布式应用程序的原因&quot;&gt;&lt;a href=&quot;#编写分布式应用程序的原因&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
-    
-    <category term="Erlang分布式" scheme="https://blog.elastic.link/tags/Erlang%E5%88%86%E5%B8%83%E5%BC%8F/"/>
-    
-    <category term="分布式" scheme="https://blog.elastic.link/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
     
   </entry>
   
@@ -365,18 +365,18 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-2-从一个生产者的Demo出发</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/</id>
+    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:13:50.487Z</updated>
+    <updated>2022-09-06T23:36:57.732Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;从一个生产者的Demo出发&quot;&gt;&lt;a href=&quot;#从一个生产者的Demo出发&quot; class=&quot;headerlink&quot; title=&quot;从一个生产者的Demo出发&quot;&gt;&lt;/a&gt;从一个生产者的Demo出发&lt;/h1&gt;&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot;</summary>
+    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
         
       
     
@@ -392,18 +392,18 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
+    <title>【Apache Kafka 3.2源码解析系列】-2-从一个生产者的Demo出发</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-06T23:36:57.732Z</updated>
+    <updated>2022-09-05T23:13:50.487Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;2-生产者KafkaProducer对象的初始化&quot;&gt;&lt;a href=&quot;#2-生产者KafkaProducer对象的初始化&quot; class=&quot;headerlink&quot; title=&quot;2 生产者KafkaProducer对象的初始化&quot;&gt;&lt;/a&gt;2</summary>
+    <summary type="html">&lt;h1 id=&quot;从一个生产者的Demo出发&quot;&gt;&lt;a href=&quot;#从一个生产者的Demo出发&quot; class=&quot;headerlink&quot; title=&quot;从一个生产者的Demo出发&quot;&gt;&lt;/a&gt;从一个生产者的Demo出发&lt;/h1&gt;&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot;</summary>
         
       
     
