@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		
-<title>【Apache Kafka 3.2源码解析系列】-消费者Poll从服务端拉取数据 - 中间件源码</title>
+<title>【Linux】-4-网络问题排查常用命令 - 中间件源码</title>
 <meta charset="utf-8" />
 <meta name="keywords" content="" />
 <meta
@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1664287578294">
+<link rel="stylesheet" href="/css/style.css?v=1664287578344">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1664287578294"></script>
+<script src="/js/core.js?v=1664287578344"></script>
 
 
 
@@ -61,13 +61,13 @@
         <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>【Apache Kafka 3.2源码解析系列】-消费者Poll从服务端拉取数据</h1>
-			<div class="info"><span class="date">2022年9月7日</span>•songxiaosheng 
+			<h1>【Linux】-4-网络问题排查常用命令</h1>
+			<div class="info"><span class="date">2016年9月7日</span>•songxiaosheng 
 			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Kafka%E6%BA%90%E7%A0%81/">Kafka源码</a>》
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Linux/">Linux</a>》
 				
 				<!-- 
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/kafka/13-消费者Poll从服务端拉取数据.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/linux/problem/5-linux问题分析.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
 				 -->
 			</div>
 			
@@ -75,27 +75,19 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			<p>•开始</p>
-<p>•Fetcher的sendFetches()为我们分配了分区的任何节点设置一个fetch请求，前提是这些节点没有正在进行的fetch或挂起的fetch数据。</p>
-<p>•prepareFetchRequests准备请求数据FetchRequestData</p>
-<p>•调用fetchablePartitions方法从被分配的分区列表assignment中查询出当前可以读取数据的分区</p>
-<p>•根据当前完成的TopicPartition获取其位置FetchPosition</p>
-<p>•当前分区的待读取broker节点查询，如果存在优先副本节点则使用优先副本节点如果不存在则使用当前分区的leader节点</p>
-<p>•当前待读取数据节点无对应飞行窗口请求则开始创建请求</p>
-<p>•为当前节点创建一个FetchSessionHandler和FetchSessionHandler.Builder和FetchRequest.PartitionData</p>
-<p>•最后封装数据到集合然后返回Map&lt;Node, FetchSessionHandler.FetchRequestData&gt;</p>
-<p>•遍历当前的FetchRequestData</p>
-<p>•为其创建FetchRequest.Builder </p>
-<p>•KafkaClient将所有参数封装为ClientRequest然后将其放在unsent集合中</p>
-<p>•调用selector.wakeup();唤醒休眠中的IO</p>
-<p>•回到最外层调用ConsumerNetworkClient的poll方法执行IO逻辑</p>
-<p>•调用Selectable类型的poll方法来查询io事件然后执行这个在生产者那里详细说了这里就不说了</p>
-<p>•处理IO结果</p>
+			<p>Linux 在启动过程中，有三个特殊的进程，也就是 PID 号最小的三个进程</p>
+<ul>
+<li>0 号进程为 idle 进程，这也是系统创建的第一个进程，它在初始化 1 号和 2 号进程后， 演变为空闲任务。当 CPU 上没有其他任务执行时，就会运行它。</li>
+<li>1 号进程为 init 进程，通常是 systemd 进程，在用户态运行，用来管理其他用户态进 程。</li>
+<li>2 号进程为 kthreadd 进程，在内核态运行，用来管理内核线程。</li>
+</ul>
+<p>火焰图：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/brendangregg/FlameGraph">https://github.com/brendangregg/FlameGraph</a> </p>
 
 			<br>
 			
 			
-			<a class="tag-unordered list-link" href="/tags/Kafka/" rel="tag">Kafka<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Kafka%E6%BA%90%E7%A0%81/" rel="tag">Kafka源码<span class="tag-unordered list-count">14</span></a>
+			<a class="tag-unordered list-link" href="/tags/Linux%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" rel="tag">Linux问题排查<span class="tag-unordered list-count">6</span></a>, <a class="tag-unordered list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络<span class="tag-unordered list-count">3</span></a>, <a class="tag-unordered list-link" href="/tags/%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="tag">网络问题排查常用命令<span class="tag-unordered list-count">3</span></a>
 
 			
 		</article>
@@ -103,6 +95,26 @@
 	<div class="other">
 		<div class="container">
 			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
 
     
         
@@ -150,12 +162,119 @@
                 
             
                  
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2016/09/07/linux/problem/3-linux-ci-pan-xiang-guan-ming-ling/"> 【Linux】-3-磁盘问题排查常用命令</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2016/09/07/linux/problem/5-linux-wen-ti-fen-xi/"> 【Linux】-4-网络问题排查常用命令</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
                 
             
                  
-                
-            
-                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2016/09/07/linux/problem/4-linux-wang-luo-xiang-guan-ming-ling/"> 【Linux】-4-网络问题排查常用命令</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2016/09/07/linux/problem/6-dubbo-chao-shi-wen-ti/"> 【Linux】-4-网络问题排查常用命令</a>
+                            </div>
+                        
+
+                        
+
+                    
                 
             
                  
@@ -194,17 +313,10 @@
 
                         
 
-                        
-
-                    
-                         
-
-                        
-
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
-                                <a href="/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/"> 【Apache Kafka 3.2源码解析系列】-消费者执行轮询消息poll方法</a>
+                                <a href="/2016/09/07/linux/problem/5-linux-wen-ti-fen-xi/"> 【Linux】-4-网络问题排查常用命令</a>
                             </div>
                         
 
@@ -216,103 +328,8 @@
                         
 
                     
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"> 【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
                 
             
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
         
     
 
