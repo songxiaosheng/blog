@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		
-<title>206. 反转链表 - 中间件源码</title>
+<title>【Linux】-4-网络问题排查常用命令 - 中间件源码</title>
 <meta charset="utf-8" />
 <meta name="keywords" content="" />
 <meta
@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1664287640864">
+<link rel="stylesheet" href="/css/style.css?v=1664287640868">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1664287640864"></script>
+<script src="/js/core.js?v=1664287640868"></script>
 
 
 
@@ -61,13 +61,13 @@
         <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>206. 反转链表</h1>
+			<h1>【Linux】-4-网络问题排查常用命令</h1>
 			<div class="info"><span class="date">2016年9月7日</span>•songxiaosheng 
 			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">算法问题</a>》
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Linux/">Linux</a>》
 				
 				<!-- 
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/leetcode/206-反转链表.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/linux/mm/pagecache.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
 				 -->
 			</div>
 			
@@ -75,35 +75,15 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			<ol start="206">
-<li>反转链表<br>给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。</li>
-</ol>
- <pre class="line-numbers language-java" data-language="java"><code class="language-java"> <span class="token comment">/**
- * Definition for singly-linked list.
- * public class ListNode {
- *     int val;
- *     ListNode next;
- *     ListNode() {}
- *     ListNode(int val) { this.val = val; }
- *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
- * }
- */</span>
-<span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token class-name">ListNode</span> <span class="token function">reverseList</span><span class="token punctuation">(</span><span class="token class-name">ListNode</span> head<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token class-name">ListNode</span> pre <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-        <span class="token keyword">while</span><span class="token punctuation">(</span>head <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token class-name">ListNode</span> temp <span class="token operator">=</span> head<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
-            head<span class="token punctuation">.</span>next <span class="token operator">=</span> pre<span class="token punctuation">;</span>
-            pre <span class="token operator">=</span> head<span class="token punctuation">;</span>
-            head <span class="token operator">=</span> temp<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> pre<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+			<p>![image-20220909075133155](/Users/mac/Library/Application Support/typora-user-images/image-20220909075133155.png)</p>
+<p>凡是私有的内存都会体现在 /proc/meminfo 中的 AnonPages 这一项，凡 是共享的内存都会体现在 Cached 这一项，匿名共享的则还会体现在 Shmem 这一项。</p>
+<p>进程直接读写的都是虚拟地址，虚拟地址最终会通过 Paging(分页)来转换为物理内存 的地址，Paging 这个过程是由内核来完成的。<br>进程的内存类型可以从 anon(匿名)与 file(文件)、private(私有)与 shared(共 享)这四项来区分为 4 种不同的类型，进程相关的所有内存都是这几种方式的不同组 合。<br>查看进程内存时，可以先使用 top 来看系统中各个进程的内存使用概况，再使用 pmap 去观察某个进程的内存细节。</p>
+<p>如果 RES 太高而 SHR 不高，那可能是堆内存泄漏;如果 SHR 很 高，那可能是 tmpfs/shm 之类的数据在持续增长，如果 VIRT 很高而 RES 很小，那可能 是进程不停地在申请内存，但是却没有对这些内存进行任何的读写操作，即虚拟地址空间 存在内存泄漏。</p>
+
 			<br>
 			
 			
-			<a class="tag-unordered list-link" href="/tags/%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/" rel="tag">反转链表<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表<span class="tag-unordered list-count">3</span></a>
+			<a class="tag-unordered list-link" href="/tags/Linux%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" rel="tag">Linux问题排查<span class="tag-unordered list-count">7</span></a>, <a class="tag-unordered list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络<span class="tag-unordered list-count">4</span></a>, <a class="tag-unordered list-link" href="/tags/%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="tag">网络问题排查常用命令<span class="tag-unordered list-count">4</span></a>
 
 			
 		</article>
@@ -145,10 +125,87 @@
     
 
     
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
          <!-- 先找到与当前文字相同的目录 -->
             
             
                  
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2016/09/07/linux/problem/1-cpu-ming-ling-bi-ji/"> 【Linux】-1-CPU问题排查常用命令</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
                 
             
                  
@@ -161,9 +218,133 @@
                 
             
                  
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2016/09/07/linux/problem/3-linux-ci-pan-xiang-guan-ming-ling/"> 【Linux】-3-磁盘问题排查常用命令</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2016/09/07/linux/problem/5-linux-wen-ti-fen-xi/"> 【Linux】-4-网络问题排查常用命令</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
                 
             
                  
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2016/09/07/linux/problem/4-linux-wang-luo-xiang-guan-ming-ling/"> 【Linux】-4-网络问题排查常用命令</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2016/09/07/linux/problem/6-dubbo-chao-shi-wen-ti/"> 【Linux】-4-网络问题排查常用命令</a>
+                            </div>
+                        
+
+                        
+
+                    
                 
             
                  
@@ -212,7 +393,7 @@
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
-                                <a href="/2016/09/07/leetcode/205-tong-gou-zi-fu-chuan/"> 205. 同构字符串</a>
+                                <a href="/2016/09/07/linux/problem/5-linux-wen-ti-fen-xi/"> 【Linux】-4-网络问题排查常用命令</a>
                             </div>
                         
 
@@ -224,103 +405,8 @@
                         
 
                     
-                         
-
-                          <!-- 上一篇文章 --> 
-                            <div class="old">
-                                <span>上一章</span>
-                                <a href="/2016/09/07/leetcode/225-yong-dui-lie-shi-xian-zhan/"> 225. 用队列实现栈</a>
-                            </div>
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
                 
             
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
         
     
 
