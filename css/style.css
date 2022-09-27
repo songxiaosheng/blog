@@ -10,7 +10,7 @@ body {
 }
 
 body * {
-	font-family: Noto Serif SC;
+	font-family: "Microsoft YaHei",微软雅黑;
 }
 
 a {
@@ -259,12 +259,12 @@ a:hover {
 .content .category .category-item .title {
 	margin-top: 5px;
 	line-height: 1em;
-	font-family: Noto Serif SC;
+	font-family: "Microsoft YaHei",微软雅黑;
 	text-align: center;
 }
 
 .content .post {
-	font-family: Noto Serif SC;
+	font-family: "Microsoft YaHei",微软雅黑;
 	padding: 3em 0;
 }
 
