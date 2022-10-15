@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1664288400440">
+<link rel="stylesheet" href="/css/style.css?v=1665817392548">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1664288400440"></script>
+<script src="/js/core.js?v=1665817392548"></script>
 
 
 
@@ -75,24 +75,442 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			<p>执行IO事件</p>
+			<h1 id="执行IO事件"><a href="#执行IO事件" class="headerlink" title="执行IO事件"></a>执行IO事件</h1><p>前面介绍了用户的的消息记录被转换为内存记录然后存放在了飞行窗口中，将请求信息放入了Kafka通道之后通过</p>
+<p>OP_WRITE事件来唤醒IO，这里在IO轮训中开始执行IO逻辑</p>
+<p>调用NetworkClient的poll方法的核心逻辑如下：</p>
+<ul>
+<li>基础信息处理<ul>
+<li>网络连接状态与拒绝发送的请求过滤</li>
+<li>元数据添加到飞行队列</li>
+</ul>
+</li>
+<li>执行轮训poll逻辑<ul>
+<li>查询事件总数numReadyKeys:int</li>
+<li>查询事件集合readyKeys:Set<selectionkey></selectionkey></li>
+<li>遍历事件<ul>
+<li>读取服务端的响应数据<ul>
+<li>内核层…</li>
+<li>Selector执行attemptRead（socket或者buffer中数据可读）读数据到ByteBuffer缓冲区中<ul>
+<li>通道层：KafkaChannel的read方法</li>
+<li>接受器： NetworkReceive的readFrom</li>
+<li>传输层：PlaintextTransportLayer的read方法</li>
+<li>网络层：SocketChannelImpl的read方法</li>
+<li>IO层：IOUtil.read 从DirectByteBuffer中读取数据</li>
+<li>IO层：SocketDispatcher的read方法</li>
+<li>IO层： FileDispatcherImpl.read0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>发送数据到服务端<ul>
+<li>ByteBufferSend(NetworkSend对象）中的缓冲区数据ByteBuffer[]   写到直接内存<ul>
+<li>通道层  KafkaChannel的send方法 </li>
+<li>发送器 ByteBufferSend的writeTo </li>
+<li>传输层  PlaintextTransportLayer的write   </li>
+<li>网络层   SocketChannel的write  </li>
+<li>网络层    SocketChannelImpl的write  </li>
+<li>IO层  IOUtil.write   </li>
+<li>IO层  UNSAFE.copyMemory  UNSAFE的copyMemory0拷贝到DirectByteBuffer =</li>
+<li>IO层  NativeDispatcher的writev  数据被放在了当前socket对应的文件句柄位置</li>
+<li>内核层 …</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>可以看到IO事件主要做了两件事</p>
+<ul>
+<li>一个是从网络缓冲区读取数据到程序内部缓冲区</li>
+<li>一个是内部待发送数据发送至网络缓冲区由内核执行网络数据发送</li>
+</ul>
+<p>接下来开始贴核心代码了：</p>
+<p>在发送器Sender对象中循环逻辑执行了请求信息放入通道和执行IO事件两个主要的逻辑，通过调用如下代码开始执行IO事件：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">client<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span>pollTimeout<span class="token punctuation">,</span> currentTimeMs<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这里KafkaClient是一个接口类型，这里的实现类型为NetworkClient，poll代码如下所示：</p>
+<p>NetworkClient类型的poll代码如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> <span class="token function">poll</span><span class="token punctuation">(</span><span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">ensureActive</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">//...处理拒绝发送的数据</span>
+    <span class="token keyword">long</span> metadataTimeout <span class="token operator">=</span> metadataUpdater<span class="token punctuation">.</span><span class="token function">maybeUpdate</span><span class="token punctuation">(</span>now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token comment">//选择器执行IO事件</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>selector<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span><span class="token class-name">Utils</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>timeout<span class="token punctuation">,</span> metadataTimeout<span class="token punctuation">,</span> defaultRequestTimeoutMs<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Unexpected error during I/O"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// process completed actions</span>
+   <span class="token comment">//...处理完成的逻辑 主要是处理接收到的数据</span>
+
+    <span class="token keyword">return</span> responses<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p>Selector的poll方法 IO执行逻辑的模版方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">poll</span><span class="token punctuation">(</span><span class="token keyword">long</span> timeout<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>timeout <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"timeout should be &gt;= 0"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">boolean</span> madeReadProgressLastCall <span class="token operator">=</span> madeReadProgressLastPoll<span class="token punctuation">;</span>
+    <span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">boolean</span> dataInBuffers <span class="token operator">=</span> <span class="token operator">!</span>keysWithBufferedRead<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">//低内存逻辑处理...</span>
+
+    <span class="token comment">/* check ready keys */</span>
+    <span class="token keyword">long</span> startSelect <span class="token operator">=</span> time<span class="token punctuation">.</span><span class="token function">nanoseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//查询事件数量</span>
+    <span class="token keyword">int</span> numReadyKeys <span class="token operator">=</span> <span class="token function">select</span><span class="token punctuation">(</span>timeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> endSelect <span class="token operator">=</span> time<span class="token punctuation">.</span><span class="token function">nanoseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>sensors<span class="token punctuation">.</span>selectTime<span class="token punctuation">.</span><span class="token function">record</span><span class="token punctuation">(</span>endSelect <span class="token operator">-</span> startSelect<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>numReadyKeys <span class="token operator">&gt;</span> <span class="token number">0</span> <span class="token operator">||</span> <span class="token operator">!</span>immediatelyConnectedKeys<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> dataInBuffers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">//查询事件集合</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SelectionKey</span><span class="token punctuation">&gt;</span></span> readyKeys <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>nioSelector<span class="token punctuation">.</span><span class="token function">selectedKeys</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Poll from channels that have buffered data (but nothing more from the underlying socket)</span>
+        <span class="token comment">//dataInBuffers相关逻辑处理...</span>
+        <span class="token comment">// Poll from channels where the underlying socket has more data</span>
+        <span class="token comment">//处理IO事件集合</span>
+        <span class="token function">pollSelectionKeys</span><span class="token punctuation">(</span>readyKeys<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> endSelect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// Clear all selected keys so that they are included in the ready count for the next select</span>
+        readyKeys<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">pollSelectionKeys</span><span class="token punctuation">(</span>immediatelyConnectedKeys<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> endSelect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        immediatelyConnectedKeys<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        madeReadProgressLastPoll <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token comment">//no work is also "progress"</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">//...完成的一些逻辑处理</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>Selector的pollSelectionKeys方法 循环处理IO事件的方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">pollSelectionKeys</span><span class="token punctuation">(</span><span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SelectionKey</span><span class="token punctuation">&gt;</span></span> selectionKeys<span class="token punctuation">,</span>
+                       <span class="token keyword">boolean</span> isImmediatelyConnected<span class="token punctuation">,</span>
+                       <span class="token keyword">long</span> currentTimeNanos<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">SelectionKey</span> key <span class="token operator">:</span> <span class="token function">determineHandlingOrder</span><span class="token punctuation">(</span>selectionKeys<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">KafkaChannel</span> channel <span class="token operator">=</span> <span class="token function">channel</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">long</span> channelStartTimeNanos <span class="token operator">=</span> recordTimePerConnection <span class="token operator">?</span> time<span class="token punctuation">.</span><span class="token function">nanoseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">boolean</span> sendFailed <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// register all per-connection metrics at once</span>
+        sensors<span class="token punctuation">.</span><span class="token function">maybeRegisterConnectionMetrics</span><span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">id</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>idleExpiryManager <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+            idleExpiryManager<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">id</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> currentTimeNanos<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment">/* complete any connections that have finished their handshake (either normally or immediately) */</span>
+            <span class="token comment">//... immediately连接处理</span>
+
+            <span class="token comment">/* if channel is not ready finish prepare */</span>
+            <span class="token comment">//...认证逻辑</span>
+          
+            <span class="token comment">//读数据</span>
+            <span class="token function">attemptRead</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> channel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">//...存在无法读数据的逻辑善后处理（比如低内存无法处理</span>
+
+            <span class="token comment">/* if channel is ready write to any sockets that have space in their buffer and for which we have data */</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> key<span class="token punctuation">.</span><span class="token function">isWritable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>channel<span class="token punctuation">.</span><span class="token function">maybeBeginClientReauthentication</span><span class="token punctuation">(</span>
+                <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> channelStartTimeNanos <span class="token operator">!=</span> <span class="token number">0</span> <span class="token operator">?</span> channelStartTimeNanos <span class="token operator">:</span> currentTimeNanos<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">Send</span> send<span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token comment">//发送数据逻辑</span>
+                    send <span class="token operator">=</span> channel<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    sendFailed <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                    <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>send <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>completedSends<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>send<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>sensors<span class="token punctuation">.</span><span class="token function">recordBytesSent</span><span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">id</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> send<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">/* cancel any defunct sockets */</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>key<span class="token punctuation">.</span><span class="token function">isValid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token function">close</span><span class="token punctuation">(</span>channel<span class="token punctuation">,</span> <span class="token class-name">CloseMode</span><span class="token punctuation">.</span>GRACEFUL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+             <span class="token comment">//... 异常逻辑处理</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            <span class="token function">maybeRecordTimePerConnection</span><span class="token punctuation">(</span>channel<span class="token punctuation">,</span> channelStartTimeNanos<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="读数据的逻辑："><a href="#读数据的逻辑：" class="headerlink" title="读数据的逻辑："></a>读数据的逻辑：</h3><p>Selector类型的attemptRead方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">attemptRead</span><span class="token punctuation">(</span><span class="token class-name">SelectionKey</span> key<span class="token punctuation">,</span> <span class="token class-name">KafkaChannel</span> channel<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token comment">//if channel is ready and has bytes to read from socket or buffer, and has no</span>
+    <span class="token comment">//previous receive(s) already staged or otherwise in progress then read from it</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>channel<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>key<span class="token punctuation">.</span><span class="token function">isReadable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> channel<span class="token punctuation">.</span><span class="token function">hasBytesBuffered</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">hasStagedReceive</span><span class="token punctuation">(</span>channel<span class="token punctuation">)</span>
+        <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>explicitlyMutedChannels<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>channel<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">NetworkReceive</span> networkReceive<span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>networkReceive <span class="token operator">=</span> channel<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            madeReadProgressLastPoll <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            <span class="token function">addToStagedReceives</span><span class="token punctuation">(</span>channel<span class="token punctuation">,</span> networkReceive<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//省略...</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到读取数据一共经历了这样的过程：</p>
+<ul>
+<li>调用channel.read()方法来读取数据，将数据封装在NetworkReceive类型对象中</li>
+<li>调用addToStagedReceives方法将数据存放在接收队列Deque<networkreceive>中</networkreceive></li>
+</ul>
+<p>先来看接收数据的地方</p>
+<p>通道层：</p>
+<p>KafkaChannel类型的read()方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">NetworkReceive</span> <span class="token function">read</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token class-name">NetworkReceive</span> result <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+		
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>receive <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        receive <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">NetworkReceive</span><span class="token punctuation">(</span>maxReceiveSize<span class="token punctuation">,</span> id<span class="token punctuation">,</span> memoryPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+		<span class="token comment">//接收数据</span>
+    <span class="token function">receive</span><span class="token punctuation">(</span>receive<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>receive<span class="token punctuation">.</span><span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        receive<span class="token punctuation">.</span><span class="token function">payload</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">rewind</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        result <span class="token operator">=</span> receive<span class="token punctuation">;</span>
+        receive <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>receive<span class="token punctuation">.</span><span class="token function">requiredMemoryAmountKnown</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>receive<span class="token punctuation">.</span><span class="token function">memoryAllocated</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token function">isInMutableState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//pool must be out of memory, mute ourselves.</span>
+        <span class="token function">mute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>KafkaChannel类型的receive方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">long</span> <span class="token function">receive</span><span class="token punctuation">(</span><span class="token class-name">NetworkReceive</span> receive<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> receive<span class="token punctuation">.</span><span class="token function">readFrom</span><span class="token punctuation">(</span>transportLayer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>接收层</p>
+<p>NetworkReceive类型的readFrom方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">readFrom</span><span class="token punctuation">(</span><span class="token class-name">ScatteringByteChannel</span> channel<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> read <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token comment">//协议头数据读取</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>size<span class="token punctuation">.</span><span class="token function">hasRemaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">int</span> bytesRead <span class="token operator">=</span> channel<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>size<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+   <span class="token comment">//消息体数据读取</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>buffer <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">int</span> bytesRead <span class="token operator">=</span> channel<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>bytesRead <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">EOFException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        read <span class="token operator">+=</span> bytesRead<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> read<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>传输层：</p>
+<p>PlaintextTransportLayer类型的read方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">read</span><span class="token punctuation">(</span><span class="token class-name">ByteBuffer</span> dst<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> socketChannel<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>dst<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>IO层</p>
+<p>jdk nio包下的SocketChannelImpl类型的read方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">read</span><span class="token punctuation">(</span><span class="token class-name">ByteBuffer</span> buf<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token class-name">Objects</span><span class="token punctuation">.</span><span class="token function">requireNonNull</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    readLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+           <span class="token comment">//省略部分代码...</span>
+           <span class="token comment">//非阻塞读</span>
+           n <span class="token operator">=</span> <span class="token class-name">IOUtil</span><span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> buf<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> nd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment">//省略部分代码...</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+        readLock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>IO层</p>
+<p>IOUtil的read方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">read</span><span class="token punctuation">(</span><span class="token class-name">FileDescriptor</span> fd<span class="token punctuation">,</span> <span class="token class-name">ByteBuffer</span> dst<span class="token punctuation">,</span> <span class="token keyword">long</span> position<span class="token punctuation">,</span>
+                <span class="token class-name">NativeDispatcher</span> nd<span class="token punctuation">)</span>
+    <span class="token keyword">throws</span> <span class="token class-name">IOException</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> dst<span class="token punctuation">,</span> position<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> nd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">read</span><span class="token punctuation">(</span><span class="token class-name">FileDescriptor</span> fd<span class="token punctuation">,</span> <span class="token class-name">ByteBuffer</span> dst<span class="token punctuation">,</span> <span class="token keyword">long</span> position<span class="token punctuation">,</span>
+                    <span class="token keyword">boolean</span> directIO<span class="token punctuation">,</span> <span class="token keyword">int</span> alignment<span class="token punctuation">,</span> <span class="token class-name">NativeDispatcher</span> nd<span class="token punctuation">)</span>
+        <span class="token keyword">throws</span> <span class="token class-name">IOException</span>
+    <span class="token punctuation">{</span>
+       <span class="token comment">//省略部分代码...</span>
+  		  <span class="token class-name">ByteBuffer</span> bb<span class="token punctuation">;</span>
+        <span class="token keyword">int</span> rem <span class="token operator">=</span> dst<span class="token punctuation">.</span><span class="token function">remaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//省略部分代码...</span>
+            bb <span class="token operator">=</span> <span class="token class-name">Util</span><span class="token punctuation">.</span><span class="token function">getTemporaryDirectBuffer</span><span class="token punctuation">(</span>rem<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment">//省略部分代码...</span>
+            <span class="token keyword">int</span> n <span class="token operator">=</span> <span class="token function">readIntoNativeBuffer</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> bb<span class="token punctuation">,</span> position<span class="token punctuation">,</span> directIO<span class="token punctuation">,</span> alignment<span class="token punctuation">,</span>nd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            bb<span class="token punctuation">.</span><span class="token function">flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+                dst<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>bb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> n<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            <span class="token class-name">Util</span><span class="token punctuation">.</span><span class="token function">offerFirstTemporaryDirectBuffer</span><span class="token punctuation">(</span>bb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>IO层</p>
+<p>IOUtil类型的readIntoNativeBuffer方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">readIntoNativeBuffer</span><span class="token punctuation">(</span><span class="token class-name">FileDescriptor</span> fd<span class="token punctuation">,</span> <span class="token class-name">ByteBuffer</span> bb<span class="token punctuation">,</span>
+                                        <span class="token keyword">long</span> position<span class="token punctuation">,</span> <span class="token keyword">boolean</span> directIO<span class="token punctuation">,</span>
+                                        <span class="token keyword">int</span> alignment<span class="token punctuation">,</span> <span class="token class-name">NativeDispatcher</span> nd<span class="token punctuation">)</span>
+    <span class="token keyword">throws</span> <span class="token class-name">IOException</span>
+<span class="token punctuation">{</span>
+  	<span class="token comment">//省略掉部分代码...</span>
+    <span class="token keyword">int</span> pos <span class="token operator">=</span> bb<span class="token punctuation">.</span><span class="token function">position</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//省略掉部分代码...</span>
+    n <span class="token operator">=</span> nd<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">DirectBuffer</span><span class="token punctuation">)</span>bb<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">address</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> pos<span class="token punctuation">,</span> rem<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//省略掉部分代码...</span>
+    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>IO层</p>
+<p>SocketDispatcher类型的read方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">int</span> <span class="token function">read</span><span class="token punctuation">(</span><span class="token class-name">FileDescriptor</span> fd<span class="token punctuation">,</span> <span class="token keyword">long</span> address<span class="token punctuation">,</span> <span class="token keyword">int</span> len<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token class-name">FileDispatcherImpl</span><span class="token punctuation">.</span><span class="token function">read0</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> address<span class="token punctuation">,</span> len<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>FileDispatcherImpl的read0为native方法</p>
+<h3 id="写数据逻辑："><a href="#写数据逻辑：" class="headerlink" title="写数据逻辑："></a>写数据逻辑：</h3><p>KafkaChannel的write方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">Send</span> <span class="token function">write</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token class-name">Send</span> result <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>send <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token function">send</span><span class="token punctuation">(</span>send<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        result <span class="token operator">=</span> send<span class="token punctuation">;</span>
+        send <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p>KafkaChannel的send方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">send</span><span class="token punctuation">(</span><span class="token class-name">Send</span> send<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    midWrite <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    send<span class="token punctuation">.</span><span class="token function">writeTo</span><span class="token punctuation">(</span>transportLayer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>send<span class="token punctuation">.</span><span class="token function">completed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        midWrite <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        transportLayer<span class="token punctuation">.</span><span class="token function">removeInterestOps</span><span class="token punctuation">(</span><span class="token class-name">SelectionKey</span><span class="token punctuation">.</span>OP_WRITE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> send<span class="token punctuation">.</span><span class="token function">completed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>NetworkSend的父类型ByteBufferSend的writeTo方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">writeTo</span><span class="token punctuation">(</span><span class="token class-name">GatheringByteChannel</span> channel<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">long</span> written <span class="token operator">=</span> channel<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>buffers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>written <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">EOFException</span><span class="token punctuation">(</span><span class="token string">"Wrote negative bytes to channel. This shouldn't happen."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    remaining <span class="token operator">-=</span> written<span class="token punctuation">;</span>
+    pending <span class="token operator">=</span> <span class="token class-name">TransportLayers</span><span class="token punctuation">.</span><span class="token function">hasPendingWrites</span><span class="token punctuation">(</span>channel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> written<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>传输层：</p>
+<p>PlaintextTransportLayer类型的write方法：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">write</span><span class="token punctuation">(</span><span class="token class-name">ByteBuffer</span><span class="token punctuation">[</span><span class="token punctuation">]</span> srcs<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> socketChannel<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>srcs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>IO层:</p>
+<p>jdk nio包下的SocketChannel的write方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">long</span> <span class="token function">write</span><span class="token punctuation">(</span><span class="token class-name">ByteBuffer</span><span class="token punctuation">[</span><span class="token punctuation">]</span> srcs<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">write</span><span class="token punctuation">(</span>srcs<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> srcs<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>SocketChannelImpl的write方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"> <span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">write</span><span class="token punctuation">(</span><span class="token class-name">ByteBuffer</span><span class="token punctuation">[</span><span class="token punctuation">]</span> srcs<span class="token punctuation">,</span> <span class="token keyword">int</span> offset<span class="token punctuation">,</span> <span class="token keyword">int</span> length<span class="token punctuation">)</span>
+        <span class="token keyword">throws</span> <span class="token class-name">IOException</span>
+    <span class="token punctuation">{</span>
+        <span class="token class-name">Objects</span><span class="token punctuation">.</span><span class="token function">checkFromIndexSize</span><span class="token punctuation">(</span>offset<span class="token punctuation">,</span> length<span class="token punctuation">,</span> srcs<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    writeLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+     <span class="token comment">//省略...</span>
+         n <span class="token operator">=</span> <span class="token class-name">IOUtil</span><span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> srcs<span class="token punctuation">,</span> offset<span class="token punctuation">,</span> length<span class="token punctuation">,</span> nd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//省略...</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+        writeLock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>最后通过IOUtil的write方法 将数据放到socket缓冲区中</p>
+<p>执行IO事件</p>
 <ul>
 <li>开始  </li>
-<li>发送者线程主循环中KafkaClient. poll</li>
+<li>发送者线程主循环中KafkaClient. poll<ul>
 <li>NetworkClient的ACTIVE状态判断</li>
-<li>处理拒绝发送的请求如：不支持的版本异常或者失去连接</li>
+<li>处理拒绝发送的请求如：<ul>
+<li>不支持的版本异常</li>
+<li>或者失去连接</li>
+</ul>
+</li>
 <li>如果需要则将元数据请求放到发送列表</li>
 <li>执行Selectable的poll方法拉取IO事件</li>
 <li>清理之前poll的所有返回结果比如完成发送信息，连接信息</li>
-<li>刷新outOfMemory变量</li>
 <li>NIO Selector的selectNow方法查询事件总数</li>
 <li>传感器中记录IO事件查询总时间selectTime</li>
 <li>nioSelector查询事件集合Set<selectionkey> readyKeys</selectionkey></li>
 <li>低内存则打乱IO事件集合determineHandlingOrder</li>
-<li>遍历SelectionKey集合</li>
-<li>获取当前SelectionKey绑定的KafkaChannel</li>
+<li>遍历SelectionKey集合<ul>
+<li>获取当前SelectionKey attachment绑定的KafkaChannel</li>
 <li>刷新空闲管理器中当前连接的LRU缓存lruConnections</li>
-<li>如果已经连接Broker但是未Ready则执行认证操作</li>
+<li>调用Selector的attemptRead尝试读取数据<ul>
+<li>调用KafkaChannel的read()进行数据读取</li>
+<li>调用NetworkReceive类型的receive方法读取数据<ul>
+<li>判断当前HeapByteBuffer中是否缓存有接收到的数据（position &lt; limit;）</li>
+<li>数据存在则调用PlaintextTransportLayer类型的read(ByteBuffer dst) 方法</li>
+<li>调用SocketChannel的read方法读取数据到ByteBuffer bb临时缓冲区</li>
+<li>非阻塞IO调用IOUtil.read(fd, buf, -1, nd);进行读取<ul>
+<li>调用SocketDispatcher的read然后调用FileDispatcherImpl的本地native方法read0读取数据到ByteBuffer bb中</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>通道已经准备号，SelectionKey当前状态为可写状态，则开始执行写数据逻辑<ul>
+<li>调用KafkaChannel的写方法channel.write();<ul>
+<li>获取缓冲Buffer ByteBuffer shadow （前面读操作会创建）</li>
+<li>将数据放入缓冲Buffer shadow</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li>如果socket or buffer还有数据可读则执行读操作</li>
 <li>KafkaChannle层层调用到PlaintextTransportLayer然后调用nio的SocketChannel发送数据</li>
 <li>调用IOUtil.write(fd, srcs, offset, length, nd)写入文件描述符</li>
@@ -133,25 +551,8 @@
     
 
     
-        
-    
-
-    
-        
-    
-
-    
          <!-- 先找到与当前文字相同的目录 -->
             
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
             
                  
                 
@@ -224,27 +625,6 @@
 
                         
 
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
@@ -265,7 +645,7 @@
                           <!-- 上一篇文章 --> 
                             <div class="old">
                                 <span>上一章</span>
-                                <a href="/2022/09/07/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/"> 【Apache Kafka 3.2源码解析系列】-处理Poll的IO返回结果</a>
+                                <a href="/2022/09/07/kafka/13-xiao-fei-zhe-poll-cong-fu-wu-duan-la-qu-shu-ju/"> 【Apache Kafka 3.2源码解析系列】-消费者Poll从服务端拉取数据</a>
                             </div>
                         
 
@@ -286,6 +666,27 @@
                         
 
                     
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
                 
             
                  
@@ -297,6 +698,31 @@
                  
                 
             
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
         
     
 

@@ -6,7 +6,7 @@
   <link href="https://blog.elastic.link/atom.xml" rel="self"/>
   
   <link href="https://blog.elastic.link/"/>
-  <updated>2022-09-26T14:51:45.806Z</updated>
+  <updated>2022-10-01T08:38:22.296Z</updated>
   <id>https://blog.elastic.link/</id>
   
   <author>
@@ -15,6 +15,52 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Dubbo3介绍</title>
+    <link href="https://blog.elastic.link/2022/10/01/innovativedesign/20220928dubbo3/"/>
+    <id>https://blog.elastic.link/2022/10/01/innovativedesign/20220928dubbo3/</id>
+    <published>2022-10-01T12:25:01.000Z</published>
+    <updated>2022-10-01T08:38:22.296Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-Dubbo3是什么&quot;&gt;&lt;a href=&quot;#1-Dubbo3是什么&quot; class=&quot;headerlink&quot; title=&quot;1 Dubbo3是什么&quot;&gt;&lt;/a&gt;1 Dubbo3是什么&lt;/h1&gt;&lt;h2 id=&quot;1-1-定位&quot;&gt;&lt;a href=&quot;#1-1-定位&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Dubbo" scheme="https://blog.elastic.link/categories/Dubbo/"/>
+    
+    
+    <category term="Dubbo3介绍" scheme="https://blog.elastic.link/tags/Dubbo3%E4%BB%8B%E7%BB%8D/"/>
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/09/29/linux/problem/strace-gong-ju/"/>
+    <id>https://blog.elastic.link/2022/09/29/linux/problem/strace-gong-ju/</id>
+    <published>2022-09-28T23:59:52.754Z</published>
+    <updated>2022-09-29T00:13:56.211Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;![image-20220929080045204](/Users/mac/Library/Application</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>【Linux网络】-网络问题排查</title>
@@ -50,7 +96,7 @@
     <link href="https://blog.elastic.link/2022/09/08/ai/05-shen-du-xue-xi-de-shen-jing-wang-luo/"/>
     <id>https://blog.elastic.link/2022/09/08/ai/05-shen-du-xue-xi-de-shen-jing-wang-luo/</id>
     <published>2022-09-08T04:32:22.021Z</published>
-    <updated>2022-09-26T23:49:49.066Z</updated>
+    <updated>2022-10-11T04:50:32.604Z</updated>
     
     
       
@@ -196,6 +242,35 @@
   </entry>
   
   <entry>
+    <title>6-Mnesia分布式数据库</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-08-11T14:20:48.738Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;6-Mnesia分布式数据库&quot;&gt;&lt;a href=&quot;#6-Mnesia分布式数据库&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Mnesia" scheme="https://blog.elastic.link/tags/Mnesia/"/>
+    
+  </entry>
+  
+  <entry>
     <title>5-Erlang KEY VALUE数据存储 ETS</title>
     <link href="https://blog.elastic.link/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/"/>
     <id>https://blog.elastic.link/2022/09/07/erlang/5-ets-he-dets-cun-chu-shu-ju/</id>
@@ -223,35 +298,6 @@
     <category term="Erlangets" scheme="https://blog.elastic.link/tags/Erlangets/"/>
     
     <category term="ets" scheme="https://blog.elastic.link/tags/ets/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>6-Mnesia分布式数据库</title>
-    <link href="https://blog.elastic.link/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/"/>
-    <id>https://blog.elastic.link/2022/09/07/erlang/6-fen-bu-shi-shu-ju-ku-mnesia/</id>
-    <published>2022-09-07T12:25:02.000Z</published>
-    <updated>2022-08-11T14:20:48.738Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;6-Mnesia分布式数据库&quot;&gt;&lt;a href=&quot;#6-Mnesia分布式数据库&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
-    
-    <category term="Mnesia" scheme="https://blog.elastic.link/tags/Mnesia/"/>
     
   </entry>
   
@@ -480,25 +526,78 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消费者执行轮询消息poll方法</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/</id>
+    <title>【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:16:49.163Z</updated>
+    <updated>2022-09-09T00:01:37.662Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;开始&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;调用KafkaConsumer的poll方法&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;获取轻量级锁然后检测消费者开启状态&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;消费者监控指标KafkaConsumerMetrics记录poll</summary>
+    <summary type="html">&lt;p&gt;KafkaProducer处理数据到发送批处理队列&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开始&lt;/li&gt;
+&lt;li&gt;封装消息的TOPIC、KEY 、MESSAGE到 ProducerRecord类型对象&lt;/li&gt;
+&lt;li&gt;调用KafkaProducer类型的</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-28T00:15:44.814Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Send对象用来存储请求头和目的地&lt;/p&gt;
+&lt;p&gt;飞行请求集合用来存储详细的数据&lt;/p&gt;
+&lt;h2 id=&quot;发送器Sender类型的的sendProducerData-模版方法&quot;&gt;&lt;a href=&quot;#发送器Sender类型的的sendProducerData-模版方法&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】-执行IO事件</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-10-14T00:46:31.961Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;执行IO事件&quot;&gt;&lt;a href=&quot;#执行IO事件&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -543,22 +642,25 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/</id>
+    <title>【Apache Kafka 3.2源码解析系列】-消费者执行轮询消息poll方法</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-09T00:01:37.662Z</updated>
+    <updated>2022-09-05T23:16:49.163Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;KafkaProducer处理数据到发送批处理队列&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始&lt;/li&gt;
-&lt;li&gt;封装消息的TOPIC、KEY 、MESSAGE到 ProducerRecord类型对象&lt;/li&gt;
-&lt;li&gt;调用KafkaProducer类型的</summary>
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;开始&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;调用KafkaConsumer的poll方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;获取轻量级锁然后检测消费者开启状态&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;消费者监控指标KafkaConsumerMetrics记录poll</summary>
         
       
     
@@ -604,50 +706,24 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
+    <title>【Apache Kafka 3.2源码解析系列】-消费者例子拉取数据</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-27T00:16:02.001Z</updated>
+    <updated>2022-09-05T23:15:34.517Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;Send对象用来存储请求头和目的地&lt;/p&gt;
-&lt;p&gt;飞行请求集合用来存储详细的数据&lt;/p&gt;
-&lt;h2 id=&quot;发送器Sender类型的的sendProducerData-模版方法&quot;&gt;&lt;a href=&quot;#发送器Sender类型的的sendProducerData-模版方法&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-执行IO事件</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:14:58.496Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;执行IO事件&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;开始  &lt;/li&gt;
-&lt;li&gt;发送者线程主循环中KafkaClient.</summary>
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;开始&lt;/li&gt;
+&lt;li&gt;属性Properties初始化&lt;/li&gt;
+&lt;li&gt;KafkaConsumer类型生产者对象创建&lt;/li&gt;
+&lt;li&gt;消费者订阅topic&lt;/li&gt;
+&lt;li&gt;消费者调用poll命令拉取数据ConsumerRecords&lt;/li&gt;
+&lt;li&gt;消费</summary>
         
       
     
@@ -681,39 +757,6 @@
 &lt;li&gt;&lt;p&gt;handleCompletedSends处理完成的发送请求&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;handleCompletedSends处理完成的请求遍历Selector的comple</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消费者例子拉取数据</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:15:34.517Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;开始&lt;/li&gt;
-&lt;li&gt;属性Properties初始化&lt;/li&gt;
-&lt;li&gt;KafkaConsumer类型生产者对象创建&lt;/li&gt;
-&lt;li&gt;消费者订阅topic&lt;/li&gt;
-&lt;li&gt;消费者调用poll命令拉取数据ConsumerRecords&lt;/li&gt;
-&lt;li&gt;消费</summary>
         
       
     
@@ -863,9 +906,9 @@
     <category term="人工智能" scheme="https://blog.elastic.link/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
     
-    <category term="人工智能" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
-    
     <category term="深度学习笔记" scheme="https://blog.elastic.link/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="人工智能" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
   </entry>
   
@@ -890,9 +933,9 @@
     <category term="人工智能" scheme="https://blog.elastic.link/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
     
-    <category term="人工神经网络笔记" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0/"/>
-    
     <category term="人工智能" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    
+    <category term="人工神经网络笔记" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
@@ -1381,64 +1424,6 @@ kind: Deployment&lt;span</summary>
         
         
     <summary type="html">&lt;h1 id=&quot;12-全局视野来看Dubbo3的服务启动生命周期&quot;&gt;&lt;a href=&quot;#12-全局视野来看Dubbo3的服务启动生命周期&quot; class=&quot;headerlink&quot; title=&quot;12 全局视野来看Dubbo3的服务启动生命周期&quot;&gt;&lt;/a&gt;12</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>11-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/11-dubbo-qi-dong-qi-dubbobootstrap-tian-jia-xie-yi-pei-zhi-xin-xi-protocolconfig/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/11-dubbo-qi-dong-qi-dubbobootstrap-tian-jia-xie-yi-pei-zhi-xin-xi-protocolconfig/</id>
-    <published>2022-07-10T12:25:11.000Z</published>
-    <updated>2022-07-23T06:20:49.982Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig&quot;&gt;&lt;a href=&quot;#11-Dubbo启动器DubboBootstrap添加协议配置信息ProtocolConfig&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>10-【Dubbo3.0.8源码解析系列】Dubbo启动器DubboBootstrap添加注册中心配置信息RegistryConfig</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/10-dubbo-qi-dong-qi-dubbobootstrap-tian-jia-zhu-ce-zhong-xin-pei-zhi-xin-xi-registryconfig/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/10-dubbo-qi-dong-qi-dubbobootstrap-tian-jia-zhu-ce-zhong-xin-pei-zhi-xin-xi-registryconfig/</id>
-    <published>2022-07-10T12:25:10.000Z</published>
-    <updated>2022-07-23T06:20:44.905Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;10-Dubbo启动器DubboBootstrap添加注册中心配置信息RegistryConfig&quot;&gt;&lt;a href=&quot;#10-Dubbo启动器DubboBootstrap添加注册中心配置信息RegistryConfig&quot; class=&quot;headerlink&quot;</summary>
         
       
     

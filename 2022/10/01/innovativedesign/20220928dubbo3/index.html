@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>Dubbo3介绍 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1665817392539">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1665817392539"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>Dubbo3介绍</h1>
+			<div class="info"><span class="date">2022年10月1日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo/">Dubbo</a>》
+				
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/innovativedesign/20220928Dubbo3.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="1-Dubbo3是什么"><a href="#1-Dubbo3是什么" class="headerlink" title="1 Dubbo3是什么"></a>1 Dubbo3是什么</h1><h2 id="1-1-定位"><a href="#1-1-定位" class="headerlink" title="1.1 定位"></a>1.1 定位</h2><p>Apache Dubbo 是什么？</p>
+<p>一款微服务框架，为大规模微服务实践提供高性能 RPC 通信、流量治理、可观测性等解决方案，涵盖 Java、Golang 等多种语言 SDK 实现。</p>
+<p>Apache Dubbo3是什么？</p>
+<p>Dubbo3 定义为面向云原生的下一代 RPC 服务框架。3.0 基于 <a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docsv2.7">Dubbo 2.x</a> 演进而来，在保持原有核心功能特性的同时， Dubbo3 在易用性、超大规模微服务实践、云原生基础设施适配、安全性等几大方向上进行了全面升级。</p>
+<h2 id="1-2-架构"><a href="#1-2-架构" class="headerlink" title="1.2 架构"></a>1.2 架构</h2><h3 id="1-2-1-Dubbo自动服务发现架构"><a href="#1-2-1-Dubbo自动服务发现架构" class="headerlink" title="1.2.1 Dubbo自动服务发现架构"></a>1.2.1 Dubbo自动服务发现架构</h3><p><img src="https://dubbo.apache.org/imgs/architecture.png" alt="arch-service-discovery"></p>
+<ul>
+<li><strong>（1）导出服务：</strong> 服务提供方通过指定端口对外暴露服务</li>
+<li><strong>（2）注册服务：</strong> 提供方向注册中心注册自己的信息</li>
+<li><strong>（3）订阅服务：</strong>  服务调用方通过注册中心订阅自己感兴趣的服务</li>
+<li><strong>（4）发现服务</strong>： 注册中心向调用方推送地址列表</li>
+<li><strong>（5）调用服务：</strong> 调用方选择一个地址发起 RPC调用</li>
+<li><strong>（6）监控服务：</strong>  服务提供方和调用方的统计数据由监控模块收集展示</li>
+</ul>
+<h3 id="1-2-2-Dubbo3的Mesh架构"><a href="#1-2-2-Dubbo3的Mesh架构" class="headerlink" title="1.2.2 Dubbo3的Mesh架构"></a>1.2.2 Dubbo3的Mesh架构</h3><p>![image-20220929192330265](/Users/mac/Library/Application Support/typora-user-images/image-20220929192330265.png)</p>
+<p>Dubbo Mesh 的目标是提供适应 Dubbo 体系的完整 Mesh 解决方案，包含定制化控制面（Control Plane）、定制化数据面解决方案。</p>
+<h3 id="1-2-3-Dubbo3的部署架构"><a href="#1-2-3-Dubbo3的部署架构" class="headerlink" title="1.2.3 Dubbo3的部署架构"></a>1.2.3 Dubbo3的部署架构</h3><p>![image-20220929193402231](/Users/mac/Library/Application Support/typora-user-images/image-20220929193402231.png)</p>
+<ul>
+<li><strong>注册中心：</strong>协调 Consumer 与 Provider 之间的地址注册与发现</li>
+<li><strong>配置中心：</strong><ul>
+<li>存储 Dubbo 启动阶段的全局配置，保证配置的跨环境共享与全局一致性</li>
+<li>负责服务治理规则（路由规则、动态配置等）的存储与推送。</li>
+</ul>
+</li>
+<li><strong>元数据中心：</strong><ul>
+<li>接收 Provider 上报的服务接口元数据，为 Admin 等控制台提供运维能力（如服务测试、接口文档等）</li>
+<li>作为服务发现机制的补充，提供额外的接口/方法级别配置信息的同步能力，相当于注册中心的额外扩展</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-Dubbo3新特性"><a href="#2-Dubbo3新特性" class="headerlink" title="2 Dubbo3新特性"></a>2 Dubbo3新特性</h1><h2 id="2-1-新特性"><a href="#2-1-新特性" class="headerlink" title="2.1 新特性"></a>2.1 新特性</h2><p>3.0 版本的正式发布，标志着 Apache Dubbo 正式进入云原生时代。3.0 在通信协议、服务发现、部署架构、服务治理上都对云原生基础设施进行了全面适配， 提供了Triple、应用级服务发现、Dubbo Mesh等核心特性。</p>
+<h3 id="2-1-1-协议"><a href="#2-1-1-协议" class="headerlink" title="2.1.1 协议"></a>2.1.1 协议</h3><ul>
+<li>下一代RPC协议 - Triple<ul>
+<li>Triple 协议是基于 HTTP/2 之上定义的下一代 RPC 通信协议，相比于上一代 Dubbo2 协议，它具有更好的穿透性、通用性、以及面向网关代理场景的高性能表现， 提供了 Reactive Stream 数据交换模型。Triple 实现了对 gRPC 的完全兼容。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-1-2-服务发现"><a href="#2-1-2-服务发现" class="headerlink" title="2.1.2 服务发现"></a>2.1.2 服务发现</h4><ul>
+<li>支持接口级服务发现</li>
+<li>应用级服务发现</li>
+</ul>
+<p>从服务/接口粒度到应用粒度的升级，使得 Dubbo 在集群可伸缩性、连接异构微服务体系上更具优势。应用粒度能以更低的资源消耗支持超百万实例规模集群程； 实现与 Spring Cloud、Kubernetes Service 等异构微服务体系的互联互通。</p>
+<h4 id="面向云原生设计"><a href="#面向云原生设计" class="headerlink" title="面向云原生设计"></a>面向云原生设计</h4><p>依赖 Dubbo Mesh 将 Dubbo 纳入 Istio 等开源 Mesh 治理体系， 3.0 同时支持 ThinSDK + Sidecar 与 FatSDK（Proxyless）的部署模式，为 Mesh 架构提供了更多选择，尤其对于面临迁移或混合部署的场景， Dubbo 提供了统一控制面的能力。Dubbo 从设计上是完全遵循云原生微服务开发理念的，这体现在多个方面，首先是对云原生基础设施与部署架构的支持，包括 容器、Kubernetes 等，Dubbo Mesh 总体解决方案也在 3.1 版本正式发布；</p>
+<p>值得一提的是，如何使用 Dubbo 支持弹性伸缩的服务如 Serverless 也在未来计划之中，这包括利用 Native Image 提高 Dubbo 的启动速度与资源消耗等。</p>
+<h2 id="2-2-Dubbo3的好处"><a href="#2-2-Dubbo3的好处" class="headerlink" title="2.2 Dubbo3的好处"></a>2.2 Dubbo3的好处</h2><ul>
+<li><p>服务发现过程</p>
+<ul>
+<li>注册中心数据存储规模达到容量瓶颈</li>
+<li>数据注册&amp;推送效率严重下降</li>
+</ul>
+</li>
+<li><p>Dubbo 进程</p>
+<ul>
+<li>侵占更多机器资源，导致业务资源利用率降低</li>
+<li>频繁 GC 影响业务稳定性</li>
+</ul>
+</li>
+<li><p>助力业务架构升级</p>
+<ul>
+<li>更通用协议，打通前端、网关、后端服务流式通信，更丰富业务场景</li>
+</ul>
+</li>
+<li><p>云原生</p>
+<ul>
+<li>屏蔽基础设施层变革降低 Mesh 升级成本 更丰富流量治理模型</li>
+</ul>
+</li>
+</ul>
+<p>Dubbo3 在设计上很好的解决了这些问题，通过全新设计实现的服务治理（服务发现）模型，可以实现服务发现链路上的数据传输、数据存储量平均下降 90% 左右；同时 Dubbo3 自身在业务进程中变得更轻量、更稳定，实现提升资源利用率 50%。</p>
+<p>Dubbo3 一个更大的优势在于其对整体架构稳定性的提升，新的服务发现架构使得对于整个集群容量、可伸缩性评估变得更容易、更准确。</p>
+<p>如果将应用开发粗略划分为业务开发、运维部署两个层次，其中变化比较频繁的因素包括服务（接口）、应用、机器实例。在 2.x 时代，所有这三个因素的增长都会影响微服务集群的总体容量，尤其是接口增减带来的波动，对整体容量评估是非常不透明的。而在 3.0 中集群容量变化仅与应用名、机器实例两个因素相关，而容量评估的对象往往都是应用与实例，因此整个集群变的更稳定透明。</p>
+<h4 id="下一代-RPC-协议"><a href="#下一代-RPC-协议" class="headerlink" title="下一代 RPC 协议"></a>下一代 RPC 协议</h4><p>新一代的 Triple 协议基于 HTTP/2 作为传输层，具备更好的网关、代理穿透性，原生支持 Stream 通信语义，兼容 gRPC 协议。</p>
+<h4 id="多语言友好"><a href="#多语言友好" class="headerlink" title="多语言友好"></a>多语言友好</h4><p>Dubbo3 从服务定义、RPC 协议、序列化、服务治理等多个方面都已经将多语言友好性作为重点考量因素，目前提供了 Java、Golang 稳定的多语言版本，更多语言版本的 3.0 实现如 Rust、Javascript、C/C++、C# 等在开发建设中。</p>
+<h3 id="云原生"><a href="#云原生" class="headerlink" title="云原生"></a>云原生</h3><ul>
+<li><p>Kubernetes Dubbo3 开发的应用可以原生部署到 Kubernetes 平台，Dubbo3 在地址、生命周期等已设计可与 Kubernetes 等容器调度平台对齐；对于要进一步复用 Kubernetes 底层基础设施能力的用户来说，Dubbo3 也已对接到了原生的 Kubernetes Service 体系。</p>
+</li>
+<li><p>Service Mesh 强调控制面在微服务治理中的作用，在一定程度上推动了控制面通信协议、职责范围的扩展与标准化；传统 Mesh 架构下的 Sidecar 模型强调旁路代理对于流量的统一管控，以实现透明升级、多语言无感、无业务侵入等特性。</p>
+<p>Dubbo3 提供了基于自身思考的 Dubbo Mesh 解决方案，强调了控制面对微服务集群的统一管控，而在部署架构上，同时支持 sicecar 与无 sidecar 的 proxyless 部署架构，使用 Dubbo Mesh 的用户基于自身的业务特点将有更多的部署架构选择。</p>
+</li>
+</ul>
+<h4 id="异构体系互通"><a href="#异构体系互通" class="headerlink" title="异构体系互通"></a>异构体系互通</h4><p>我们正看到越来越多的异构微服务体系互通的诉求，典型如 Dubbo、Spring Cloud、gRPC 等。有些是因为技术栈迁移，有些是组织合并后需要实现业务互调，Dubbo3 借助于新的服务发现模型以及可灵活扩展的 RPC 协议，可以成为 Dubbo3 未来的发展目标。</p>
+<h3 id="2-3-未来规划"><a href="#2-3-未来规划" class="headerlink" title="2.3 未来规划"></a>2.3 未来规划</h3><h3 id="2-3-1-Dubbo-生态一扩展"><a href="#2-3-1-Dubbo-生态一扩展" class="headerlink" title="2.3.1 Dubbo 生态一扩展"></a>2.3.1 Dubbo 生态一扩展</h3><p>![image-20220929193100257](/Users/mac/Library/Application Support/typora-user-images/image-20220929193100257.png)</p>
+<h1 id="用户案例"><a href="#用户案例" class="headerlink" title="用户案例"></a>用户案例</h1><h2 id="Dubbo3-大规模集群实践"><a href="#Dubbo3-大规模集群实践" class="headerlink" title="Dubbo3 - 大规模集群实践"></a>Dubbo3 - 大规模集群实践</h2><ul>
+<li><p>阿里生态</p>
+<ul>
+<li>饿了么、钉钉、考拉等经济体生态全面落地 Dubbo3，实现了跨单元互通、协 议转换等业务场景。</li>
+</ul>
+</li>
+<li><p>阿里电商</p>
+<ul>
+<li>淘宝、天猫等关键电商业务启动大规模上线，实现单机资源利用率提升 50%、 加速关键链路 Mesh 化切换。</li>
+</ul>
+</li>
+<li><p>阿里云</p>
+<ul>
+<li>阿里云服务治理平台全面接入 Dubbo3，打造全链路压测等流量治理方案;公 有云业务产品如教育、视频、达摩院店小蜜等产品全面接入</li>
+</ul>
+</li>
+<li><p>社区用户 – 工商银行</p>
+<ul>
+<li>工商银行自 2021 年中开始采用 Dubbo3 应用级服务发现模型，解决注册中心容量问题。</li>
+</ul>
+</li>
+<li><p>社区用户 – 小米</p>
+<ul>
+<li>小米在参与 Dubbo3 共建的同时，采用 Java、Go 版本 Dubbo3 协议解决微 服务互通等治理问题。</li>
+</ul>
+</li>
+</ul>
+<p>![image-20220929191116524](/Users/mac/Library/Application Support/typora-user-images/image-20220929191116524.png)</p>
+<p>工商银行案例：Dubbo3 版本推送效率和资源利用率明显提升，接口级服务发现。单机常驻内存下降 50%，地址<br>变更期 GC 消耗下降一个数量级，应用级服务发现。单机常驻内存下降 75%，GC 次数趋零。</p>
+<h1 id="3-Dubbo3有哪些参考资料"><a href="#3-Dubbo3有哪些参考资料" class="headerlink" title="3 Dubbo3有哪些参考资料"></a>3 Dubbo3有哪些参考资料</h1><h1 id=""><a href="#" class="headerlink" title=""></a></h1>
+			<br>
+			
+			
+			<a class="tag-unordered list-link" href="/tags/Dubbo3%E4%BB%8B%E7%BB%8D/" rel="tag">Dubbo3介绍<span class="tag-unordered list-count">1</span></a>
+
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

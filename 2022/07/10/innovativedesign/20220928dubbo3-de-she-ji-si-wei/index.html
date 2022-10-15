@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>创意工作坊 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1665817392573">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1665817392573"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>创意工作坊</h1>
+			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/%E5%88%9B%E6%84%8F%E5%B7%A5%E4%BD%9C%E5%9D%8A/">创意工作坊</a>》
+				
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/innovativedesign/20220928Dubbo3的设计思维.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h2 id="写文章前的思考"><a href="#写文章前的思考" class="headerlink" title="写文章前的思考"></a>写文章前的思考</h2><p>每个文章里面都应该有如下要素：</p>
+<ul>
+<li>为什么阅读 why (1)：为什么改变（Why to change ?）—————– 价值问题； </li>
+<li>阅读什么 what 改变什么（What to change ?）—————— 方向问题；</li>
+<li>能有什么收获 What to change to ?）——— 靶心问题；</li>
+<li>谁来阅读 who   </li>
+<li>何时阅读 when </li>
+<li>如何来阅读 how  怎样改变（How to change ?）——————- 方法问题；</li>
+<li>如何持续 how  怎样持续改变（How to continually change ?）— 机制问题；</li>
+</ul>
+<h2 id="写文章时的内容"><a href="#写文章时的内容" class="headerlink" title="写文章时的内容"></a>写文章时的内容</h2><ul>
+<li>干——主题，让观众愿意听。</li>
+<li>枝——逻辑，让观众听得懂。</li>
+<li>叶——故事，让观众记得住。</li>
+<li>果——影响，让观众有行动。</li>
+</ul>
+<h2 id="文章落地计划法则"><a href="#文章落地计划法则" class="headerlink" title="文章落地计划法则"></a>文章落地计划法则</h2><table>
+<thead>
+<tr>
+<th>定义</th>
+<th>理解</th>
+<th>对应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Why:为什么</td>
+<td>原因是什么+</td>
+<td>明确工作任务原因</td>
+</tr>
+<tr>
+<td>What:是什么·</td>
+<td>目的是什么</td>
+<td>工作内容</td>
+</tr>
+<tr>
+<td>Where:何处</td>
+<td>从哪里入手</td>
+<td>空间位置</td>
+</tr>
+<tr>
+<td>When:何时</td>
+<td>何时完成</td>
+<td>时间</td>
+</tr>
+<tr>
+<td>Who:由谁做</td>
+<td>谁来负责完成</td>
+<td>执行对象</td>
+</tr>
+<tr>
+<td>How:怎么做</td>
+<td>如何实施</td>
+<td>方法</td>
+</tr>
+<tr>
+<td>How much:成本多少</td>
+<td>做到什么程度</td>
+<td>成本</td>
+</tr>
+<tr>
+<td>How feel:结果会怎么样</td>
+<td>工作结果</td>
+<td>结果</td>
+</tr>
+</tbody></table>
+<h3 id="好的文章3个标准："><a href="#好的文章3个标准：" class="headerlink" title="好的文章3个标准："></a>好的文章3个标准：</h3><ul>
+<li><p>言之有物，空洞的表达无法打动读者；（为什么我们写作时常常提笔困难）</p>
+</li>
+<li><p>用字准确传神，经得起推敲；（为什么我们的遣词造句总是差强人意）</p>
+<ul>
+<li>文字简单清晰</li>
+<li>用词恰如其分</li>
+<li>描写准确，服务主题</li>
+</ul>
+</li>
+<li><p>表达有趣，能引起读者的注意；（为什么我们的表达难以引起别人的注意）</p>
+</li>
+</ul>
+<h3 id="带方法的阅读："><a href="#带方法的阅读：" class="headerlink" title="带方法的阅读："></a>带方法的阅读：</h3><ul>
+<li>区分式阅读：树根深度阅读，树干和树叶尽可浏览</li>
+<li>提炼观点：理解别人观点时提出自己的观点，深化主题</li>
+<li>学会联想：自己所知的事和阅读材料联系起来，触类旁通，打开思路。</li>
+<li>随时记录: 记录灵感，每个灵感都是表达的财富</li>
+</ul>
+<h3 id="躲雷指南：误区"><a href="#躲雷指南：误区" class="headerlink" title="躲雷指南：误区"></a>躲雷指南：误区</h3><ul>
+<li><p>误区1：滥用形容词和连词</p>
+<ul>
+<li>想不出精准的形容词不要用。</li>
+<li>连词用的过多，会影响句子美感</li>
+<li></li>
+</ul>
+</li>
+</ul>
+
+			<br>
+			
+			
+			<a class="tag-unordered list-link" href="/tags/%E5%88%9B%E6%84%8F%E5%B7%A5%E4%BD%9C%E5%9D%8A/" rel="tag">创意工作坊<span class="tag-unordered list-count">2</span></a>
+
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/07/10/innovativedesign/20220928dubbo3-de-she-ji-si-wei/"> 创意工作坊</a>
+                            </div>
+                        
+
+                        
+
+                    
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/07/10/innovativedesign/readme/"> 创意工作坊</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

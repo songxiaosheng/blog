@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>创意工作坊 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1665817392573">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1665817392573"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>创意工作坊</h1>
+			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/%E5%88%9B%E6%84%8F%E5%B7%A5%E4%BD%9C%E5%9D%8A/">创意工作坊</a>》
+				
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/innovativedesign/readme.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="创意设计之文章"><a href="#创意设计之文章" class="headerlink" title="创意设计之文章"></a>创意设计之文章</h1><h2 id="写文章前的思考"><a href="#写文章前的思考" class="headerlink" title="写文章前的思考"></a>写文章前的思考</h2><p>每个文章里面都应该有如下要素：</p>
+<ul>
+<li>为什么阅读 why (1)：为什么改变（Why to change ?）—————– 价值问题； </li>
+<li>阅读什么 what 改变什么（What to change ?）—————— 方向问题；</li>
+<li>能有什么收获 What to change to ?）——— 靶心问题；</li>
+<li>谁来阅读 who   </li>
+<li>何时阅读 when </li>
+<li>如何来阅读 how  怎样改变（How to change ?）——————- 方法问题；</li>
+<li>如何持续 how  怎样持续改变（How to continually change ?）— 机制问题；</li>
+</ul>
+<h2 id="写文章时的内容"><a href="#写文章时的内容" class="headerlink" title="写文章时的内容"></a>写文章时的内容</h2><ul>
+<li>干——主题，让观众愿意听。</li>
+<li>枝——逻辑，让观众听得懂。</li>
+<li>叶——故事，让观众记得住。</li>
+<li>果——影响，让观众有行动。</li>
+</ul>
+<h2 id="文章落地计划法则"><a href="#文章落地计划法则" class="headerlink" title="文章落地计划法则"></a>文章落地计划法则</h2><table>
+<thead>
+<tr>
+<th>定义</th>
+<th>理解</th>
+<th>对应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Why:为什么</td>
+<td>原因是什么+</td>
+<td>明确工作任务原因</td>
+</tr>
+<tr>
+<td>What:是什么·</td>
+<td>目的是什么</td>
+<td>工作内容</td>
+</tr>
+<tr>
+<td>Where:何处</td>
+<td>从哪里入手</td>
+<td>空间位置</td>
+</tr>
+<tr>
+<td>When:何时</td>
+<td>何时完成</td>
+<td>时间</td>
+</tr>
+<tr>
+<td>Who:由谁做</td>
+<td>谁来负责完成</td>
+<td>执行对象</td>
+</tr>
+<tr>
+<td>How:怎么做</td>
+<td>如何实施</td>
+<td>方法</td>
+</tr>
+<tr>
+<td>How much:成本多少</td>
+<td>做到什么程度</td>
+<td>成本</td>
+</tr>
+<tr>
+<td>How feel:结果会怎么样</td>
+<td>工作结果</td>
+<td>结果</td>
+</tr>
+</tbody></table>
+<h1 id="1-原理篇"><a href="#1-原理篇" class="headerlink" title="1 原理篇"></a>1 原理篇</h1><h3 id="1-1-好的文章3个标准："><a href="#1-1-好的文章3个标准：" class="headerlink" title="1.1 好的文章3个标准："></a>1.1 好的文章3个标准：</h3><ul>
+<li>言之有物，空洞的表达无法打动读者；（为什么我们写作时常常提笔困难）</li>
+<li>用字准确传神，经得起推敲；（为什么我们的遣词造句总是差强人意）<ul>
+<li>文字简单清晰</li>
+<li>用词恰如其分</li>
+<li>描写准确，服务主题</li>
+</ul>
+</li>
+<li>表达有趣，能引起读者的注意；（为什么我们的表达难以引起别人的注意）</li>
+</ul>
+<h3 id="1-2-带方法的阅读："><a href="#1-2-带方法的阅读：" class="headerlink" title="1.2 带方法的阅读："></a>1.2 带方法的阅读：</h3><ul>
+<li>区分式阅读：树根深度阅读，树干和树叶尽可浏览</li>
+<li>提炼观点：理解别人观点时提出自己的观点，深化主题</li>
+<li>学会联想：自己所知的事和阅读材料联系起来，触类旁通，打开思路。</li>
+<li>随时记录: 记录灵感，每个灵感都是表达的财富</li>
+</ul>
+<h3 id="1-3-躲雷指南：误区"><a href="#1-3-躲雷指南：误区" class="headerlink" title="1.3 躲雷指南：误区"></a>1.3 躲雷指南：误区</h3><ul>
+<li>误区1：滥用形容词和连词<ul>
+<li>想不出精准的形容词不要用。</li>
+<li>连词用的过多，会影响句子美感</li>
+</ul>
+</li>
+<li>误区2：中西文化<ul>
+<li>滥用被字句</li>
+<li>喜欢用弱动词，比如：造成，进行 一般称为万能动词</li>
+<li>喜欢用从句</li>
+</ul>
+</li>
+<li>误区3： 随意堆砌段落<ul>
+<li>段落之间要有递进关系、转折关系</li>
+</ul>
+</li>
+<li>误区4：缺乏逻辑思维<ul>
+<li>洋洋洒洒几千字，但文章没有逻辑</li>
+<li>推演论证，得不出想要的结论</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-方法篇"><a href="#2-方法篇" class="headerlink" title="2 方法篇"></a>2 方法篇</h1><h2 id="2-1-主题-如何为主题搭建一个好的结构"><a href="#2-1-主题-如何为主题搭建一个好的结构" class="headerlink" title="2.1 主题-如何为主题搭建一个好的结构"></a>2.1 主题-如何为主题搭建一个好的结构</h2><h3 id="2-1-1-为文章找到主心骨"><a href="#2-1-1-为文章找到主心骨" class="headerlink" title="2.1.1 为文章找到主心骨"></a>2.1.1 为文章找到主心骨</h3><p>使用<strong>一句话法则</strong>： 文章真正的主线不是一个词语，而是一个连贯的主线，我们称之为<strong>“一句话法则”</strong></p>
+<ul>
+<li>主题： 是和一个更大的东西联系起来的，比如爱、孤独、自由、平等</li>
+<li>主线：概括整篇文章的内容</li>
+</ul>
+<p>如何用一句话确定主线方法论：重要的是找到<strong>关键词</strong>，这个关键词代表着最<strong>能打动你的价值</strong></p>
+<p>总结来说： 主心骨是通过<strong>“一句话法则”</strong>  ，先<strong>确定价值（关键词）</strong>，再<strong>高度概括</strong>。</p>
+<h3 id="2-1-2-在主心骨的基础上长出骨架"><a href="#2-1-2-在主心骨的基础上长出骨架" class="headerlink" title="2.1.2 在主心骨的基础上长出骨架"></a>2.1.2 在主心骨的基础上长出骨架</h3><p>方法论：三段式的经典结构搭建主心骨</p>
+<p><strong>三段式：</strong>接近人类思考问题的方式，容易被接收，比如：</p>
+<ul>
+<li>是什么、为什么、怎么办</li>
+<li>提出问题、分析问题、解决问题</li>
+<li>触发、冲突、解决</li>
+</ul>
+<p>写作里面的三段式主要是<strong>触发、冲突、解决</strong></p>
+<p><strong>触发</strong></p>
+<p>触发，就是导火索，可以用一个最近的例子作为<strong>引子</strong>。</p>
+<p>触发的内容一般包含3个基本问题：</p>
+<ul>
+<li><strong>事件：</strong>主要事件是什么（谁是主要人物）</li>
+<li><strong>情景：</strong>事件发生在什么情景里</li>
+<li><strong>悬念：</strong>事件留下的悬念是什么</li>
+</ul>
+<p><strong>冲突</strong></p>
+<p>冲突就是文章中的矛盾之处（换句话就是看热闹的热闹），矛盾有大有小，找到矛盾的主要目的是为了让读者对内容产生认同，和用户的生活具有接近性。</p>
+<p>冲突部分是最吸引读者的部分，越是把现象、人物推向两难的境地、越能揭示一个事物的本质。（用一个简单的话就是说大家喜欢看热闹，越热闹大家越喜欢看）</p>
+<p><strong>解决</strong></p>
+<p>解决就很好理解了，就是指这个问题、现象或者任务、，经过我们的分析、描述、刻画以后有一个新的看法或者最终的结果。</p>
+<p>一句话来说解决，<strong>解决就是最终的结果</strong></p>
+<h3 id="2-1-3-展开骨架"><a href="#2-1-3-展开骨架" class="headerlink" title="2.1.3 展开骨架"></a>2.1.3 展开骨架</h3><p><strong>时空坐标系法</strong></p>
+<p>建立时间和空间两条线</p>
+<p><strong>时间线</strong></p>
+<ul>
+<li>单时间线: 比如插叙，倒叙</li>
+<li>双时间线：短时间线串起动态的场景、长时间线作为整个文章的背景，用于时间跨度长，事件或者人物主角的场景不断变化，可以用短时间线切入作为场景</li>
+</ul>
+<p><strong>空间线</strong></p>
+<p>不适合用时间串联的时候，可以在空间上展开文章的骨架也是很好的方法，比较适合一些宏大的主题</p>
+<p>空间线一般需要通过找到空间元素和空间场景铺开 从上到下，从大到小或者其方式</p>
+<h2 id="2-2-开篇"><a href="#2-2-开篇" class="headerlink" title="2.2 开篇"></a>2.2 开篇</h2><p>大多数人只会看一眼开头。确保头两三段就能调用读者的期待，能激发读者的兴趣，都可以采用并无定法</p>
+<p>三步法：</p>
+<ul>
+<li><strong>第一步： 找到写作内容中最具神秘、冲突的部分，把它记录下来</strong></li>
+<li>第二步：把写作内容中最具神秘、冲突的部分进行拆分，拆分成人物、事件、地点、事件、数据等小元素，然后把其中的1 ~ 2 个小元素放大。放大的一部分目的也是为了告诉读者这篇文章要写什么<ul>
+<li>放大其中一个即可，比如位置可以这样写在地图上找到一直向西，再向西、再向西。找到新疆，找到喀什，。。。放大即可让读者感受到神秘</li>
+</ul>
+</li>
+<li>第三步：为那些放大的特质建立画面，把自己想象成一名导演<ul>
+<li>找到意象 ：（与主题关联有特质的事物）比如河、沙漠、绿洲等最具代表这个地点特质的事物</li>
+<li>进行局部特写：（优美的画面感）比如河蜿蜒而下、沙漠与和相连，是黄色的</li>
+</ul>
+</li>
+</ul>
+<p>开头模式的两大类：</p>
+<ul>
+<li><strong>综述型：</strong>需要全面概述主旨，归纳整篇文章的主旨，需要归纳概括能力。</li>
+<li><strong>用细节开头：</strong> 操作起来更加简单，找到1~2个特有的、能打动人的元素这样开头就成功了一大半。</li>
+</ul>
+<p>一个优秀的开头一定是神秘或者有冲突的</p>
+<h2 id="2-3-生动叙事"><a href="#2-3-生动叙事" class="headerlink" title="2.3 生动叙事"></a>2.3 生动叙事</h2><p>诗歌的三美：建筑美、音乐美和绘画美</p>
+<p>文章和诗歌一样也应该有这三美</p>
+<ul>
+<li>建筑美：文章结构要起承转合，匀称均齐。</li>
+<li>音乐美：体现出音乐的美感，读起来流程而不拗口，能吸引读者往下读。</li>
+</ul>
+<p>文章的这种美感是通过叙事来完成的。</p>
+<p>一共分为两部分：</p>
+<ul>
+<li>叙事的节奏：速度感、力量感和变化感</li>
+<li>叙事的策略：多线叙事和环形叙事</li>
+</ul>
+<h3 id="2-3-1-叙事的节奏"><a href="#2-3-1-叙事的节奏" class="headerlink" title="2.3.1 叙事的节奏"></a>2.3.1 叙事的节奏</h3><ul>
+<li><p>速度感：是通过短句、简单句式来实现的。相反如果写的句式过于复杂，就会拖慢表达。</p>
+</li>
+<li><p>力量感：是通过排比这种修辞手法，排比是通过“重复” 来增强文章的力量感</p>
+</li>
+<li><p>变化感：句式上的变化，一是注重长短句结合，二是句型上的变化，内容复杂的时候就需要更复杂的句型</p>
+</li>
+</ul>
+<h3 id="2-3-2-叙事的策略"><a href="#2-3-2-叙事的策略" class="headerlink" title="2.3.2 叙事的策略"></a>2.3.2 叙事的策略</h3><p>叙事的策略有很多，但叙事的原则就只有一个，一定要有递进关系。</p>
+<p>两种常见的策略：多线叙事和环形叙事</p>
+<p><strong>多线叙事</strong></p>
+<p>文章同时拥有几个叙事主线，多个叙事主线都是为同一个主题服务的，而不是多个主题</p>
+<p>多线常见的线：时间线、人物线、日常生活线</p>
+<p><strong>环形叙事</strong></p>
+<p>环形叙事属于非线性叙事，常用于时间或者任务难以逃脱宿命的题材走来走去最后又到了原点</p>
+<h2 id="2-4-人物出场"><a href="#2-4-人物出场" class="headerlink" title="2.4 人物出场"></a>2.4 人物出场</h2><p>一个重要的人物出场，最好有独特的细节描述</p>
+<p>需要注重的两个特征：</p>
+<ul>
+<li>神秘</li>
+<li>冲突  制造悬念</li>
+</ul>
+<p>方式：</p>
+<ul>
+<li><p>使用引语 ，必须符合人物身份、内容要有特质（人物的特质与其他人不一样地方）</p>
+</li>
+<li><p>细节描述、突出某个特点，不要写的太大</p>
+</li>
+<li><p>环境描述，符合人物特征，不要随便写</p>
+</li>
+</ul>
+<p>写作技巧</p>
+<ul>
+<li>制造冲突、悬念或者错觉</li>
+<li>用环境描写昭示人物命运</li>
+<li>主角晚登场</li>
+</ul>
+<h2 id="2-5-细节打磨"><a href="#2-5-细节打磨" class="headerlink" title="2.5 细节打磨"></a>2.5 细节打磨</h2><ul>
+<li>通过文字带动5感：视觉、听觉、味觉、嗅觉和触觉，细节来源于观察，这是最基本的方法</li>
+<li>精确联想<ul>
+<li>联想共情的细节</li>
+<li>联想让你觉得异常、会产生反差的细节</li>
+</ul>
+</li>
+<li>借助道具 <ul>
+<li>运用人物、事件身边与之关系密切的东西，来凸显它的特点</li>
+<li>借助一些道具来服务于主题</li>
+</ul>
+</li>
+<li>逐步细化 <ul>
+<li>把模糊的变为具体的</li>
+<li>发挥想象，细节填充，是句子形象起来</li>
+</ul>
+</li>
+</ul>
+<p>注意事项</p>
+<ul>
+<li>详略得当，</li>
+<li>环境默写重要性小于人物细节描写的重要性</li>
+<li>描写五官感受到的细节比描写人物心理活动细节来的重要</li>
+<li>需要用无用的细节</li>
+</ul>
+<h2 id="2-6-遣词造句"><a href="#2-6-遣词造句" class="headerlink" title="2.6 遣词造句"></a>2.6 遣词造句</h2><p>让字和句吸引用户的眼球</p>
+<ul>
+<li><p>基本原则：用正确的语法、句法和词语，不要出现病句和错句，常见的病句如：句式杂糅</p>
+</li>
+<li><p>基本方法：培养语感</p>
+</li>
+</ul>
+<h3 id="词语"><a href="#词语" class="headerlink" title="词语"></a>词语</h3><ul>
+<li>精确凝练， 不啰嗦有详略，不是任何一个名词都需要修辞，不是任何一个动词都需要副词去衬托<ul>
+<li>不到不得已不用弱动词如：进行 ，造成这样的动词</li>
+<li>慎用形容词和副词，不知道怎么形容就不要用</li>
+</ul>
+</li>
+<li>修饰是为了主题服务</li>
+<li>动态感表达：<ul>
+<li>每个元素都要充满活力</li>
+<li>使用强动词如：抓住、爬进、尖叫</li>
+<li>赋予事物生命,即便是静态事物也可以赋予事物生命</li>
+</ul>
+</li>
+</ul>
+<h3 id="句式"><a href="#句式" class="headerlink" title="句式"></a>句式</h3><ul>
+<li><p>语句顺序，自然顺序</p>
+</li>
+<li><p>打破常规，句子有快有慢</p>
+<ul>
+<li>枯燥信息加快句子速度  缩短句子</li>
+<li>重要信息放慢速度  用细节描述</li>
+</ul>
+</li>
+<li><p>让句子有不同的视角</p>
+<ul>
+<li>主视角和非主视角结合</li>
+</ul>
+</li>
+<li></li>
+<li></li>
+</ul>
+<h1 id="3-应用篇"><a href="#3-应用篇" class="headerlink" title="3 应用篇"></a>3 应用篇</h1><p>changelog列表：</p>
+<p>​               </p>
+
+			<br>
+			
+			
+			<a class="tag-unordered list-link" href="/tags/%E5%88%9B%E6%84%8F%E5%B7%A5%E4%BD%9C%E5%9D%8A/" rel="tag">创意工作坊<span class="tag-unordered list-count">2</span></a>
+
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/07/10/innovativedesign/20220928dubbo3-de-she-ji-si-wei/"> 创意工作坊</a>
+                            </div>
+                        
+
+                        
+
+                    
+                
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                         <!-- 下一篇文章 --> 
+                            <div class="new">
+                                <span>下一章</span>
+                                <a href="/2022/07/10/innovativedesign/readme/"> 创意工作坊</a>
+                            </div>
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

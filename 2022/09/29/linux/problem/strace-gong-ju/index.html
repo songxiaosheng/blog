@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1665817392539">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1665817392539"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1></h1>
+			<div class="info"><span class="date">2022年9月29日</span>•songxiaosheng 
+			
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/linux/problem/strace工具.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<p>![image-20220929080045204](/Users/mac/Library/Application Support/typora-user-images/image-20220929080045204.png)</p>
+<p>对于正在运行的进程而言，strace 可以 attach 到目标进程上，这是 通过 ptrace 这个系统调用实现的(gdb 工具也是如此)</p>
+<p>ptrace 的 PTRACE_SYSCALL 会去追踪目标进程的系统调用;目标进程被追踪后，每次进入 syscall，都会产生 SIGTRAP 信号并暂停执行;</p>
+<p>追踪者通过目标进程触发的 SIGTRAP 信号，就可以知道目标进程进入了 系统调用，</p>
+<p>然后追踪者会去处理该系统调用，我们用 strace 命令观察到的信息输出就是该 处理的结果;追踪者处理完该系统调用后，就会恢复目标进程的执行。</p>
+<p>被恢复的目标进程 会一直执行下去，直到下一个系统调用。</p>
+<p>目标进程每执行一次系统调用都会被打断，等 strace 处理完后，目标进程才 能继续执行，这就会给目标进程带来比较明显的延迟。因此，在生产环境中我不建议使用 该命令，如果你要使用该命令来追踪生产环境的问题，那就一定要做好预案</p>
+
+			<br>
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2022 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>
