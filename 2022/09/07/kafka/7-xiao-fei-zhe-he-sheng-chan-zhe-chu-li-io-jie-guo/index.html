@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1665817392550">
+<link rel="stylesheet" href="/css/style.css?v=1666315348294">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1665817392550"></script>
+<script src="/js/core.js?v=1666315348294"></script>
 
 
 
@@ -77,16 +77,183 @@
 		<article class="post">
 			<p>处理Poll的IO返回结果</p>
 <ul>
+<li>执行IO事件读取数据到接收队列 completedReceives：List<networkreceive></networkreceive></li>
+<li>处理完成的发送请求，主要处理无需响应的请求</li>
+<li>处理完成的接收：<ul>
+<li>元数据响应处理</li>
+<li>ApiVersion请求响应处理</li>
+<li>普通请求响应存放到List<clientresponse> responses</clientresponse></li>
+</ul>
+</li>
+<li>处理失去连接的状态</li>
+<li>处理完成连接的状态</li>
+<li>处理初始化Api版本请求的逻辑</li>
+<li>处理请求超时的逻辑</li>
+<li>执行response的回调方法onComplete</li>
+</ul>
+<p>NetworkClient的poll方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> <span class="token function">poll</span><span class="token punctuation">(</span><span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token comment">//执行IO的方法省略掉了</span>
+
+    <span class="token comment">// process completed actions</span>
+    <span class="token keyword">long</span> updatedNow <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> responses <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">//处理完成的发送请求</span>
+    <span class="token function">handleCompletedSends</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//处理完成的接收</span>
+    <span class="token function">handleCompletedReceives</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//处理失去连接的状态</span>
+    <span class="token function">handleDisconnections</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//处理完成连接的状态</span>
+    <span class="token function">handleConnections</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//处理初始化Api版本请求的逻辑</span>
+    <span class="token function">handleInitiateApiVersionRequests</span><span class="token punctuation">(</span>updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//处理请求超时的逻辑</span>
+    <span class="token function">handleTimedOutRequests</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> updatedNow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//执行response的回调方法onComplete</span>
+    <span class="token function">completeResponses</span><span class="token punctuation">(</span>responses<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> responses<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>NetworkClient的handleCompletedSends方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">handleCompletedSends</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> responses<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// if no response is expected then when the send is completed, return it</span>
+   <span class="token comment">//前面IO 写数据事件执行发送数据之后会把数据存放在completedSends集合中</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Send</span> send <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>selector<span class="token punctuation">.</span><span class="token function">completedSends</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">InFlightRequest</span> request <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>inFlightRequests<span class="token punctuation">.</span><span class="token function">lastSent</span><span class="token punctuation">(</span>send<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//是否期望有返回数据，当acks配置为0时候这里就为false不期望数据返回</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>request<span class="token punctuation">.</span>expectResponse<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>inFlightRequests<span class="token punctuation">.</span><span class="token function">completeLastSent</span><span class="token punctuation">(</span>send<span class="token punctuation">.</span><span class="token function">destination</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            responses<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">completed</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>NetworkClient的handleCompletedReceives方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">handleCompletedReceives</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> responses<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//完成的数据接收在前面执行IO事件的时候执行了读取数据的逻辑，将读取到的数据放在了集合completedReceives中</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">NetworkReceive</span> receive <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>selector<span class="token punctuation">.</span><span class="token function">completedReceives</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">String</span> source <span class="token operator">=</span> receive<span class="token punctuation">.</span><span class="token function">source</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">InFlightRequest</span> req <span class="token operator">=</span> inFlightRequests<span class="token punctuation">.</span><span class="token function">completeNext</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//解析消息体</span>
+        <span class="token class-name">Struct</span> responseStruct <span class="token operator">=</span> <span class="token function">parseStructMaybeUpdateThrottleTimeMetrics</span><span class="token punctuation">(</span>receive<span class="token punctuation">.</span><span class="token function">payload</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> req<span class="token punctuation">.</span>header<span class="token punctuation">,</span>
+            throttleTimeSensor<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//省略...</span>
+        <span class="token comment">// If the received response includes a throttle delay, throttle the connection.</span>
+        <span class="token class-name">AbstractResponse</span> body <span class="token operator">=</span> <span class="token class-name">AbstractResponse</span><span class="token punctuation">.</span>
+                <span class="token function">parseResponse</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span>header<span class="token punctuation">.</span><span class="token function">apiKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> responseStruct<span class="token punctuation">,</span> req<span class="token punctuation">.</span>header<span class="token punctuation">.</span><span class="token function">apiVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//省略...</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>req<span class="token punctuation">.</span>isInternalRequest <span class="token operator">&amp;&amp;</span> body <span class="token keyword">instanceof</span> <span class="token class-name">MetadataResponse</span><span class="token punctuation">)</span>
+          <span class="token comment">//元数据的响应 则刷新元数据缓存</span>
+            metadataUpdater<span class="token punctuation">.</span><span class="token function">handleCompletedMetadataResponse</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span>header<span class="token punctuation">,</span> now<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token class-name">MetadataResponse</span><span class="token punctuation">)</span> body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>req<span class="token punctuation">.</span>isInternalRequest <span class="token operator">&amp;&amp;</span> body <span class="token keyword">instanceof</span> <span class="token class-name">ApiVersionsResponse</span><span class="token punctuation">)</span>
+            <span class="token comment">//api版本的请求则处理api版本的逻辑</span>
+            <span class="token function">handleApiVersionsResponse</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> req<span class="token punctuation">,</span> now<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token class-name">ApiVersionsResponse</span><span class="token punctuation">)</span> body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span>
+            <span class="token comment">//普通的网络请求则添加到响应集合待后续处理</span>
+            responses<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">completed</span><span class="token punctuation">(</span>body<span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>NetworkClient的handleDisconnections方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">handleDisconnections</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> responses<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token comment">//当出现关闭或者网络交互失败的时候就会将连接放入disconnected集合中</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">ChannelState</span><span class="token punctuation">&gt;</span></span> entry <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>selector<span class="token punctuation">.</span><span class="token function">disconnected</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">String</span> node <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Node {} disconnected."</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//处理失去连接的响应</span>
+        <span class="token function">processDisconnection</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> node<span class="token punctuation">,</span> now<span class="token punctuation">,</span> entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// we got a disconnect so we should probably refresh our metadata and see if that broker is dead</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>selector<span class="token punctuation">.</span><span class="token function">disconnected</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        metadataUpdater<span class="token punctuation">.</span><span class="token function">requestUpdate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>NetworkClient的handleConnections方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">handleConnections</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//首次连接成功之后会把连接的节点放入connected集合中</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> node <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>selector<span class="token punctuation">.</span><span class="token function">connected</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// We are now connected.  Note that we might not still be able to send requests. For instance,</span>
+        <span class="token comment">// if SSL is enabled, the SSL handshake happens after the connection is established.</span>
+        <span class="token comment">// Therefore, it is still necessary to check isChannelReady before attempting to send on this</span>
+        <span class="token comment">// connection.</span>
+        <span class="token comment">//</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>discoverBrokerVersions<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>connectionStates<span class="token punctuation">.</span><span class="token function">checkingApiVersions</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            nodesNeedingApiVersionsFetch<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">ApiVersionsRequest<span class="token punctuation">.</span>Builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Completed connection to node {}. Fetching API versions."</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>connectionStates<span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Completed connection to node {}. Ready."</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>NetworkClient的handleInitiateApiVersionRequests方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">handleInitiateApiVersionRequests</span><span class="token punctuation">(</span><span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//这里发起一个新的请求来初始化Api版本</span>
+    <span class="token class-name">Iterator</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">ApiVersionsRequest<span class="token punctuation">.</span>Builder</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> iter <span class="token operator">=</span> nodesNeedingApiVersionsFetch<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>iter<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Map<span class="token punctuation">.</span>Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">ApiVersionsRequest<span class="token punctuation">.</span>Builder</span><span class="token punctuation">&gt;</span></span> entry <span class="token operator">=</span> iter<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> node <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>selector<span class="token punctuation">.</span><span class="token function">isChannelReady</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> inFlightRequests<span class="token punctuation">.</span><span class="token function">canSendMore</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Initiating API versions fetch from node {}."</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">ApiVersionsRequest<span class="token punctuation">.</span>Builder</span> apiVersionRequestBuilder <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">ClientRequest</span> clientRequest <span class="token operator">=</span> <span class="token function">newClientRequest</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> apiVersionRequestBuilder<span class="token punctuation">,</span> now<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">doSend</span><span class="token punctuation">(</span>clientRequest<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            iter<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>NetworkClient的handleTimedOutRequests方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">handleTimedOutRequests</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> responses<span class="token punctuation">,</span> <span class="token keyword">long</span> now<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">//在飞行集合中如果存在某个节点的请求超时了则会触发关闭当前节点的连接信息</span>
+  <span class="token comment">//默认请求超时时间为30秒可以使用配置request.timeout.ms进行修改</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> nodeIds <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>inFlightRequests<span class="token punctuation">.</span><span class="token function">nodesWithTimedOutRequests</span><span class="token punctuation">(</span>now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> nodeId <span class="token operator">:</span> nodeIds<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// close connection to the node</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>selector<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span>nodeId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Disconnecting from node {} due to request timeout."</span><span class="token punctuation">,</span> nodeId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">processDisconnection</span><span class="token punctuation">(</span>responses<span class="token punctuation">,</span> nodeId<span class="token punctuation">,</span> now<span class="token punctuation">,</span> <span class="token class-name">ChannelState</span><span class="token punctuation">.</span>LOCAL_CLOSE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// we disconnected, so we should probably refresh our metadata</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>nodeIds<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        metadataUpdater<span class="token punctuation">.</span><span class="token function">requestUpdate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>NetworkClient的completeResponses方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">completeResponses</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ClientResponse</span><span class="token punctuation">&gt;</span></span> responses<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">//调用完成请求的回调方法</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ClientResponse</span> response <span class="token operator">:</span> responses<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            response<span class="token punctuation">.</span><span class="token function">onComplete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Uncaught error in request completion:"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p>下面是代码完整的流程解析</p>
+<ul>
 <li><p>开始</p>
 </li>
 <li><p>handleCompletedSends处理完成的发送请求</p>
 <ul>
 <li>handleCompletedSends处理完成的请求遍历Selector的completedSends然后遍历</li>
-<li>根据完成发送的node信息查询对应飞行窗口inFlightRequests中最后一个请求InFlightRequest<ul>
+<li>根据完成发送的node信息查询对应飞行窗口inFlightRequests中最后一个请求InFlightRequest</li>
 <li>如果最新的请求expectResponse为false则在*inFlightRequests中将最新请求从请求队列中移出</li>
 <li>封装响应数据ClientResponse到responses集合中List<clientresponse></clientresponse></li>
-</ul>
-</li>
 </ul>
 </li>
 <li><p>handleCompletedReceives处理完成的接收请求</p>
@@ -173,16 +340,6 @@
 </ul>
 </li>
 </ul>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
-<p>•</p>
 
 			<br>
 			
@@ -217,14 +374,20 @@
     
 
     
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
          <!-- 先找到与当前文字相同的目录 -->
             
-            
-                 
-                
-            
-                 
-                
             
                  
                 
@@ -327,24 +490,10 @@
 
                         
 
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
-                                <a href="/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/"> 【Apache Kafka 3.2源码解析系列】-消费者例子拉取数据</a>
+                                <a href="/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"> 【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</a>
                             </div>
                         
 
@@ -361,8 +510,22 @@
                           <!-- 上一篇文章 --> 
                             <div class="old">
                                 <span>上一章</span>
-                                <a href="/2022/09/07/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/"> 【Apache Kafka 3.2源码解析系列】-消费者KafkaConsumer对象的初始化</a>
+                                <a href="/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/"> 【Apache Kafka 3.2源码解析系列】-消费者例子拉取数据</a>
                             </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
                         
 
                         
@@ -373,18 +536,12 @@
                  
                 
             
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
+                 
+                
+            
+                 
+                
+            
         
     
 

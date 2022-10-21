@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1665817392549">
+<link rel="stylesheet" href="/css/style.css?v=1666315348294">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1665817392549"></script>
+<script src="/js/core.js?v=1666315348294"></script>
 
 
 
@@ -75,17 +75,70 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			<ul>
+			<p>先用一个大纲开头</p>
+<ul>
 <li>开始</li>
+<li>初始化<ul>
 <li>属性Properties初始化</li>
 <li>KafkaConsumer类型生产者对象创建</li>
+</ul>
+</li>
+<li>订阅<ul>
 <li>消费者订阅topic</li>
+</ul>
+</li>
+<li>拉取数据<ul>
 <li>消费者调用poll命令拉取数据ConsumerRecords</li>
-<li>消费者处理数据</li>
+</ul>
+</li>
+<li>消费者处理数据<ul>
+<li>自行处理数据</li>
 <li>消费者自动提交偏移量</li>
+</ul>
+</li>
 <li>关闭连接</li>
 <li>结束</li>
 </ul>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ConsumerDemo</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//初始化属性的地方</span>
+        <span class="token class-name">Properties</span> props <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"bootstrap.servers"</span><span class="token punctuation">,</span> <span class="token string">"127.0.0.1"</span> <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> <span class="token string">"9092"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> groupId <span class="token operator">=</span> <span class="token string">"DemoConsumer"</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"group.id"</span><span class="token punctuation">,</span> groupId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"enable.auto.commit"</span><span class="token punctuation">,</span> <span class="token string">"true"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"auto.commit.interval.ms"</span><span class="token punctuation">,</span> <span class="token string">"1000"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"session.timeout.ms"</span><span class="token punctuation">,</span> <span class="token string">"30000"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"key.deserializer"</span><span class="token punctuation">,</span> <span class="token string">"org.apache.kafka.common.serialization.IntegerDeserializer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"value.deserializer"</span><span class="token punctuation">,</span> <span class="token string">"org.apache.kafka.common.serialization.StringDeserializer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">boolean</span> readCommitted <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>readCommitted<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"isolation.level"</span><span class="token punctuation">,</span> <span class="token string">"read_committed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"auto.offset.reset"</span><span class="token punctuation">,</span> <span class="token string">"earliest"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+				<span class="token comment">//初始化消费者对象</span>
+        <span class="token class-name">KafkaConsumer</span> consumer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KafkaConsumer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      
+        <span class="token comment">//订阅主题</span>
+        <span class="token class-name">String</span> topic <span class="token operator">=</span> <span class="token string">"topic1"</span><span class="token punctuation">;</span>
+        consumer<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">singletonList</span><span class="token punctuation">(</span>topic<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       
+       <span class="token comment">//执行循环拉取数据</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">long</span> count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+           <span class="token comment">//每秒拉取一批数据 一批数据大小由配置max.poll.records决定 默认为500</span>
+            <span class="token class-name">ConsumerRecords</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> records <span class="token operator">=</span> consumer<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ConsumerRecord</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> record <span class="token operator">:</span> records<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>groupId <span class="token operator">+</span> <span class="token string">" received message : from partition "</span> <span class="token operator">+</span> record<span class="token punctuation">.</span><span class="token function">partition</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                        <span class="token operator">+</span> <span class="token string">", ("</span> <span class="token operator">+</span> record<span class="token punctuation">.</span><span class="token function">key</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">", "</span> <span class="token operator">+</span> record<span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">") at offset "</span> <span class="token operator">+</span> record<span class="token punctuation">.</span><span class="token function">offset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                count<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+             <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>groupId <span class="token operator">+</span> <span class="token string">" finished reading "</span> <span class="token operator">+</span> count <span class="token operator">+</span> <span class="token string">" messages"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>消费者例子与生产者类似，先初始化再执行，唯一不同的是消费者需要提前订阅主题</p>
 
 			<br>
 			
@@ -98,6 +151,18 @@
 	<div class="other">
 		<div class="container">
 			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
 
     
         
@@ -237,7 +302,7 @@
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
-                                <a href="/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"> 【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</a>
+                                <a href="/2022/09/07/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/"> 【Apache Kafka 3.2源码解析系列】-处理Poll的IO返回结果</a>
                             </div>
                         
 
@@ -254,7 +319,7 @@
                           <!-- 上一篇文章 --> 
                             <div class="old">
                                 <span>上一章</span>
-                                <a href="/2022/09/07/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/"> 【Apache Kafka 3.2源码解析系列】-处理Poll的IO返回结果</a>
+                                <a href="/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"> 【Apache Kafka 3.2源码解析系列】-执行IO事件</a>
                             </div>
                         
 
@@ -276,18 +341,6 @@
                  
                 
             
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
         
     
 

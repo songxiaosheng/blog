@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		
-<title>【Linux网络】-IO问题排查 - 中间件源码</title>
+<title>Apache Dubbo又更新了 - 中间件源码</title>
 <meta charset="utf-8" />
 <meta name="keywords" content="" />
 <meta
@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1666315348286">
+<link rel="stylesheet" href="/css/style.css?v=1666315348323">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1666315348286"></script>
+<script src="/js/core.js?v=1666315348323"></script>
 
 
 
@@ -61,13 +61,13 @@
         <div class="content">
 	<div class="banner">
 		<div class="container">
-			<h1>【Linux网络】-IO问题排查</h1>
-			<div class="info"><span class="date">2022年9月8日</span>•songxiaosheng 
+			<h1>Apache Dubbo又更新了</h1>
+			<div class="info"><span class="date">2022年7月10日</span>•songxiaosheng 
 			
-					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Linux%E7%BD%91%E7%BB%9C%E6%BA%90%E7%A0%81/">Linux网络源码</a>》
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/%E5%88%9B%E6%84%8F%E5%B7%A5%E4%BD%9C%E5%9D%8A/">创意工作坊</a>》
 				
 				<!-- 
-					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/linux/io/PageCache.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/innovativedesign/ApacheDubbo又更新了.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
 				 -->
 			</div>
 			
@@ -75,24 +75,12 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			<p>一个问题往往牵扯到操作系统的很多模块，比如说，当系统出现 load 飙高的问 题时，可能是 Page Cache 引起的;也可能是锁冲突太厉害，物理资源(CPU、内存、磁盘 I/O、网络 I/O)有争抢导致的;也可能是内核特性设计缺陷导致的，等等</p>
-<p>可以试着去把 /proc/vmstat 里面的信息给读取出来，看看哪些指标单位时间内变化较大</p>
-<p>如果 pgscan 相关指标变化较大，那就可能是 Page Cache 引起的，因为 pgscan 代表了 Page Cache 的内存回收行为，它变化较大往往意味着系统内存压力很紧张。</p>
-<p>对于 Page Cahe 相关的问题，我 推荐你使用 sar 来采集 Page Cache 的概况它是系统默认配置好的工具，使用起来非常 简单方便。</p>
-<ul>
-<li>sar -B 来分析分页信息 (Paging statistics)</li>
-<li>sar -r 来分析内存使用情况统计 (Memory utilization statistics)</li>
-<li>sar 里面记录的 PSI(Pressure-Stall Information)信息来查看 Page Cache 产生压力情况，尤其是给业务产生的压力</li>
-</ul>
-<p>重点关注 avg10 这一列，它表示最近 10s 内存的平均压力情况，如果它很大(比如 大于 40)那 load 飙高大概率是由于内存压力，尤其是 Page Cache 的压力引起的。</p>
-<p>下面列举一些常见的监控指标可以进行参考:</p>
-<p>![image-20220908072140482](/Users/mac/Library/Application Support/typora-user-images/image-20220908072140482.png)</p>
-<p>采集完这些指标后，我们就可以分析 Page Cache 异常是由什么引起的了。比如说，当我 们发现，单位时间内 compact_fail 变化很大时，那往往意味着系统内存碎片很严重，已经 很难申请到连续物理内存了，这时你就需要去调整碎片指数或者手动触发内存规整，来减 缓因为内存碎片引起的压力了。</p>
+			<p>  《突发！Dubbo被爆多个版本存在高危漏洞！》这次又需要加班加点的升级改造，使用Dubbo的同学对这样的新闻一定会比较敏感，不过这一次不是来公布漏洞的，主要来探究下Dubbo重启维护之后，现在还活着吗？<br>  Dubbo是阿里巴巴内部使用的一个分布式服务治理框架，2012年开源就受到了很多互联网公司的首选，但在2014年10月份，Dubbo停止了维护。这个时候Dubbo开源框架的包名还是com.alibaba.dubbo，在这段时间使用Dubbo来进行微服务治理的同学一定也有过很多的苦恼，有新的漏洞出现却无人修复，有新的想法提交”却无人升级，内部究竟要另外维护一个分支还是再等等官方的更新信息，或者是替换到其他微服务治理框架上，使用Dubbo的开发者一定有种看不到未来的迷茫感，以至于在后来Spring Cloud全家桶出现的时候很多团队耗时耗力的将微服务框架更换为SpringCloud。不过停更了多年的终于Dubbo更新了。<br>  2017年的9月份，阿里宣布重启Dubbo的开发维护，悄悄在 GitHub 发布了 2.5.4 版本。随后，又迅速发布了 2.5.5、2.5.6、2.5.7 等版本。<br>  2018年2月9日，Apache基金会发起了是否允许阿里巴巴的服务治理框架Dubbo项目进入Apache 孵化器的投票讨论。6天后的2月15日，邮件中显示Dubbo获得了14张赞成票正式通过选票，在0弃权和0反对的情况下，Dubbo顺利进入了Apache基金会孵化项目。<br>  2019年1月，发布了2.7.0，支持 Java 1.8，包名更改为org.apache，支持 Restful 服务；<br>  2019年5月21日，Dubbo 从 Apache 正式毕业，。<br>  进入世界上最大的开源基金会 Apache后有了哪些改变呢？<br>  原本由一家企业集中式管理的开源项目转变为了采用一种分散的领导的模式，“社区胜于代码”的口号可以喊起了，也就是说，Dubbo 将不再是阿里巴巴的 Dubbo，而是社区的。<br>  再来看点数据，从 star 数来看，Dubbo 生态 star 总数超过 4.5w，是 Apache 关注度非常高的项目；生态贡献者总数超过 600+，增长超 30%，主办/参与包括云原生变成挑战赛、编程之夏等多项顶级活动，开源周会组织超过 100 次，参与人数 10000+，生态年度发布超 20 个版本，累积官方登记用户达 200+。越来越活跃的Dubbo社区究竟在做什么更新？<br>  根据小编最近的调研分析，关于Dubbo的更新我们将从如下几个角度来看下:<br>  服务发现，<br>  服务调用，<br>  服务治理，<br>  服务管控，<br>  社区案例等<br>  首先来看服务发现，Dubbo3新增了应用级服务发现模型，这个在本来就以应用级服务发现架构的框架里并不是新鲜事。旧的Dubbo版本使用接口级服务发现模型的架构，Dubbo3新增应用级服务发现模型对老的接口级服务发现模型是一个非常大的优化更新，有哪些不一样呢，下面可以详细看下两种服务发现模型的差异，有利于对Dubbo做一个整体的了解。<br>  全新的服务发现模型，应用粒度服务o现，面r云m生设计，适配x础设施与异构<br>系统C性能与集群T缩性大幅提</p>
 
 			<br>
 			
 			
-			<a class="tag-unordered list-link" href="/tags/IO/" rel="tag">IO<span class="tag-unordered list-count">1</span></a>, <a class="tag-unordered list-link" href="/tags/Linux%E6%BA%90%E7%A0%81/" rel="tag">Linux源码<span class="tag-unordered list-count">3</span></a>
+			<a class="tag-unordered list-link" href="/tags/%E5%88%9B%E6%84%8F%E5%B7%A5%E4%BD%9C%E5%9D%8A/" rel="tag">创意工作坊<span class="tag-unordered list-count">3</span></a>
 
 			
 		</article>
@@ -100,46 +88,6 @@
 	<div class="other">
 		<div class="container">
 			<nav class="post-nav">
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-        
-    
 
     
         
@@ -179,7 +127,7 @@
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
-                                <a href="/2022/09/15/linux/net/2-wang-luo-pai-cha/"> 【Linux网络】-网络问题排查</a>
+                                <a href="/2022/07/10/innovativedesign/20220928dubbo3-de-she-ji-si-wei/"> 创意工作坊</a>
                             </div>
                         
 
@@ -196,7 +144,7 @@
                           <!-- 上一篇文章 --> 
                             <div class="old">
                                 <span>上一章</span>
-                                <a href="/2016/09/07/linux/net/1-wang-luo-shu-ju-shi-ru-he-jin-lai-de/"> 【Linux源码】-1-网络是如何进来的</a>
+                                <a href="/2022/07/10/innovativedesign/readme/"> 创意工作坊</a>
                             </div>
                         
 
@@ -208,6 +156,46 @@
                  
                 
             
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
         
     
 
