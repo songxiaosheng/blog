@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1666315348295">
+<link rel="stylesheet" href="/css/style.css?v=1666759152263">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1666315348295"></script>
+<script src="/js/core.js?v=1666759152263"></script>
 
 
 
@@ -75,8 +75,12 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			<ul>
-<li>开始</li>
+			<p>- </p>
+<ul>
+<li><p>开始</p>
+</li>
+<li><p>初始化配置信息</p>
+<ul>
 <li>Properties配置转Map&lt;String, Object&gt;</li>
 <li>Map&lt;String, Object&gt;配置转ConsumerConfig</li>
 <li>初始化重负载均衡配置GroupRebalanceConfig对象</li>
@@ -89,14 +93,67 @@
 <li>订阅状态跟踪器SubscriptionState类型对象创建</li>
 <li>ClusterResourceListeners集群资源监听器</li>
 <li>ConsumerMetadata</li>
-<li>消费者元数据对象初始化（后续IO发起的时候会拉取全量元数据）</li>
-<li>根据配置初始化通道构建器ChannelBuilder</li>
-<li>NetworkClient对象创建</li>
-<li>再封装ConsumerNetworkClient网络客户端</li>
-<li>初始化消费者分区管理器ConsumerPartitionAssignor</li>
-<li>初始化消费者协调器ConsumerCoordinator</li>
-<li>初始化消费者数据获取器Fetcher</li>
-<li>结束</li>
+</ul>
+</li>
+<li><p>消费者元数据对象初始化（后续IO发起的时候会拉取全量元数据）</p>
+</li>
+<li><p>根据配置初始化通道构建器ChannelBuilder</p>
+</li>
+<li><p>NetworkClient对象创建</p>
+</li>
+<li><p>再封装ConsumerNetworkClient网络客户端</p>
+</li>
+<li><p>初始化消费者分区管理器ConsumerPartitionAssignor</p>
+</li>
+<li><p>初始化消费者协调器ConsumerCoordinator</p>
+</li>
+<li><p>初始化消费者数据获取器Fetcher</p>
+</li>
+<li><p>结束</p>
+</li>
+<li></li>
+<li><p>开始</p>
+</li>
+<li><p>Properties配置转Map&lt;String, Object&gt;</p>
+</li>
+<li><p>Map&lt;String, Object&gt;配置转ConsumerConfig</p>
+</li>
+<li><p>初始化重负载均衡配置GroupRebalanceConfig对象</p>
+</li>
+<li><p>enable.auto.commit自动提交配置初始化</p>
+</li>
+<li><p>ConsumerInterceptor消费拦截器对象初始化</p>
+</li>
+<li><p>Metrics相关监控指标对象创建</p>
+</li>
+<li><p>keySerializer对象创建序列化KEY使用</p>
+</li>
+<li><p>valueSerializer对象创建序列化VALUE使用</p>
+</li>
+<li><p>偏移量重置策略OffsetResetStrategy类型对象创建</p>
+</li>
+<li><p>订阅状态跟踪器SubscriptionState类型对象创建</p>
+</li>
+<li><p>ClusterResourceListeners集群资源监听器</p>
+</li>
+<li><p>ConsumerMetadata</p>
+</li>
+<li><p>消费者元数据对象初始化（后续IO发起的时候会拉取全量元数据）</p>
+</li>
+<li><p>根据配置初始化通道构建器ChannelBuilder</p>
+</li>
+<li><p>NetworkClient对象创建</p>
+</li>
+<li><p>再封装ConsumerNetworkClient网络客户端</p>
+</li>
+<li><p>初始化消费者分区管理器ConsumerPartitionAssignor</p>
+</li>
+<li><p>初始化消费者协调器ConsumerCoordinator</p>
+</li>
+<li><p>初始化消费者数据获取器Fetcher</p>
+</li>
+<li><p>结束</p>
+</li>
 </ul>
 
 			<br>
@@ -160,98 +217,8 @@
                 
             
                  
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
                  <!-- 在找到当前文章所在的 index -->
                     
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
-                    
-                         
-
-                        
-
-                        
-
                     
                          
 
@@ -281,7 +248,7 @@
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
-                                <a href="/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"> 【Apache Kafka 3.2源码解析系列】-执行IO事件</a>
+                                <a href="/2022/09/07/kafka/10-xiao-fei-zhe-ding-yue-topic/"> 【Apache Kafka 3.2源码解析系列】-消费者订阅TOPIC</a>
                             </div>
                         
 
@@ -293,6 +260,101 @@
                         
 
                     
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"> 【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
                 
             
         

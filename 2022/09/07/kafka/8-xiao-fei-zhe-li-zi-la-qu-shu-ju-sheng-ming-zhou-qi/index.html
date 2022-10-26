@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1666315348294">
+<link rel="stylesheet" href="/css/style.css?v=1666759152269">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1666315348294"></script>
+<script src="/js/core.js?v=1666759152269"></script>
 
 
 
@@ -138,7 +138,7 @@
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>消费者例子与生产者类似，先初始化再执行，唯一不同的是消费者需要提前订阅主题</p>
+<p>消费者例子与生产者类似，先初始化再执行，唯一不同的是消费者需要提前订阅主题，然后在循环中执行poll方法来批量拉取消息，参数间隔时间可以根据实际调整，调整过大节省CPU空转的资源，但是延迟会较大，调整的过小延迟较小，对CPU资源占用会更多。另外就是单次拉取的数据数量是使用配置max.poll.records来决定的 默认值为500，不考虑消费者处理消息的时间，这两个参数决定了消费者消费消息的吞度量，另外消费完消息之后需要提交偏移量，这里通过enable.auto.commit参数将提交默认设置为自动提交消息已经过消费完成之后可以自动提交了。</p>
 
 			<br>
 			
@@ -187,6 +187,9 @@
     
          <!-- 先找到与当前文字相同的目录 -->
             
+            
+                 
+                
             
                  
                 
@@ -299,10 +302,17 @@
 
                         
 
+                        
+
+                    
+                         
+
+                        
+
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
-                                <a href="/2022/09/07/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/"> 【Apache Kafka 3.2源码解析系列】-处理Poll的IO返回结果</a>
+                                <a href="/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"> 【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</a>
                             </div>
                         
 
@@ -326,16 +336,6 @@
                         
 
                     
-                         
-
-                        
-
-                        
-
-                    
-                
-            
-                 
                 
             
                  
