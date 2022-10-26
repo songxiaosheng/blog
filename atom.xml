@@ -283,11 +283,11 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消费者尝试更新分配元数据updateAssignmentMetadataIfNeeded</title>
+    <title>【Apache Kafka 3.2源码解析系列】- 11 消费者尝试更新分配元数据updateAssignmentMetadataIfNeeded</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/</id>
     <published>2022-09-07T12:25:07.000Z</published>
-    <updated>2022-10-26T00:27:54.044Z</updated>
+    <updated>2022-10-26T06:11:05.167Z</updated>
     
     
       
@@ -311,11 +311,11 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消费者订阅TOPIC</title>
+    <title>【Apache Kafka 3.2源码解析系列】- 10 消费者订阅TOPIC</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/10-xiao-fei-zhe-ding-yue-topic/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/10-xiao-fei-zhe-ding-yue-topic/</id>
     <published>2022-09-07T12:25:06.000Z</published>
-    <updated>2022-10-26T00:27:50.263Z</updated>
+    <updated>2022-10-26T06:10:59.959Z</updated>
     
     
       
@@ -344,11 +344,11 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消费者KafkaConsumer对象的初始化</title>
+    <title>【Apache Kafka 3.2源码解析系列】- 9 消费者KafkaConsumer对象的初始化</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/</id>
     <published>2022-09-07T12:25:05.000Z</published>
-    <updated>2022-10-26T00:33:36.526Z</updated>
+    <updated>2022-10-26T06:10:55.537Z</updated>
     
     
       
@@ -378,11 +378,11 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-Send发送者线程的主限循环逻辑</title>
+    <title>【Apache Kafka 3.2源码解析系列】- 4 Send发送者线程的主限循环逻辑</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/4-send-fa-song-zhe-xian-cheng-de-zhu-xian-xun-huan-luo-ji/</id>
     <published>2022-09-07T12:25:04.000Z</published>
-    <updated>2022-10-26T00:27:40.955Z</updated>
+    <updated>2022-10-26T06:10:32.782Z</updated>
     
     
       
@@ -408,11 +408,11 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-KafkaProducer处理数据到发送批处理队列</title>
+    <title>【Apache Kafka 3.2源码解析系列】- 3 KafkaProducer处理数据到发送批处理队列</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/3-kafkaproducer-chu-li-shu-ju-dao-fa-song-pi-chu-li-dui-lie/</id>
     <published>2022-09-07T12:25:03.000Z</published>
-    <updated>2022-10-26T00:27:38.092Z</updated>
+    <updated>2022-10-26T06:10:27.834Z</updated>
     
     
       
@@ -435,6 +435,38 @@
     <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
     
     <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2-Erlang并发编程思想</title>
+    <link href="https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/"/>
+    <id>https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/</id>
+    <published>2022-09-07T12:25:02.000Z</published>
+    <updated>2022-07-28T15:07:44.399Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;部分内容摘抄自《Erlang程序设计第2版》&lt;/p&gt;
+&lt;h1 id=&quot;Erlang的并发概念&quot;&gt;&lt;a href=&quot;#Erlang的并发概念&quot; class=&quot;headerlink&quot; title=&quot;Erlang的并发概念&quot;&gt;&lt;/a&gt;Erlang的并发概念&lt;/h1&gt;&lt;h2</summary>
+        
+      
+    
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
+    
+    
+    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
+    
+    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
+    
+    <category term="Erlang并发" scheme="https://blog.elastic.link/tags/Erlang%E5%B9%B6%E5%8F%91/"/>
+    
+    <category term="并发编程" scheme="https://blog.elastic.link/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -563,43 +595,11 @@
   </entry>
   
   <entry>
-    <title>2-Erlang并发编程思想</title>
-    <link href="https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/"/>
-    <id>https://blog.elastic.link/2022/09/07/erlang/2-erlang-de-bing-fa/</id>
-    <published>2022-09-07T12:25:02.000Z</published>
-    <updated>2022-07-28T15:07:44.399Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;部分内容摘抄自《Erlang程序设计第2版》&lt;/p&gt;
-&lt;h1 id=&quot;Erlang的并发概念&quot;&gt;&lt;a href=&quot;#Erlang的并发概念&quot; class=&quot;headerlink&quot; title=&quot;Erlang的并发概念&quot;&gt;&lt;/a&gt;Erlang的并发概念&lt;/h1&gt;&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/categories/Erlang/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Erlang语法" scheme="https://blog.elastic.link/tags/Erlang%E8%AF%AD%E6%B3%95/"/>
-    
-    <category term="Erlang并发" scheme="https://blog.elastic.link/tags/Erlang%E5%B9%B6%E5%8F%91/"/>
-    
-    <category term="并发编程" scheme="https://blog.elastic.link/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-生产者KafkaProducer对象的初始化</title>
+    <title>【Apache Kafka 3.2源码解析系列】- 2 生产者KafkaProducer对象的初始化</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
     <published>2022-09-07T12:25:02.000Z</published>
-    <updated>2022-10-26T00:27:33.420Z</updated>
+    <updated>2022-10-26T06:10:22.969Z</updated>
     
     
       
@@ -622,11 +622,11 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-2-从一个生产者的Demo出发</title>
+    <title>【Apache Kafka 3.2源码解析系列】- 1 -从一个生产者的Demo出发</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/1-1-sheng-chan-zhe-li-zi-fa-song-shu-ju-sheng-ming-zhou-qi/</id>
     <published>2022-09-07T12:25:01.000Z</published>
-    <updated>2022-10-26T00:27:29.909Z</updated>
+    <updated>2022-10-26T06:10:18.710Z</updated>
     
     
       
@@ -704,33 +704,6 @@
   </entry>
   
   <entry>
-    <title>1-过五关斩六将开发属于自己的jdk版本</title>
-    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
-    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-03T02:10:53.586Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
-    
-    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
-    
-  </entry>
-  
-  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/</id>
@@ -758,40 +731,11 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-处理Poll的IO返回结果</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-10-21T00:27:27.721Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;处理Poll的IO返回结果&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;执行IO事件读取数据到接收队列</summary>
-        
-      
-    
-    
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
-    
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消息请求放入Kafka通道</title>
+    <title>【Apache Kafka 3.2源码解析系列】- 5 消息请求放入Kafka通道</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/5-sheng-chan-zhe-xiao-xi-qing-qiu-fang-ru-kafka-tong-dao/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-28T00:15:44.814Z</updated>
+    <updated>2022-10-26T06:10:36.262Z</updated>
     
     
       
@@ -816,11 +760,67 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-消费者例子拉取数据</title>
+    <title>【Apache Kafka 3.2源码解析系列】- 6 执行IO事件</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-10-26T06:10:41.243Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;执行IO事件&quot;&gt;&lt;a href=&quot;#执行IO事件&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】- 7 处理Poll的IO返回结果</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/7-xiao-fei-zhe-he-sheng-chan-zhe-chu-li-io-jie-guo/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-10-26T06:10:44.977Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;处理Poll的IO返回结果&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;执行IO事件读取数据到接收队列</summary>
+        
+      
+    
+    
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    
+    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】- 8 消费者例子拉取数据</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/8-xiao-fei-zhe-li-zi-la-qu-shu-ju-sheng-ming-zhou-qi/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-10-26T00:32:07.362Z</updated>
+    <updated>2022-10-26T06:10:50.760Z</updated>
     
     
       
@@ -852,29 +852,29 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】-执行IO事件</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/6-sheng-chan-zhe-zhi-xing-io-shi-jian/</id>
+    <title>1-过五关斩六将开发属于自己的jdk版本</title>
+    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
+    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-10-14T00:46:31.961Z</updated>
+    <updated>2022-09-03T02:10:53.586Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;执行IO事件&quot;&gt;&lt;a href=&quot;#执行IO事件&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
         
       
     
     
     
-    <category term="Kafka源码" scheme="https://blog.elastic.link/categories/Kafka%E6%BA%90%E7%A0%81/"/>
+    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
     
     
-    <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
+    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
     
-    <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
+    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
     
   </entry>
   
@@ -983,9 +983,9 @@
     <category term="人工智能" scheme="https://blog.elastic.link/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
     
-    <category term="深度学习笔记" scheme="https://blog.elastic.link/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
     <category term="人工智能" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    
+    <category term="深度学习笔记" scheme="https://blog.elastic.link/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
@@ -1010,9 +1010,9 @@
     <category term="人工智能" scheme="https://blog.elastic.link/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
     
-    <category term="人工智能" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
-    
     <category term="人工神经网络笔记" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="人工智能" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
   </entry>
   
