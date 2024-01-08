@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1704711912870">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1704711912870"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1></h1>
+			<div class="info"><span class="date">2023年4月25日</span>•songxiaosheng 
+			
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/可观测性/数据洞察的秘密武器：如何用Grafana制作观测大盘？.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>在现代IT架构中，数据是无处不在的。随着数据量的不断增长，如何有效地管理和可视化数据已成为许多企业和组织所面临的挑战。这时候，Grafana就成为了一个非常有用的工具。</p>
+<p>为什么要选择Grafana，根据官网首页的特性介绍主要有如下几个方面 ：</p>
+<p><strong>统一您的数据，而不是您的数据库</strong></p>
+<p>Grafana 不需要将数据提取到后端存储或供应商数据库。相反，Grafana 采用独特的方法通过统一现有数据（无论其位于何处）来提供“单一管理平台”</p>
+<p><strong>每个人都可以看到的数据</strong></p>
+<p>Grafana 的构建原则是组织中的每个人都应该可以访问数据，而不仅仅是单个 Ops 人员。</p>
+<p><strong>任何人都可以使用的仪表板</strong></p>
+<p>Grafana 仪表板不仅为从众多来源收集的数据赋予了深刻的意义，而且还可以与其他团队成员共享您创建的仪表板，可以一起探索数据。</p>
+<p><strong>灵活性和多功能性</strong></p>
+<p>将任何数据转换并转换为灵活多用的仪表板。与其他工具不同，Grafana 允许专门为个人和团队构建仪表板。</p>
+<p>Grafana是一个流行的开源数据可视化工具，它可以帮助用户将数据转换成漂亮的图表和仪表盘如下几个图</p>
+<p>SpringBoot可观测大盘：</p>
+<p><img src="https://grafana.com/api/dashboards/12900/images/8804/image" alt="img"></p>
+<p>Kubeneters相关</p>
+<p><img src="https://grafana.com/products/assets/grafana/Grafana8_Kubernetes.jpg" alt="Kubernetes capacity"></p>
+<p>网站性能</p>
+<p><img src="https://grafana.com/products/assets/grafana/Grafana8_WebsitePerformance.jpg" alt="Website performance"></p>
+<p>全球新冠感染情况</p>
+<p><img src="https://grafana.com/products/assets/grafana/Grafana8_Covid19.jpg" alt="Covid-19 cases"></p>
+<p>Grafana它支持各种数据源，包括Graphite、InfluxDB、Prometheus、Elasticsearch等等。Grafana的主要优点是它可以帮助用户更好地理解数据，从而更快地做出决策。</p>
+<p>Grafana有两个版本：开源版和商业版。它们之间的主要区别如下：</p>
+<p><strong>开源版本</strong></p>
+<p>![image-20230426074801167](/Users/mac/Library/Application Support/typora-user-images/image-20230426074801167.png)</p>
+<ol>
+<li><strong>数据可视化</strong>：Grafana可以连接多种不同的数据源，包括Graphite、InfluxDB、Prometheus、Elasticsearch和Cloudwatch等，并将数据可视化为各种图表和仪表盘。</li>
+<li><strong>插件和面板</strong>：Grafana开源版提供了许多插件和面板，可以扩展其功能，包括Heatmap、Pie Chart、Table等。</li>
+<li><strong>警报</strong>：Grafana开源版支持警报功能，可以设置警报规则并在达到特定条件时发送通知。</li>
+<li><strong>团队和协作</strong>：Grafana开源版支持团队和协作功能，可以创建团队并共享仪表盘和面板。</li>
+<li><strong>多语言支持</strong>：Grafana开源版支持多种语言，包括中文、英文、德语、法语等。</li>
+</ol>
+<p><strong>商业版（包含开源版）</strong></p>
+<ol>
+<li><strong>功能差异</strong>：商业版提供了更多的功能和插件，例如Alerting、Enterprise Plugins和Grafana Cloud等。</li>
+<li><strong>支持和服务</strong>：商业版提供了更好的技术支持和服务，包括专属的支持团队、优先支持和定制开发等。</li>
+<li><strong>许可证和价格</strong>：商业版需要购买许可证，并且价格较高，而开源版是免费的。</li>
+<li><strong>安全性</strong>：商业版提供了更多的安全特性，如单点登录、LDAP支持等。</li>
+</ol>
+<p>总的来说，商业版提供了更多的功能和服务，适合大型企业或需要高级功能的用户。而开源版则适合小型企业或个人用户。</p>
+<h1 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h1><h2 id="Grafana的架构"><a href="#Grafana的架构" class="headerlink" title="Grafana的架构"></a>Grafana的架构</h2><p>Grafana的架构非常灵活，因此它可以适应各种不同的数据源和使用情况。它主要由以下几个组件组成：</p>
+<ol>
+<li>Grafana服务器</li>
+<li>数据源插件</li>
+<li>数据库</li>
+</ol>
+<p>![image-20230427080549862](/Users/mac/Library/Application Support/typora-user-images/image-20230427080549862.png)</p>
+<p>其中，Grafana服务器是整个系统的核心，它负责处理用户请求并将结果返回给用户。数据源插件则负责从不同的数据源中获取数据，并将其转换成Grafana可识别的格式。数据库则用于存储用户配置和仪表盘数据。</p>
+<h2 id="安装部署"><a href="#安装部署" class="headerlink" title="安装部署"></a>安装部署</h2><p>要安装和部署Grafana，您需要按照以下步骤进行操作：</p>
+<ol>
+<li>下载并安装Grafana服务器</li>
+<li>安装所需的数据源插件</li>
+<li>配置Grafana服务器</li>
+<li>启动Grafana服务器</li>
+</ol>
+<p>具体的安装步骤可以参考官方安装文档：</p>
+<p><a target="_blank" rel="noopener" href="https://grafana.com/docs/grafana/latest/setup-grafana/installation/">https://grafana.com/docs/grafana/latest/setup-grafana/installation/</a></p>
+<h2 id="入门示例"><a href="#入门示例" class="headerlink" title="入门示例"></a>入门示例</h2><p>为了帮助您更好地了解Grafana的功能，由于涉及大量的图表操作，单纯使用文字难以介绍，我们可以几个图片教程来看下如何创建一个简单面板图表：</p>
+<h2 id="创建Dashboard"><a href="#创建Dashboard" class="headerlink" title="创建Dashboard"></a>创建Dashboard</h2><p>![image-20230427080912335](/Users/mac/Library/Application Support/typora-user-images/image-20230427080912335.png)</p>
+<h2 id="创建面板分组"><a href="#创建面板分组" class="headerlink" title="创建面板分组"></a>创建面板分组</h2><p>![image-20230427081010749](/Users/mac/Library/Application Support/typora-user-images/image-20230427081010749.png)</p>
+<h2 id="创建面板"><a href="#创建面板" class="headerlink" title="创建面板"></a>创建面板</h2><p>![image-20230427081059833](/Users/mac/Library/Application Support/typora-user-images/image-20230427081059833.png)</p>
+<h2 id="编辑面板类型"><a href="#编辑面板类型" class="headerlink" title="编辑面板类型"></a>编辑面板类型</h2><p>![image-20230427081207086](/Users/mac/Library/Application Support/typora-user-images/image-20230427081207086.png)</p>
+<h2 id="数据源与属性设置"><a href="#数据源与属性设置" class="headerlink" title="数据源与属性设置"></a>数据源与属性设置</h2><p>![image-20230427081317113](/Users/mac/Library/Application Support/typora-user-images/image-20230427081317113.png)</p>
+<p>创建面板的操作是比较简单的，如果想要了解更多的编辑细节可以直接看官方文档即可。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>总体来说，Grafana是一个非常有用的工具，它可以帮助用户更好地理解和管理数据。以下是它的优点和缺点：</p>
+<p>优点：</p>
+<ol>
+<li>支持多种数据源</li>
+<li>提供了丰富的图表和仪表盘模板</li>
+<li>易于使用和定制</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>学习曲线较陡峭</li>
+<li>需要一定的技术知识才能进行高级配置</li>
+</ol>
+<p>总的来说，如果您需要一个强大而灵活的数据可视化工具，那么Grafana是一个非常不错的选择。</p>
+<p>更多Grafana相关内容可以微信订阅 <strong>《中间件源码》</strong></p>
+
+			<br>
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2024 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

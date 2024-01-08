@@ -6,7 +6,7 @@
   <link href="https://blog.elastic.link/atom.xml" rel="self"/>
   
   <link href="https://blog.elastic.link/"/>
-  <updated>2022-10-24T02:45:25.135Z</updated>
+  <updated>2023-04-27T00:19:25.361Z</updated>
   <id>https://blog.elastic.link/</id>
   
   <author>
@@ -18,17 +18,17 @@
   
   <entry>
     <title></title>
-    <link href="https://blog.elastic.link/2022/10/24/grpc/awesomegrpc/"/>
-    <id>https://blog.elastic.link/2022/10/24/grpc/awesomegrpc/</id>
-    <published>2022-10-24T02:42:53.436Z</published>
-    <updated>2022-10-24T02:45:25.135Z</updated>
+    <link href="https://blog.elastic.link/2023/04/25/ke-guan-ce-xing/shu-ju-dong-cha-de-mi-mi-wu-qi-ru-he-yong-grafana-zhi-zuo-guan-ce-da-pan/"/>
+    <id>https://blog.elastic.link/2023/04/25/ke-guan-ce-xing/shu-ju-dong-cha-de-mi-mi-wu-qi-ru-he-yong-grafana-zhi-zuo-guan-ce-da-pan/</id>
+    <published>2023-04-24T23:59:26.378Z</published>
+    <updated>2023-04-27T00:19:25.361Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;Documentation&lt;br&gt;Website - Official documentation, libraries, resources, samples and FAQ&lt;br&gt;Technical documentation - Collection of</summary>
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -39,33 +39,415 @@
   
   <entry>
     <title></title>
-    <link href="https://blog.elastic.link/2022/10/24/dubbo/awesome-dubbo-grpc/"/>
-    <id>https://blog.elastic.link/2022/10/24/dubbo/awesome-dubbo-grpc/</id>
-    <published>2022-10-24T02:39:09.444Z</published>
-    <updated>2022-10-26T00:26:44.880Z</updated>
+    <link href="https://blog.elastic.link/2023/04/18/linux/ebpf/2-ebpf-helloworld-yuan-ma-jie-xi/"/>
+    <id>https://blog.elastic.link/2023/04/18/linux/ebpf/2-ebpf-helloworld-yuan-ma-jie-xi/</id>
+    <published>2023-04-18T00:14:57.733Z</published>
+    <updated>2023-04-23T05:01:38.055Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;文档Documentation&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;分类&lt;/th&gt;
-&lt;th&gt;GRPC&lt;/th&gt;
-&lt;th&gt;Dubbo&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;&lt;tr&gt;
-&lt;td&gt;官方网站Website&lt;/td&gt;
-&lt;td&gt;&lt;a</summary>
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot;</summary>
         
       
     
     
     
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/04/11/linux/ebpf/1-ebpf/"/>
+    <id>https://blog.elastic.link/2023/04/11/linux/ebpf/1-ebpf/</id>
+    <published>2023-04-11T00:01:57.997Z</published>
+    <updated>2023-04-13T00:30:04.823Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;eBPF为什么很重要以及它的发展史&quot;&gt;&lt;a href=&quot;#eBPF为什么很重要以及它的发展史&quot; class=&quot;headerlink&quot; title=&quot;eBPF为什么很重要以及它的发展史&quot;&gt;&lt;/a&gt;eBPF为什么很重要以及它的发展史&lt;/h1&gt;&lt;h2</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/03/23/flink/flink/"/>
+    <id>https://blog.elastic.link/2023/03/23/flink/flink/</id>
+    <published>2023-03-22T23:56:30.182Z</published>
+    <updated>2023-04-04T14:27:40.108Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;海量数据实时分析引擎Apache-Flink&quot;&gt;&lt;a href=&quot;#海量数据实时分析引擎Apache-Flink&quot; class=&quot;headerlink&quot; title=&quot;海量数据实时分析引擎Apache Flink&quot;&gt;&lt;/a&gt;海量数据实时分析引擎Apache</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/02/14/clickhouse/da-shu-ju-shi-shi-zai-xian-fen-xi-wei-he-xuan-ze-clickhouse/"/>
+    <id>https://blog.elastic.link/2023/02/14/clickhouse/da-shu-ju-shi-shi-zai-xian-fen-xi-wei-he-xuan-ze-clickhouse/</id>
+    <published>2023-02-14T00:29:14.360Z</published>
+    <updated>2023-02-28T23:01:58.352Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/02/07/jdk/guo-wu-guan-zhan-liu-jiang-kai-fa-shu-yu-zi-ji-de-jdk-ban-ben/"/>
+    <id>https://blog.elastic.link/2023/02/07/jdk/guo-wu-guan-zhan-liu-jiang-kai-fa-shu-yu-zi-ji-de-jdk-ban-ben/</id>
+    <published>2023-02-07T00:12:43.175Z</published>
+    <updated>2023-02-08T00:15:07.607Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt;Java技术更新迭代频繁，目前最新版本已经更新到了JDK19，Oracle Java JDK 19</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/02/07/innovativedesign/zhuan-dong-de-lun-zi-zhi-netty5/"/>
+    <id>https://blog.elastic.link/2023/02/07/innovativedesign/zhuan-dong-de-lun-zi-zhi-netty5/</id>
+    <published>2023-02-06T23:57:00.962Z</published>
+    <updated>2023-02-07T00:00:39.713Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/02/04/dubbo3/dubbo3-de-zhi-biao-xi-tong-jia-gou-she-ji/"/>
+    <id>https://blog.elastic.link/2023/02/04/dubbo3/dubbo3-de-zhi-biao-xi-tong-jia-gou-she-ji/</id>
+    <published>2023-02-04T10:33:01.030Z</published>
+    <updated>2023-02-04T10:33:14.989Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/02/03/innovativedesign/cong-yi-ge-demo-shuo-qi-zookeeper-fu-wu-duan-yuan-ma/"/>
+    <id>https://blog.elastic.link/2023/02/03/innovativedesign/cong-yi-ge-demo-shuo-qi-zookeeper-fu-wu-duan-yuan-ma/</id>
+    <published>2023-02-03T00:01:47.773Z</published>
+    <updated>2023-02-09T04:53:21.656Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;从一个-Demo-说起-Zookeeper-服务端源码&quot;&gt;&lt;a href=&quot;#从一个-Demo-说起-Zookeeper-服务端源码&quot; class=&quot;headerlink&quot; title=&quot;从一个 Demo 说起 Zookeeper 服务端源码&quot;&gt;&lt;/a&gt;从一个</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/01/16/ke-guan-ce-xing/pu-luo-mi-xiu-si-jian-jie/"/>
+    <id>https://blog.elastic.link/2023/01/16/ke-guan-ce-xing/pu-luo-mi-xiu-si-jian-jie/</id>
+    <published>2023-01-16T05:05:15.059Z</published>
+    <updated>2023-01-16T05:05:15.059Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;h2 id=&quot;为什么需要普罗米修斯？&quot;&gt;&lt;a href=&quot;#为什么需要普罗米修斯？&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/01/15/cong-zhi-biao-dao-dong-cha-li-de-pu-luo-mi-xiu-si/"/>
+    <id>https://blog.elastic.link/2023/01/15/cong-zhi-biao-dao-dong-cha-li-de-pu-luo-mi-xiu-si/</id>
+    <published>2023-01-15T09:11:05.145Z</published>
+    <updated>2023-01-15T09:11:05.146Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;div class=&quot;typora-export-content&quot;&gt;
+&lt;div id=&quot;write&quot; class=&quot;&quot;&gt;&lt;h1 id=&quot;简介&quot;&gt;&lt;span&gt;简介&lt;/span&gt;&lt;/h1&gt;&lt;h2</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/01/14/ke-guan-ce-xing/cong-zhi-biao-dao-dong-cha-li-de-pu-luo-mi-xiu-si/"/>
+    <id>https://blog.elastic.link/2023/01/14/ke-guan-ce-xing/cong-zhi-biao-dao-dong-cha-li-de-pu-luo-mi-xiu-si/</id>
+    <published>2023-01-14T09:44:43.724Z</published>
+    <updated>2023-01-15T10:45:54.833Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;h2 id=&quot;为什么需要普罗米修斯？&quot;&gt;&lt;a href=&quot;#为什么需要普罗米修斯？&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/01/06/dubbo3/1-cong-yi-ge-demo-shuo-qi-dubbo3/"/>
+    <id>https://blog.elastic.link/2023/01/06/dubbo3/1-cong-yi-ge-demo-shuo-qi-dubbo3/</id>
+    <published>2023-01-06T00:03:58.555Z</published>
+    <updated>2023-01-09T05:05:47.667Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2023/01/06/dubbo3/1-dubbo3-ru-men-shi-li/"/>
+    <id>https://blog.elastic.link/2023/01/06/dubbo3/1-dubbo3-ru-men-shi-li/</id>
+    <published>2023-01-06T00:02:15.368Z</published>
+    <updated>2023-01-06T00:02:43.790Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;strong&gt;Apache Dubbo 是一款微服务框架，为大规模微服务实践提供高性能 RPC 通信、流量治理、可观测性等解决方案，&lt;/strong&gt;&lt;br&gt;&lt;strong&gt;涵盖 Java、Golang 等多种语言 SDK</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/12/13/ke-guan-ce-xing/ke-guan-ce-xing-zhi-log4j2/"/>
+    <id>https://blog.elastic.link/2022/12/13/ke-guan-ce-xing/ke-guan-ce-xing-zhi-log4j2/</id>
+    <published>2022-12-13T00:08:26.492Z</published>
+    <updated>2023-01-06T05:27:26.774Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;可观测性之Log4j2优雅日志打印&lt;/p&gt;
+&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/12/12/ke-guan-ce-xing/ke-guan-ce-xing-zhi-micrometer-tracing/"/>
+    <id>https://blog.elastic.link/2022/12/12/ke-guan-ce-xing/ke-guan-ce-xing-zhi-micrometer-tracing/</id>
+    <published>2022-12-12T04:44:28.247Z</published>
+    <updated>2022-12-12T04:47:55.492Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/12/06/ke-guan-ce-xing/ke-guan-ce-xing-zhi-lian-lu-zhui-zong-men-mian-micrometer/"/>
+    <id>https://blog.elastic.link/2022/12/06/ke-guan-ce-xing/ke-guan-ce-xing-zhi-lian-lu-zhui-zong-men-mian-micrometer/</id>
+    <published>2022-12-06T00:03:55.491Z</published>
+    <updated>2022-12-12T04:36:46.205Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/11/30/ke-guan-ce-xing/ke-guan-ce-xing-shen-qi-zhi-micrometer/"/>
+    <id>https://blog.elastic.link/2022/11/30/ke-guan-ce-xing/ke-guan-ce-xing-shen-qi-zhi-micrometer/</id>
+    <published>2022-11-30T00:03:38.518Z</published>
+    <updated>2022-12-05T04:45:37.605Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/11/24/springboot/spring6/"/>
+    <id>https://blog.elastic.link/2022/11/24/springboot/spring6/</id>
+    <published>2022-11-23T23:52:13.588Z</published>
+    <updated>2022-11-28T04:33:17.235Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt;Spring Framework6和Spring</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://blog.elastic.link/2022/11/18/emqx/yi-ji-wan-wu-hu-lian-xin-shi-dai-de-wu-lian-wang-zhong-jian-jian-emqx-diao-yan/"/>
+    <id>https://blog.elastic.link/2022/11/18/emqx/yi-ji-wan-wu-hu-lian-xin-shi-dai-de-wu-lian-wang-zhong-jian-jian-emqx-diao-yan/</id>
+    <published>2022-11-17T23:54:57.422Z</published>
+    <updated>2023-01-09T05:22:34.799Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;亿级万物互联新时代的物联网中间件EMQX调研&quot;&gt;&lt;a href=&quot;#亿级万物互联新时代的物联网中间件EMQX调研&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>重磅更新-针对Dubbo3的一份调研</title>
+    <link href="https://blog.elastic.link/2022/11/11/dubbo/chong-bang-geng-xin-zhen-dui-dubbo3-kuang-jia-de-yi-fen-diao-yan/"/>
+    <id>https://blog.elastic.link/2022/11/11/dubbo/chong-bang-geng-xin-zhen-dui-dubbo3-kuang-jia-de-yi-fen-diao-yan/</id>
+    <published>2022-11-11T12:25:01.000Z</published>
+    <updated>2022-11-14T04:48:28.661Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt; </summary>
+        
+      
+    
+    
+    
+    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
+    
+    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
+    
+    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
     
   </entry>
   
@@ -74,7 +456,7 @@
     <link href="https://blog.elastic.link/2022/10/21/jdk/jdk17/"/>
     <id>https://blog.elastic.link/2022/10/21/jdk/jdk17/</id>
     <published>2022-10-21T06:24:37.405Z</published>
-    <updated>2022-10-21T06:25:40.283Z</updated>
+    <updated>2022-11-24T00:06:43.774Z</updated>
     
     
       
@@ -250,10 +632,10 @@
   
   <entry>
     <title>【Apache Kafka 3.2源码解析系列】-消费者执行轮询消息poll方法</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/</id>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-zhi-xing-lun-xun-xiao-xi-poll-fang-fa/</id>
     <published>2022-09-07T12:25:08.000Z</published>
-    <updated>2022-10-26T00:27:57.950Z</updated>
+    <updated>2022-11-08T00:35:53.218Z</updated>
     
     
       
@@ -261,13 +643,15 @@
         
         
     <summary type="html">&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;更新元数据&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;消费者协调器执行poll逻辑&lt;/li&gt;
+&lt;li&gt;消费者协调器查询最少连接节点&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;开始&lt;/p&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;p&gt;调用KafkaConsumer的poll方法&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;获取轻量级锁然后检测消费者开启状态&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;消费者监控指标KafkaConsumerMetrics记录poll</summary>
+&lt;li&gt;&lt;p&gt;调用KafkaConsumer的poll方法&lt;/p&gt;</summary>
         
       
     
@@ -283,11 +667,49 @@
   </entry>
   
   <entry>
-    <title>【Apache Kafka 3.2源码解析系列】- 11 消费者尝试更新分配元数据updateAssignmentMetadataIfNeeded</title>
-    <link href="https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/"/>
-    <id>https://blog.elastic.link/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/</id>
+    <title>Awesome-Dubbo And Grpc</title>
+    <link href="https://blog.elastic.link/2022/09/07/dubbo/awesome-dubbo-grpc/"/>
+    <id>https://blog.elastic.link/2022/09/07/dubbo/awesome-dubbo-grpc/</id>
     <published>2022-09-07T12:25:07.000Z</published>
-    <updated>2022-10-26T06:11:05.167Z</updated>
+    <updated>2022-11-08T00:13:54.763Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;文档Documentation&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;分类&lt;/th&gt;
+&lt;th&gt;GRPC&lt;/th&gt;
+&lt;th&gt;Dubbo&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;官方网站Website&lt;/td&gt;
+&lt;td&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="Dubbo" scheme="https://blog.elastic.link/categories/Dubbo/"/>
+    
+    
+    <category term="dubbo" scheme="https://blog.elastic.link/tags/dubbo/"/>
+    
+    <category term="grpc" scheme="https://blog.elastic.link/tags/grpc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Apache Kafka 3.2源码解析系列】- 11 消费者尝试更新分配元数据updateAssignmentMetadataIfNeeded</title>
+    <link href="https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/"/>
+    <id>https://blog.elastic.link/2022/09/07/kafka/12-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/</id>
+    <published>2022-09-07T12:25:07.000Z</published>
+    <updated>2022-11-08T00:29:27.272Z</updated>
     
     
       
@@ -315,7 +737,7 @@
     <link href="https://blog.elastic.link/2022/09/07/kafka/10-xiao-fei-zhe-ding-yue-topic/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/10-xiao-fei-zhe-ding-yue-topic/</id>
     <published>2022-09-07T12:25:06.000Z</published>
-    <updated>2022-10-26T06:10:59.959Z</updated>
+    <updated>2022-11-08T00:27:55.741Z</updated>
     
     
       
@@ -323,12 +745,15 @@
         
         
     <summary type="html">&lt;ul&gt;
-&lt;li&gt;开始&lt;/li&gt;
-&lt;li&gt;调用订阅方法KafkaConsumer的subscribe&lt;/li&gt;
-&lt;li&gt;消费者获取轻量级锁然后检测消费者状态是否正常&lt;/li&gt;
-&lt;li&gt;groupId为空则抛出异常&lt;/li&gt;
-&lt;li&gt;topic为空则执行取消订阅逻辑&lt;/li&gt;
-&lt;l</summary>
+&lt;li&gt;校验&lt;ul&gt;
+&lt;li&gt;topic合法性校验&lt;/li&gt;
+&lt;li&gt;分区器校验&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;订阅&lt;ul&gt;
+&lt;li&gt;默认订阅模式设置为AUTO_TOPICS&lt;/li&gt;
+&lt;li&gt;更新订阅状态订阅信息&lt;/li&gt;
+&lt;li&gt;请求执行网络IO来更新元</summary>
         
       
     
@@ -348,21 +773,15 @@
     <link href="https://blog.elastic.link/2022/09/07/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/9-xiao-fei-zhe-kafkaconsumer-dui-xiang-de-chu-shi-hua/</id>
     <published>2022-09-07T12:25:05.000Z</published>
-    <updated>2022-10-26T06:10:55.537Z</updated>
+    <updated>2022-10-27T00:36:57.897Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;- &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;开始&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;初始化配置信息&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Properties配置转Map&amp;lt;String, Object&amp;gt;&lt;/li&gt;
-&lt;li&gt;Map&amp;lt;String,</summary>
+    <summary type="html">&lt;p&gt;这个主要是介绍下常见的类型有了这些类型做铺垫后面看消费者消费消息的代码会相对容易一些，这里并没有特别复杂的逻辑前面例子代码主要通过如下代码进行调用：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-java&quot;</summary>
         
       
     
@@ -599,7 +1018,7 @@
     <link href="https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/1-2-sheng-chan-zhe-kafkaproducer-dui-xiang-de-chu-shi-hua/</id>
     <published>2022-09-07T12:25:02.000Z</published>
-    <updated>2022-10-26T06:10:22.969Z</updated>
+    <updated>2022-11-14T15:00:59.864Z</updated>
     
     
       
@@ -704,18 +1123,45 @@
   </entry>
   
   <entry>
+    <title>1-过五关斩六将开发属于自己的jdk版本</title>
+    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
+    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
+    <published>2022-09-07T12:25:00.000Z</published>
+    <updated>2022-09-03T02:10:53.586Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
+    
+    
+    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
+    
+    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【Apache Kafka 3.2源码解析系列】-1-Kaka知识点全解析</title>
     <link href="https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/"/>
     <id>https://blog.elastic.link/2022/09/07/kafka/0-1-kaka-zhi-shi-dian-quan-jie-xi/</id>
     <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-05T23:12:34.791Z</updated>
+    <updated>2023-02-02T05:28:30.686Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;1-Kaka知识全解析&quot;&gt;&lt;a href=&quot;#1-Kaka知识全解析&quot; class=&quot;headerlink&quot; title=&quot;1-Kaka知识全解析&quot;&gt;&lt;/a&gt;1-Kaka知识全解析&lt;/h1&gt;&lt;h2 id=&quot;1-1-简介&quot;&gt;&lt;a href=&quot;#1-1-简介&quot;</summary>
+    <summary type="html">&lt;h1 id=&quot;Kaka入门级教程&quot;&gt;&lt;a href=&quot;#Kaka入门级教程&quot; class=&quot;headerlink&quot; title=&quot;Kaka入门级教程&quot;&gt;&lt;/a&gt;Kaka入门级教程&lt;/h1&gt;&lt;h3 id=&quot;Apache-Kafka是什么&quot;&gt;&lt;a</summary>
         
       
     
@@ -848,585 +1294,6 @@
     <category term="Kafka" scheme="https://blog.elastic.link/tags/Kafka/"/>
     
     <category term="Kafka源码" scheme="https://blog.elastic.link/tags/Kafka%E6%BA%90%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>1-过五关斩六将开发属于自己的jdk版本</title>
-    <link href="https://blog.elastic.link/2022/09/07/jdk/jdk11-1/"/>
-    <id>https://blog.elastic.link/2022/09/07/jdk/jdk11-1/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-09-03T02:10:53.586Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-过五关斩六将开发属于自己的jdk版本&quot;&gt;&lt;a href=&quot;#1-过五关斩六将开发属于自己的jdk版本&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="JDK源码" scheme="https://blog.elastic.link/categories/JDK%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="JDK11源码" scheme="https://blog.elastic.link/tags/JDK11%E6%BA%90%E7%A0%81/"/>
-    
-    <category term="Java" scheme="https://blog.elastic.link/tags/Java/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>1-Rebar3 从一个例子入门</title>
-    <link href="https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/"/>
-    <id>https://blog.elastic.link/2022/09/07/rebar3/1-rebar3-cong-yi-ge-li-zi-ru-men/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-19T14:43:13.982Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-Rebar3-从一个例子入门&quot;&gt;&lt;a href=&quot;#1-Rebar3-从一个例子入门&quot; class=&quot;headerlink&quot; title=&quot;1-Rebar3 从一个例子入门&quot;&gt;&lt;/a&gt;1-Rebar3 从一个例子入门&lt;/h1&gt;&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>2-Rebar3 基本配置</title>
-    <link href="https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/"/>
-    <id>https://blog.elastic.link/2022/09/07/rebar3/2-rebar3-xiang-guan-de-huan-jing-bian-liang-pei-zhi/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-21T14:05:37.247Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;基本配置&quot;&gt;&lt;a href=&quot;#基本配置&quot; class=&quot;headerlink&quot; title=&quot;基本配置&quot;&gt;&lt;/a&gt;基本配置&lt;/h1&gt;&lt;p&gt;下面列举一些常见的配置项，如果对所有配置项感兴趣可以去看官网&lt;/p&gt;
-&lt;h2 id=&quot;环境配置&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>3-Rebar3 命令</title>
-    <link href="https://blog.elastic.link/2022/09/07/rebar3/3-rebar3-ming-ling-xing/"/>
-    <id>https://blog.elastic.link/2022/09/07/rebar3/3-rebar3-ming-ling-xing/</id>
-    <published>2022-09-07T12:25:00.000Z</published>
-    <updated>2022-07-23T06:18:36.470Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;命令&quot;&gt;&lt;a href=&quot;#命令&quot; class=&quot;headerlink&quot; title=&quot;命令&quot;&gt;&lt;/a&gt;命令&lt;/h1&gt;&lt;p&gt;每个 Rebar3 命令的用法。&lt;/p&gt;
-&lt;p&gt;每个命令代表一个任务，它运行一个或多个提供者来完成任务。&lt;/p&gt;
-&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/categories/Rebar3/"/>
-    
-    
-    <category term="Erlang" scheme="https://blog.elastic.link/tags/Erlang/"/>
-    
-    <category term="Rebar3" scheme="https://blog.elastic.link/tags/Rebar3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【人工智能】- 深度学习笔记</title>
-    <link href="https://blog.elastic.link/2022/08/25/ai/04-shen-du-xue-xi/"/>
-    <id>https://blog.elastic.link/2022/08/25/ai/04-shen-du-xue-xi/</id>
-    <published>2022-08-25T04:53:54.745Z</published>
-    <updated>2022-09-26T14:52:54.057Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;深度学习概述要点&quot;&gt;&lt;a href=&quot;#深度学习概述要点&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="人工智能" scheme="https://blog.elastic.link/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
-    
-    
-    <category term="人工智能" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
-    
-    <category term="深度学习笔记" scheme="https://blog.elastic.link/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【人工智能】- 人工神经网络笔记</title>
-    <link href="https://blog.elastic.link/2022/08/16/ai/03-ren-gong-shen-jing-wang-luo/"/>
-    <id>https://blog.elastic.link/2022/08/16/ai/03-ren-gong-shen-jing-wang-luo/</id>
-    <published>2022-08-16T04:34:41.431Z</published>
-    <updated>2022-09-26T14:53:08.450Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;神经网络的生理学背景&quot;&gt;&lt;a href=&quot;#神经网络的生理学背景&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="人工智能" scheme="https://blog.elastic.link/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
-    
-    
-    <category term="人工神经网络笔记" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0/"/>
-    
-    <category term="人工智能" scheme="https://blog.elastic.link/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/11/erlang/7-xing-neng-fen-xi-diao-shi-yu-gen-zong/"/>
-    <id>https://blog.elastic.link/2022/08/11/erlang/7-xing-neng-fen-xi-diao-shi-yu-gen-zong/</id>
-    <published>2022-08-11T14:22:49.375Z</published>
-    <updated>2022-08-24T23:38:25.165Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;Erlang调试器&quot;&gt;&lt;a href=&quot;#Erlang调试器&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/08/11/k8s/k8s-quan-wei-zhi-nan-bi-ji/1.k8s-jian-jie/"/>
-    <id>https://blog.elastic.link/2022/08/11/k8s/k8s-quan-wei-zhi-nan-bi-ji/1.k8s-jian-jie/</id>
-    <published>2022-08-11T01:42:40.981Z</published>
-    <updated>2022-08-11T01:44:05.405Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;k8s是将一切以服务为中心的指导思想，自动化，一个服务可自我扩展，可自我诊断，容易升级&lt;/p&gt;
-</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://blog.elastic.link/2022/07/21/k8s/3-k8s-pei-zhi-wen-jian-yaml-jie-xi/"/>
-    <id>https://blog.elastic.link/2022/07/21/k8s/3-k8s-pei-zhi-wen-jian-yaml-jie-xi/</id>
-    <published>2022-07-21T14:14:46.371Z</published>
-    <updated>2022-07-23T06:02:34.878Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;pre class=&quot;line-numbers language-YAML&quot; data-language=&quot;YAML&quot;&gt;&lt;code class=&quot;language-YAML&quot;&gt;apiVersion: apps/v1
-kind: Deployment&lt;span</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>23-【Dubbo3.0.8源码解析系列】消费者进行接口级服务发现订阅的逻辑</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/23-dubbo3-jie-kou-ji-fu-wu-fa-xian-luo-ji/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/23-dubbo3-jie-kou-ji-fu-wu-fa-xian-luo-ji/</id>
-    <published>2022-07-10T12:25:23.000Z</published>
-    <updated>2022-08-20T09:59:42.136Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;23-消费者进行接口级服务发现订阅的逻辑&quot;&gt;&lt;a href=&quot;#23-消费者进行接口级服务发现订阅的逻辑&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>23-【Dubbo3.0.8源码解析系列】Dubbo应用级服务发现</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/24-dubbo3-ying-yong-ji-fu-wu-fa-xian-luo-ji/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/24-dubbo3-ying-yong-ji-fu-wu-fa-xian-luo-ji/</id>
-    <published>2022-07-10T12:25:23.000Z</published>
-    <updated>2022-09-27T14:02:59.119Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;24-Dubbo应用级服务发现&quot;&gt;&lt;a href=&quot;#24-Dubbo应用级服务发现&quot; class=&quot;headerlink&quot; title=&quot;24 Dubbo应用级服务发现&quot;&gt;&lt;/a&gt;24 Dubbo应用级服务发现&lt;/h1&gt;&lt;h2 id=&quot;24-1-简介&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>25-【Dubbo3.0.8源码解析系列】为调用器对象增加容错和过滤器功能</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/25-wei-diao-yong-qi-dui-xiang-zeng-jia-rong-cuo-he-guo-lu-qi-deng-gong-neng/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/25-wei-diao-yong-qi-dui-xiang-zeng-jia-rong-cuo-he-guo-lu-qi-deng-gong-neng/</id>
-    <published>2022-07-10T12:25:23.000Z</published>
-    <updated>2022-09-27T14:03:36.636Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;将思路拉回到RegistryProtocol的创建Invoker对象的doCreateInvoker代码&lt;/p&gt;
-&lt;pre class=&quot;line-numbers language-java&quot; data-language=&quot;java&quot;&gt;&lt;code</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>26-【Dubbo3.0.8源码解析系列】RPC调用过程</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/26-rpc-diao-yong-guo-cheng/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/26-rpc-diao-yong-guo-cheng/</id>
-    <published>2022-07-10T12:25:23.000Z</published>
-    <updated>2022-09-27T14:04:06.570Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;26-RPC调用过程&quot;&gt;&lt;a href=&quot;#26-RPC调用过程&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>22-【Dubbo3.0.8源码解析系列】Dubbo3消费者自动感应决策应用级服务发现原理</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/22-dubbo3-xiao-fei-zhe-zi-dong-gan-ying-jue-ce-ying-yong-ji-fu-wu-fa-xian-yuan-li/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/22-dubbo3-xiao-fei-zhe-zi-dong-gan-ying-jue-ce-ying-yong-ji-fu-wu-fa-xian-yuan-li/</id>
-    <published>2022-07-10T12:25:22.000Z</published>
-    <updated>2022-07-24T09:45:43.529Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;22-Dubbo3消费者自动感应决策应用级服务发现原理&quot;&gt;&lt;a href=&quot;#22-Dubbo3消费者自动感应决策应用级服务发现原理&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>21-【Dubbo3.0.8源码解析系列】Dubbo3消费者引用服务入口</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/21-dubbo-xiao-fei-zhe-yin-yong-fu-wu-de-ru-kou/</id>
-    <published>2022-07-10T12:25:21.000Z</published>
-    <updated>2022-07-23T06:21:28.102Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;21-Dubbo3消费者引用服务入口&quot;&gt;&lt;a href=&quot;#21-Dubbo3消费者引用服务入口&quot; class=&quot;headerlink&quot; title=&quot;21-Dubbo3消费者引用服务入口&quot;&gt;&lt;/a&gt;21-Dubbo3消费者引用服务入口&lt;/h1&gt;&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>20-【Dubbo3.0.8源码解析系列】Dubbo3服务引用配置ReferenceConfig</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/20-dubbo3-fu-wu-yin-yong-pei-zhi-referenceconfig/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/20-dubbo3-fu-wu-yin-yong-pei-zhi-referenceconfig/</id>
-    <published>2022-07-10T12:25:20.000Z</published>
-    <updated>2022-07-23T06:21:24.579Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;20-Dubbo3服务引用配置ReferenceConfig&quot;&gt;&lt;a href=&quot;#20-Dubbo3服务引用配置ReferenceConfig&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>19-【Dubbo3.0.8源码解析系列】重新来过从一个服务消费者的Demo说起</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/19-chong-xin-lai-guo-cong-yi-ge-fu-wu-xiao-fei-zhe-de-demo-shuo-qi/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/19-chong-xin-lai-guo-cong-yi-ge-fu-wu-xiao-fei-zhe-de-demo-shuo-qi/</id>
-    <published>2022-07-10T12:25:19.000Z</published>
-    <updated>2022-07-23T06:21:21.175Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;19-重新来过从一个服务消费者的Demo说起&quot;&gt;&lt;a href=&quot;#19-重新来过从一个服务消费者的Demo说起&quot; class=&quot;headerlink&quot; title=&quot;19 重新来过从一个服务消费者的Demo说起&quot;&gt;&lt;/a&gt;19</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>18-【Dubbo3.0.8源码解析系列】Dubbo3元数据服务MetadataService的导出</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/18-dubbo3-yuan-shu-ju-fu-wu-metadataservice-de-dao-chu/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/18-dubbo3-yuan-shu-ju-fu-wu-metadataservice-de-dao-chu/</id>
-    <published>2022-07-10T12:25:18.000Z</published>
-    <updated>2022-07-23T06:21:16.555Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;18-Dubbo3元数据服务MetadataService的导出&quot;&gt;&lt;a href=&quot;#18-Dubbo3元数据服务MetadataService的导出&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>17-【Dubbo3.0.8源码解析系列】Dubbo服务提供者的双注册原理</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/17-dubbo3-ying-yong-ji-zhu-ce-zhi-fu-wu-ti-gong-zhe-de-shuang-zhu-ce-yuan-li/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/17-dubbo3-ying-yong-ji-zhu-ce-zhi-fu-wu-ti-gong-zhe-de-shuang-zhu-ce-yuan-li/</id>
-    <published>2022-07-10T12:25:17.000Z</published>
-    <updated>2022-07-23T06:21:13.514Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;17-Dubbo服务提供者的双注册原理&quot;&gt;&lt;a href=&quot;#17-Dubbo服务提供者的双注册原理&quot; class=&quot;headerlink&quot; title=&quot;17-Dubbo服务提供者的双注册原理&quot;&gt;&lt;/a&gt;17-Dubbo服务提供者的双注册原理&lt;/h1&gt;&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>16-【Dubbo3.0.8源码解析系列】模块发布器发布服务全过程</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/16-mo-kuai-fa-bu-qi-fa-bu-fu-wu-quan-guo-cheng/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/16-mo-kuai-fa-bu-qi-fa-bu-fu-wu-quan-guo-cheng/</id>
-    <published>2022-07-10T12:25:16.000Z</published>
-    <updated>2022-07-23T06:28:19.531Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;16-模块发布器发布服务全过程&quot;&gt;&lt;a href=&quot;#16-模块发布器发布服务全过程&quot; class=&quot;headerlink&quot; title=&quot;16-模块发布器发布服务全过程&quot;&gt;&lt;/a&gt;16-模块发布器发布服务全过程&lt;/h1&gt;&lt;h2 id=&quot;16-1-简介&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>15-【Dubbo3.0.8源码解析系列】Dubbo的三大中心之元数据中心源码解析</title>
-    <link href="https://blog.elastic.link/2022/07/10/dubbo/15-dubbo-de-san-da-zhong-xin-zhi-yuan-shu-ju-zhong-xin-yuan-ma-jie-xi/"/>
-    <id>https://blog.elastic.link/2022/07/10/dubbo/15-dubbo-de-san-da-zhong-xin-zhi-yuan-shu-ju-zhong-xin-yuan-ma-jie-xi/</id>
-    <published>2022-07-10T12:25:15.000Z</published>
-    <updated>2022-07-23T06:21:05.461Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;15-Dubbo的三大中心之元数据中心源码解析&quot;&gt;&lt;a href=&quot;#15-Dubbo的三大中心之元数据中心源码解析&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Dubbo3源码" scheme="https://blog.elastic.link/categories/Dubbo3%E6%BA%90%E7%A0%81/"/>
-    
-    
-    <category term="Dubbo" scheme="https://blog.elastic.link/tags/Dubbo/"/>
-    
-    <category term="Dubbo3" scheme="https://blog.elastic.link/tags/Dubbo3/"/>
-    
-    <category term="Dubbo3源码解析" scheme="https://blog.elastic.link/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
     
   </entry>
   

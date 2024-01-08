@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1704711912958">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1704711912958"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1></h1>
+			<div class="info"><span class="date">2022年11月18日</span>•songxiaosheng 
+			
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/emqx/亿级万物互联新时代的物联网中间件EMQX调研.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="亿级万物互联新时代的物联网中间件EMQX调研"><a href="#亿级万物互联新时代的物联网中间件EMQX调研" class="headerlink" title="亿级万物互联新时代的物联网中间件EMQX调研"></a>亿级万物互联新时代的物联网中间件EMQX调研</h1><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>最近去某餐厅吃饭，进门时智能门自动打开房门同时来一句”欢迎光临”，然后伸手到门口的洗手台，水管无接触自动出水，端起菜盘走向台子选择自己喜欢的菜品，最后将菜盘放在智能结账机上，智能结账机通过图形识别算法识别到选了什么菜，然后计算出应该付多少钱，最后小编摘下口罩刷一刷人脸钱就付过去了，整个过程无需其他人的参与，也无需带任何物品包含手机。可能你也已经感受到了，我们身边越来越多的硬件设备正在被嵌入芯片、注入软件，从而实现各种各样的新应用、新功能，比如智能门锁，智能音箱等，前几年炒的火热的智能家居，物联网万物互联等概念，现在正在潜移默化的影响着所有人，了解一些物联网知识对我们了解这个新时代有所帮助。</p>
+<p>根据 IoT Analytics 最新发布的《2022年春季物联网状况》研究报告显示，到 2022 年，物联网市场预计将增长 18%，达到 144 亿活跃连接。全球物联网应用和设备正面临爆发式增长，将真正迎来亿级万物互联的新时代。亿万级的物联网设备连接该需要多少服务器支撑呢？接下来看一款受全球广大物联网开发者开发使用的物联网消息中间件EMQX。</p>
+<h1 id="EMQX"><a href="#EMQX" class="headerlink" title="EMQX"></a>EMQX</h1><h2 id="EMQX简介"><a href="#EMQX简介" class="headerlink" title="EMQX简介"></a>EMQX简介</h2><p>EMQX是什么？根据官网的介绍EMQX是一款「随处运行，无限连接，任意集成」的云原生分布式物联网接入平台。</p>
+<p>EMQX 提供一体化的分布式MQTT消息服务和强大的 IoT 规则引擎，为高可靠、高性能的物联网实时数据移动、处理和集成提供动力，助力企业快速构建关键业务的 IoT 平台与应用。</p>
+<p>EMQ 创始人兼 CEO 李枫表示：「EMQX 5.0 是 MQTT 领域的一个里程碑式的成果。它不仅是全球首个单集群支持 1 亿连接的分布式 MQTT 消息服务器，也是首个将 QUIC 引入 MQTT 的开创性产品。</p>
+<h2 id="物联网通信"><a href="#物联网通信" class="headerlink" title="物联网通信"></a>物联网通信</h2><p>详细分析EMQX之前先来了解一些物联网通信的知识，首先来看物联网通信的特点：物联网设备很大可能工作在不可靠、高延迟的网络环境中。</p>
+<p>比如共享单车，使用 NB-IoT 这样的通信技术，本身的通信速率就只有不到几十 Kbps；要是被人停在城市的角落里，信号可能很不稳定。</p>
+<p>假设使用 HTTP  协议，就需要单车先发出连接请求，然后等待服务器的响应（下发开锁指令）。这样一来，受网络通信质量的影响，很可能连接经常中断，而需要单车与服务器交互多次，那用户可能就要等很长时间。</p>
+<p>对于这种场景来说，不只是 HTTP，其他跟 HTTP 一样单向的、同步的网络协议，都不是理想的技术方案。<br>  物联网系统中，设备数量多，而且交互非常复杂, 比如环境监测，温度、湿度、光照、二氧化碳、甲醛含量……这些都需要不同的设备测量，而且每个房间用到的设备也不同。</p>
+<p>硬件设备在不同的环境网络可能不太稳定，这个时候就需要借助中间层代理Broker 帮助缓冲连接与暂时无法分发到 Client 的消息。所以物联网系统在选择网络通信的协议时，一般使用发布订阅模式来进行缓冲与解耦合，发布 - 订阅模式包含三个角色，分别是：</p>
+<ul>
+<li><p>发布者（Publisher）、</p>
+</li>
+<li><p>经纪人（Broker）</p>
+</li>
+<li><p>订阅者（Subscriber），</p>
+</li>
+</ul>
+<p>它们的关系如下图所示。</p>
+<p><img src="https://a.perfma.net/img/4960497"></p>
+<h2 id="MQTT协议"><a href="#MQTT协议" class="headerlink" title="MQTT协议"></a>MQTT协议</h2><p>说到物联网的发布订阅模式就要说一下为这种物联网设备而生的MQTT协议，MQTT（MQ Telemetry Transport）协议，是 IBM 公司在 1999 年开发的轻量级网络协议，它有三个主要特点：</p>
+<ul>
+<li>采用二进制的消息内容编码格式，所以二进制数据、JSON 和图片等负载内容都可以方便传输。<br>  协议头很紧凑，</li>
+<li>协议交互也简单，保证了网络传输流量很小。</li>
+<li>支持 3 种 QoS（Quality of Service，服务质量）级别，便于应用根据不同的场景需求灵活选择。<ul>
+<li>这里主要说明下什么是 QoS。它是指通信双方关于消息传送可靠程度的协商:<ul>
+<li>QoS 0:消息只发送一次，消息可能丢失；</li>
+<li>QoS 1 :发送方会接收反馈，保证消息的送达，但是可能消息会重复。</li>
+<li>QoS 2 :通过发送方和接收方的多次交互，保证消息有且只有一次。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>MQTT轻量级的发布/订阅传输机制，非常适合为远程连接设备提供可靠的消息通信服务。目前MQTT协议被广泛应用于自动驾驶、工业、通信等领域。</p>
+<h2 id="EMQX架构"><a href="#EMQX架构" class="headerlink" title="EMQX架构"></a>EMQX架构</h2><p>了解了物联网设备通信的一些知识，再回过来头看EMQX就会相对容易一些，EMQX一共有两个主要的产品一个是开源版，一个是企业版，开源版基于 Apache License 2.0 开放源码协议,可以免费使用，下面主要基于开源版本来说，接下来先看一下EMQX的整体架构是如何来实现物联网消息中间件的</p>
+<p><img src="https://a.perfma.net/img/4960500" alt="img"></p>
+<p>​          可以看到EMQX整体的架构就是前面我们说的生产者消费者模型的一个实现，外加MQTT协议支持，让EMQX成为了目前阶段非常标准的物联网消息中间件，仅仅是这些功能的实现还远远不够达到优秀的消息中间件，接下来就从功能的设计与实现来看下如何用EMQX实现物联网通信。</p>
+<p>​          为了实现这一目标消息的转发和发布，EMQX 维护着与之相关的几个数据表：</p>
+<ul>
+<li><p>订阅表</p>
+</li>
+<li><p>路由表</p>
+</li>
+<li><p>主题树</p>
+</li>
+</ul>
+<p>了解这几个数据表之前先来了看几个关键词</p>
+<ul>
+<li><p><strong>node:</strong> 部署的emqx服务</p>
+</li>
+<li><p>**topic:**主题一般用于数据类型的标识，比如客户端要上报温度，可以将数据上报给温度topic，服务器端订阅温度topic用来接收数据</p>
+</li>
+<li><p><strong>clientid:</strong> 客户端id在物联网设备中一般一个设备会有一个唯一设备id用来标识客户端</p>
+</li>
+</ul>
+<h3 id="消息分发流程"><a href="#消息分发流程" class="headerlink" title="消息分发流程"></a>消息分发流程</h3><p>在EMQX一个消息发布者客户端发布消息到EMQX代理，然后转发消息到消费者客户端的整个流程如下：</p>
+<ul>
+<li>发送消息的客户端找到连接的服务端: 一个 MQTT 客户端发布消息到所连接的服务端节点。</li>
+<li>找到消费者连接的服务端:服务端节点接收到消息后会检索路由表。 并根据消息主题将消息转发到相关节点。 </li>
+<li>发送给消费者: 相关节点检索本地订阅表，并将消息发送至相关的订阅者。</li>
+</ul>
+<p>如果实现有状态的长连接消息的转发可以看下EMQX实现的几个数据结构订阅表、路由表、主题树。</p>
+<h3 id="订阅表：主题-订阅者"><a href="#订阅表：主题-订阅者" class="headerlink" title="订阅表：主题-订阅者"></a>订阅表：主题-订阅者</h3><p>当一个 MQTT 客户端订阅一个主题时，EMQX 会维护一个订阅表。 为主题-&gt;订阅者的映射。该订阅表记录只存在于订阅者所在的 EMQX 节点上，在EMQX中一个主题可以同时被多个客户端订阅，可以用于使用主题查找客户端，比如说:</p>
+<pre class="line-numbers language-none"><code class="language-none">节点node1:
+		主题topic1 -&gt; 客户端client1, 客户端client2
+		主题topic2 -&gt; 客户端client3
+节点node2:
+		主题 topic1 -&gt; 客户端client4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="路由表：Topic-Node"><a href="#路由表：Topic-Node" class="headerlink" title="路由表：Topic-Node"></a>路由表：Topic-Node</h3><p>例如，同一集群中的所有节点将复制 一个主题到节点的映射表，可以用于使用主题匹配节点。</p>
+<pre class="line-numbers language-none"><code class="language-none">topic1 -&gt; node1, node2
+topic2 -&gt; node3
+topic3 -&gt; node2, node4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="主题树：主题匹配通配符"><a href="#主题树：主题匹配通配符" class="headerlink" title="主题树：主题匹配通配符"></a>主题树：主题匹配通配符</h3><p>除了路由表之外，EMQX 集群中的每个节点还维护一个 主题树，可以用于通过客户端设备id查找主题<br>下面是一个主题-订阅关系的例子:</p>
+<pre class="line-numbers language-none"><code class="language-none">Client Node Subscribed topic
+client1 node1 t/+/x, t/+/y
+client2 node2 t/#
+client3 node3 t/+/x, t/a<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>当所有的订阅完成后，EMQX 会维护以下主题树和路由表。</p>
+<p>可以看到EMQX通过空间换时间，然后使用特定的算法实现有状态的长连接客户端的转发和信息查询。      </p>
+<h1 id="安装与部署服务"><a href="#安装与部署服务" class="headerlink" title="安装与部署服务"></a>安装与部署服务</h1><h2 id="Erlang简介"><a href="#Erlang简介" class="headerlink" title="Erlang简介"></a>Erlang简介</h2><p>安装部署之前可以简单了解下EMQX实现的编程语言Erlang，这个适用于消息与即时通讯领域的小众语言应该很多人都没听说过，下面可以看下这个语言的特性:</p>
+<p>Erlang 诞生于上世纪 80 年代，最初由瑞典的爱立信公司专门为通信应用设计。爱立信工程师 Joe Armstrong 在设计这门语言时充分考虑了电信领域的通讯需求：同时有百万用户并行通讯，对故障事件几乎是零容忍。这也使得 Erlang 在并行通讯能力上远胜其它语言。</p>
+<p>Erlang 凭借着强大的并行处理能力、容错机制和扩展性而闻名，支持高性能和大规模可扩展的分布式系统。</p>
+<p>Erlang使用OTP框架封装实现了完善的Actor模型，天然分布式，程序运行在Erlang VM内存管理虚拟机上。如果不对EMQX进行二次开发可以简单了解下Erlang即可，如果要二次开发或者深入优化可以研究下这个并行通讯的编程语言。</p>
+<h2 id="安装部署"><a href="#安装部署" class="headerlink" title="安装部署"></a>安装部署</h2><p>继续看安装部署，官方提供了几种部署方案有如下安装方式:</p>
+<ul>
+<li><p>docker compose</p>
+</li>
+<li><p>RPM/DEB包安装 (Linux)</p>
+</li>
+<li><p>tgz 压缩包安装</p>
+</li>
+<li><p>通过 Helm 安装并集群 (K8S、K3S)</p>
+</li>
+<li><p>源码编译安装</p>
+</li>
+</ul>
+<p>这里主要看下tgz压缩包安装的方式:</p>
+<ol>
+<li><p>访问 emqx.io (opens new window)或 Github (opens new window)下载要安装的 EMQX 的 tar.gz 包。<br>  解压程序包<br>  <code>tar -zxf emqx-full-package-name.tar.gz</code>  </p>
+</li>
+<li><p>启动 EMQX Broker</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">cd</span> ./emqx
+./bin/emqx start
+./bin/emqx_ctl status<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>停止 EMQX Broker<br>  <code>./bin/emqx stop</code>  </p>
+</li>
+<li><p>卸载 EMQX Broker<br>直接删除 EMQX 目录即可</p>
+</li>
+</ol>
+<p>可以看到安装EMQX和启动不需要了解底层编程语言，只需要一个命令即可。</p>
+<h1 id="MQTTX客户端"><a href="#MQTTX客户端" class="headerlink" title="MQTTX客户端"></a>MQTTX客户端</h1><p>服务端启动完成了就可以使用MQTT协议与服务端通信了，如果没有客户端需要测试MQTT协议的时候可以使用EMQ公司开源的MQTTX工具，MQTT X 是一个强大的跨平台 MQTT 5.0 桌面和 CLI 客户端，使学习、探索和开发 MQTT 变得快速而简单。</p>
+<p><img src="https://a.perfma.net/img/4960520"></p>
+<p>这里可以看一下MQTTX的界面还是比较友好的，如果做测试足够用</p>
+<p>EMQX还有丰富的功能，如果感兴趣可以在官方文档中查阅即可。如果对EMQX物联网消息中间件感兴趣可以关注微信公众号<strong>《中间件源码》</strong> 一起交流。</p>
+
+			<br>
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2024 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>重磅更新-针对Dubbo3的一份调研 - 中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1704711912959">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1704711912959"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1>重磅更新-针对Dubbo3的一份调研</h1>
+			<div class="info"><span class="date">2022年11月11日</span>•songxiaosheng 
+			
+					《<a class="nexmoefont icon-appstore-fill -link" href="/categories/Dubbo3%E6%BA%90%E7%A0%81/">Dubbo3源码</a>》
+				
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/dubbo/重磅更新-针对Dubbo3框架的一份调研.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>  《突发！Dubbo被爆多个版本存在高危漏洞！》这次又需要加班加点的升级改造，使用Dubbo的同学对这样的新闻一定会比较敏感，不过这一次不是来公布漏洞的，主要来探究下Dubbo重启维护之后，现在还活着吗？</p>
+<h1 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h1><p>Dubbo是阿里巴巴内部使用的一个分布式服务治理框架，2012年开源就受到了很多互联网公司的首选，但在2014年10月份，Dubbo停止了维护。这个时候Dubbo开源框架的包名还是com.alibaba.dubbo，在这段时间使用Dubbo来进行微服务治理的同学一定也有过很多的苦恼，有新的漏洞出现却无人修复，有新的想法提交”却无人升级，内部究竟要另外维护一个分支还是再等等官方的更新信息，或者是替换到其他微服务治理框架上，使用Dubbo的开发者一定有种看不到未来的迷茫感，以至于在后来Spring Cloud全家桶出现的时候很多团队耗时耗力的将微服务框架更换为SpringCloud。不过停更了多年的Dubbo，终于更新了。</p>
+<ul>
+<li><p>2017年的9月份，阿里宣布重启Dubbo的开发维护，悄悄在 GitHub 发布了 2.5.4 版本。随后，又迅速发布了 2.5.5、2.5.6、2.5.7 等版本。</p>
+</li>
+<li><p>2018年2月9日，Apache基金会发起了是否允许阿里巴巴的服务治理框架Dubbo项目进入Apache 孵化器的投票讨论。6天后的2月15日，邮件中显示Dubbo获得了14张赞成票正式通过选票，在0弃权和0反对的情况下，Dubbo顺利进入了Apache基金会孵化项目。</p>
+</li>
+<li><p>2019年1月，发布了2.7.0，支持 Java 1.8，包名更改为org.apache，支持 Restful 服务；</p>
+</li>
+<li><p>2019年5月21日，Dubbo 从 Apache 正式毕业。</p>
+</li>
+</ul>
+<h2 id="社区"><a href="#社区" class="headerlink" title="社区"></a>社区</h2><p>进入世界上最大的开源基金会 Apache后有了哪些改变呢？</p>
+<p>原本由一家企业集中式管理的开源项目转变为了采用一种分散的领导的模式，“社区胜于代码”的口号可以喊起了，也就是说，Dubbo 将不再是阿里巴巴的 Dubbo，而是社区的。</p>
+<p>再来看点数据：</p>
+<ul>
+<li><p>从 star 数来看，Dubbo 生态 star 总数超过 4.5w，是 Apache 关注度非常高的项目。</p>
+</li>
+<li><p>生态贡献者总数超过 600+，增长超 30%。</p>
+</li>
+<li><p>主办/参与包括云原生编程挑战赛、编程之夏等多项顶级活动，开源周会组织超过 100 次，参与人数 10000+。</p>
+</li>
+<li><p>生态年度发布超 20 个版本。</p>
+</li>
+<li><p>累积官方登记用户达 200+。</p>
+</li>
+</ul>
+<p>越来越活跃的Dubbo社区究竟在做什么更新？</p>
+<h1 id="更新了什么"><a href="#更新了什么" class="headerlink" title="更新了什么"></a>更新了什么</h1><p>根据小编的深度调研分析，关于Dubbo的更新，我们将从如下几个角度来看下:</p>
+<ul>
+<li>服务发现</li>
+<li>服务调用 </li>
+<li>服务治理</li>
+<li>服务管控</li>
+<li>社区案例</li>
+</ul>
+<h2 id="服务发现模型"><a href="#服务发现模型" class="headerlink" title="服务发现模型"></a>服务发现模型</h2><p>首先来看服务发现模型，Dubbo3新增了应用级服务发现模型，这个在本来就以应用级服务发现模型架构的框架里并不是新鲜事。旧的Dubbo版本使用接口级服务发现模型的架构，Dubbo3新增应用级服务发现模型对老的接口级服务发现模型是一个非常大的优化更新，有哪些不一样呢？下面可以详细看下两种服务发现模型的差异，有利于对Dubbo做一个整体的了解。</p>
+<h3 id="接口级服务发现模型"><a href="#接口级服务发现模型" class="headerlink" title="接口级服务发现模型"></a>接口级服务发现模型</h3><p>首先来看接口级服务发现模型，在看细节之前先来通过一个图来看下:</p>
+<p><img src="/img/dubbo/image-20221111082448660.png" alt="image-20221111082448660"><br>    根据图中的编号顺序可以看到接口级服务发现主要经历这样一个过程:</p>
+<ol>
+<li>启动提供者进程。</li>
+<li>启动消费者进程，消费者进程进行服务订阅。</li>
+</ol>
+<ol start="3">
+<li><p>提供者注册接口级服务数据到注册中心。</p>
+</li>
+<li><p>注册中心实时推送接口级服务数据到消费者。</p>
+</li>
+<li><p>消费者根据发现的服务接口信息发起RPC调用。</p>
+</li>
+</ol>
+<p>整体来看接口级服务发现模型是比较标准的模型，并没有什么问题，下面将接口级的服务数据详细展示出来分一下是否存在问题，一个服务提供者注册数据如下：</p>
+<p><code>dubbo://127.0.0.1:20880/org.apache.dubbo.demo.GreetingServiceapplication=demo&amp;group=greeting&amp;version=1.0.0 &amp;methods=hello&amp;timeout=5000&amp;serialization=json&amp;label1=value1</code></p>
+<p>上面这个服务配置拆分一下主要包含如下部分：</p>
+<ul>
+<li><p><strong>RPC应用信息:</strong></p>
+<ul>
+<li>dubbo://127.0.0.1:20880 实例可访问地址</li>
+</ul>
+</li>
+<li><p><strong>PRC服务元数据:</strong></p>
+<ul>
+<li>/org.apache.dubbo.demo.GreetingServiceapplication=demo&amp;group=greeting&amp;version=1.0.0 &amp;methods=hello</li>
+</ul>
+</li>
+<li><p><strong>RPC服务配置:</strong></p>
+<ul>
+<li>&amp;timeout=5000&amp;serialization=json</li>
+</ul>
+</li>
+<li><p><strong>RPC其他自定义配置:</strong></p>
+<ul>
+<li>&amp;label1=value1</li>
+</ul>
+</li>
+</ul>
+<p>可以看到单个应用下单个服务的元数据和配置独立存在，结合前面接口级服务发现模型可以了解到:<br>一个提供者服务节点下单个服务接口的上线，需要如下几次数据处理:</p>
+<ul>
+<li><p>提供者向注册中心推送一次数据。</p>
+</li>
+<li><p>注册中心存储一个服务接口的数据。</p>
+</li>
+<li><p>注册中心再向所有消费者推送一次。</p>
+</li>
+</ul>
+<p>M个提供者应用下有N个服务接口的情况，就需要:</p>
+<ul>
+<li><p>M个提供者共向注册中心推送M<em>N次。</em></p>
+</li>
+<li><p><em>注册中心存储M</em>N个服务接口的数据。</p>
+</li>
+<li><p>注册中心再将M<em>N个服务接口推送给所有的消费者。</em></p>
+</li>
+</ul>
+<p>可以看到服务注册，服务存储和消费者服务发现都面临着三个纬度的数据放大:</p>
+<ul>
+<li><p>提供者应用信息数被放大N个服务接口倍</p>
+</li>
+<li><p>服务接口的元数据信息被放大M个应用节点倍</p>
+</li>
+<li><p>O个服务消费者接收到的服务推送次数被放大N个服务接口倍</p>
+</li>
+</ul>
+<p>可以看到接口级服务发现做了太多重复性的工作，冗余了太多数据，全部服务上线推送的时间复杂度达到了O(M<em>N</em>O)。</p>
+<p>理想中的模型应该是单次请求通过<strong>传输更少的数据</strong>和<strong>发起更少的网络请求</strong>来增加吞吐量。看到这里不知道会不会有人吐槽 遇到过服务过多导致的注册中心压力增大，消费者收到通知延迟等问题，接下来可以继续看下Dubbo新的应用级服务发现模型是如何做优化的。</p>
+<h3 id="应用级服务发现模型"><a href="#应用级服务发现模型" class="headerlink" title="应用级服务发现模型"></a>应用级服务发现模型</h3><p>在详细看原理之前我们同样先用一个图来说明下</p>
+<p><img src="/img/dubbo/image-20221112163426325.png" alt="image-20221112163426325">                 应用级服务发现是这样的一个过程:</p>
+<ol>
+<li>提供者向注册中心注册元数据。</li>
+<li>元数据中心存储RPC元数据。</li>
+<li>提供者向注册中心注册应用信息。</li>
+<li>注册中心存储应用信息。</li>
+<li>注册中心推送应用上线信息给消费者。</li>
+<li><strong>消费者发起一次RPC请求到上线的提供者获取RPC元数据。</strong></li>
+<li>消费者根据负载均衡策略进行RPC调用。</li>
+</ol>
+<p>可以看到应用级服务注册发现只从图中看与接口级的服务注册与发现并没有太大的不同之处，唯一的区别是消费者与提供者之间多了一个获取元数据的RPC请求，应用级服务发现是否解决了接口级服务发现的问题呢，接下来详细看下服务注册与元数据请求信息</p>
+<ul>
+<li><p>RPC应用信息 -应用级服务发现</p>
+</li>
+<li><p>PRC服务元数据 -元数据请求</p>
+</li>
+<li><p>RPC服务配置 - 元数据请求</p>
+</li>
+<li><p>RPC其他自定义配置 - 元数据请求</p>
+</li>
+</ul>
+<p>可以看到提供者启动之后只需要将一个应用信息通知给消费者即可，无需推送服务元数据，将服务元数据下沉到一个聚合的元数据RPC请求之中，无论一个服务提供者有多少个服务接口提供,单个提供者上线的总推送数量只与待推送的服务消费者数量有关，全部服务提供者上线推送给所有消费者的推送时间复杂度O(M<em>N</em>O)可以缩减到O(M*O)，缩减了一个接口数量级，可以看到应用级服务发现模型做了比较大的变更，应用级服务发现新特性这么好用，对于老用户兼容性如何呢？</p>
+<h3 id="升级兼容"><a href="#升级兼容" class="headerlink" title="升级兼容"></a>升级兼容</h3><p>对于Dubbo3的新用户来说直接使用Dubbo3的服务提供者和服务消费者一开始就是应用级服务发现，无需担心升级兼容问题，对于低版本接口级服务发现模型的用户是否可以直接升级Dubbo3应用级发现模型，是否有不兼容的情况呢？通过分析和测试发现如果一开始使用低版本的Dubbo来进行二次开发直接升级Dubbo3即可，默认情况下Dubbo3的应用级服务发现模型完全兼容接口级服务发现模型，如果框架中进行过二次开发自行进行了功能扩展，就要多测一测了，不同的版本问题可能不太一样，具体细节测过就知道了。</p>
+<p>关于升级这一点可以参考官方文档和官方提供的一些实际案例(饿了么升级融合方案)，Dubbo3服务提供者默认使用接口级服务注册和应用级服务注册双注册来兼容消费者，Dubbo3服务消费者默认的策略为应用级优先的服务发现模型，整个过程完全是通过提供者数据来进行自动决策(提供者是接口级消费者就用接口级提供者是应用级消费者就用应用级)，使用者无需关注太多细节，只要使用默认策略就可以实现兼容，等所有消费者都升级到Dubbo3之后就可以将提供者切换到只进行应用级注册了。</p>
+<h2 id="Triple-协议"><a href="#Triple-协议" class="headerlink" title="Triple 协议"></a>Triple 协议</h2><p>Triple 协议是基于 HTTP/2 之上定义的下一代 RPC 通信协议，相比于上一代 Dubbo2 协议，它具有更好的穿透性、通用性、以及面向网关代理场景的高性能表现， 提供了 Reactive Stream 数据交换模型。Triple 实现了对 gRPC 的完全兼容。</p>
+<p>对于老用户来说大部分使用的是Dubbo协议，性能上其实两者差距并不是太大，Dubbo协议通用性比较差，Triple协议通用性相对较好，功能也更丰富，另外升级Triple并不复杂，不过也有一定的工作量，升级思路和接口级服务模型往应用级服务模型升级思路大致一样，先让服务提供者升级，同时提供双协议，然后消费者可以灵活选择，最后消费者进行升级采用tri协议即可，具体升级方案可以参考官网或者前往官方社区咨询。</p>
+<h2 id="Mesh-解决方案"><a href="#Mesh-解决方案" class="headerlink" title="Mesh 解决方案"></a>Mesh 解决方案</h2><p> 再来看Dubbo3一直宣称的Mesh 解决方案</p>
+<p>SeviceMesh是云原生下的微服务治理方案。做的好，让业务开发对底层服务治理与运维关注更少，对业务关注更多，实现企业效率的上升，做的不好，问题排查困难，性能下降等。一般对于服务数量足够多的场景可以考虑探索一下。</p>
+<p>Dubbo Mesh 从设计理念上更强调控制面的统一管控、标准化与治理能力，而在数据面给出了更多的选择，包括 Sidecar Mesh 与 Proxyless Mesh 等部署模式。</p>
+<h3 id="Dubbo-Sidecar-Mesh"><a href="#Dubbo-Sidecar-Mesh" class="headerlink" title="Dubbo Sidecar Mesh"></a>Dubbo Sidecar Mesh</h3><p>先来看看第一种部署方案Dubbo Sidecar Mesh<br>                    <img src="/img/dubbo/image-20221112165319907.png" alt="image-20221112165319907"></p>
+<p>经典的 Sidecar Mesh 部署架构有很多优势，如平滑升级、多语言、业务侵入小等，但也带来了一些额外的问题，比如:</p>
+<ul>
+<li><p>Proxy 带来的性能损耗，在复杂拓扑的网络调用中将变得尤其明显。</p>
+</li>
+<li><p>流量拦截带来的架构复杂性。</p>
+</li>
+<li><p>Sidecar 生命周期管理。</p>
+</li>
+<li><p>部署环境受限，并不是所有环境都满足 Sidecar 流量拦截条件。</p>
+</li>
+</ul>
+<h3 id="Dubbo-Proxyless-Mesh"><a href="#Dubbo-Proxyless-Mesh" class="headerlink" title="Dubbo Proxyless Mesh"></a>Dubbo Proxyless Mesh</h3><p>再来看第二种部署方案Dubbo Proxyless Mesh<br><img src="/img/dubbo/image-20221112165420986.png" alt="image-20221112165420986"></p>
+<p>在 Dubbo Proxyless 架构模式下，Dubbo 进程将直接与控制面通信，Dubbo 进程之间也继续保持直连通信模式，我们可以看出 Proxyless 架构的优势：</p>
+<ul>
+<li>没有额外的 Proxy 中转损耗，因此更适用于性能敏感应用。</li>
+<li>更有利于遗留系统的平滑迁移。</li>
+<li>架构简单，容易运维部署。</li>
+<li>适用于几乎所有的部署环境。</li>
+</ul>
+<p>随着 Dubbo 3.1 的 release，Dubbo 在云原生的路上又迈出了重要的一步。在今年年底，Dubbo Mesh 将发布具有服务发现能力的版本， 届时将面向所有 Dubbo 用户提供从低版本平滑迁移到 Mesh 架构的能力；在明年年初春季的时候将发布带有治理能力的版本；在明年年底前发布带热插件更新能力的版本”，如果公司有足够的人力可以继续跟进这个功能，如果人力不足建议用好现有的服务模型就可以，等这个Mesh功能足够成熟的时候再接入进来。</p>
+<h2 id="控制台"><a href="#控制台" class="headerlink" title="控制台"></a>控制台</h2><p> 然后来看新的Dubbo控制台，Dubbo3的控制台进行了重新的开发，新的管理控制台先不说功能怎么样可以先看下页面上的改进：<br>   <img src="/img/dubbo/image-20221112171401219.png" alt="image-20221112171401219"><br>可以看到新的页面更加美观了，好的页面是个好的开端另外新的控制台增加了在线测试功能，这个对于测试服务来说比较友好。整体来看功能并不算完善，看来官方要想兼容新老版本Dubbo的同时开发微服务治理管控平台也还有很长的路要走。</p>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>最后了解下Dubbo3的案例,这里就直接参考下官方提供的案例了</p>
+<h3 id="阿里巴巴电商核心系统"><a href="#阿里巴巴电商核心系统" class="headerlink" title="阿里巴巴电商核心系统"></a>阿里巴巴电商核心系统</h3><p>阿里巴巴电商核心系统已成功升级到 Dubbo3 版本，用于取代上一代 HSF2 服务框架，2022 年起双 11 核心链路都将跑在 Dubbo3 之上。</p>
+<h3 id="平安健康"><a href="#平安健康" class="headerlink" title="平安健康"></a>平安健康</h3><p>平安健康已完成全站 2.x 版本到 Dubbo3 的迁移，升级过程中与社区开发者进行了深度合作，中间也总结了一些升级经验，非常具有参考价值。</p>
+<h3 id="工商银行"><a href="#工商银行" class="headerlink" title="工商银行"></a>工商银行</h3><p>工商银行 Dubbo3 应用级服务发现实践对Dubbo3做了压测分析，</p>
+<p>使用了应用级服务发现的消费端进程采样的内存对比数据。其中横轴是不同的 Dubbo 版本，纵轴是实际采样到的内存表现，可以看到 Dubbo 2.6、2.7 版本表现几乎一致，而升级到 3.0 版本后，即使不升级应用级服务发现，内存也降低接近 40%，而当切换到应用级服务发现之后，内存占用下降到只有原来的 30%。</p>
+<p>通过模拟注册中心不停的往消费端进程推送地址列表的场景得到的。可以看到 Dubbo 2.6、2.7 版本表现几乎一致，而在 3.0 版本中切换到应用级服务发现之后，GC 已经趋近于零次。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>可以看到Dubbo3已经实现了从理论到实践的跨越，当然对于Dubbo3的更新远不止上面所说的内容，还有大家所关注的json扩展（可以移除fastjson），RPC调用监控埋点等功能都已经在最新的版本中发布了，另外如果在使用中有任何问题可以及时向官方社区反馈或者在Github上提交ISSUE，如果是比较重要或者紧急的问题都会快速修复，小编在升级时候Dubbo3时候就遇到了很多的问题，通过与社区沟通，提交ISSUE后，基本两周时间，在1到2个版本官方就会修复完成，活跃的社区也是我们选择的一个方面。</p>
+<p>感兴趣的小伙伴可以留言一起交流~。        </p>
+
+			<br>
+			
+			
+			<a class="tag-unordered list-link" href="/tags/Dubbo/" rel="tag">Dubbo<span class="tag-unordered list-count">27</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3/" rel="tag">Dubbo3<span class="tag-unordered list-count">27</span></a>, <a class="tag-unordered list-link" href="/tags/Dubbo3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="tag">Dubbo3源码解析<span class="tag-unordered list-count">27</span></a>
+
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+        
+    
+
+    
+         <!-- 先找到与当前文字相同的目录 -->
+            
+            
+                 
+                 <!-- 在找到当前文章所在的 index -->
+                    
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                          <!-- 上一篇文章 --> 
+                            <div class="old">
+                                <span>上一章</span>
+                                <a href="/2022/07/10/dubbo/23-dubbo3-jie-kou-ji-fu-wu-fa-xian-luo-ji/"> 23-【Dubbo3.0.8源码解析系列】消费者进行接口级服务发现订阅的逻辑</a>
+                            </div>
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                         
+
+                        
+
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2024 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

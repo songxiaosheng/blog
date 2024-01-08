@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1666764683769">
+<link rel="stylesheet" href="/css/style.css?v=1704711912990">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1666764683769"></script>
+<script src="/js/core.js?v=1704711912990"></script>
 
 
 
@@ -75,48 +75,18 @@
 	</div>
 	<div class="container">
 		<article class="post">
-			<p>- </p>
+			<p>这个主要是介绍下常见的类型有了这些类型做铺垫后面看消费者消费消息的代码会相对容易一些，这里并没有特别复杂的逻辑前面例子代码主要通过如下代码进行调用：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">KafkaConsumer</span> consumer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KafkaConsumer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>构造器的大致逻辑如下：</p>
 <ul>
 <li><p>开始</p>
 </li>
-<li><p>初始化配置信息</p>
+<li><p><strong>基础配置</strong>初始化</p>
 <ul>
-<li>Properties配置转Map&lt;String, Object&gt;</li>
-<li>Map&lt;String, Object&gt;配置转ConsumerConfig</li>
-<li>初始化重负载均衡配置GroupRebalanceConfig对象</li>
-<li>enable.auto.commit自动提交配置初始化</li>
-<li>ConsumerInterceptor消费拦截器对象初始化</li>
-<li>Metrics相关监控指标对象创建</li>
-<li>keySerializer对象创建序列化KEY使用</li>
-<li>valueSerializer对象创建序列化VALUE使用</li>
-<li>偏移量重置策略OffsetResetStrategy类型对象创建</li>
-<li>订阅状态跟踪器SubscriptionState类型对象创建</li>
-<li>ClusterResourceListeners集群资源监听器</li>
-<li>ConsumerMetadata</li>
-</ul>
-</li>
-<li><p>消费者元数据对象初始化（后续IO发起的时候会拉取全量元数据）</p>
-</li>
-<li><p>根据配置初始化通道构建器ChannelBuilder</p>
-</li>
-<li><p>NetworkClient对象创建</p>
-</li>
-<li><p>再封装ConsumerNetworkClient网络客户端</p>
-</li>
-<li><p>初始化消费者分区管理器ConsumerPartitionAssignor</p>
-</li>
-<li><p>初始化消费者协调器ConsumerCoordinator</p>
-</li>
-<li><p>初始化消费者数据获取器Fetcher</p>
-</li>
-<li><p>结束</p>
-</li>
-<li></li>
-<li><p>开始</p>
-</li>
-<li><p>Properties配置转Map&lt;String, Object&gt;</p>
-</li>
-<li><p>Map&lt;String, Object&gt;配置转ConsumerConfig</p>
+<li><p>配置转ConsumerConfig</p>
 </li>
 <li><p>初始化重负载均衡配置GroupRebalanceConfig对象</p>
 </li>
@@ -136,30 +106,231 @@
 </li>
 <li><p>ClusterResourceListeners集群资源监听器</p>
 </li>
-<li><p>ConsumerMetadata</p>
+<li><p>ConsumerMetadata消费者元数据对象初始化（后续IO发起的时候会拉取全量元数据）</p>
 </li>
-<li><p>消费者元数据对象初始化（后续IO发起的时候会拉取全量元数据）</p>
+</ul>
 </li>
-<li><p>根据配置初始化通道构建器ChannelBuilder</p>
+<li><p><strong>网络相关配置</strong>初始化</p>
+<ul>
+<li>根据配置初始化通道构建器ChannelBuilder</li>
+<li>NetworkClient对象创建</li>
+<li>再封装ConsumerNetworkClient网络客户端</li>
+</ul>
 </li>
-<li><p>NetworkClient对象创建</p>
-</li>
-<li><p>再封装ConsumerNetworkClient网络客户端</p>
-</li>
-<li><p>初始化消费者分区管理器ConsumerPartitionAssignor</p>
-</li>
-<li><p>初始化消费者协调器ConsumerCoordinator</p>
-</li>
-<li><p>初始化消费者数据获取器Fetcher</p>
+<li><p><strong>消费者协调配置</strong>初始化</p>
+<ul>
+<li>初始化消费者分区管理器ConsumerPartitionAssignor</li>
+<li>初始化消费者协调器ConsumerCoordinator</li>
+<li>初始化消费者数据获取器Fetcher</li>
+</ul>
 </li>
 <li><p>结束</p>
 </li>
 </ul>
+<p>KafkaConsumer的构造器</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">KafkaConsumer</span><span class="token punctuation">(</span><span class="token class-name">Properties</span> properties<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">(</span>properties<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">KafkaConsumer</span><span class="token punctuation">(</span><span class="token class-name">Properties</span> properties<span class="token punctuation">,</span>
+                     <span class="token class-name">Deserializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">K</span><span class="token punctuation">&gt;</span></span> keyDeserializer<span class="token punctuation">,</span>
+                     <span class="token class-name">Deserializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">V</span><span class="token punctuation">&gt;</span></span> valueDeserializer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ConsumerConfig</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span><span class="token function">addDeserializerToConfig</span><span class="token punctuation">(</span>properties<span class="token punctuation">,</span> keyDeserializer<span class="token punctuation">,</span> valueDeserializer<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+         keyDeserializer<span class="token punctuation">,</span> valueDeserializer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>下面这个构造器看着很长其实大部分都是在创建对象可以了解一些细节：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">KafkaConsumer</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span> config<span class="token punctuation">,</span> <span class="token class-name">Deserializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">K</span><span class="token punctuation">&gt;</span></span> keyDeserializer<span class="token punctuation">,</span> <span class="token class-name">Deserializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">V</span><span class="token punctuation">&gt;</span></span> valueDeserializer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token comment">//基础配置初始化</span>
+        <span class="token class-name">String</span> clientId <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>CLIENT_ID_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//如果没有配置消费者id 自动生成一个</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>clientId<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            clientId <span class="token operator">=</span> <span class="token string">"consumer-"</span> <span class="token operator">+</span> CONSUMER_CLIENT_ID_SEQUENCE<span class="token punctuation">.</span><span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>clientId <span class="token operator">=</span> clientId<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>groupId <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>GROUP_ID_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">LogContext</span> logContext<span class="token punctuation">;</span>
+        <span class="token comment">// If group.instance.id is set, we will append it to the log context.</span>
+        <span class="token class-name">String</span> groupInstanceId <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>GROUP_INSTANCE_ID_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>groupInstanceId <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">JoinGroupRequest</span><span class="token punctuation">.</span><span class="token function">validateGroupInstanceId</span><span class="token punctuation">(</span>groupInstanceId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>groupInstanceId <span class="token operator">=</span> <span class="token class-name">Optional</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span>groupInstanceId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            logContext <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LogContext</span><span class="token punctuation">(</span><span class="token string">"[Consumer instanceId="</span> <span class="token operator">+</span> groupInstanceId <span class="token operator">+</span> <span class="token string">", clientId="</span> <span class="token operator">+</span> clientId <span class="token operator">+</span> <span class="token string">", groupId="</span> <span class="token operator">+</span> groupId <span class="token operator">+</span> <span class="token string">"] "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>groupInstanceId <span class="token operator">=</span> <span class="token class-name">Optional</span><span class="token punctuation">.</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            logContext <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LogContext</span><span class="token punctuation">(</span><span class="token string">"[Consumer clientId="</span> <span class="token operator">+</span> clientId <span class="token operator">+</span> <span class="token string">", groupId="</span> <span class="token operator">+</span> groupId <span class="token operator">+</span> <span class="token string">"] "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>log <span class="token operator">=</span> logContext<span class="token punctuation">.</span><span class="token function">logger</span><span class="token punctuation">(</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//enable.auto.commit自动提交配置初始化</span>
+        <span class="token keyword">boolean</span> enableAutoCommit <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getBoolean</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>ENABLE_AUTO_COMMIT_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>groupId <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// overwrite in case of default group id where the config is not explicitly provided</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>config<span class="token punctuation">.</span><span class="token function">originals</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>ENABLE_AUTO_COMMIT_CONFIG<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                enableAutoCommit <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>enableAutoCommit<span class="token punctuation">)</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">InvalidConfigurationException</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>ENABLE_AUTO_COMMIT_CONFIG <span class="token operator">+</span> <span class="token string">" cannot be set to true when default group id (null) is used."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>groupId<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            log<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Support for using the empty group id by consumers is deprecated and will be removed in the next major release."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Initializing the Kafka consumer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>requestTimeoutMs <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>REQUEST_TIMEOUT_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>defaultApiTimeoutMs <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>DEFAULT_API_TIMEOUT_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>time <span class="token operator">=</span> <span class="token class-name">Time</span><span class="token punctuation">.</span>SYSTEM<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>metrics <span class="token operator">=</span> <span class="token function">buildMetrics</span><span class="token punctuation">(</span>config<span class="token punctuation">,</span> time<span class="token punctuation">,</span> clientId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>retryBackoffMs <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>RETRY_BACKOFF_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// load interceptors and make sure they get clientId</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> userProvidedConfigs <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">originals</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        userProvidedConfigs<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>CLIENT_ID_CONFIG<span class="token punctuation">,</span> clientId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ConsumerInterceptor</span><span class="token punctuation">&lt;</span><span class="token class-name">K</span><span class="token punctuation">,</span> <span class="token class-name">V</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> interceptorList <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">List</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ConsumerConfig</span><span class="token punctuation">(</span>userProvidedConfigs<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getConfiguredInstances</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>INTERCEPTOR_CLASSES_CONFIG<span class="token punctuation">,</span>
+                <span class="token class-name">ConsumerInterceptor</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      
+      <span class="token comment">//ConsumerInterceptor消费拦截器对象初始化</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>interceptors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConsumerInterceptors</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>interceptorList<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      
+       <span class="token comment">//key值序列化工具</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>keyDeserializer <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>keyDeserializer <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getConfiguredInstance</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>KEY_DESERIALIZER_CLASS_CONFIG<span class="token punctuation">,</span> <span class="token class-name">Deserializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>keyDeserializer<span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">originals</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            config<span class="token punctuation">.</span><span class="token function">ignore</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>KEY_DESERIALIZER_CLASS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>keyDeserializer <span class="token operator">=</span> keyDeserializer<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+      <span class="token comment">//value值序列化工具</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>valueDeserializer <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>valueDeserializer <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getConfiguredInstance</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>VALUE_DESERIALIZER_CLASS_CONFIG<span class="token punctuation">,</span> <span class="token class-name">Deserializer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>valueDeserializer<span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">originals</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            config<span class="token punctuation">.</span><span class="token function">ignore</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>VALUE_DESERIALIZER_CLASS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>valueDeserializer <span class="token operator">=</span> valueDeserializer<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+      
+      <span class="token comment">//偏移量重置策略  没有初始化偏移量的时候自动重置到开头还是末尾或者是抛出异常等策略</span>
+        <span class="token class-name">OffsetResetStrategy</span> offsetResetStrategy <span class="token operator">=</span> <span class="token class-name">OffsetResetStrategy</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>AUTO_OFFSET_RESET_CONFIG<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toUpperCase</span><span class="token punctuation">(</span><span class="token class-name">Locale</span><span class="token punctuation">.</span>ROOT<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>subscriptions <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SubscriptionState</span><span class="token punctuation">(</span>logContext<span class="token punctuation">,</span> offsetResetStrategy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ClusterResourceListeners</span> clusterResourceListeners <span class="token operator">=</span> <span class="token function">configureClusterResourceListeners</span><span class="token punctuation">(</span>keyDeserializer<span class="token punctuation">,</span>
+                valueDeserializer<span class="token punctuation">,</span> metrics<span class="token punctuation">.</span><span class="token function">reporters</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> interceptorList<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        
+      <span class="token comment">//元数据缓存相关的用来存储broker集群信息</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>metadata <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConsumerMetadata</span><span class="token punctuation">(</span>retryBackoffMs<span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>METADATA_MAX_AGE_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                <span class="token operator">!</span>config<span class="token punctuation">.</span><span class="token function">getBoolean</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>EXCLUDE_INTERNAL_TOPICS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getBoolean</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>ALLOW_AUTO_CREATE_TOPICS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                subscriptions<span class="token punctuation">,</span> logContext<span class="token punctuation">,</span> clusterResourceListeners<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">InetSocketAddress</span><span class="token punctuation">&gt;</span></span> addresses <span class="token operator">=</span> <span class="token class-name">ClientUtils</span><span class="token punctuation">.</span><span class="token function">parseAndValidateAddresses</span><span class="token punctuation">(</span>
+                config<span class="token punctuation">.</span><span class="token function">getList</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>BOOTSTRAP_SERVERS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span> config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>CLIENT_DNS_LOOKUP_CONFIG<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">.</span><span class="token function">bootstrap</span><span class="token punctuation">(</span>addresses<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> metricGrpPrefix <span class="token operator">=</span> <span class="token string">"consumer"</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">FetcherMetricsRegistry</span> metricsRegistry <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FetcherMetricsRegistry</span><span class="token punctuation">(</span><span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">singleton</span><span class="token punctuation">(</span>CLIENT_ID_METRIC_TAG<span class="token punctuation">)</span><span class="token punctuation">,</span> metricGrpPrefix<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//下面都是跟网络交互相关的  </span>
+      <span class="token class-name">ChannelBuilder</span> channelBuilder <span class="token operator">=</span> <span class="token class-name">ClientUtils</span><span class="token punctuation">.</span><span class="token function">createChannelBuilder</span><span class="token punctuation">(</span>config<span class="token punctuation">,</span> time<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">IsolationLevel</span> isolationLevel <span class="token operator">=</span> <span class="token class-name">IsolationLevel</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>
+                config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>ISOLATION_LEVEL_CONFIG<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toUpperCase</span><span class="token punctuation">(</span><span class="token class-name">Locale</span><span class="token punctuation">.</span>ROOT<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Sensor</span> throttleTimeSensor <span class="token operator">=</span> <span class="token class-name">Fetcher</span><span class="token punctuation">.</span><span class="token function">throttleTimeSensor</span><span class="token punctuation">(</span>metrics<span class="token punctuation">,</span> metricsRegistry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> heartbeatIntervalMs <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>HEARTBEAT_INTERVAL_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">ApiVersions</span> apiVersions <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ApiVersions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">NetworkClient</span> netClient <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">NetworkClient</span><span class="token punctuation">(</span>
+                <span class="token keyword">new</span> <span class="token class-name">Selector</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>CONNECTIONS_MAX_IDLE_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span> metrics<span class="token punctuation">,</span> time<span class="token punctuation">,</span> metricGrpPrefix<span class="token punctuation">,</span> channelBuilder<span class="token punctuation">,</span> logContext<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">,</span>
+                clientId<span class="token punctuation">,</span>
+                <span class="token number">100</span><span class="token punctuation">,</span> <span class="token comment">// a fixed large enough value will suffice for max in-flight requests</span>
+                config<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>RECONNECT_BACKOFF_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>RECONNECT_BACKOFF_MAX_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>SEND_BUFFER_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>RECEIVE_BUFFER_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>REQUEST_TIMEOUT_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                <span class="token class-name">ClientDnsLookup</span><span class="token punctuation">.</span><span class="token function">forConfig</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>CLIENT_DNS_LOOKUP_CONFIG<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                time<span class="token punctuation">,</span>
+                <span class="token boolean">true</span><span class="token punctuation">,</span>
+                apiVersions<span class="token punctuation">,</span>
+                throttleTimeSensor<span class="token punctuation">,</span>
+                logContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConsumerNetworkClient</span><span class="token punctuation">(</span>
+                logContext<span class="token punctuation">,</span>
+                netClient<span class="token punctuation">,</span>
+                metadata<span class="token punctuation">,</span>
+                time<span class="token punctuation">,</span>
+                retryBackoffMs<span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>REQUEST_TIMEOUT_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                heartbeatIntervalMs<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//Will avoid blocking an extended period of time to prevent heartbeat thread starvation</span>
+      
+      
+       <span class="token comment">//分区策略神器</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>assignors <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getConfiguredInstances</span><span class="token punctuation">(</span>
+                <span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>PARTITION_ASSIGNMENT_STRATEGY_CONFIG<span class="token punctuation">,</span>
+                <span class="token class-name">PartitionAssignor</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">int</span> maxPollIntervalMs <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>MAX_POLL_INTERVAL_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> sessionTimeoutMs <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>SESSION_TIMEOUT_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// no coordinator will be constructed for the default (null) group id</span>
+       <span class="token comment">//客户端协调器  </span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>coordinator <span class="token operator">=</span> groupId <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token keyword">null</span> <span class="token operator">:</span>
+            <span class="token keyword">new</span> <span class="token class-name">ConsumerCoordinator</span><span class="token punctuation">(</span>logContext<span class="token punctuation">,</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>client<span class="token punctuation">,</span>
+                    groupId<span class="token punctuation">,</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>groupInstanceId<span class="token punctuation">,</span>
+                    maxPollIntervalMs<span class="token punctuation">,</span>
+                    sessionTimeoutMs<span class="token punctuation">,</span>
+                    <span class="token keyword">new</span> <span class="token class-name">Heartbeat</span><span class="token punctuation">(</span>time<span class="token punctuation">,</span> sessionTimeoutMs<span class="token punctuation">,</span> heartbeatIntervalMs<span class="token punctuation">,</span> maxPollIntervalMs<span class="token punctuation">,</span> retryBackoffMs<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    assignors<span class="token punctuation">,</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">,</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>subscriptions<span class="token punctuation">,</span>
+                    metrics<span class="token punctuation">,</span>
+                    metricGrpPrefix<span class="token punctuation">,</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>time<span class="token punctuation">,</span>
+                    retryBackoffMs<span class="token punctuation">,</span>
+                    enableAutoCommit<span class="token punctuation">,</span>
+                    config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>AUTO_COMMIT_INTERVAL_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>interceptors<span class="token punctuation">,</span>
+                    config<span class="token punctuation">.</span><span class="token function">getBoolean</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>LEAVE_GROUP_ON_CLOSE_CONFIG<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token comment">//获取器用来拉取数据 </span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>fetcher <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Fetcher</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>
+                logContext<span class="token punctuation">,</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>client<span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>FETCH_MIN_BYTES_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>FETCH_MAX_BYTES_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>FETCH_MAX_WAIT_MS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>MAX_PARTITION_FETCH_BYTES_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>MAX_POLL_RECORDS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getBoolean</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>CHECK_CRCS_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">ConsumerConfig</span><span class="token punctuation">.</span>CLIENT_RACK_CONFIG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>keyDeserializer<span class="token punctuation">,</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>valueDeserializer<span class="token punctuation">,</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>metadata<span class="token punctuation">,</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>subscriptions<span class="token punctuation">,</span>
+                metrics<span class="token punctuation">,</span>
+                metricsRegistry<span class="token punctuation">,</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>time<span class="token punctuation">,</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>retryBackoffMs<span class="token punctuation">,</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>requestTimeoutMs<span class="token punctuation">,</span>
+                isolationLevel<span class="token punctuation">,</span>
+                apiVersions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//日志和监控 日志会打印出来未使用的配置提醒用户</span>
+        config<span class="token punctuation">.</span><span class="token function">logUnused</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">AppInfoParser</span><span class="token punctuation">.</span><span class="token function">registerAppInfo</span><span class="token punctuation">(</span>JMX_PREFIX<span class="token punctuation">,</span> clientId<span class="token punctuation">,</span> metrics<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Kafka consumer initialized"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// call close methods if internal objects are already constructed; this is to prevent resource leak. see KAFKA-2121</span>
+        <span class="token function">close</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// now propagate the exception</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">KafkaException</span><span class="token punctuation">(</span><span class="token string">"Failed to construct kafka consumer"</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>//todo 这里出现的配置都要解释下</p>
 
 			<br>
 			
 			
-			<a class="tag-unordered list-link" href="/tags/Kafka/" rel="tag">Kafka<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Kafka%E6%BA%90%E7%A0%81/" rel="tag">Kafka源码<span class="tag-unordered list-count">14</span></a>
+			<a class="tag-unordered list-link" href="/tags/Kafka/" rel="tag">Kafka<span class="tag-unordered list-count">15</span></a>, <a class="tag-unordered list-link" href="/tags/Kafka%E6%BA%90%E7%A0%81/" rel="tag">Kafka源码<span class="tag-unordered list-count">15</span></a>
 
 			
 		</article>
@@ -167,6 +338,14 @@
 	<div class="other">
 		<div class="container">
 			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
 
     
         
@@ -324,43 +503,45 @@
                         
 
                     
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
+                         
 
-    
-        
-    
+                        
 
-    
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
         
     
 
@@ -412,7 +593,7 @@
                 <div class="footer-links">
                     
                 </div>
-                <div calss="footer-copyright">&copy; 2022 中间件源码
+                <div calss="footer-copyright">&copy; 2024 中间件源码
                     Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
                     &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
                 </div>

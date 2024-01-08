@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=5"
 />
 <meta name="generator" content="Hexo 6.2.0">
-<link rel="stylesheet" href="/css/style.css?v=1666764683769">
+<link rel="stylesheet" href="/css/style.css?v=1704711912989">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link
     rel="stylesheet"
@@ -21,7 +21,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
 />
-<script src="/js/core.js?v=1666764683769"></script>
+<script src="/js/core.js?v=1704711912989"></script>
 
 
 
@@ -76,6 +76,75 @@
 	<div class="container">
 		<article class="post">
 			<ul>
+<li>校验<ul>
+<li>topic合法性校验</li>
+<li>分区器校验</li>
+</ul>
+</li>
+<li>订阅<ul>
+<li>默认订阅模式设置为AUTO_TOPICS</li>
+<li>更新订阅状态订阅信息</li>
+<li>请求执行网络IO来更新元数据</li>
+</ul>
+</li>
+</ul>
+<p>消费者订阅主题调用的代码很简单如下所示：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">String</span> topic <span class="token operator">=</span> <span class="token string">"topic1"</span><span class="token punctuation">;</span>
+consumer<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">singletonList</span><span class="token punctuation">(</span>topic<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p>KafkaConsumer类型的subscribe方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> topics<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">subscribe</span><span class="token punctuation">(</span>topics<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">NoOpConsumerRebalanceListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> topics<span class="token punctuation">,</span> <span class="token class-name">ConsumerRebalanceListener</span> listener<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">acquireAndEnsureOpen</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token function">maybeThrowInvalidGroupIdException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//前面两个是topic合法性校验</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>topics <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Topic collection to subscribe to cannot be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>topics<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// treat subscribing to empty topic list as the same as unsubscribing</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">unsubscribe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+          <span class="token comment">//这里开始订阅</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> topic <span class="token operator">:</span> topics<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token comment">//订阅之前先进行合法性校验</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>topic <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> topic<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Topic collection to subscribe to cannot contain null or empty topic"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+				   <span class="token comment">//这里如果未配置分区器则抛出异常 ，对应配置为partition.assignment.strategy 不配置其实也有默认值默认值为RangeAssignor策略 根据范围平均分片</span>
+            <span class="token function">throwIfNoAssignorsConfigured</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token comment">//清除掉缓冲区中本次未订阅的数据</span>
+            fetcher<span class="token punctuation">.</span><span class="token function">clearBufferedDataForUnassignedTopics</span><span class="token punctuation">(</span>topics<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Subscribed to topic(s): {}"</span><span class="token punctuation">,</span> <span class="token class-name">Utils</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>topics<span class="token punctuation">,</span> <span class="token string">", "</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token comment">//开始订阅</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>subscriptions<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">HashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>topics<span class="token punctuation">)</span><span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">)</span>
+               <span class="token comment">//请求IO执行</span>
+                metadata<span class="token punctuation">.</span><span class="token function">requestUpdateForNewTopics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+        <span class="token function">release</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>SubscriptionState类型的subscribe方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">boolean</span> <span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> topics<span class="token punctuation">,</span> <span class="token class-name">ConsumerRebalanceListener</span> listener<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">registerRebalanceListener</span><span class="token punctuation">(</span>listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">setSubscriptionType</span><span class="token punctuation">(</span><span class="token class-name">SubscriptionType</span><span class="token punctuation">.</span>AUTO_TOPICS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">changeSubscription</span><span class="token punctuation">(</span>topics<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里仅仅将订阅重新负载均衡器，订阅类型，和订阅的TOPIC等数据更新到了SubscriptionState类型的对象中服务端还未感知到，后续网络IO执行具体的请求来实现TOPIC的订阅</p>
+<p>- </p>
+<ul>
 <li>开始</li>
 <li>调用订阅方法KafkaConsumer的subscribe</li>
 <li>消费者获取轻量级锁然后检测消费者状态是否正常</li>
@@ -97,7 +166,7 @@
 			<br>
 			
 			
-			<a class="tag-unordered list-link" href="/tags/Kafka/" rel="tag">Kafka<span class="tag-unordered list-count">14</span></a>, <a class="tag-unordered list-link" href="/tags/Kafka%E6%BA%90%E7%A0%81/" rel="tag">Kafka源码<span class="tag-unordered list-count">14</span></a>
+			<a class="tag-unordered list-link" href="/tags/Kafka/" rel="tag">Kafka<span class="tag-unordered list-count">15</span></a>, <a class="tag-unordered list-link" href="/tags/Kafka%E6%BA%90%E7%A0%81/" rel="tag">Kafka源码<span class="tag-unordered list-count">15</span></a>
 
 			
 		</article>
@@ -105,6 +174,14 @@
 	<div class="other">
 		<div class="container">
 			<nav class="post-nav">
+
+    
+        
+    
+
+    
+        
+    
 
     
         
@@ -172,7 +249,7 @@
                          <!-- 下一篇文章 --> 
                             <div class="new">
                                 <span>下一章</span>
-                                <a href="/2022/09/07/kafka/11-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/"> 【Apache Kafka 3.2源码解析系列】- 11 消费者尝试更新分配元数据updateAssignmentMetadataIfNeeded</a>
+                                <a href="/2022/09/07/kafka/12-xiao-fei-zhe-chang-shi-geng-xin-fen-pei-yuan-shu-ju-updateassignmentmetadataifneeded/"> 【Apache Kafka 3.2源码解析系列】- 11 消费者尝试更新分配元数据updateAssignmentMetadataIfNeeded</a>
                             </div>
                         
 
@@ -259,46 +336,48 @@
                         
 
                     
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-                 
-                
-            
-        
-    
+                         
 
-    
-        
-    
+                        
 
-    
+                        
+
+                    
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
+                 
+                
+            
         
     
 
@@ -350,7 +429,7 @@
                 <div class="footer-links">
                     
                 </div>
-                <div calss="footer-copyright">&copy; 2022 中间件源码
+                <div calss="footer-copyright">&copy; 2024 中间件源码
                     Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
                     &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
                 </div>

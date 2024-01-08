@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1704711912879">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1704711912879"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1></h1>
+			<div class="info"><span class="date">2023年1月15日</span>•songxiaosheng 
+			
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/从指标到洞察力的普罗米修斯.html" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<div class="typora-export-content">
+<div id="write" class=""><h1 id="简介"><span>简介</span></h1><h2 id="为什么需要普罗米修斯"><span>为什么需要普罗米修斯？</span></h2><p><span>普罗米修斯官网的首页简单的对普罗米修斯做了定义：</span><strong><span>从指标到洞察力</span></strong><span> ，普罗米修斯通过领先的开源监控解决方案为用户的指标和告警提供强大的支持。</span></p><p><img src="/Users/mac/Library/Application Support/typora-user-images/image-20230114203332341.png" referrerpolicy="no-referrer" alt="image-20230114203332341"></p><p><span>可以看到普罗米修斯是领先的、开源的、也是一种监控解决方案、支持用户指标和告警等需求。使用普罗米修斯可以有效的解决在云原生时代下的指标埋点，服务异常监控等需求，比如:</span></p><ul><li><span>借助时序数据库来</span><strong><span>存储海量多维度指标数据</span></strong><span> ，使用PromQL数据查询，聚合分析指标数据或者Grafana这样的图形化页面展示指标数据。</span></li><li><span>传统监控的</span><strong><span>异常监控</span></strong><span> 需求，也就是监控那些我们知道某个地方可能会出现问题但是又不知道何时会出现问题(Know-Unknow)的地方。</span></li><li><span>云原生时代服务快速的重启发布，自动弹性扩缩容，面对海量容器POD频繁变化，每次地址发生了变化修改配置肯定是不现实的，普罗米修斯通过</span><strong><span>及时感知的服务发现模型</span></strong><span> 来解决云原生时代大规模服务发现问题。</span></li></ul><p><span>当然作为云原生优秀的监控系统，并不仅仅可以解决这里罗列的问题，普罗米修斯生态庞大，在云原生时代为可观测性的指标埋点提供了足够的铺垫。后续通过一些可观测性技术深度串联分析链路和日志数据通过故障预测，根因分析可以有效的解决我们不知道会出现问题的地方和不知道何时会出现问题的地方（Unknow-Unknow）。普罗米修斯不仅仅可以洞察主机层的指标信息，也可以深度通过系统指标埋点深度洞察系统内部的健康状态，那具体怎么做呢？可以继续往下看。</span></p><h2 id="起源"><span>起源</span></h2><p><span>普罗米修斯是由SoundCloud开发的开源监控告警系统，是Google BorgMon监控系统的开源版本。2016年，由Google发起的Linux基金会旗下的原生云基金会CNCF（Cloud Native Computing Foundation）将Prometheus纳入其第二大开源项目(第一大开源项目是kunernetes)。</span></p><p><img src="https://2584451478-files.gitbook.io/~/files/v0/b/gitbook-legacy-files/o/assets%2F-LBdoxo9EmQ0bJP2BuUi%2F-LPMFlGDFIX7wuLhSHx9%2F-LPMFo9ZTdKYHyFzu4DJ%2Fprometheus-release-roadmaps.png?generation=1540136064641479&amp;alt=media" referrerpolicy="no-referrer" alt="img"></p><p>&nbsp;</p><p><span>2012年开源的普罗米修斯监控系统从开源到现在经过了数十年的打磨具备哪些特性呢？从官方文档参考到的内容如下所示：</span></p><ul><li><strong><span>多维度数据</span></strong>
+<span>Prometheus 实现了一个高度维度的数据模型。时间序列由指标名称和一组键值对标识。</span></li><li><strong><span>强大的查询</span></strong>
+<span>PromQL 允许对收集的时间序列数据进行切片和切块，以生成临时图形、表格和警报。</span></li><li><strong><span>数据可视化</span></strong>
+<span>Prometheus 有多种数据可视化模式：内置表达式浏览器、Grafana 集成和控制台模板语言。</span></li><li><strong><span>高效存储</span></strong>
+<span>Prometheus 以高效的自定义格式将时间序列存储在内存和本地磁盘上。缩放是通过功能分片和联合实现的。</span></li><li><strong><span>操作简单</span></strong>
+<span>每个服务器都是独立的可靠性，仅依赖于本地存储。用 Go 编写，所有二进制文件都是静态链接的并且易于部署。</span></li><li><strong><span>精准预警</span></strong>
+<span>警报是基于 Prometheus 灵活的 PromQL 定义的，并维护维度信息。警报管理器处理通知和静音。</span></li><li><strong><span>许多客户端库</span></strong>
+<span>客户端库允许轻松检测服务。已经支持十多种语言，自定义库也很容易实现。</span></li><li><strong><span>许多集成</span></strong>
+<span>现有的出口商允许将第三方数据桥接到普罗米修斯。示例：系统统计信息，以及 Docker、HAProxy、StatsD 和 JMX 指标。</span></li></ul><p><span>可以看到普罗米修斯在多维度指标监控告警等方面拥有强大的支持，下面就进入正题，从普罗米修斯的架构到入门案例来看下如何使用普罗米修斯进行服务指标监控。</span></p><h1 id="架构"><span>架构</span></h1><p><span>下面就直接来看下Prometheus 的架构及其一些生态系统组件：</span></p><p><img src="https://prometheus.io/assets/architecture.png" referrerpolicy="no-referrer" alt="普罗米修斯架构"></p><p><span>这个图完整的体现了普罗米修斯从发现服务，采集数据，到监控告警分析数据的整个过程：</span></p><ol start=""><li><p><strong><span>服务发现：</span></strong><span> </span></p><p><span>普罗米修斯支持的众多服务发现的模式来发现抓取目标，比如文件(yml配置），Consul，Kubernetes，自定义扩展。</span></p></li><li><p><strong><span>数据采集:</span></strong><span>  </span></p><p><span>通过拉取数据的形式从Exporter或者Pushgateway采集指标数据，有许多库和服务器通过提供exporters（导出器）可帮助将现有指标从第三方系统导出为 普罗米修斯 指标</span></p></li><li><p><strong><span>数据存储:</span></strong><span> </span></p><p><span>包括一个本地磁盘时间序列数据库，但也可以选择与远程存储系统集成。</span></p></li><li><p><strong><span>数据分析:</span></strong><span> </span></p><p><span>普罗米修斯提供了一种称为 PromQL（普罗米修斯查询语言）的函数式查询语言，可以让用户实时选择和聚合时间序列数据。表达式的结果可以显示为图形.</span></p></li><li><p><strong><span>数据展示:</span></strong><span> </span></p><p><span>为了直观的展示数据可以使用普罗米修斯控制台UI来进行，Grafana，API接口的形式查询分析数据。</span></p></li><li><p><strong><span>监控报警:</span></strong><span>  </span></p><p><span>普罗米修斯的报警分为两部分：普罗米修斯服务器中的警报规则将警报发送到 Alertmanager。然后，Alertmanager 管理这些警报，包括静音、抑制、聚合以及通过电子邮件、随叫随到的通知系统和聊天平台等方法发送通知。</span></p></li></ol><p><span>初步了解了普罗米修斯的一些概念，想要优雅的使用普罗米修斯监控还需要我们了解一些常见术语，下面可以看下。</span></p><h2 id="常见术语"><span>常见术语</span></h2><p><span>下面列举一些我们常用的术语说明：</span></p><ul><li><strong><span>Meters（指标）</span></strong><span> </span></li></ul><p><span> 用外行的话来说，</span><em><span>指标</span></em><span>是数字测量。</span><em><span>时间序列</span></em><span>意味着随着时间的推移记录变化。用户想要测量的内容因应用程序而异。对于 Web 服务器，它可能是请求时间，对于数据库，它可能是活动连接数或活动查询数等。</span></p><ul><li><strong><span>Collector（收集器）</span></strong></li></ul><p><span>收集器是代表一组指标的导出器的一部分。如果它是直接检测的一部分，则它可能是单个指标；如果它是从另一个系统提取指标，则它可能是多个指标。</span></p><ul><li><strong><span>Endpoint（端点）</span></strong></li></ul><p><span>	</span><span>可以抓取的指标来源，通常对应于单个进程。</span></p><ul><li><strong><span>Exporter（导出器）</span></strong></li></ul><p><span>	</span><span>导出器是与您要从中获取指标的应用程序一起运行的二进制文件。导出器公开 普罗米修斯 指标，通常是将以非 普罗米修斯 格式公开的指标转换为 普罗米修斯 支持的格式。</span></p><ul><li><strong><span>PromQL（普罗米修斯查询语言）</span></strong></li></ul><p><span>	</span><span>PromQL是普罗米修斯查询语言。它允许进行广泛的操作，包括聚合、切片和切块、预测和连接。</span></p><ul><li><strong><span>Pushgateway（推送网关）</span></strong></li></ul><p><span>	</span><span>Pushgateway保留来自批处理作业的最新指标推送。这允许 普罗米修斯 在它们终止后抓取它们的指标（实时性较高可以先缓存在推送网关中后续由普罗米修斯拉取。</span></p><ul><li><strong><span>Sample（样本）</span></strong></li></ul><p><span>	</span><span>样本是时间序列中某个时间点的单个值。在 普罗米修斯 中，每个样本都包含一个 float64 值和一个毫秒精度的时间戳。</span></p><ul><li><p><strong><span>The Four Golden Signals（四大黄金信号）</span></strong></p><ul><li><p><strong><span>Latency（延迟）：</span></strong><span>  </span></p><ul><li><span>服务请求所需的时间。区分成功请求的延迟和失败请求的延迟很重要。</span></li></ul></li><li><p><strong><span>Traffic（流量）：</span></strong><span> </span></p><ul><li><span>衡量对您的系统有多少需求的衡量标准，以高级系统特定指标衡量。</span></li></ul></li><li><p><strong><span>Errors（错误）：</span></strong><span> </span></p><ul><li><span>失败的请求率</span></li></ul></li><li><p><strong><span>Saturation（饱和度）：</span></strong><span> </span></p><ul><li><span>您的服务有多“全面”。系统分数的度量，强调最受限的资源（例如，在内存受限的系统中，显示内存；在 I/O 受限的系统中，显示 I/O）。请注意，许多系统在达到 100% 利用率之前会降低性能，因此拥有一个利用率目标至关重要。</span></li></ul></li></ul></li></ul><p><span>	</span><span>Google SRE中提到的概念，监控的四个黄金信号是延迟、流量、错误和饱和度。如果您只能衡量面向用户的系统的四个指标，请关注这四个指标。原文链接如下</span></p><p><span>	</span><a target="_blank" rel="noopener" href="https://sre.google/sre-book/monitoring-distributed-systems/"><span>https://sre.google/sre-book/monitoring-distributed-systems/</span></a></p><ul><li><p><strong><span>Black-Box Versus White-Box（黑盒与白盒）</span></strong></p><ul><li><strong><span>黑盒监控：</span></strong><span> 测试用户看到的外部可见行为。是面向症状的，代表活动的——而不是预测的——问题：“系统现在没有正常工作。” </span></li><li><strong><span>白盒监控：</span></strong><span> 基于系统内部公开的指标进行监控，包括日志、接口（如 Java 虚拟机分析接口）或发出内部统计信息的 HTTP 处理程序。 </span></li></ul></li><li><p><strong><span>Metric names and labels（指标名称和标签）</span></strong></p><ul><li><strong><span>指标名称：</span></strong><span> 指定了被测系统的一般特征（例如</span><code>http_requests_total</code><span>- 接收到的 HTTP 请求总数</span></li><li><strong><span>标签：</span></strong><span> 启用 Prometheus 的维度数据模型：相同指标名称的任何给定标签组合标识该指标的</span><strong><span>特定维度</span></strong><span> 实例（例如：所有使用处理程序方法</span><code>POST</code><span>的HTTP 请求</span><code>/api/tracks</code><span>）。查询语言允许基于这些维度进行过滤和聚合。更改任何标签值，包括添加或删除标签，都将创建一个新的时间序列。</span></li></ul></li><li><p><strong><span>METRIC TYPES（指标类型）</span></strong></p><ul><li><strong><span>Counter（计数器）：</span></strong><span>  Counter (只增不减的计数器) 类型的指标其工作方式和计数器一样，只增不减，所以它对于存储诸如服务的 HTTP 请求数量或使用的 CPU 时间之类的信息非常有用。</span></li><li><strong><span>Gauge（仪表盘）：</span></strong><span>  </span><code>Gauge</code><span>（可增可减的仪表盘）类型的指标侧重于反应系统的当前状态，因此这类指标的样本数据可增可减。</span></li><li><strong><span>Histogram（直方图）：</span></strong><span> 直方图对观察结果（通常是请求持续时间或响应大小）进行抽样，并将它们计入可配置的桶中。它还提供了所有观测值的总和。</span></li><li><strong><span>Summary（摘要）：</span></strong><span> 类似于</span><em><span>直方图</span></em><span>，</span><em><span>摘要</span></em><span>样本观察（通常是请求持续时间和响应大小）。虽然它还提供观察总数和所有观察值的总和，但它会计算滑动时间窗口内的可配置分位数。</span></li></ul></li></ul><p><span>		</span><span>Prometheus 客户端库提供四种核心指标类型，用来解决不同指标差异区分，帮助用户理解和区分这些不同监控指标之间的差异，Prometheus 定义了 4 种不同的指标类型：</span><code>Counter（计数器）</code><span>、</span><code>Gauge（仪表盘）</code><span>、</span><code>Histogram（直方图）</code><span>、</span><code>Summary（摘要）</code><span>。</span></p><p><span>这里常见术语列举的相对还是比较多的，不过慢慢消化，下面就开始通过一个简单的案例来入门普罗米修斯的使用来实现对普罗米修斯自身的一些指标的暴漏与抓取。</span></p><h1 id="入门示例"><span>入门示例</span></h1><h2 id="普罗米修的安装"><span>普罗米修的安装</span></h2><p><span>这里演示环境为Centos7系统</span></p><h3 id="下载"><span>下载</span></h3><p><span>登录服务器后，直接输入如下命令,从官方仓库下载压缩文件到本地，并解压。</span></p><pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="bash"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="bash"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">[root@iZ8lgm9icspkthZ ~] <span class="cm-builtin">wget</span> https://github.com/prometheus/prometheus/releases/download/v2.41.0/prometheus-2.41.0.linux-amd64.tar.gz</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="" cm-zwsp="">
+</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">[root@iZ8lgm9icspkthZ ~] tar <span class="cm-attribute">-zxvf</span> ./prometheus-2.41.0.linux-amd64.tar.gz </span></pre></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: transparent; top: 110px;"></div><div class="CodeMirror-gutters" style="display: none; height: 110px;"></div></div></div></pre><h3 id="配置"><span>配置</span></h3><p><span>打开prometheus.yml配置文件，可以看到配置文件里面默认文件如下所示：</span></p><pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="yaml" style="break-inside: unset;"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="yaml"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment"># my global config 全局配置（如果有内部单独设定，会覆盖这个参数）</span></span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-atom">global</span><span class="cm-meta">:</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-atom">  scrape_interval</span><span class="cm-meta">: </span>15s <span class="cm-comment"># Set the scrape interval to every 15 seconds. Default is every 1 minute. 默认15s 全局每次数据收集的间隔</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-atom">  evaluation_interval</span><span class="cm-meta">: </span>15s <span class="cm-comment"># Evaluate rules every 15 seconds. The default is every 1 minute.</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;<span class="cm-comment"># scrape_timeout is set to the global default (10s).  规则扫描时间间隔是15秒，</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="" cm-zwsp="">
+</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment"># Alertmanager configuration  告警插件定义。这里会设定alertmanager这个报警插件。</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-atom">alerting</span><span class="cm-meta">:</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-atom">  alertmanagers</span><span class="cm-meta">:</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta"> &nbsp;  - </span><span class="cm-atom">static_configs</span><span class="cm-meta">:</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta"> &nbsp; &nbsp; &nbsp;  - </span><span class="cm-atom">targets</span><span class="cm-meta">:</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-comment"># - alertmanager:9093</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="" cm-zwsp="">
+</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment"># Load rules once and periodically evaluate them according to the global 'evaluation_interval'.  告警规则。 按照设定参数进行扫描加载，用于自定义报警规则，其报警媒介和route路由由alertmanager插件实现。</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-atom">rule_files</span><span class="cm-meta">:</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;<span class="cm-comment"># - "first_rules.yml"</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;<span class="cm-comment"># - "second_rules.yml"</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="" cm-zwsp="">
+</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment"># A scrape configuration containing exactly one endpoint to scrape:</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment"># Here it's Prometheus itself.</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-atom">scrape_configs</span><span class="cm-meta">:</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;<span class="cm-comment"># The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.  采集配置。配置数据源，包含分组job_name以及具体target。又分为静态配置和服务发现</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">  - </span><span class="cm-atom">job_name</span><span class="cm-meta">: </span><span class="cm-string">"prometheus"</span> &nbsp;<span class="cm-comment">#任务目标名，可以理解成分组，每个分组包含具体的target组员。</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="" cm-zwsp="">
+</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-comment"># metrics_path defaults to '/metrics'</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-comment"># scheme defaults to 'http'.</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="" cm-zwsp="">
+</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-atom"> &nbsp;  static_configs</span><span class="cm-meta">:</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta"> &nbsp; &nbsp;  - </span><span class="cm-atom">targets</span><span class="cm-meta">: [</span><span class="cm-string">"localhost:9090"</span><span class="cm-meta">]</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: transparent; top: 748px;"></div><div class="CodeMirror-gutters" style="display: none; height: 748px;"></div></div></div></pre><h3 id="启动服务"><span>启动服务</span></h3><p><span>指定配置文件，同时后台运行服务</span></p><pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="bash"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="bash"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">./prometheus <span class="cm-attribute">--config</span><span class="cm-def">.file</span><span class="cm-operator">=</span>prometheus.yml &amp;</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: transparent; top: 22px;"></div><div class="CodeMirror-gutters" style="display: none; height: 22px;"></div></div></div></pre><p><span>启动服务成功后可以看到如下info日志，普罗米修斯启动后监听了一个9090端口。</span></p><p><img src="/Users/mac/Library/Application Support/typora-user-images/image-20230115160933693.png" referrerpolicy="no-referrer" alt="image-20230115160933693"></p><h3 id="访问dashboard"><span>访问Dashboard</span></h3><p><span>浏览器打开地址 </span><code>http://当前服务器IP:9090</code><span>   即可，可以看到如下可视化页面：</span></p><p><img src="/Users/mac/Library/Application Support/typora-user-images/image-20230115161304856.png" referrerpolicy="no-referrer" alt="image-20230115161304856"></p><p><span>在菜单栏中找到服务发现地址如下：</span></p><p><img src="/Users/mac/Library/Application Support/typora-user-images/image-20230115161356691.png" referrerpolicy="no-referrer" alt="image-20230115161356691"></p><h3 id="指标查询"><span>指标查询</span></h3><p><strong><span>指标解析</span></strong></p><p><span>指标查询这里提供两种方式，一种是直接在服务器上访问地址如下命令：</span></p><pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="bash"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="bash"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-builtin">curl</span> http://localhost:9090/metrics</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: transparent; top: 22px;"></div><div class="CodeMirror-gutters" style="display: none; height: 22px;"></div></div></div></pre><p><span>查询后会得到普罗米修斯提供的指标类型，如下图：</span></p><p><img src="/Users/mac/Library/Application Support/typora-user-images/image-20230115162004831.png" referrerpolicy="no-referrer" alt="image-20230115162004831"></p><p><span>可以看到这个图中存在一个指标名称为promhttp_metric_handler_requests_total的指标，#HELP中的内容为当前指标的描述，#TYPE中的内容是描述当前指标的类型，指标的详细格式为给定一个指标名称和一组标签，时间序列通常使用这种表示法来识别：</span></p><pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="bash"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="bash"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&lt;metric name&gt;{&lt;label name&gt;<span class="cm-operator">=</span>&lt;label value&gt;, ...}</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: transparent; top: 22px;"></div><div class="CodeMirror-gutters" style="display: none; height: 22px;"></div></div></div></pre><p><span>关于指标的命名：前缀通常是指标类型名称，后缀必须有一个单位，更详细的指标命名规范可以参考如下链接：</span></p><p><a target="_blank" rel="noopener" href="https://prometheus.io/docs/practices/naming/"><span>https://prometheus.io/docs/practices/naming/</span></a></p><p><strong><span>PromQL查询</span></strong></p><p><span>让监控的数据会说话。日常数据查询、可视化及告警配置这三大功能模块都是依赖PromQL实现的，PromQL (Prometheus Query Language) 是 Prometheus 自己开发的数据查询 DSL 语言，语言表现力非常丰富，内置函数很多，在日常数据可视化以及rule 告警中都会使用到它。</span></p><p><span>这里我们介绍一些简单的语法。首先来看下表达式语言数据类型。</span></p><p><span>在 Prometheus 的表达式语言中，表达式或子表达式可以计算为四种类型之一：</span></p><ul><li><strong><span>即时向量：</span></strong><span>   一组时间序列，每个时间序列包含一个样本，所有样本共享相同的时间戳。</span></li><li><strong><span>范围向量：</span></strong><span>  一组时间序列，其中包含每个时间序列随时间变化的一系列数据点。</span></li><li><strong><span>标量：</span></strong><span>  一个简单的数字浮点值。</span></li><li><strong><span>String：</span></strong><span>    一个简单的字符串值；目前未使用。</span></li></ul><p><span>PromQL 查询结果主要有 3 种类型：</span></p><ul><li><span>瞬时数据 (Instant vector): 包含一组时序，每个时序只有一个点，例如：</span><code>http_requests_total</code><span> </span><code>http_requests_total{}</code></li><li><span>区间数据 (Range vector): 包含一组时序，每个时序有多个点，例如：</span><code>http_requests_total[5m]</code></li><li><span>纯量数据 (Scalar): 纯量只有一个数字，没有时序，例如：</span><code>count(http_requests_total)</code></li></ul><p><span>了解了基本语法之后可以重新打开dashboard输入以下命令来查询筛选标签中状态码为200的请求数据：</span></p><p><code>promhttp_metric_handler_requests_total{code="200"}</code><span> 查询结果如下图所示：</span></p><p><span>第一个图为表格展示列表数据</span></p><p><img src="/Users/mac/Library/Application Support/typora-user-images/image-20230115163635316.png" referrerpolicy="no-referrer" alt="image-20230115163635316"><span>第二个图以图表形式展示</span></p><p><img src="/Users/mac/Library/Application Support/typora-user-images/image-20230115163703836.png" referrerpolicy="no-referrer" alt="image-20230115163703836"></p><h1 id="总结"><span>总结</span></h1><p><span>完善的监控系统能够引导技术人员快速定位问题并解决，让监控告警先于用户发现问题的最佳手段，Prometheus是基于指标的监控系统，是打造一站式通用监控架构的最佳方案之一，借助普罗米修斯监控系统可以尝试在开发之初就想好要需要为业务埋下哪些监控埋点，当然也有人提出指标驱动开发（MDD）的开发理念，</span><strong><span>通过实时指标来驱动快速、精确和细粒度的软件迭代，</span></strong><span>  帮助我们更早地 </span><strong><span>发现问题</span></strong><span> 和 </span><strong><span>明确目标</span></strong><span> </span></p><p><span>当然普罗米修斯也不是万能的，使用时也需要注意很多的注意事项，比如：</span></p><ul><li><p><span>如果Pushgateway从许多不同的来源收集指标时宕机，用户将失去对所有这些来源的监控，可能会触发许多不必要的告警。</span></p></li><li><p><span>Alertmanager是独立于Prometheus的一个告警组件，需要单独安装部署，Prometheus可以将多个Alertmanager配置为一个集群，通过服务发现动态发现告警集群中节点的上下，如下图：</span></p><p><img src="/Users/mac/Library/Application Support/typora-user-images/image-20230115165102377.png" referrerpolicy="no-referrer" alt="image-20230115165102377"></p><p>&nbsp;</p></li><li><p><span>另外存储方面普罗米修斯并不是为了解决大容量存储问题，TB级以上数据建议保存到远端TSDB中，通常来说，InfluxDB在集群方面的表现更佳，但是InfluxDB的单机版本免费，而集群版本是收费的。</span></p></li><li><p><span>作为时序数据库普罗米修斯不仅仅对系统时间的准确性要求很高，必须保证本机时间实时同步。另外还需要注意监控的高可用搭建，如果监控挂了一切系统将成为黑盒，即便系统处理问题也无法及时发现，这里可以通过Prometheus中有3种常见的HA架构来保证高可用，分别是简单HA、基本HA+远程存储、基本HA+远程存储+联邦集等方式 配置。</span></p></li></ul><p>&nbsp;</p><p><span>感兴趣可以订阅微信公众号</span><strong><span>《中间件源码》</span></strong><span> 交流吧。</span></p><p>&nbsp;</p><p><span>  </span></p></div></div>
+
+
+			<br>
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2024 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

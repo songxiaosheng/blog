@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1704711912896">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1704711912896"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1></h1>
+			<div class="info"><span class="date">2022年11月30日</span>•songxiaosheng 
+			
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/可观测性/可观测性神器之Micrometer.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>对于大部分开发人员来说可能用过普罗米修斯Grafana这样的监控系统，从未听说过Micrometer工具，这里就详细的来介绍下可观测性神器Micrometer，让你在开发时使用它就和使用SLFJ 日志系统一样简单易用，有效的提升系统的健壮性和可靠性。</p>
+<h1 id="可观测性"><a href="#可观测性" class="headerlink" title="可观测性"></a>可观测性</h1><p>在了解Micrometer之前可以先来简单了解下云原生微服务时代下人人追捧的可观测性概念，这会更有利于我们理解Micrometer的作用，在传统单体应用时代对于服务的检查和诊断可以借助于简单的报表，监控和日志就可以有效的解决，而现在为了易于分工，提升开发变更效率，隔离故障等需求驱动下，一个系统往往被拆分成多个服务我们称它们为微服务，另外近几年火热的云原生，ServiceMesh，Serverless等概念更是打算在基础设施层做变革进行降本增效，可以看到一个相对简单的单体系统已经变得非常复杂，想要了解下内部运行健康状况如何是比较困难的，出现问题的时候也往往让人摸不着头脑。这时候就有人提出了可观测性的概念，可观测性是个比较大的概念就像是我们开发人员有了透视能力一样一眼可以看穿系统的内部运行状况，当然这是不现实的。所以就有人进行了对它进行了具体的定义，广为流传又易于理解的说法是可观测性的三大支柱说:Metrics、Tracing、Logging 。</p>
+<h2 id="可观测性三大支柱说"><a href="#可观测性三大支柱说" class="headerlink" title="可观测性三大支柱说"></a>可观测性三大支柱说</h2><p>可以看到中医有“望闻问切”的方式来诊断病人的病症，我们有了可观测性三大支柱Metrics、Tracing、Logging来帮助我们了解和排查系统运行健康状况。</p>
+<ul>
+<li><p><strong>Logging(日志) ：</strong>日志大家是最熟悉的也是是最容易生成的，比如大家学习输出到控制台的Hello World,Java通过log4j打印的日志,日志虽然容易生成但是分析汇总处理起来比较麻烦往往经过多层转换性能非常底下，</p>
+</li>
+<li><p><strong>Tracing （追踪）：</strong><em>追踪</em>是一系列因果相关的分布式事件的表示，这些事件对通过分布式系统的端到端请求流进行编码，通过保留因果关系来进行回顾性分析和故障排除，使开发人员能够更好地了解请求的生命周期。关于链路追踪小编了解到的比较核心的方式一般服务在跨系统的调用时想要将其串起来就需要用到traceId传递，在内部线程之间流转就需要用到SpanId，如果拿到异常的追踪ID就可以快速的定位相关的位置，链路追踪的麻烦之处就是需要改造现有系统让所有的位置支持，不过关于全链路系统国内外都要比较完善的开源中间件来解决，比如Zipkin和Jaeger是两个最流行的OpenTracing兼容开源分布式跟踪解决方案。</p>
+</li>
+<li><p><strong>Metrics(指标)：</strong> <em>指标</em>是在时间间隔内测量的数据的数字表示。指标可以利用数学建模和预测的力量来获取系统在当前和未来一段时间内的行为知识。指标一旦被收集，就更容易进行数学、概率和统计转换，例如采样、聚合、汇总和关联。这些特征使指标更适合报告系统的整体健康状况，由于指标一般是我们处理过的数据更为精确所以更适合用于监控分析，触发警报。所以一般业务开发同学接触指标相对较少，平时大部分应用层和基础设施层的监控指标埋点一般都会由负责监控的同学完成，不过为了系统更健壮系统开发的时候要尝试在可能出现问题的地方进行多多埋点。</p>
+</li>
+</ul>
+<p>可以看到可观测性的三大支柱在不同的维度提供支持使系统更易于观察，理论性的概念可能不太明显，这里可以给举一个借助客观性理论排查请求超时的场景（当然实际情况可能比这个复杂的多），如果系统在预先对某个服务消费者和生产者请求进行了日志打印，追踪处理，埋点监控，当发生了请求调用失败的时候埋点监控的将异常告警给我们可以及时发现问题，然后打开链路追踪系统排查具体出现问题的系统，拿到链路追踪ID之后可以打开日志根据链路追踪ID查询到所有相关的日志来排查出具体原因。可以看到如果遇到问题的时候不要急于打开日志，通过综合分析各项指标，追踪排查，最后得出结论，就像是中医的望闻问切一样。善于利用这些工具可以有效的帮助我们解决项目中常见的问题，可以联想下平时遇到的问题是不是大部分情况只要掌握了足够的信息就可以解决，可观测性的三大支柱的排查问题这个场景的使用总结成一句话就是：监控埋点发现问题-&gt; 链路追踪定位问题-&gt; 日志和工具解决问题。</p>
+<h1 id="Micrometer"><a href="#Micrometer" class="headerlink" title="Micrometer"></a>Micrometer</h1><h2 id="Micrometer简介"><a href="#Micrometer简介" class="headerlink" title="Micrometer简介"></a>Micrometer简介</h2><p>前面长篇大论的描述了一下可观测性，这个时候应该就可以了解指标埋点所处的位置，在何处何时帮助我们发现问题。接下来就正式进入本文的主题Micrometer开源组件。</p>
+<p>官方式是这样介绍的：Micrometer为最流行的监控系统提供了一个简单的仪表客户端外观，允许您在没有供应商锁定的情况下基于JVM的应用程序代码进行仪表化。</p>
+<p>可以想象一下大家熟悉的SLF4J日志客户端门面，Micrometer其实就是一个监控埋点的客户端门面。</p>
+<h2 id="为什么要使用Micrometer？"><a href="#为什么要使用Micrometer？" class="headerlink" title="为什么要使用Micrometer？"></a>为什么要使用Micrometer？</h2><p>自己埋点当然也可以既然有现成的工具又何必造轮子，下面可以看下Micrometer的特性：</p>
+<ul>
+<li><p><strong>多维度指标：</strong> 默认提供计时器<strong>、</strong>仪表<strong>、</strong>计数器<strong>、</strong>分布摘要和长任务计时器等指标与中立的接口。</p>
+</li>
+<li><p><strong>丰富的指标绑定binder：</strong> 开箱即用的缓存检测、类加载器、垃圾收集、处理器利用率、线程池，以及为可操作的洞察量身定制的更多工具，我们也可以自行扩展开发自己的绑定指标工具。</p>
+</li>
+<li><p><strong>集成到Spring中：</strong> Spring Boot 应用程序交付应用程序默认的指标的检测库，其他项目集成也仅仅需要一两个一两个依赖即可。</p>
+</li>
+<li><p><strong>支持流行的监控系统：</strong> 作为检测门面外观，Micrometer 允许您使用供应商中立的接口使用维度指标检测代码，并在最后一步决定监控系统。使用 Micrometer 检测您的核心库代码允许将库包含在将指标发送到不同后端的应用程序中。包含对AppOptics、Azure Monitor、Netflix、Atlas、CloudWatch、Datadog、Dynatrace、Elastic、Ganglia、Graphite、Humio、 Influx /Telegraf、JMX、KairosDB、New Relic、Prometheus、SignalFx、Google Stackdriver、StatsD和Wavefront的内置支持。</p>
+</li>
+</ul>
+<h2 id="开发入门"><a href="#开发入门" class="headerlink" title="开发入门"></a>开发入门</h2><h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><p>Micrometer 包含一个带有检测 SPI (Service Provider Interface 一种扩展机制）的核心库和一个不将数据导出到任何地方的内存中实现，一系列具有各种监控系统实现的模块，以及一个测试模块。这里依赖主要介绍两个一个是核心依赖，一个是适配第三方监控的扩展依赖。</p>
+<ul>
+<li><p>核心依赖为：micrometer-core 核心的注册表，监控指标，默认提供的绑定配置都在这里。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>io.micrometer<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>micrometer-core<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>${version}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">&gt;</span></span>compile<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>适配第三方监控的依赖：用于将指标适配到第三方监控系统，比如我们要将指标输送给普罗米修斯prometheus监控系统就需要引入依赖micrometer-registry-prometheus </p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>io.micrometer<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>micrometer-registry-prometheus<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>${version}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">&gt;</span></span>compile<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">&gt;</span></span>
+ <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+<p>完整的依赖引入方式如下图所示：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>io.micrometer<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>micrometer-registry-prometheus<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>1.10.2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>exclusions</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>exclusion</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>micrometer-core<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>io.micrometer<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>exclusion</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>exclusions</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>io.micrometer<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>micrometer-core<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>1.10.2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="入门示例"><a href="#入门示例" class="headerlink" title="入门示例"></a>入门示例</h3><h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p>为了便于理解我们先来从一个简单的示例中来看，下面就来直接贴代码：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">import</span> <span class="token import"><span class="token namespace">com<span class="token punctuation">.</span>sun<span class="token punctuation">.</span>net<span class="token punctuation">.</span>httpserver<span class="token punctuation">.</span></span><span class="token class-name">HttpServer</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">io<span class="token punctuation">.</span>micrometer<span class="token punctuation">.</span>core<span class="token punctuation">.</span>instrument<span class="token punctuation">.</span></span><span class="token class-name">MeterRegistry</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">io<span class="token punctuation">.</span>micrometer<span class="token punctuation">.</span>core<span class="token punctuation">.</span>instrument<span class="token punctuation">.</span>composite<span class="token punctuation">.</span></span><span class="token class-name">CompositeMeterRegistry</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">io<span class="token punctuation">.</span>micrometer<span class="token punctuation">.</span>core<span class="token punctuation">.</span>instrument<span class="token punctuation">.</span>simple<span class="token punctuation">.</span></span><span class="token class-name">SimpleMeterRegistry</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">io<span class="token punctuation">.</span>micrometer<span class="token punctuation">.</span>prometheus<span class="token punctuation">.</span></span><span class="token class-name">PrometheusConfig</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">io<span class="token punctuation">.</span>micrometer<span class="token punctuation">.</span>prometheus<span class="token punctuation">.</span></span><span class="token class-name">PrometheusMeterRegistry</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token class-name">IOException</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token class-name">OutputStream</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>net<span class="token punctuation">.</span></span><span class="token class-name">InetSocketAddress</span></span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * Hello world!
+ *
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MicrometerTest</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args <span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+      	<span class="token comment">//组合注册表</span>
+        <span class="token class-name">CompositeMeterRegistry</span> composite <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CompositeMeterRegistry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+				<span class="token comment">//内存注册表</span>
+        <span class="token class-name">MeterRegistry</span> registry <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleMeterRegistry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        composite<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+				<span class="token comment">//普罗米修斯注册表</span>
+        <span class="token class-name">PrometheusMeterRegistry</span> prometheusRegistry <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PrometheusMeterRegistry</span><span class="token punctuation">(</span><span class="token class-name">PrometheusConfig</span><span class="token punctuation">.</span>DEFAULT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        composite<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>prometheusRegistry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+				<span class="token comment">//计数器</span>
+        <span class="token class-name">Counter</span> compositeCounter <span class="token operator">=</span> composite<span class="token punctuation">.</span><span class="token function">counter</span><span class="token punctuation">(</span><span class="token string">"counter"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//计数</span>
+        compositeCounter<span class="token punctuation">.</span><span class="token function">increment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment">//暴漏8080端口来对外提供指标数据</span>
+            <span class="token class-name">HttpServer</span> server <span class="token operator">=</span> <span class="token class-name">HttpServer</span><span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InetSocketAddress</span><span class="token punctuation">(</span><span class="token number">8080</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            server<span class="token punctuation">.</span><span class="token function">createContext</span><span class="token punctuation">(</span><span class="token string">"/prometheus"</span><span class="token punctuation">,</span> httpExchange <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+                <span class="token comment">//获取普罗米修斯指标数据文本内容</span>
+                <span class="token class-name">String</span> response <span class="token operator">=</span> prometheusRegistry<span class="token punctuation">.</span><span class="token function">scrape</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//指标数据发送给客户端</span>
+                httpExchange<span class="token punctuation">.</span><span class="token function">sendResponseHeaders</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">,</span> response<span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token class-name">OutputStream</span> os <span class="token operator">=</span> httpExchange<span class="token punctuation">.</span><span class="token function">getResponseBody</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    os<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span>server<span class="token operator">::</span><span class="token function">start</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>通过运行main方法，在浏览器中访问地址<a target="_blank" rel="noopener" href="http://localhost:8080/prometheus">http://localhost:8080/prometheus</a> 就可以看到我们程序提供给普罗米修斯监控的指标了</p>
+<p><img src="/Users/mac/Pictures/image-20221203114539498.png" alt="image-20221203114539498"></p>
+<p>这个例子相对还是比较简单的，可以动手尝试一下，便于理解。</p>
+<h4 id="指标注册表MeterRegistry"><a href="#指标注册表MeterRegistry" class="headerlink" title="指标注册表MeterRegistry"></a>指标注册表MeterRegistry</h4><p>可以看到我们最终想要获取的数据其实就是一个一个的Meter(指标）数据，Meter(指标）是用于收集应用程序的一组测量值，Meter(指标）在Micrometer中有单独指标接口类型为Meter。Micrometer 中的Meter是从MeterRegistry指标注册表中创建的（一般不是由我们自行创建的注册表会进行注册缓存等各种操作我们只需要调用它的方法来创建即可）. 每个支持的监控系统都有一个MeterRegistry. 注册表的创建方式因每个实现而异，下面可以看下上面例子中出现的几个注册表：</p>
+<ul>
+<li><p><strong>内存注册表SimpleMeterRegistry：</strong>micrometer-core依赖内部包括一个<code>SimpleMeterRegistry</code>在内存中保存每个仪表的最新值并且不会将数据导出到任何地方。如果还没有首选的监控系统，可以使用简单的注册表开始使用指标，数据在内存中可以自行管理。</p>
+</li>
+<li><p><strong>组合注册表CompositeMeterRegistry：</strong>micrometer-core依赖中提供了一个<code>CompositeMeterRegistry</code>可以添加多个注册表的工具，让您可以同时将指标发布到多个监控系统，如果只有组合注册表其实意义并不是很大，组合注册表不会创建实际存在的指标，组合注册表其实主要用来将各个注册表聚合起来的。</p>
+</li>
+<li><p><strong>普罗米修斯注册表PrometheusMeterRegistry ：</strong>当使用普罗米修斯监控时，引入的micrometer-registry-prometheus这个依赖中提供了一个<code>PrometheusMeterRegistry</code>用于将指标数据转换为普罗米修斯识别的格式和导出数据等功能。</p>
+</li>
+</ul>
+<p>在SpringBoot程序中已经集成好了这个注册表，可以尝试找一找SpringBoot程序有哪些可用的注册表。</p>
+<h4 id="指标Meter"><a href="#指标Meter" class="headerlink" title="指标Meter"></a>指标Meter</h4><p>前面简单介绍了下其实我们整个过程都是围绕着Meter(指标）的，Micrometer内部需要处理各种指标Meter来进行度量程序，我们最终想要获取的数据其实就是一个一个的Meter(指标）数据来进行诊断应用的健康状况，Micrometer 支持一组<code>Meter</code>原语，下面是一些常见的指标类型：</p>
+<ul>
+<li><p><strong><code>Timer</code> （计时器）：</strong>用于测量短时延迟和此类事件的频率。</p>
+</li>
+<li><p><strong><code>Counter</code> （计数器）</strong>：计数器记录单一计数指标，该<code>Counter</code>接口允许按固定数量递增，该数量必须为正数，可以用来统计无上限的数据。</p>
+</li>
+<li><p><strong><code>Gauge</code>  （仪表盘）：</strong>一般用来统计有上限可增可减的数据，仪表是获取当前值的句柄。仪表的典型示例是集合或映射的大小或处于运行状态的线程数。</p>
+</li>
+<li><p><strong><code>DistributionSummary</code>（分布摘要跟踪事件的分布）：</strong>它在结构上类似于定时器，但记录的是不代表时间单位的值。例如，您可以使用分布摘要来衡量到达服务器的请求的负载大小。</p>
+</li>
+<li><p><strong><code>LongTaskTimer</code>（长任务计时器）：</strong>长任务计时器是一种特殊类型的计时器，可让您在正在测量的事件<strong>仍在运行</strong>时测量时间。一个普通的 Timer 只记录任务完成后的持续时间。</p>
+</li>
+<li><p><strong><code>FunctionCounter</code>（函数计数器）：</strong>在函数编程中可以传递一个函数，在需要时调用函数进行获取数据。</p>
+</li>
+<li><p><strong><code>FunctionTimer</code>（函数计时器）：</strong>在函数编程中可以传递一个函数，在需要时调用函数进行获取数据。</p>
+</li>
+<li><p><strong><code>TimeGauge</code>（跟踪时间值的专用量规）：</strong><code>TimeGauge</code>是一个跟踪时间值的专用量规，可缩放到每个注册表实现所期望的基本时间单位。</p>
+</li>
+</ul>
+<p>不同的仪表类型会产生不同数量的时间序列指标。例如，虽然只有一个指标表示 a <code>Gauge</code>，但 a 可以<code>Timer</code>衡量定时事件的计数和所有定时事件的总时间。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>可以看到Micrometer封装了一套标准的可观测性指标类型，并且提供了基础的注册表帮助生成与临时存储指标数据，如果要将指标数据输送到监控系统仅仅需要额外引入一个适配第三方监控系统的扩展包即可。更好用的是SpringBoot的指标埋点都是基于Micrometer实现的，并且已经内置了很多指标绑定器用于绑定指标，比如JVM、Tomcat、Http等等，感兴趣的小伙伴可以尝试开启试试吧，增加一些有用的指标埋点让程序更透明, 对Micrometer感兴趣可以关注微信公众号 <strong>《中间件源码》</strong> 订阅交流吧。</p>
+
+			<br>
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2024 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>

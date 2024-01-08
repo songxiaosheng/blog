@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		
+<title>中间件源码</title>
+<meta charset="utf-8" />
+<meta name="keywords" content="" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+/>
+<meta name="generator" content="Hexo 6.2.0">
+<link rel="stylesheet" href="/css/style.css?v=1704711912949">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap"
+    media="all"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@9.15.8/styles/solarized-light.css"
+/>
+<script src="/js/core.js?v=1704711912949"></script>
+
+
+
+
+
+
+    <!-- baidu Analytics -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?2ee30baeebf59e698360da94012edd15';
+    var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js" async></script>
+<!--<script src="" async></script>--> 
+	
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="中间件源码" type="application/atom+xml">
+</head>
+
+	<body>
+        <div class="header  ">
+    <div class="container">
+        <a class="logo" href="/" title="中间件源码">中间件源码</a>
+        <ul class="nav">
+            
+                <li class="nav-item"><a href="/index.html">首页</a></li>
+            
+                <li class="nav-item"><a href="/categories">分类</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="content">
+	<div class="banner">
+		<div class="container">
+			<h1></h1>
+			<div class="info"><span class="date">2022年11月24日</span>•songxiaosheng 
+			
+				<!-- 
+					<a href="https://github.com/nexmoe/books/tree/master/source/_posts/springboot/Spring6.md" target="_blank" rel="external nofollow noreferrer noopener">编辑</a>
+				 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="container">
+		<article class="post">
+			<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Spring Framework6和Spring Boot3是一个跨越式的升级整个框架支持的最低JDK版本直接跨越到JDK17，无论框架层还是基础设施层都做了巨大的改变，Spring 6.0新框架具体做了哪些功能的升级与改进，是否有必要升级与使用呢？可以继续看一看。</p>
+<p>下面可以先看下翻译自Spring官方社区一个宣导博客</p>
+<p><em>尊敬的Spring社区：</em><br><em>我很高兴地宣布，现在MavenCentral已经可以提供SpringFramework6.0.0了！这是2023年及以后新一代框架的开始，包括OpenJDK和Java生态系统中当前和未来的创新。同时，我们将其精心设计为从Spring Framework 5.3.x直接升级到现代运行时环境。</em><br><em>作为核心框架的一个主要修订，Spring framework 6.0附带了Java 17+基线和Jakarta EE 9+（在Jakarta命名空间中），重点是最近发布的Jakarta EE10 API，如Servlet 6.0和JPA 3.1。这提供了对最新web容器（如Tomcat 10.1）和最新持久性提供程序（如Hibernate ORM 6.1）的访问。不要拘泥于JavaEE8，跳到jakarta命名空间，最好直接跳到JakartaEE10级别！即将发布的SpringBoot3.0.0版本为您提供了相应的托管依赖项。</em><br><em>基础架构方面，6.0为提前转换和相应的AOT处理支持Spring应用程序上下文提供了基础。这使得Spring Boot 3能够为GraalVM本地映像提供一流的支持。您还可以探索Project Loom的虚拟线程和Spring应用程序-请参阅“拥抱虚拟线程”-并深入了解Project CRaC的检查点恢复方法，以加快JVM启动速度，这两个功能目前都在预览中，但预计将成为基于SpringFramework6.x的应用程序的一流功能。</em><br><em>Spring Framework 6.0中还有许多其他特性和改进，例如HTTP接口客户端、对RFC 7807问题细节的支持，以及HTTP客户端基于千分尺的可观察性。请查看我们的“新增内容”页面，了解全面概述，并尽早尝试6.0.0！</em><br><em>2022年11月16日</em><br><em>Cheers,</em><br><em>Juergen</em></p>
+<p>如果对原文感兴趣也可以直接访问官方原文<a target="_blank" rel="noopener" href="https://spring.io/blog/2022/11/16/spring-framework-6-0-goes-ga">https://spring.io/blog/2022/11/16/spring-framework-6-0-goes-ga</a></p>
+<p>通过官方宣导内容可以看到Spring做了很多基础设施方面的改进:</p>
+<ul>
+<li><p>支持Java 17+基线和Jakarta EE 9+</p>
+</li>
+<li><p>对新一代容器Tomcat 10.1的支持</p>
+</li>
+<li><p>为GraalVM本地映像提供一流的支持</p>
+</li>
+<li><p>拥抱虚拟线程</p>
+</li>
+<li><p>其他功能优化等等</p>
+</li>
+</ul>
+<p>对于主要用于CRUD的我们可能仅仅因为这些功能的改变还不值得我们全面升级。下面就整体从Spring支持的历史版本来看下。</p>
+<h1 id="更新记录"><a href="#更新记录" class="headerlink" title="更新记录"></a>更新记录</h1><h2 id="支持的版本"><a href="#支持的版本" class="headerlink" title="支持的版本"></a>支持的版本</h2><ul>
+<li>6.0.x是截至2022年11月的当前功能分支和主要生产线。新一代需要JDK 17基线。</li>
+<li>5.3.x是第五代的最终功能分支，也是最新的生产线（截至2020年10月的GA），在JDK 8、JDK 11和JDK 17上提供了长期支持。</li>
+<li>5.2.x是之前的生产线（截至2019年9月的GA），将得到积极支持，直至2021年底。</li>
+<li>5.1.x和5.0.x不再受到积极支持，截至2020年12月已被5.2.x和5.3.x取代。</li>
+<li>4.3.x于2020年12月31日达到了正式的EOL（寿命终止）。该线路没有计划进一步的维护和安全补丁。</li>
+<li>3.2.x于2016年12月31日达到其正式EOL（使用寿命终止）。该线路未计划进一步的维护和安全补丁。</li>
+</ul>
+<p>此时，官方建议尽可能从MavenCentral升级到最新的SpringFramework6.0.x版本。</p>
+<h2 id="相关JDK版本范围"><a href="#相关JDK版本范围" class="headerlink" title="相关JDK版本范围"></a>相关JDK版本范围</h2><p>根据官方文档的说明Spring与JDK的兼容版本如下列表所示:</p>
+<ul>
+<li>Spring Framework 6.0.x: JDK 17-21 (expected)</li>
+<li>Spring Framework 5.3.x: JDK 8-19 (expected)</li>
+<li>Spring Framework 5.2.x: JDK 8-15</li>
+<li>Spring Framework 5.1.x: JDK 8-12</li>
+<li>Spring Framework 5.0.x: JDK 8-10</li>
+<li>Spring Framework 4.3.x: JDK 6-8</li>
+</ul>
+<p>可以看到5.3.x及以下的版本都是兼容JDK8的, 如果短期内还没有完全计划升级JDK17可以使用5.3.x的版本不仅仅兼容JDK8也会兼容11和17这两个稳定版本。</p>
+<h2 id="Spring-Framework-6-x的新增了哪些功能？"><a href="#Spring-Framework-6-x的新增了哪些功能？" class="headerlink" title="Spring Framework 6.x的新增了哪些功能？"></a>Spring Framework 6.x的新增了哪些功能？</h2><p>有了历史背景接下来直接进去主题,Spring Framework 6.x的新增了哪些功能？</p>
+<h3 id="JDK-17-和Jakarta-EE-9-基线"><a href="#JDK-17-和Jakarta-EE-9-基线" class="headerlink" title="JDK 17+和Jakarta EE 9+基线"></a>JDK 17+和Jakarta EE 9+基线</h3><ul>
+<li>整个框架代码库基于Java17源代码级别的，已经开始不支持JDK8了，如果未来继续用Spring这个早晚得升级。</li>
+<li>Servlet、JPA等从javax迁移到jakarta命名空间。</li>
+<li>与jakarta  EE 9以及jakarta EE 10 API的运行时兼容性。</li>
+<li>与最新的web服务器兼容：Tomcat 10.1、Jetty 11、Undertow 2.3。</li>
+<li>与虚拟线程的早期兼容性（在JDK 19的预览版中）。</li>
+</ul>
+<h3 id="核心修订"><a href="#核心修订" class="headerlink" title="核心修订"></a>核心修订</h3><ul>
+<li>升级至ASM 9.4和Kotlin 1.7。</li>
+<li>完成CGLIB分叉，支持捕获CGLIB生成的类。</li>
+<li>AOT的全面基础。</li>
+<li>对GraalVM本机映像的一流支持（请参阅相关的SpringBoot3博客文章）。</li>
+</ul>
+<h3 id="核心容器"><a href="#核心容器" class="headerlink" title="核心容器"></a>核心容器</h3><ul>
+<li>默认情况下，没有java.beans.Invector的基本bean属性确定。</li>
+<li>GenericApplicationContext中的AOT处理支持（refreshForAotProcessing）。</li>
+<li>基于预解析构造函数和工厂方法的Bean定义转换。</li>
+<li>支持AOP代理和配置类的早期代理类确定。</li>
+<li>PathMatchingResourcePatternResolver使用NIO和模块路径API进行扫描，分别支持GraalVM本地映像和Java模块路径中的类路径扫描。</li>
+<li>DefaultFormattingConversionService支持基于ISO的默认java.time类型解析。</li>
+</ul>
+<h3 id="数据访问和事务"><a href="#数据访问和事务" class="headerlink" title="数据访问和事务"></a>数据访问和事务</h3><ul>
+<li>支持预先确定JPA管理的类型（用于包含在AOT处理中）。</li>
+<li>JPA支持Hibernate ORM 6.1（保持与Hibernate ORM5.6的兼容性）。</li>
+<li>升级至R2DBC 1.0（包括R2DBC事务定义）。</li>
+<li>拆除JCA CCI支架。</li>
+</ul>
+<h3 id="Spring消息"><a href="#Spring消息" class="headerlink" title="Spring消息"></a>Spring消息</h3><ul>
+<li>基于@RSocketExchange服务接口的RSocket接口客户端。</li>
+<li>基于Netty 5 αlpha的反应模式的早期支持。</li>
+<li>支持Jakarta WebSocket 2.1及其标准WebSocket协议升级机制。</li>
+</ul>
+<h3 id="常规Web修订"><a href="#常规Web修订" class="headerlink" title="常规Web修订"></a>常规Web修订</h3><ul>
+<li>基于@HttpExchange服务接口的HTTP接口客户端。</li>
+<li>支持RFC 7807问题详细信息。</li>
+<li>统一的HTTP状态代码处理。</li>
+<li>支持Jackson 2.14。</li>
+<li>与Servlet 6.0保持一致（同时保持与Servlet 5.0的运行时兼容性）。</li>
+</ul>
+<h3 id="Spring-MVC"><a href="#Spring-MVC" class="headerlink" title="Spring MVC"></a>Spring MVC</h3><ul>
+<li>默认情况下使用的PathPatternParser（具有选择PathMatcher的功能）。</li>
+<li>删除过时的文件和FreeMarker JSP支持。</li>
+</ul>
+<h3 id="Spring-WebFlux"><a href="#Spring-WebFlux" class="headerlink" title="Spring WebFlux"></a>Spring WebFlux</h3><ul>
+<li>新的PartEvent API用于流式传输多部分表单上传（在客户端和服务器上）。</li>
+<li>新建ResponseEntityExceptionHandler以自定义WebFlux异常并呈现RFC 7807错误响应。</li>
+<li>非流媒体类型的通量返回值（写入前不再收集到列表）。</li>
+<li>基于Netty 5的反应模式的早期支持。</li>
+<li>JDK HttpClient与WebClient集成。</li>
+</ul>
+<h3 id="可观察性"><a href="#可观察性" class="headerlink" title="可观察性"></a>可观察性</h3><ul>
+<li>在Spring框架的几个部分中使用micrometer观测的可观测性仪器。springweb模块现在需要io.micrometer：micrometer observation:1.10+作为编译依赖项。</li>
+<li>RestTemplate和WebClient被检测以生成HTTP客户端请求观察结果。</li>
+<li>可以使用新的org.springframework.web.filter.ServerHttpObservationFilter为HTTP服务器观测检测Spring MVC。</li>
+<li>可以使用新的org.springframework.web.filter.active.ServerHttpObservationFilter为HTTP服务器观测检测SpringWebFlux。</li>
+<li>与控制器方法的Flux和Mono返回值的micrometer上下文传播集成。</li>
+</ul>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ul>
+<li>支持在JVM上或GraalVM本机映像中测试AOT处理的应用程序上下文。</li>
+<li>与HtmlUnit 2.64+请求参数处理集成。</li>
+<li>Servlet模拟（MockHttpServletRequest、MockHttpSession）现在基于Servlet API 6.0。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>整体来看Spring6做了很多升级，接下来就总结几个比较重要的点:</p>
+<h3 id="JDK17"><a href="#JDK17" class="headerlink" title="JDK17"></a>JDK17</h3><p>最低JDK支持版本改为JDK17，可能大家用惯了JDK8，这个免费又稳定支持的版本，其实JDK社区已经发布了支持G1垃圾回收器的稳定版本JDK11，JDK11就像是一个过渡版本一样,和JDK8社区提供支持的时间差不多，另外升级JDK11又需要做大量的兼容性测试才能正式使用，倒不如直接使用JDK17来的痛快。</p>
+<p>关于JDK17的相关文档如下：</p>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/downloads/#jdk17-mac">https://www.oracle.com/java/technologies/downloads/#jdk17-mac</a><br>文档地址：<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/java/javase/17/index.html">https://docs.oracle.com/en/java/javase/17/index.html</a><br>迁移指南：<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/java/javase/17/migrate/getting-started.html">https://docs.oracle.com/en/java/javase/17/migrate/getting-started.html</a></p>
+<p>JDK17引入了ZGC，在 GC 延迟方面，JDK 17 的提升更为明显。根据网上有人压测的数据，在 Parallel 中 JDK 17 对比 JDK 8 和JDK 11 提升 40%；在 G1 中，JDK 11 对比 JDK 8 提升 26%，<strong>JDK 17 对比 JDK 8 提升接近 60%！</strong>ZGC 中 JDK 17 对比 JDK 11 提升超过 40%。如果对GC延迟有更高的要求的用户可以考虑尽早体验JDK17。</p>
+<p>JDK 17 是一个 Oracle官宣可以免费商用的LTS版本，所谓 LTS，是 Long Term Support，也就是官方保证会长期支持的版本，根据官方数据最多可以支持到 2029 年 9 月份。</p>
+<p><img src="https://pics0.baidu.com/feed/2fdda3cc7cd98d10b88815c56c86f0057aec902e.png@f_auto?token=40b257d617dfa2c8d0f4f21f7a7eed83" alt="img"></p>
+<h3 id="AOT"><a href="#AOT" class="headerlink" title="AOT"></a>AOT</h3><p>可能很多人听说过JIT，第一次听说AOT这个名词，下面就来解释一下：</p>
+<p>这两种编译方式的主要区别在于是否在“运行时”进行编译，JIT，即Just-in-time,动态(即时)编译，边运行边编译；</p>
+<p>AOT，Ahead Of Time，指运行前编译，是两种程序的编译方式。</p>
+<p>有两种编译 Java 应用程序的方法：使用即时编译 (JIT) 或提前编译 (AOT)。第一种是默认模式，Java Hotspot 虚拟机使用它在运行时将字节码转换为机器码。后者由新颖的GraalVM编译器支持，并允许在构建时将字节码直接静态编译为机器码。</p>
+<p>JIT (Just-In-Time - 实时编译) </p>
+<p>在程序运行时，根据算法计算出热点代码，然后进行JIT实时编译，这种方式吞吐量高，有运行时性能加成，可以跑得更快，并可以做到动态生成代码等，但是相对启动速度较慢，并需要一定时间和调用频率才能触发 JIT 的分层机制。JIT缺点就是编译需要占用运行时资源，会导致进程卡顿。</p>
+<p>AOT (Ahead-Of-Time - 预先编译)</p>
+<p>AOT编译能直接将源代码转化为机器码,内存占用低，启动速度快，可以无需 runtime 运行，直接将 runtime 静态链接至最终的程序中，但是无运行时性能加成，不能根据程序运行情况做进一步的优化，AOT缺点就是在程序运行前编译会使程序安装的时间增加。</p>
+<p>现在正处于云原生，降本增效的时代，Java相比于Go、Rust等其他编程语言非常大的弊端就是启动编译和启动进程非常慢，这对于根据实时计算资源，弹性扩缩容的云原生技术相冲突，Spring6借助AOT技术在运行时内存占用低，启动速度快，逐渐的来满足Java在云原生时代的需求，对于大规模使用Java应用的商业公司可以考虑尽早调研使用JDK17，通过云原生技术为公司实现降本增效。</p>
+<p>关于AOT再简单介绍一下Native Image这个名词</p>
+<p>Native Image是一项创新技术，可将 Java 代码编译成独立的本机可执行文件或本机共享库。在构建本机可执行文件期间处理的 Java 字节码包括所有应用程序类、依赖项、第三方依赖库和任何所需的 JDK 类。生成的自包含本机可执行文件特定于不需要 JVM 的每个单独的操作系统和机器体系结构。</p>
+<h3 id="Graalvm"><a href="#Graalvm" class="headerlink" title="Graalvm"></a>Graalvm</h3><p>前面说到了Spring6支持的AOT技术，这个Graalvm就是底层的支持，Spring也对GraalVM本机映像提供了一流的支持。</p>
+<p>GraalVM 是一种高性能 JDK，旨在加速用 Java 和其他 JVM 语言编写的应用程序的执行，同时还为 JavaScript、Python 和许多其他流行语言提供运行时。 GraalVM 提供两种运行 Java 应用程序的方法：在 HotSpot JVM 上使用 Graal 即时 (JIT) 编译器或作为提前 (AOT) 编译的本机可执行文件。 GraalVM 的多语言能力使得在单个应用程序中混合多种编程语言成为可能，同时消除了外语调用成本。</p>
+<p>GraalVM向 HotSpot Java 虚拟机添加了一个用 Java 编写的高级即时 (JIT) 优化编译器。</p>
+<p>Graalvm架构如下图所示：</p>
+<p><a href="img/jvm/graalvm_architecture_community.png"></a></p>
+<p>GraalVM具有以下特性：</p>
+<ul>
+<li><p>高性能<br>应用Graal，一种高级优化编译器，它生成更快、更精简的代码，需要更少的计算资源</p>
+</li>
+<li><p>AOT本机图像编译<br>提前将Java应用程序编译为本机二进制文件，立即启动，无需预热即可实现最高性能</p>
+</li>
+<li><p>Polyglot编程<br>在单个应用程序中利用流行语言的最佳功能和库，无需额外开销</p>
+</li>
+<li><p>高级工具<br>在Java和多种语言中调试、监视、分析和优化资源消耗</p>
+</li>
+</ul>
+<p>总的来说对云原生的要求不算高短期内可以继续使用2.7.X的版本和JDK8，不过Spring官方已经对Spring6进行了正式版发布，后续有足够精力支持的时候可以尝试在Spring6和JDK17上进行项目验证尽早升级到这些版本上进行试点比较好。</p>
+<p>如果对此文感兴趣可以关注微信公众号<strong>《中间件源码》</strong>交流。</p>
+
+			<br>
+			
+		</article>
+	</div>
+	<div class="other">
+		<div class="container">
+			<nav class="post-nav">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</nav> 
+		</div>
+	</div>
+	<div class="container comment">
+		<div class="valine"></div>
+<script src='https://cdn.jsdelivr.net/npm/valine'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'OrwF9gExPcH3pyeb35WIuKun-9Nh9j0Va',
+        appKey: 'W098QAVm3hxbnBWRpho3a6HN'
+    })
+</script>
+	</div>
+</div>
+		<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-left">中间件源码</div>
+            <div class="footer-right"> 
+                <div class="footer-links">
+                    
+                </div>
+                <div calss="footer-copyright">&copy; 2024 中间件源码
+                    Using <a rel="noreferrer" href="http://hexo.io/" target="_blank">Hexo</a> 
+                    &amp; <a rel="noreferrer" href="https://github.com/Yet-The-Books/hexo-theme-yet-the-books" target="_blank">Yet The Books</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+	</body>
+</html>
